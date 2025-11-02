@@ -20,7 +20,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"math"
 	"strings"
 	"time"
 
@@ -304,104 +303,27 @@ func (p *Provisioner) Schedule(ctx context.Context) (scheduler.Results, error) {
 	defer metrics.Measure(scheduler.DurationSeconds, map[string]string{scheduler.ControllerLabel: injection.GetControllerName(ctx)})()
 	start := time.Now()
 
-	// We collect the nodes with their used capacities before we get the list of pending pods. This ensures that
-	// the node capacities we schedule against are always >= what the actual capacity is at any given instance. This
-	// prevents over-provisioning at the cost of potentially under-provisioning which will self-heal during the next
-	// scheduling loop when we launch a new node.  When this order is reversed, our node capacity may be reduced by pods
-	// that have bound which we then provision new un-needed capacity for.
-	// -------
-	// We don't consider the nodes that are MarkedForDeletion since this capacity shouldn't be considered
-	// as persistent capacity for the cluster (since it will soon be removed). Additionally, we are scheduling for
-	// the pods that are on these nodes so the MarkedForDeletion node capacity can't be considered.
-	nodes := p.cluster.DeepCopyNodes()
-
-	// Get pods, exit if nothing to do
-	pendingPods, err := p.GetPendingPods(ctx)
+	// Gather all input data for scheduling (I/O layer)
+	input, err := p.gatherSchedulingInput(ctx)
 	if err != nil {
 		return scheduler.Results{}, err
 	}
 
-	// Get pods from nodes that are preparing for deletion
-	// We do this after getting the pending pods so that we undershoot if pods are
-	// actively migrating from a node that is being deleted
-	// NOTE: The assumption is that these nodes are cordoned and no additional pods will schedule to them
-	deletingNodePods, err := nodes.Deleting().CurrentlyReschedulablePods(ctx, p.kubeClient)
-	if err != nil {
-		return scheduler.Results{}, err
-	}
-
-	pods := append(pendingPods, deletingNodePods...)
-	// nothing to schedule, so just return success
-	if len(pods) == 0 {
+	// Early return if nothing to schedule
+	if len(input.PendingPods) == 0 && len(input.DeletingNodePods) == 0 {
 		return scheduler.Results{}, nil
 	}
-	log.FromContext(ctx).V(1).WithValues("pending-pods", len(pendingPods), "deleting-pods", len(deletingNodePods)).Info("computing scheduling decision for provisionable pod(s)")
 
-	opts := []scheduler.Options{
-		scheduler.DisableReservedCapacityFallback,
-		scheduler.NumConcurrentReconciles(int(math.Ceil(float64(options.FromContext(ctx).CPURequests) / 1000.0))),
-		scheduler.MinValuesPolicy(options.FromContext(ctx).MinValuesPolicy),
-	}
-	if options.FromContext(ctx).PreferencePolicy == options.PreferencePolicyIgnore {
-		opts = append(opts, scheduler.IgnorePreferences)
-	}
-	s, err := p.NewScheduler(
-		ctx,
-		pods,
-		nodes.Active(),
-		opts...,
-	)
+	// Make scheduling decision (business logic - no I/O)
+	decision, err := p.ComputeSchedulingDecision(ctx, input)
 	if err != nil {
-		if errors.Is(err, ErrNodePoolsNotFound) {
-			log.FromContext(ctx).Info("no nodepools found")
-			p.cluster.MarkPodSchedulingDecisions(ctx, lo.SliceToMap(pods, func(p *corev1.Pod) (*corev1.Pod, error) {
-				return p, fmt.Errorf("no nodepools found")
-			}), nil, nil)
-			return scheduler.Results{}, nil
-		}
-		return scheduler.Results{}, fmt.Errorf("creating scheduler, %w", err)
-	}
-
-	// Timeout the Solve() method after 1m to ensure that we move faster through provisioning
-	timeoutCtx, cancel := context.WithTimeout(ctx, time.Minute)
-	defer cancel()
-
-	results, err := s.Solve(timeoutCtx, pods)
-	// context errors are ignored because we want to finish provisioning for what has already been scheduled
-	if err != nil && !errors.Is(err, context.DeadlineExceeded) {
 		return scheduler.Results{}, err
 	}
-	results = results.TruncateInstanceTypes(ctx, scheduler.MaxInstanceTypes)
-	reservedOfferingErrors := results.ReservedOfferingErrors()
-	if len(reservedOfferingErrors) != 0 {
-		log.FromContext(ctx).V(1).WithValues(
-			"Pods", pretty.Slice(lo.Map(lo.Keys(reservedOfferingErrors), func(p *corev1.Pod, _ int) string {
-				return klog.KRef(p.Namespace, p.Name).String()
-			}), 5),
-		).Info("deferring scheduling decision for provisionable pod(s) to future simulation due to limited reserved offering capacity")
-	}
-	scheduler.UnschedulablePodsCount.Set(
-		// A reserved offering error doesn't indicate a pod is unschedulable, just that the scheduling decision was deferred.
-		float64(len(results.PodErrors)-len(reservedOfferingErrors)),
-		map[string]string{
-			scheduler.ControllerLabel: injection.GetControllerName(ctx),
-		},
-	)
-	if len(results.NewNodeClaims) > 0 {
-		log.FromContext(ctx).WithValues(
-			"Pods", pretty.Slice(lo.Map(pods, func(p *corev1.Pod, _ int) string {
-				return klog.KObj(p).String()
-			}), 5),
-			"duration", time.Since(start),
-		).Info("found provisionable pod(s)")
-	}
-	// Mark in memory when these pods were marked as schedulable or when we made a decision on the pods
-	p.cluster.MarkPodSchedulingDecisions(ctx, results.PodErrors, results.NodePoolToPodMapping(),
-		// Only passing existing nodes here and not new nodeClaims because
-		// these nodeClaims don't have a name until they are created
-		results.ExistingNodeToPodMapping())
-	results.Record(ctx, p.recorder, p.cluster)
-	return results, nil
+
+	// Handle side effects (logging, metrics, state updates)
+	p.handleSchedulingDecision(ctx, decision, input, start)
+
+	return decision.Results, nil
 }
 
 func (p *Provisioner) Create(ctx context.Context, n *scheduler.NodeClaim, opts ...option.Function[LaunchOptions]) (string, error) {
