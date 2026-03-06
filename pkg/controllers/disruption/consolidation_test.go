@@ -332,6 +332,453 @@ var _ = Describe("Consolidation", func() {
 			Entry("when candidates are filtered out due to pod churn", WithUnderutilizedChurn()),
 			Entry("when candidates are filtered out due to candidate being nominated", WithUnderutilizedNodeNomination()),
 		)
+		It("should not invalidate consolidation due to unrelated pending pods from another nodepool", func() {
+			rs := test.ReplicaSet()
+			ExpectApplied(ctx, env.Client, rs)
+			Expect(env.Client.Get(ctx, client.ObjectKeyFromObject(rs), rs)).To(Succeed())
+
+			// Two nodes using the same (least expensive) instance type, both with 32 CPU and 100 pods allocatable.
+			// One node has a small pod; the other is the absorber. Single-node consolidation should
+			// produce a DELETE command (0 replacements) for the node with fewer pods.
+			testNodeClaims, testNodes := test.NodeClaimsAndNodes(2, v1.NodeClaim{
+				ObjectMeta: metav1.ObjectMeta{
+					Labels: map[string]string{
+						v1.NodePoolLabelKey:            nodePool.Name,
+						corev1.LabelInstanceTypeStable: leastExpensiveInstance.Name,
+						v1.CapacityTypeLabelKey:        leastExpensiveOffering.Requirements.Get(v1.CapacityTypeLabelKey).Any(),
+						corev1.LabelTopologyZone:       leastExpensiveOffering.Requirements.Get(corev1.LabelTopologyZone).Any(),
+					},
+				},
+				Status: v1.NodeClaimStatus{
+					Allocatable: map[corev1.ResourceName]resource.Quantity{
+						corev1.ResourceCPU:  resource.MustParse("32"),
+						corev1.ResourcePods: resource.MustParse("100"),
+					},
+				},
+			})
+			for _, nc := range testNodeClaims {
+				nc.StatusConditions().SetTrue(v1.ConditionTypeConsolidatable)
+			}
+
+			pod := test.Pod(test.PodOptions{
+				ResourceRequirements: corev1.ResourceRequirements{
+					Requests: map[corev1.ResourceName]resource.Quantity{
+						corev1.ResourceCPU: resource.MustParse("1"),
+					},
+				},
+				ObjectMeta: metav1.ObjectMeta{Labels: labels,
+					OwnerReferences: []metav1.OwnerReference{
+						{
+							APIVersion:         "apps/v1",
+							Kind:               "ReplicaSet",
+							Name:               rs.Name,
+							UID:                rs.UID,
+							Controller:         lo.ToPtr(true),
+							BlockOwnerDeletion: lo.ToPtr(true),
+						},
+					}}})
+
+			ExpectApplied(ctx, env.Client, rs, pod, testNodeClaims[0], testNodes[0], testNodeClaims[1], testNodes[1], nodePool)
+			ExpectManualBinding(ctx, env.Client, pod, testNodes[0])
+
+			ExpectMakeNodesAndNodeClaimsInitializedAndStateUpdated(ctx, env.Client, nodeStateController, nodeClaimStateController,
+				[]*corev1.Node{testNodes[0], testNodes[1]}, []*v1.NodeClaim{testNodeClaims[0], testNodeClaims[1]})
+
+			// Use the WithUnrelatedPendingPod option so that during validation an unrelated
+			// 48-CPU pending pod is injected. Without the fix this would create a NewNodeClaim
+			// and falsely invalidate the DELETE consolidation.
+			c := disruption.MakeConsolidation(fakeClock, cluster, env.Client, prov, cloudProvider, recorder, queue)
+			singleNodeConsolidation := disruption.NewSingleNodeConsolidation(c, disruption.WithValidator(
+				NewTestSingleConsolidationValidator(nodePool, WithUnrelatedPendingPod()),
+			))
+			budgets, err := disruption.BuildDisruptionBudgetMapping(ctx, cluster, fakeClock, env.Client, cloudProvider, recorder, singleNodeConsolidation.Reason())
+			Expect(err).To(Succeed())
+
+			candidates, err := disruption.GetCandidates(ctx, cluster, env.Client, recorder, fakeClock, cloudProvider, singleNodeConsolidation.ShouldDisrupt, singleNodeConsolidation.Class(), queue)
+			Expect(err).To(Succeed())
+
+			cmds, err := singleNodeConsolidation.ComputeCommands(ctx, budgets, candidates...)
+			Expect(err).To(Succeed())
+			Expect(cmds).ToNot(BeEmpty())
+		})
+		It("should not invalidate replace consolidation due to unrelated pending pods from another nodepool", func() {
+			rs := test.ReplicaSet()
+			ExpectApplied(ctx, env.Client, rs)
+			Expect(env.Client.Get(ctx, client.ObjectKeyFromObject(rs), rs)).To(Succeed())
+
+			// One mostExpensiveInstance node with a 20-CPU pod. No other nodes exist, so
+			// single-node consolidation should produce a REPLACE command (1 replacement
+			// with a cheaper instance type). The pod requests 20 CPU so that together
+			// with the unrelated 48-CPU pending pod (68 CPU total) they exceed the max
+			// 64-CPU instance type and the scheduler must create separate NewNodeClaims.
+			pod := test.Pod(test.PodOptions{
+				ResourceRequirements: corev1.ResourceRequirements{
+					Requests: map[corev1.ResourceName]resource.Quantity{
+						corev1.ResourceCPU: resource.MustParse("20"),
+					},
+				},
+				ObjectMeta: metav1.ObjectMeta{Labels: labels,
+					OwnerReferences: []metav1.OwnerReference{
+						{
+							APIVersion:         "apps/v1",
+							Kind:               "ReplicaSet",
+							Name:               rs.Name,
+							UID:                rs.UID,
+							Controller:         lo.ToPtr(true),
+							BlockOwnerDeletion: lo.ToPtr(true),
+						},
+					}}})
+			ExpectApplied(ctx, env.Client, rs, pod, node, nodeClaim, nodePool)
+			ExpectManualBinding(ctx, env.Client, pod, node)
+			ExpectApplied(ctx, env.Client, nodePool, nodeClaim, node)
+			ExpectMakeNodesAndNodeClaimsInitializedAndStateUpdated(ctx, env.Client, nodeStateController, nodeClaimStateController,
+				[]*corev1.Node{node}, []*v1.NodeClaim{nodeClaim})
+
+			// Use the WithUnrelatedPendingPod option. Without the fix, the unrelated 48-CPU
+			// pending pod would cause the simulation to propose 2 NewNodeClaims (1 for the
+			// candidate's pod, 1 for the unrelated pod), triggering "scheduling simulation
+			// produced new results". With the fix, only the candidate's NewNodeClaim is counted.
+			c := disruption.MakeConsolidation(fakeClock, cluster, env.Client, prov, cloudProvider, recorder, queue)
+			singleNodeConsolidation := disruption.NewSingleNodeConsolidation(c, disruption.WithValidator(
+				NewTestSingleConsolidationValidator(nodePool, WithUnrelatedPendingPod()),
+			))
+			budgets, err := disruption.BuildDisruptionBudgetMapping(ctx, cluster, fakeClock, env.Client, cloudProvider, recorder, singleNodeConsolidation.Reason())
+			Expect(err).To(Succeed())
+
+			candidates, err := disruption.GetCandidates(ctx, cluster, env.Client, recorder, fakeClock, cloudProvider, singleNodeConsolidation.ShouldDisrupt, singleNodeConsolidation.Class(), queue)
+			Expect(err).To(Succeed())
+
+			cmds, err := singleNodeConsolidation.ComputeCommands(ctx, budgets, candidates...)
+			Expect(err).To(Succeed())
+			Expect(cmds).ToNot(BeEmpty())
+		})
+		It("should not invalidate multi-node consolidation due to unrelated pending pods from another nodepool", func() {
+			rs := test.ReplicaSet()
+			ExpectApplied(ctx, env.Client, rs)
+			Expect(env.Client.Get(ctx, client.ObjectKeyFromObject(rs), rs)).To(Succeed())
+
+			// Three leastExpensiveInstance nodes: two with a small pod each, one empty.
+			// Multi-node consolidation skips empty candidates and considers the two
+			// non-empty nodes. Their pods (2 CPU total) fit on the remaining empty
+			// node, so this produces a DELETE command with 0 replacements.
+			testNodeClaims, testNodes := test.NodeClaimsAndNodes(3, v1.NodeClaim{
+				ObjectMeta: metav1.ObjectMeta{
+					Labels: map[string]string{
+						v1.NodePoolLabelKey:            nodePool.Name,
+						corev1.LabelInstanceTypeStable: leastExpensiveInstance.Name,
+						v1.CapacityTypeLabelKey:        leastExpensiveOffering.Requirements.Get(v1.CapacityTypeLabelKey).Any(),
+						corev1.LabelTopologyZone:       leastExpensiveOffering.Requirements.Get(corev1.LabelTopologyZone).Any(),
+					},
+				},
+				Status: v1.NodeClaimStatus{
+					Allocatable: map[corev1.ResourceName]resource.Quantity{
+						corev1.ResourceCPU:  resource.MustParse("32"),
+						corev1.ResourcePods: resource.MustParse("100"),
+					},
+				},
+			})
+			for _, nc := range testNodeClaims {
+				nc.StatusConditions().SetTrue(v1.ConditionTypeConsolidatable)
+			}
+
+			// Only bind pods to the first two nodes; the third is an empty absorber.
+			pods := test.Pods(2, test.PodOptions{
+				ResourceRequirements: corev1.ResourceRequirements{
+					Requests: map[corev1.ResourceName]resource.Quantity{
+						corev1.ResourceCPU: resource.MustParse("1"),
+					},
+				},
+				ObjectMeta: metav1.ObjectMeta{Labels: labels,
+					OwnerReferences: []metav1.OwnerReference{
+						{
+							APIVersion:         "apps/v1",
+							Kind:               "ReplicaSet",
+							Name:               rs.Name,
+							UID:                rs.UID,
+							Controller:         lo.ToPtr(true),
+							BlockOwnerDeletion: lo.ToPtr(true),
+						},
+					}}})
+
+			ExpectApplied(ctx, env.Client, rs, nodePool,
+				testNodeClaims[0], testNodes[0], testNodeClaims[1], testNodes[1], testNodeClaims[2], testNodes[2],
+				pods[0], pods[1])
+			ExpectManualBinding(ctx, env.Client, pods[0], testNodes[0])
+			ExpectManualBinding(ctx, env.Client, pods[1], testNodes[1])
+
+			ExpectMakeNodesAndNodeClaimsInitializedAndStateUpdated(ctx, env.Client, nodeStateController, nodeClaimStateController,
+				testNodes, testNodeClaims)
+
+			// Use the WithUnrelatedPendingPod option. Without the fix, the unrelated
+			// 48-CPU pending pod would cause the validation simulation to propose a
+			// NewNodeClaim. With 0 expected replacements but 1 NewNodeClaim, validation
+			// would fail with "scheduling simulation produced new results". With the fix,
+			// the unrelated NewNodeClaim is filtered out and validation passes.
+			c := disruption.MakeConsolidation(fakeClock, cluster, env.Client, prov, cloudProvider, recorder, queue)
+			multiNodeConsolidation := disruption.NewMultiNodeConsolidation(c, disruption.WithValidator(
+				NewTestMultiConsolidationValidator(nodePool, WithUnrelatedPendingPod()),
+			))
+			budgets, err := disruption.BuildDisruptionBudgetMapping(ctx, cluster, fakeClock, env.Client, cloudProvider, recorder, multiNodeConsolidation.Reason())
+			Expect(err).To(Succeed())
+
+			candidates, err := disruption.GetCandidates(ctx, cluster, env.Client, recorder, fakeClock, cloudProvider, multiNodeConsolidation.ShouldDisrupt, multiNodeConsolidation.Class(), queue)
+			Expect(err).To(Succeed())
+			Expect(len(candidates)).To(BeNumerically(">=", 2), "need at least 2 candidates for multi-node consolidation")
+
+			cmds, err := multiNodeConsolidation.ComputeCommands(ctx, budgets, candidates...)
+			Expect(err).To(Succeed())
+			Expect(cmds).ToNot(BeEmpty())
+		})
+		It("should still reject consolidation when candidate pods genuinely require multiple replacements", func() {
+			rs := test.ReplicaSet()
+			ExpectApplied(ctx, env.Client, rs)
+			Expect(env.Client.Get(ctx, client.ObjectKeyFromObject(rs), rs)).To(Succeed())
+
+			// One mostExpensiveInstance node with a 20-CPU pod. Consolidation computes
+			// a REPLACE command (1 replacement). During validation, WithExtraCandidatePod
+			// binds a 50-CPU pod to the same node. The total (70 CPU) exceeds the max
+			// 64-CPU instance type, so the scheduler creates 2 NewNodeClaims -- both
+			// containing candidate pods. The filter keeps both, and validation correctly
+			// rejects with "scheduling simulation produced new results".
+			pod := test.Pod(test.PodOptions{
+				ResourceRequirements: corev1.ResourceRequirements{
+					Requests: map[corev1.ResourceName]resource.Quantity{
+						corev1.ResourceCPU: resource.MustParse("20"),
+					},
+				},
+				ObjectMeta: metav1.ObjectMeta{Labels: labels,
+					OwnerReferences: []metav1.OwnerReference{
+						{
+							APIVersion:         "apps/v1",
+							Kind:               "ReplicaSet",
+							Name:               rs.Name,
+							UID:                rs.UID,
+							Controller:         lo.ToPtr(true),
+							BlockOwnerDeletion: lo.ToPtr(true),
+						},
+					}}})
+			ExpectApplied(ctx, env.Client, rs, pod, node, nodeClaim, nodePool)
+			ExpectManualBinding(ctx, env.Client, pod, node)
+			ExpectApplied(ctx, env.Client, nodePool, nodeClaim, node)
+			ExpectMakeNodesAndNodeClaimsInitializedAndStateUpdated(ctx, env.Client, nodeStateController, nodeClaimStateController,
+				[]*corev1.Node{node}, []*v1.NodeClaim{nodeClaim})
+
+			c := disruption.MakeConsolidation(fakeClock, cluster, env.Client, prov, cloudProvider, recorder, queue)
+			singleNodeConsolidation := disruption.NewSingleNodeConsolidation(c, disruption.WithValidator(
+				NewTestSingleConsolidationValidator(nodePool, WithExtraCandidatePod()),
+			))
+			budgets, err := disruption.BuildDisruptionBudgetMapping(ctx, cluster, fakeClock, env.Client, cloudProvider, recorder, singleNodeConsolidation.Reason())
+			Expect(err).To(Succeed())
+
+			candidates, err := disruption.GetCandidates(ctx, cluster, env.Client, recorder, fakeClock, cloudProvider, singleNodeConsolidation.ShouldDisrupt, singleNodeConsolidation.Class(), queue)
+			Expect(err).To(Succeed())
+
+			cmds, err := singleNodeConsolidation.ComputeCommands(ctx, budgets, candidates...)
+			Expect(err).To(Succeed())
+			Expect(cmds).To(BeEmpty())
+		})
+		It("should not invalidate consolidation due to cross-nodepool Consolidatable condition churn", func() {
+			rs := test.ReplicaSet()
+			ExpectApplied(ctx, env.Client, rs)
+			Expect(env.Client.Get(ctx, client.ObjectKeyFromObject(rs), rs)).To(Succeed())
+
+			// Two nodes: one with a small pod (consolidation target), one absorber.
+			// A second NodePool's node toggles its Consolidatable condition during validation.
+			// This already passes on mainline (mapCandidates filters by name, so the toggle
+			// doesn't affect the count). This is a regression test ensuring the scoped
+			// revalidateTargetCandidates path preserves that behavior.
+			testNodeClaims, testNodes := test.NodeClaimsAndNodes(2, v1.NodeClaim{
+				ObjectMeta: metav1.ObjectMeta{
+					Labels: map[string]string{
+						v1.NodePoolLabelKey:            nodePool.Name,
+						corev1.LabelInstanceTypeStable: leastExpensiveInstance.Name,
+						v1.CapacityTypeLabelKey:        leastExpensiveOffering.Requirements.Get(v1.CapacityTypeLabelKey).Any(),
+						corev1.LabelTopologyZone:       leastExpensiveOffering.Requirements.Get(corev1.LabelTopologyZone).Any(),
+					},
+				},
+				Status: v1.NodeClaimStatus{
+					Allocatable: map[corev1.ResourceName]resource.Quantity{
+						corev1.ResourceCPU:  resource.MustParse("32"),
+						corev1.ResourcePods: resource.MustParse("100"),
+					},
+				},
+			})
+			for _, nc := range testNodeClaims {
+				nc.StatusConditions().SetTrue(v1.ConditionTypeConsolidatable)
+			}
+
+			pod := test.Pod(test.PodOptions{
+				ResourceRequirements: corev1.ResourceRequirements{
+					Requests: map[corev1.ResourceName]resource.Quantity{
+						corev1.ResourceCPU: resource.MustParse("1"),
+					},
+				},
+				ObjectMeta: metav1.ObjectMeta{Labels: labels,
+					OwnerReferences: []metav1.OwnerReference{
+						{
+							APIVersion:         "apps/v1",
+							Kind:               "ReplicaSet",
+							Name:               rs.Name,
+							UID:                rs.UID,
+							Controller:         lo.ToPtr(true),
+							BlockOwnerDeletion: lo.ToPtr(true),
+						},
+					}}})
+
+			ExpectApplied(ctx, env.Client, rs, pod, testNodeClaims[0], testNodes[0], testNodeClaims[1], testNodes[1], nodePool)
+			ExpectManualBinding(ctx, env.Client, pod, testNodes[0])
+			ExpectMakeNodesAndNodeClaimsInitializedAndStateUpdated(ctx, env.Client, nodeStateController, nodeClaimStateController,
+				[]*corev1.Node{testNodes[0], testNodes[1]}, []*v1.NodeClaim{testNodeClaims[0], testNodeClaims[1]})
+
+			c := disruption.MakeConsolidation(fakeClock, cluster, env.Client, prov, cloudProvider, recorder, queue)
+			singleNodeConsolidation := disruption.NewSingleNodeConsolidation(c, disruption.WithValidator(
+				NewTestSingleConsolidationValidator(nodePool, WithCrossPoolChurn()),
+			))
+			budgets, err := disruption.BuildDisruptionBudgetMapping(ctx, cluster, fakeClock, env.Client, cloudProvider, recorder, singleNodeConsolidation.Reason())
+			Expect(err).To(Succeed())
+
+			candidates, err := disruption.GetCandidates(ctx, cluster, env.Client, recorder, fakeClock, cloudProvider, singleNodeConsolidation.ShouldDisrupt, singleNodeConsolidation.Class(), queue)
+			Expect(err).To(Succeed())
+
+			cmds, err := singleNodeConsolidation.ComputeCommands(ctx, budgets, candidates...)
+			Expect(err).To(Succeed())
+			Expect(cmds).ToNot(BeEmpty(), "consolidation should succeed despite cross-pool Consolidatable churn")
+		})
+		It("should not invalidate consolidation due to unrelated deleting-node pod scheduling failure", func() {
+			rs := test.ReplicaSet()
+			ExpectApplied(ctx, env.Client, rs)
+			Expect(env.Client.Get(ctx, client.ObjectKeyFromObject(rs), rs)).To(Succeed())
+
+			// Two nodes: one with a small pod (consolidation target), one with spare capacity.
+			// A deleting node on another NodePool has a 100-CPU pod that can't be rescheduled
+			// (max instance type is 64 CPU). Without the scoped candidatePodSchedulingErrors,
+			// the old AllNonPendingPodsScheduled check would see the deleting-node pod in
+			// PodErrors and reject the consolidation plan.
+			testNodeClaims, testNodes := test.NodeClaimsAndNodes(2, v1.NodeClaim{
+				ObjectMeta: metav1.ObjectMeta{
+					Labels: map[string]string{
+						v1.NodePoolLabelKey:            nodePool.Name,
+						corev1.LabelInstanceTypeStable: leastExpensiveInstance.Name,
+						v1.CapacityTypeLabelKey:        leastExpensiveOffering.Requirements.Get(v1.CapacityTypeLabelKey).Any(),
+						corev1.LabelTopologyZone:       leastExpensiveOffering.Requirements.Get(corev1.LabelTopologyZone).Any(),
+					},
+				},
+				Status: v1.NodeClaimStatus{
+					Allocatable: map[corev1.ResourceName]resource.Quantity{
+						corev1.ResourceCPU:  resource.MustParse("32"),
+						corev1.ResourcePods: resource.MustParse("100"),
+					},
+				},
+			})
+			for _, nc := range testNodeClaims {
+				nc.StatusConditions().SetTrue(v1.ConditionTypeConsolidatable)
+			}
+
+			pod := test.Pod(test.PodOptions{
+				ResourceRequirements: corev1.ResourceRequirements{
+					Requests: map[corev1.ResourceName]resource.Quantity{
+						corev1.ResourceCPU: resource.MustParse("1"),
+					},
+				},
+				ObjectMeta: metav1.ObjectMeta{Labels: labels,
+					OwnerReferences: []metav1.OwnerReference{
+						{
+							APIVersion:         "apps/v1",
+							Kind:               "ReplicaSet",
+							Name:               rs.Name,
+							UID:                rs.UID,
+							Controller:         lo.ToPtr(true),
+							BlockOwnerDeletion: lo.ToPtr(true),
+						},
+					}}})
+
+			ExpectApplied(ctx, env.Client, rs, pod, testNodeClaims[0], testNodes[0], testNodeClaims[1], testNodes[1], nodePool)
+			ExpectManualBinding(ctx, env.Client, pod, testNodes[0])
+			ExpectMakeNodesAndNodeClaimsInitializedAndStateUpdated(ctx, env.Client, nodeStateController, nodeClaimStateController,
+				[]*corev1.Node{testNodes[0], testNodes[1]}, []*v1.NodeClaim{testNodeClaims[0], testNodeClaims[1]})
+
+			c := disruption.MakeConsolidation(fakeClock, cluster, env.Client, prov, cloudProvider, recorder, queue)
+			singleNodeConsolidation := disruption.NewSingleNodeConsolidation(c, disruption.WithValidator(
+				NewTestSingleConsolidationValidator(nodePool, WithDeletingNodeUnschedulablePod()),
+			))
+			budgets, err := disruption.BuildDisruptionBudgetMapping(ctx, cluster, fakeClock, env.Client, cloudProvider, recorder, singleNodeConsolidation.Reason())
+			Expect(err).To(Succeed())
+
+			candidates, err := disruption.GetCandidates(ctx, cluster, env.Client, recorder, fakeClock, cloudProvider, singleNodeConsolidation.ShouldDisrupt, singleNodeConsolidation.Class(), queue)
+			Expect(err).To(Succeed())
+
+			cmds, err := singleNodeConsolidation.ComputeCommands(ctx, budgets, candidates...)
+			Expect(err).To(Succeed())
+			Expect(cmds).ToNot(BeEmpty(), "consolidation should succeed despite deleting-node pod scheduling failure")
+		})
+		It("should reject consolidation when absorber fills up and candidate pods need a NewNodeClaim", func() {
+			rs := test.ReplicaSet()
+			ExpectApplied(ctx, env.Client, rs)
+			Expect(env.Client.Get(ctx, client.ObjectKeyFromObject(rs), rs)).To(Succeed())
+
+			// Two nodes: one with a small pod (consolidation target), one with spare capacity
+			// (absorber). During validation, WithFilledAbsorber binds a 32-CPU pod to the
+			// absorber, consuming all capacity. The candidate's 1-CPU pod can no longer fit
+			// on existing nodes and gets placed on a NewNodeClaim. The filter correctly keeps
+			// this NewNodeClaim (it contains a candidate pod), and validation rejects because
+			// len(relevantClaims) = 1 but Replacements = 0 for the DELETE plan.
+			testNodeClaims, testNodes := test.NodeClaimsAndNodes(2, v1.NodeClaim{
+				ObjectMeta: metav1.ObjectMeta{
+					Labels: map[string]string{
+						v1.NodePoolLabelKey:            nodePool.Name,
+						corev1.LabelInstanceTypeStable: leastExpensiveInstance.Name,
+						v1.CapacityTypeLabelKey:        leastExpensiveOffering.Requirements.Get(v1.CapacityTypeLabelKey).Any(),
+						corev1.LabelTopologyZone:       leastExpensiveOffering.Requirements.Get(corev1.LabelTopologyZone).Any(),
+					},
+				},
+				Status: v1.NodeClaimStatus{
+					Allocatable: map[corev1.ResourceName]resource.Quantity{
+						corev1.ResourceCPU:  resource.MustParse("32"),
+						corev1.ResourcePods: resource.MustParse("100"),
+					},
+				},
+			})
+			for _, nc := range testNodeClaims {
+				nc.StatusConditions().SetTrue(v1.ConditionTypeConsolidatable)
+			}
+
+			pod := test.Pod(test.PodOptions{
+				ResourceRequirements: corev1.ResourceRequirements{
+					Requests: map[corev1.ResourceName]resource.Quantity{
+						corev1.ResourceCPU: resource.MustParse("1"),
+					},
+				},
+				ObjectMeta: metav1.ObjectMeta{Labels: labels,
+					OwnerReferences: []metav1.OwnerReference{
+						{
+							APIVersion:         "apps/v1",
+							Kind:               "ReplicaSet",
+							Name:               rs.Name,
+							UID:                rs.UID,
+							Controller:         lo.ToPtr(true),
+							BlockOwnerDeletion: lo.ToPtr(true),
+						},
+					}}})
+
+			ExpectApplied(ctx, env.Client, rs, pod, testNodeClaims[0], testNodes[0], testNodeClaims[1], testNodes[1], nodePool)
+			ExpectManualBinding(ctx, env.Client, pod, testNodes[0])
+			ExpectMakeNodesAndNodeClaimsInitializedAndStateUpdated(ctx, env.Client, nodeStateController, nodeClaimStateController,
+				[]*corev1.Node{testNodes[0], testNodes[1]}, []*v1.NodeClaim{testNodeClaims[0], testNodeClaims[1]})
+
+			c := disruption.MakeConsolidation(fakeClock, cluster, env.Client, prov, cloudProvider, recorder, queue)
+			singleNodeConsolidation := disruption.NewSingleNodeConsolidation(c, disruption.WithValidator(
+				NewTestSingleConsolidationValidator(nodePool, WithFilledAbsorber()),
+			))
+			budgets, err := disruption.BuildDisruptionBudgetMapping(ctx, cluster, fakeClock, env.Client, cloudProvider, recorder, singleNodeConsolidation.Reason())
+			Expect(err).To(Succeed())
+
+			candidates, err := disruption.GetCandidates(ctx, cluster, env.Client, recorder, fakeClock, cloudProvider, singleNodeConsolidation.ShouldDisrupt, singleNodeConsolidation.Class(), queue)
+			Expect(err).To(Succeed())
+
+			cmds, err := singleNodeConsolidation.ComputeCommands(ctx, budgets, candidates...)
+			Expect(err).To(Succeed())
+			Expect(cmds).To(BeEmpty(), "consolidation should be rejected when absorber fills up")
+		})
 	})
 	Context("Budgets", func() {
 		var numNodes = 10

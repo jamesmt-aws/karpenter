@@ -169,6 +169,90 @@ func instanceTypesAreSubset(lhs []*cloudprovider.InstanceType, rhs []*cloudprovi
 	return len(rhsNames.Intersection(lhsNames)) == len(lhsNames)
 }
 
+// candidatePodKeys builds a set of ObjectKeys for all reschedulable pods on the given candidates.
+// This intentionally uses the full reschedulablePods set rather than the PDB-filtered subset that
+// SimulateScheduling uses. This is conservative: over-matching a pod key means we might keep a
+// NewNodeClaim that turns out to be irrelevant, but we will never discard one that matters.
+func candidatePodKeys(candidates []*Candidate) sets.Set[client.ObjectKey] {
+	keys := sets.New[client.ObjectKey]()
+	for _, c := range candidates {
+		for _, p := range c.reschedulablePods {
+			keys.Insert(client.ObjectKeyFromObject(p))
+		}
+	}
+	return keys
+}
+
+// filterNewNodeClaimsByCandidatePods returns only the NewNodeClaims that contain at least one pod
+// displaced from the consolidation candidates. A NodeClaim containing both a candidate pod and an
+// unrelated pod is correctly counted as relevant.
+func filterNewNodeClaimsByCandidatePods(newNodeClaims []*scheduling.NodeClaim, podKeys sets.Set[client.ObjectKey]) []*scheduling.NodeClaim {
+	var relevant []*scheduling.NodeClaim
+	for _, nc := range newNodeClaims {
+		for _, p := range nc.Pods {
+			if podKeys.Has(client.ObjectKeyFromObject(p)) {
+				relevant = append(relevant, nc)
+				break
+			}
+		}
+	}
+	return relevant
+}
+
+// revalidateTargetCandidates rebuilds only the specified candidates from current cluster state,
+// checking each against fresh PDB state and the ShouldDisrupt filter. Unlike GetCandidates, this
+// avoids iterating all cluster nodes and prevents unrelated NodePool state changes (e.g.,
+// Consolidatable condition toggles on other NodePools) from affecting the result.
+func revalidateTargetCandidates(ctx context.Context, cluster *state.Cluster, kubeClient client.Client,
+	recorder events.Recorder, clk clock.Clock, cloudProvider cloudprovider.CloudProvider,
+	shouldDisrupt CandidateFilter, disruptionClass string, queue *Queue,
+	candidates []*Candidate,
+) ([]*Candidate, error) {
+	nodePoolMap, nodePoolToInstanceTypesMap, err := BuildNodePoolMap(ctx, kubeClient, cloudProvider)
+	if err != nil {
+		return nil, err
+	}
+	pdbs, err := pdb.NewLimits(ctx, kubeClient)
+	if err != nil {
+		return nil, fmt.Errorf("tracking PodDisruptionBudgets, %w", err)
+	}
+	targetNames := sets.NewString(lo.Map(candidates, func(c *Candidate, _ int) string { return c.Name() })...)
+	var validated []*Candidate
+	// TODO: DeepCopyNodes copies every node in the cluster just so we can look up a handful of targets.
+	// A targeted lookup (e.g., cluster.GetStateNode(name)) would avoid the O(N) copy.
+	for _, n := range cluster.DeepCopyNodes() {
+		if !targetNames.Has(n.Name()) {
+			continue
+		}
+		cn, e := NewCandidate(ctx, kubeClient, recorder, clk, n, pdbs, nodePoolMap, nodePoolToInstanceTypesMap, queue, disruptionClass)
+		if e != nil {
+			continue
+		}
+		if !shouldDisrupt(ctx, cn) {
+			continue
+		}
+		validated = append(validated, cn)
+	}
+	return validated, nil
+}
+
+// candidatePodSchedulingErrors returns an error if any candidate pods failed to schedule,
+// or nil if all candidate pods were successfully placed. Unlike AllNonPendingPodsScheduled,
+// this only checks the candidate's own pods, not unrelated pods (e.g., from deleting nodes)
+// that were included in the simulation.
+func candidatePodSchedulingErrors(results scheduling.Results, podKeys sets.Set[client.ObjectKey]) error {
+	var msgs []string
+	for p, err := range results.PodErrors {
+		if podKeys.Has(client.ObjectKeyFromObject(p)) {
+			msgs = append(msgs, fmt.Sprintf("%s/%s => %s", p.Namespace, p.Name, err))
+		}
+	}
+	if len(msgs) == 0 {
+		return nil
+	}
+	return NewSchedulingValidationError(fmt.Errorf("not all candidate pods would schedule, %s", strings.Join(msgs, " ")))
+}
+
 // GetCandidates returns nodes that appear to be currently deprovisionable based off of their nodePool
 func GetCandidates(ctx context.Context, cluster *state.Cluster, kubeClient client.Client, recorder events.Recorder, clk clock.Clock,
 	cloudProvider cloudprovider.CloudProvider, shouldDisrupt CandidateFilter, disruptionClass string, queue *Queue,
