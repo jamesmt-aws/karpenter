@@ -219,12 +219,14 @@ func (c *ConsolidationValidator) isValid(ctx context.Context, cmd Command, valid
 }
 
 func (e *EmptinessValidator) validateCandidates(ctx context.Context, candidates ...*Candidate) ([]*Candidate, error) {
-	// This GetCandidates call filters out nodes that were nominated
-	validatedCandidates, err := GetCandidates(ctx, e.cluster, e.kubeClient, e.recorder, e.clock, e.cloudProvider, e.filter, GracefulDisruptionClass, e.queue)
+	// Only re-evaluate the target candidates, not the entire cluster. This prevents unrelated NodePool
+	// state changes from invalidating the emptiness decision.
+	validatedCandidates, err := e.revalidateTargetCandidates(ctx, e.filter, GracefulDisruptionClass, candidates)
 	if err != nil {
 		return nil, fmt.Errorf("constructing validation candidates, %w", err)
 	}
-	validatedCandidates = mapCandidates(candidates, validatedCandidates)
+	// Unlike ConsolidationValidator, emptiness allows partial candidate loss. Each empty node is
+	// independently deletable, so we proceed with whatever candidates survive.
 	if len(validatedCandidates) == 0 {
 		FailedValidationsTotal.Add(float64(len(candidates)), map[string]string{ConsolidationTypeLabel: e.validationType})
 		return nil, NewChurnValidationError(fmt.Errorf("%d candidates are no longer valid", len(candidates)))
@@ -254,18 +256,19 @@ func (e *EmptinessValidator) validateCandidates(ctx context.Context, candidates 
 // ValidateCandidates gets the current representation of the provided candidates and ensures that they are all still valid.
 // For a candidate to still be valid, the following conditions must be met:
 //
-//	a. It must pass the global candidate filtering logic (no blocking PDBs, no do-not-disrupt annotation, etc)
+//	a. It must pass the candidate filtering logic (no blocking PDBs, no do-not-disrupt annotation, etc)
 //	b. It must not have any pods nominated for it
 //	c. It must still be disruptable without violating node disruption budgets
 //
 // If these conditions are met for all candidates, ValidateCandidates returns a slice with the updated representations.
+// Only the target candidates are re-evaluated, not the entire cluster. This prevents unrelated NodePool state
+// changes (e.g., Consolidatable condition toggles) from invalidating the consolidation decision.
 func (c *ConsolidationValidator) validateCandidates(ctx context.Context, candidates ...*Candidate) ([]*Candidate, error) {
 	// GracefulDisruptionClass is hardcoded here because ValidateCandidates is only used for consolidation disruption. All consolidation disruption is graceful disruption.
-	validatedCandidates, err := GetCandidates(ctx, c.cluster, c.kubeClient, c.recorder, c.clock, c.cloudProvider, c.filter, GracefulDisruptionClass, c.queue)
+	validatedCandidates, err := c.revalidateTargetCandidates(ctx, c.filter, GracefulDisruptionClass, candidates)
 	if err != nil {
 		return nil, fmt.Errorf("constructing validation candidates, %w", err)
 	}
-	validatedCandidates = mapCandidates(candidates, validatedCandidates)
 	// If we filtered out any candidates, return nil as some NodeClaims in the consolidation decision have changed.
 	if len(validatedCandidates) != len(candidates) {
 		FailedValidationsTotal.Add(float64(len(candidates)), map[string]string{ConsolidationTypeLabel: c.validationType})
@@ -300,19 +303,29 @@ func (v *validation) validateCommand(ctx context.Context, cmd Command, candidate
 	}
 	results, err := SimulateScheduling(ctx, v.kubeClient, v.cluster, v.provisioner, candidates...)
 	if err != nil {
-		return fmt.Errorf("simluating scheduling, %w", err)
-	}
-	if !results.AllNonPendingPodsScheduled() {
-		return NewSchedulingValidationError(errors.New(results.NonPendingPodSchedulingErrors()))
+		return fmt.Errorf("simulating scheduling, %w", err)
 	}
 
-	// We want to ensure that the re-simulated scheduling using the current cluster state produces the same result.
-	// There are three possible options for the number of new candidates that we need to handle:
-	// len(NewNodeClaims) == 0, as long as we weren't expecting a new node, this is valid
-	// len(NewNodeClaims) > 1, something in the cluster changed so that the candidates we were going to delete can no longer
-	//                    be deleted without producing more than one node
-	// len(NewNodeClaims) == 1, as long as the noe looks like what we were expecting, this is valid
-	if len(results.NewNodeClaims) == 0 {
+	// The simulation includes all cluster pods (pending, candidate, deleting-node), so we scope all
+	// checks to only the candidate's own pods. This prevents unrelated pod scheduling failures (e.g.,
+	// from deleting nodes in another NodePool) from invalidating the consolidation decision.
+	podKeys := candidatePodKeys(candidates)
+	if err := candidatePodSchedulingErrors(results, podKeys); err != nil {
+		return err
+	}
+
+	// Unrelated pending pods may cause the scheduler to propose NewNodeClaims that have nothing to do
+	// with the candidates being consolidated. We scope down to only the NewNodeClaims that contain at
+	// least one pod displaced from our candidates.
+	relevantNewNodeClaims := filterNewNodeClaimsByCandidatePods(results.NewNodeClaims, podKeys)
+
+	// We want to ensure that the re-simulated scheduling using the current cluster state produces the same result
+	// for the candidate's pods. There are three possible options for the number of relevant new NodeClaims:
+	// len(relevantNewNodeClaims) == 0, as long as we weren't expecting a new node, this is valid
+	// len(relevantNewNodeClaims) > 1, something in the cluster changed so that the candidates we were going to delete
+	//                    can no longer be deleted without producing more than one node
+	// len(relevantNewNodeClaims) == 1, as long as the node looks like what we were expecting, this is valid
+	if len(relevantNewNodeClaims) == 0 {
 		if len(cmd.Replacements) == 0 {
 			// scheduling produced zero new NodeClaims and we weren't expecting any, so this is valid.
 			return nil
@@ -323,7 +336,7 @@ func (v *validation) validateCommand(ctx context.Context, cmd Command, candidate
 	}
 
 	// we need more than one replacement node which is never valid currently (all of our node replacement is m->1, never m->n)
-	if len(results.NewNodeClaims) > 1 {
+	if len(relevantNewNodeClaims) > 1 {
 		return NewSchedulingValidationError(fmt.Errorf("scheduling simulation produced new results"))
 	}
 
@@ -344,7 +357,10 @@ func (v *validation) validateCommand(ctx context.Context, cmd Command, candidate
 	// a 4xlarge and replace it with a 2xlarge. If things have changed and the scheduling simulation we just performed
 	// now says that we need to launch a 4xlarge. It's still launching the correct number of NodeClaims, but it's just
 	// as expensive or possibly more so we shouldn't validate.
-	if !instanceTypesAreSubset(cmd.Replacements[0].InstanceTypeOptions, results.NewNodeClaims[0].InstanceTypeOptions) {
+	// After filtering, relevantNewNodeClaims[0] is guaranteed to contain at least one candidate pod.
+	// This is strictly more correct than the pre-filter code, which used results.NewNodeClaims[0] and
+	// could compare against an unrelated NewNodeClaim if the scheduler happened to return it first.
+	if !instanceTypesAreSubset(cmd.Replacements[0].InstanceTypeOptions, relevantNewNodeClaims[0].InstanceTypeOptions) {
 		return NewSchedulingValidationError(fmt.Errorf("scheduling simulation produced new results"))
 	}
 

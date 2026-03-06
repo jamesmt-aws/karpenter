@@ -18,7 +18,9 @@ package disruption
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/samber/lo"
@@ -169,6 +171,102 @@ func instanceTypesAreSubset(lhs []*cloudprovider.InstanceType, rhs []*cloudprovi
 	return len(rhsNames.Intersection(lhsNames)) == len(lhsNames)
 }
 
+// candidatePodKeys builds a set of ObjectKeys for all reschedulable pods on the given candidates.
+// This intentionally uses the full reschedulablePods set rather than the PDB-filtered subset that
+// SimulateScheduling uses. This is conservative: over-matching a pod key means we might keep a
+// NewNodeClaim that turns out to be irrelevant, but we will never discard one that matters.
+func candidatePodKeys(candidates []*Candidate) sets.Set[client.ObjectKey] {
+	keys := sets.New[client.ObjectKey]()
+	for _, c := range candidates {
+		for _, p := range c.reschedulablePods {
+			keys.Insert(client.ObjectKeyFromObject(p))
+		}
+	}
+	return keys
+}
+
+// filterNewNodeClaimsByCandidatePods returns only the NewNodeClaims that contain at least one pod
+// displaced from the consolidation candidates. A NodeClaim containing both a candidate pod and an
+// unrelated pod is correctly counted as relevant.
+func filterNewNodeClaimsByCandidatePods(newNodeClaims []*scheduling.NodeClaim, podKeys sets.Set[client.ObjectKey]) []*scheduling.NodeClaim {
+	var relevant []*scheduling.NodeClaim
+	for _, nc := range newNodeClaims {
+		for _, p := range nc.Pods {
+			if podKeys.Has(client.ObjectKeyFromObject(p)) {
+				relevant = append(relevant, nc)
+				break
+			}
+		}
+	}
+	return relevant
+}
+
+// revalidateTargetCandidates rebuilds only the specified candidates from current cluster state,
+// checking each against fresh PDB state and the ShouldDisrupt filter. Unlike GetCandidates, this
+// avoids iterating all cluster nodes and prevents unrelated NodePool state changes (e.g.,
+// Consolidatable condition toggles on other NodePools) from affecting the result.
+func (v *validation) revalidateTargetCandidates(ctx context.Context, shouldDisrupt CandidateFilter, disruptionClass string, candidates []*Candidate) ([]*Candidate, error) {
+	nodePoolMap, nodePoolToInstanceTypesMap, err := BuildNodePoolMap(ctx, v.kubeClient, v.cloudProvider)
+	if err != nil {
+		return nil, err
+	}
+	pdbs, err := pdb.NewLimits(ctx, v.kubeClient)
+	if err != nil {
+		return nil, fmt.Errorf("tracking PodDisruptionBudgets, %w", err)
+	}
+	targetNames := sets.NewString(lo.Map(candidates, func(c *Candidate, _ int) string { return c.Name() })...)
+	var validated []*Candidate
+	// TODO: DeepCopyNodes copies every node in the cluster just so we can look up a handful of targets.
+	// A targeted lookup (e.g., cluster.GetStateNode(name)) would avoid the O(N) copy.
+	for _, n := range v.cluster.DeepCopyNodes() {
+		if !targetNames.Has(n.Name()) {
+			continue
+		}
+		cn, candidateErr := NewCandidate(ctx, v.kubeClient, v.recorder, v.clock, n, pdbs, nodePoolMap, nodePoolToInstanceTypesMap, v.queue, disruptionClass)
+		if candidateErr != nil {
+			log.FromContext(ctx).V(1).Info("candidate failed revalidation", "node", n.Name(), "error", candidateErr)
+			continue
+		}
+		if !shouldDisrupt(ctx, cn) {
+			log.FromContext(ctx).V(1).Info("candidate no longer passes ShouldDisrupt during revalidation", "node", n.Name())
+			continue
+		}
+		validated = append(validated, cn)
+	}
+	return validated, nil
+}
+
+// candidatePodSchedulingErrors returns an error if any candidate pods failed to schedule,
+// or nil if all candidate pods were successfully placed. Unlike AllNonPendingPodsScheduled,
+// this only checks the candidate's own pods, not unrelated pods (e.g., from deleting nodes)
+// that were included in the simulation.
+func candidatePodSchedulingErrors(results scheduling.Results, podKeys sets.Set[client.ObjectKey]) error {
+	const maxErrors = 5
+	var msgs []string
+	total := 0
+	for p, err := range results.PodErrors {
+		if podKeys.Has(client.ObjectKeyFromObject(p)) {
+			total++
+			if len(msgs) < maxErrors {
+				msgs = append(msgs, fmt.Sprintf("%s/%s => %s", p.Namespace, p.Name, err))
+			}
+		}
+	}
+	if total == 0 {
+		return nil
+	}
+	sort.Strings(msgs)
+	var msg strings.Builder
+	fmt.Fprintf(&msg, "not all pods would schedule, ")
+	for _, m := range msgs {
+		fmt.Fprintf(&msg, "%s ", m)
+	}
+	if total > maxErrors {
+		fmt.Fprintf(&msg, " and %d other(s)", total-maxErrors)
+	}
+	return NewSchedulingValidationError(errors.New(msg.String()))
+}
+
 // GetCandidates returns nodes that appear to be currently deprovisionable based off of their nodePool
 func GetCandidates(ctx context.Context, cluster *state.Cluster, kubeClient client.Client, recorder events.Recorder, clk clock.Clock,
 	cloudProvider cloudprovider.CloudProvider, shouldDisrupt CandidateFilter, disruptionClass string, queue *Queue,
@@ -280,10 +378,3 @@ func BuildDisruptionBudgetMapping(ctx context.Context, cluster *state.Cluster, c
 	return disruptionBudgetMapping, nil
 }
 
-// mapCandidates maps the list of proposed candidates with the current state
-func mapCandidates(proposed, current []*Candidate) []*Candidate {
-	proposedNames := sets.NewString(lo.Map(proposed, func(c *Candidate, i int) string { return c.Name() })...)
-	return lo.Filter(current, func(c *Candidate, _ int) bool {
-		return proposedNames.Has(c.Name())
-	})
-}
