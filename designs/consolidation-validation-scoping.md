@@ -10,22 +10,21 @@ Consolidation finds underutilized nodes and removes them. Before executing, the 
 
 On clusters where one NodePool runs short-lived jobs, batch workloads, or spot recycling, the validation window is never quiet. Consolidation of stable NodePools is permanently blocked.
 
-| Issue | Description |
-|---|---|
-| [#2434](https://github.com/kubernetes-sigs/karpenter/issues/2434) | Reporter proved cross-nodepool interference by disabling consolidation on other nodepools |
-| [aws#7146](https://github.com/aws/karpenter-provider-aws/issues/7146) | Underutilized disruption causing excessive churn (40+ comments) |
-| [#853](https://github.com/kubernetes-sigs/karpenter/issues/853) | Proposed full per-nodepool isolation (much larger change, closed without merge) |
-| [#670](https://github.com/kubernetes-sigs/karpenter/issues/670) | Consolidation blocked by one nodepool's slow pods |
+- [#2434](https://github.com/kubernetes-sigs/karpenter/issues/2434) -- Reporter proved cross-nodepool interference by disabling consolidation on other nodepools
+- [aws#7146](https://github.com/aws/karpenter-provider-aws/issues/7146) -- Underutilized disruption causing excessive churn (40+ comments)
+- [#853](https://github.com/kubernetes-sigs/karpenter/issues/853) -- Proposed full per-nodepool isolation (much larger change, closed without merge)
+- [#670](https://github.com/kubernetes-sigs/karpenter/issues/670) -- Consolidation blocked by one nodepool's slow pods
 
 Backing off has a cost too. The validator's job is to confirm that cluster state hasn't meaningfully changed. On a busy cluster the current behavior permanently prevents consolidation rather than occasionally delaying it. The cost shifts from "risk of disrupting pods" to "guaranteed waste of compute."
 
 A Poisson model makes this concrete. For N short-lived pods with lifetime L seconds, the expected number of new-node launches in a 15-second window is 15N/L (assuming each launch needs a new node, the worst case for dedicated-instance-type NodePools).
 
-| Pods (L=60s) | Expected launches in 15s | P(quiet window) |
-|------|----------------------------------|-------------------------|
-| 1 | 0.25 | 77.9% |
-| 10 | 2.5 | 8.2% |
-| 100 | 25 | ~0% |
+```
+Pods (L=60s)    Expected launches in 15s    P(quiet window)
+1               0.25                        77.9%
+10              2.5                         8.2%
+100             25                          ~0%
+```
 
 Ten short-lived pods with one-minute lifetimes give you an 8% chance of a quiet validation window. One hundred pods makes it effectively impossible.
 
@@ -49,11 +48,19 @@ Three things go wrong.
 
 Three independent changes, one per validation stage. Each can be accepted or rejected independently.
 
-| Change | Stage | Replaces | With |
-|--------|-------|----------|------|
-| `revalidateTargetCandidates` | 1 and 3 | Global `GetCandidates()` + `mapCandidates()` | Re-check only the command's candidate nodes |
-| `candidatePodSchedulingErrors` | 2 | `AllNonPendingPodsScheduled()` | Check only the candidate's pods for scheduling errors |
-| `filterNewNodeClaimsByCandidatePods` | 2 | Raw `results.NewNodeClaims` count | Count only NewNodeClaims containing candidate pods |
+```
+revalidateTargetCandidates          (stages 1 and 3)
+  replaces: Global GetCandidates() + mapCandidates()
+  with:     Re-check only the command's candidate nodes
+
+candidatePodSchedulingErrors        (stage 2)
+  replaces: AllNonPendingPodsScheduled()
+  with:     Check only the candidate's pods for scheduling errors
+
+filterNewNodeClaimsByCandidatePods  (stage 2)
+  replaces: Raw results.NewNodeClaims count
+  with:     Count only NewNodeClaims containing candidate pods
+```
 
 ### Scoped candidate validation (stages 1 and 3)
 
@@ -87,17 +94,17 @@ Any violation of these three invariants still causes validation to reject, regar
 
 ## Scenarios and Test Coverage
 
-| Scenario | Behavior Change | Test |
-|---|---|---|
-| A. Cross-pool Consolidatable toggle | Already accepted (regression test) | T5 |
-| B. Target loses Consolidatable | Still rejected | Existing tests |
-| C. Unrelated deleting-node pod fails | Now accepted | T6 |
-| D. Candidate pod fails to schedule | Still rejected | Existing tests |
-| E. Unrelated pending pod, DELETE | Now accepted | T1, T3, unit tests |
-| F. Unrelated pending pod, REPLACE | Now accepted | T2 |
-| G. Extra candidate pod needs multiple replacements | Still rejected | T4 |
-| H. Absorber fills up, candidate needs NewNodeClaim | Still rejected | T7 |
-| I. Cross-pool Consolidatable toggle (emptiness) | Already accepted (regression test) | T8 |
+```
+A. Cross-pool Consolidatable toggle              Already accepted (regression test)   T5
+B. Target loses Consolidatable                   Still rejected                       Existing tests
+C. Unrelated deleting-node pod fails             Now accepted                         T6
+D. Candidate pod fails to schedule               Still rejected                       Existing tests
+E. Unrelated pending pod, DELETE                  Now accepted                         T1, T3, unit tests
+F. Unrelated pending pod, REPLACE                 Now accepted                         T2
+G. Extra candidate pod needs multiple replacements Still rejected                      T4
+H. Absorber fills up, candidate needs NewNodeClaim Still rejected                      T7
+I. Cross-pool Consolidatable toggle (emptiness)   Already accepted (regression test)   T8
+```
 
 Integration tests T1 through T8 exercise the full scheduling pipeline (real scheduler, real candidate filtering, real validation). Each injects a specific cluster state change during the 15-second validation window.
 
