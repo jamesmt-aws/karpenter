@@ -204,7 +204,14 @@ delete_ratio = (node.price / nodepool_cost) / (node.disruption_cost / nodepool_t
 
 If a node's delete ratio falls below the threshold, no single-node move from that node can clear the threshold. The system can skip move generation for that node entirely.
 
-For multi-node consolidation, the combined score of a batch depends on all nodes in the batch. A node with a low individual delete ratio could participate in a passing batch if other nodes in the batch have high ratios. The filter is conservative: it may skip nodes that would contribute to a passing multi-node move. This is an acceptable trade because multi-node moves are rare and the filter avoids expensive move generation for the common case.
+For multi-node consolidation (drain N nodes, create 1 replacement), the combined score of the batch depends on all nodes in the batch. Karpenter today creates at most one replacement node per consolidation move, so multi-node consolidation is a common path, not a corner case. A node with a low individual delete ratio could participate in a passing batch if other nodes in the batch contribute enough savings to offset it.
+
+The delete ratio filter cannot be applied to individual nodes in a multi-node candidate set without risking false negatives. Two options:
+
+1. **Skip the filter for multi-node candidates.** Score all multi-node batches without pre-filtering. This is correct but expensive when many nodes are candidates.
+2. **Filter on the batch's combined delete ratio.** Compute the delete ratio for the full set of candidate nodes as a group: `sum(node.price) / nodepool_cost` over `sum(node.disruption_cost) / nodepool_total_disruption_cost`. If the combined ratio fails, no subset can pass either (removing nodes from the batch can only worsen the ratio if the removed nodes had above-average ratios, but can improve it if they had below-average ratios). This is not a valid upper bound for subsets, so it cannot be used as a filter.
+
+The implementation should apply the delete ratio filter only to single-node moves. For multi-node consolidation, all candidates proceed to full move generation and scoring. The cost of multi-node move generation is already dominated by scheduling simulation, not candidate enumeration, so the filter's value is lower in this path.
 
 ### Interaction with Existing Features
 
@@ -223,6 +230,10 @@ A node must satisfy both the `consolidateAfter` time delay and the cost threshol
 #### karpenter.sh/do-not-disrupt
 
 Pods with `do-not-disrupt` still block consolidation of their node.
+
+#### Spot Interruptions and Involuntary Disruption
+
+Scoring applies only to voluntary consolidation decisions — moves that Karpenter chooses to make. Spot interruptions, node termination initiated by the cloud provider, and other involuntary disruptions are not gated by the score. There is no decision to make: the node is being taken away regardless.
 
 ## API Choices
 
@@ -327,6 +338,8 @@ This feature follows Karpenter's standard feature gate pattern, consistent with 
 ### Phase 1: Alpha (feature gate, disabled by default)
 
 `WhenSavingsJustifyDisruption` is gated behind a `SavingsBasedConsolidation` feature gate, disabled by default. Setting `consolidationPolicy: WhenSavingsJustifyDisruption` without the gate enabled is rejected by validation. Operators opt in via `--feature-gates SavingsBasedConsolidation=true`.
+
+Each scored move is logged at DEBUG level with the score, savings fraction, disruption fraction, source node(s), and decision (approved/rejected). This gives operators visibility into why moves are accepted or rejected without requiring additional metrics infrastructure. A Prometheus metric (`karpenter_consolidation_score`) records a histogram of move scores, partitioned by decision and NodePool, for aggregate observability.
 
 ### Phase 2: Beta (feature gate, enabled by default)
 
