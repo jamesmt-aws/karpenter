@@ -94,6 +94,8 @@ Each node's disruption cost is the sum of `max(0, EvictionCost(pod))` for its po
 
 ### Examples
 
+> **[Interactive Calculator](consolidation-calculator.html)** — plug in your own NodePool shape and see which moves pass.
+
 All examples use a NodePool with 10 nodes: eight m7i.xlarge (4 vCPU, 16 GiB, $4.84/day) and two m7i.2xlarge (8 vCPU, 32 GiB, $9.68/day). Total NodePool cost is $58.08/day. The NodePool runs 80 pods with total disruption cost 80. The threshold is 1.0 (break-even).
 
 #### Oversized Node (approved)

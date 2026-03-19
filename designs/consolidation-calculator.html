@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consolidation Score Calculator</title>
+<style>
+  :root {
+    --bg: #f8f9fa;
+    --card: #ffffff;
+    --border: #dee2e6;
+    --text: #212529;
+    --muted: #6c757d;
+    --blue: #4263eb;
+    --green: #2b8a3e;
+    --green-bg: #d3f9d8;
+    --red: #c92a2a;
+    --red-bg: #ffe3e3;
+    --orange: #e67700;
+    --orange-bg: #fff3bf;
+    --radius: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.5;
+    padding: 24px; max-width: 1100px; margin: 0 auto;
+  }
+  h1 { font-size: 1.6rem; margin-bottom: 4px; }
+  h3 {
+    font-size: 0.95rem; margin-bottom: 8px;
+    text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted);
+  }
+  .subtitle { color: var(--muted); font-size: 0.9rem; margin-bottom: 20px; }
+  .subtitle a { color: var(--blue); }
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px; margin-bottom: 16px;
+  }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
+  .field { margin-bottom: 14px; }
+  .field:last-child { margin-bottom: 0; }
+  input[type="range"] { width: 100%; margin: 4px 0; accent-color: var(--blue); }
+  input[type="number"], select {
+    width: 100%; padding: 6px 10px; border: 1px solid var(--border);
+    border-radius: 4px; font-size: 0.9rem; font-family: inherit;
+  }
+  .value-display {
+    font-size: 0.85rem; color: var(--muted);
+    text-align: right; font-variant-numeric: tabular-nums;
+  }
+  .range-row { display: flex; align-items: center; gap: 10px; }
+  .range-row input[type="range"] { flex: 1; }
+  .range-row .value-display { min-width: 50px; }
+  .inline-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .presets { display: flex; flex-wrap: wrap; gap: 8px; }
+  .preset-btn {
+    padding: 6px 14px; border: 1px solid var(--border); border-radius: 20px;
+    background: var(--card); font-size: 0.82rem; cursor: pointer;
+    transition: all 0.15s; font-family: inherit;
+  }
+  .preset-btn:hover { border-color: var(--blue); color: var(--blue); }
+  .preset-btn.active { background: var(--blue); color: white; border-color: var(--blue); }
+  .preset-btn.approved { border-left: 3px solid var(--green); }
+  .preset-btn.rejected { border-left: 3px solid var(--red); }
+
+  .score-box { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: start; }
+  .formula-block {
+    background: #f1f3f5; border-radius: 6px; padding: 14px 18px;
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 0.82rem; line-height: 1.7; white-space: pre; overflow-x: auto;
+  }
+  .badge {
+    display: inline-block; padding: 8px 20px; border-radius: 6px;
+    font-weight: 700; font-size: 1.1rem; text-align: center; min-width: 140px;
+  }
+  .badge.approved { background: var(--green-bg); color: var(--green); }
+  .badge.rejected { background: var(--red-bg); color: var(--red); }
+  .score-number {
+    font-size: 2rem; font-weight: 700; text-align: center;
+    margin-bottom: 4px; font-variant-numeric: tabular-nums;
+  }
+  .sentence { font-size: 0.9rem; color: var(--muted); margin-top: 10px; line-height: 1.6; }
+
+  .diagram-container { overflow-x: auto; }
+  svg text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+  .section-label {
+    font-size: 0.78rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.5px; fill: var(--muted);
+  }
+  .totals-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border);
+  }
+  .totals-row label { font-weight: 400; font-size: 0.8rem; color: var(--muted); }
+  .totals-row input[type="number"] { font-size: 0.82rem; padding: 4px 8px; }
+
+  .preset-group-label {
+    display: block; font-size: 0.72rem; font-weight: 600; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    text-decoration: none;
+    width: 100%; margin-top: 6px;
+  }
+  .preset-group-label:hover { color: var(--blue); }
+  .preset-group-label:first-child { margin-top: 0; }
+  .preset-note {
+    font-size: 0.78rem; color: var(--muted); margin-top: 8px; font-style: italic;
+  }
+  .strategy-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: end;
+  }
+
+  @media (max-width: 700px) {
+    .grid-2 { grid-template-columns: 1fr; }
+    .score-box { grid-template-columns: 1fr; }
+    body { padding: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Consolidation Score Calculator</h1>
+<p class="subtitle">Interactive calculator for the <a href="consolidation-cost-threshold.md">WhenSavingsJustifyDisruption</a> RFC. Plug in your NodePool shape and see which moves pass.</p>
+
+<!-- Preset Scenarios -->
+<div class="card">
+  <h3>Preset Scenarios</h3>
+  <div class="presets" id="presetContainer"></div>
+  <div class="preset-note" id="presetNote"></div>
+</div>
+
+<div class="grid-2">
+  <!-- NodePool Configuration -->
+  <div class="card">
+    <h3>NodePool Configuration</h3>
+    <div class="field">
+      <label>Number of nodes (visual)</label>
+      <div class="range-row">
+        <input type="range" id="numNodes" min="1" max="100" value="10">
+        <span class="value-display" id="numNodesVal">10</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>Cost per node ($/day, for non-candidate nodes)</label>
+      <div class="range-row">
+        <input type="range" id="costPerNode" min="0.5" max="50" step="0.01" value="4.84">
+        <span class="value-display" id="costPerNodeVal">$4.84</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>Pods per node (non-candidate nodes)</label>
+      <div class="range-row">
+        <input type="range" id="podsPerNode" min="1" max="50" value="8">
+        <span class="value-display" id="podsPerNodeVal">8</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>Default per-pod disruption cost</label>
+      <div class="range-row">
+        <input type="range" id="defaultPodCost" min="0" max="10" step="1" value="1">
+        <span class="value-display" id="defaultPodCostVal">1</span>
+      </div>
+    </div>
+    <div class="totals-row">
+      <div class="field">
+        <label>NodePool total cost ($/day)</label>
+        <input type="number" id="nodepoolCost" min="0" step="0.01" value="58.08">
+      </div>
+      <div class="field">
+        <label>Total disruption cost</label>
+        <input type="number" id="nodepoolDisruption" min="0" step="1" value="80">
+      </div>
+    </div>
+  </div>
+
+  <!-- Move Configuration -->
+  <div class="card">
+    <h3>Move Configuration</h3>
+    <div class="field">
+      <label>Candidate node index</label>
+      <div class="range-row">
+        <input type="range" id="candidateIdx" min="0" max="9" value="0">
+        <span class="value-display" id="candidateIdxVal">Node 1</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>Candidate node cost ($/day)</label>
+      <input type="number" id="candidateCost" min="0" step="0.01" value="9.68">
+    </div>
+    <div class="field">
+      <label>Pods on candidate node</label>
+      <div class="range-row">
+        <input type="range" id="candidatePods" min="0" max="50" value="3">
+        <span class="value-display" id="candidatePodsVal">3</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>Per-pod disruption cost on candidate</label>
+      <div class="range-row">
+        <input type="range" id="candidatePodCost" min="0" max="10" step="1" value="1">
+        <span class="value-display" id="candidatePodCostVal">1</span>
+      </div>
+    </div>
+    <div class="inline-2">
+      <div class="field">
+        <label>Move type</label>
+        <select id="moveType">
+          <option value="delete">DELETE</option>
+          <option value="replace">REPLACE</option>
+        </select>
+      </div>
+      <div class="field" id="replacementCostField">
+        <label>Replacement cost ($/day)</label>
+        <input type="number" id="replacementCost" min="0" step="0.01" value="2.42">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Score Output -->
+<div class="card">
+  <h3>Score</h3>
+  <div class="strategy-row">
+    <div class="field" style="margin-bottom:0">
+      <label>Decision strategy</label>
+      <select id="strategy">
+        <option value="ratio">Score ratio (RFC proposal)</option>
+        <option value="savings">Savings fraction only</option>
+        <option value="disruption">Disruption fraction only</option>
+      </select>
+    </div>
+    <div class="field" id="strategyThresholdField" style="margin-bottom:0; display:none">
+      <label id="strategyThresholdLabel">Threshold</label>
+      <div class="range-row">
+        <input type="range" id="strategyThreshold" min="0" max="50" step="0.5" value="5">
+        <span class="value-display" id="strategyThresholdVal">5%</span>
+      </div>
+    </div>
+  </div>
+  <div class="score-box" style="margin-top:14px">
+    <div>
+      <div class="formula-block" id="formulaBlock"></div>
+      <div class="sentence" id="sentenceBlock"></div>
+    </div>
+    <div style="text-align: center;">
+      <div class="score-number" id="scoreNumber">—</div>
+      <div class="badge" id="scoreBadge">—</div>
+    </div>
+  </div>
+</div>
+
+<!-- Visual Diagram -->
+<div class="card">
+  <h3>NodePool Visualization</h3>
+  <div class="diagram-container">
+    <svg id="diagram" width="100%" height="320"></svg>
+  </div>
+</div>
+
+<script>
+// ── Elements ──
+const el = id => document.getElementById(id);
+const E = {
+  numNodes: el('numNodes'), costPerNode: el('costPerNode'),
+  podsPerNode: el('podsPerNode'), defaultPodCost: el('defaultPodCost'),
+  nodepoolCost: el('nodepoolCost'), nodepoolDisruption: el('nodepoolDisruption'),
+  candidateIdx: el('candidateIdx'), candidateCost: el('candidateCost'),
+  candidatePods: el('candidatePods'), candidatePodCost: el('candidatePodCost'),
+  moveType: el('moveType'), replacementCost: el('replacementCost'),
+  replacementCostField: el('replacementCostField'),
+  strategy: el('strategy'), strategyThreshold: el('strategyThreshold'),
+  strategyThresholdField: el('strategyThresholdField'),
+  strategyThresholdLabel: el('strategyThresholdLabel'),
+  formulaBlock: el('formulaBlock'), sentenceBlock: el('sentenceBlock'),
+  scoreNumber: el('scoreNumber'), scoreBadge: el('scoreBadge'),
+  diagram: el('diagram'), presetNote: el('presetNote'),
+};
+
+const rangeDisplays = {
+  numNodes:       { el: 'numNodesVal',       fmt: v => v },
+  costPerNode:    { el: 'costPerNodeVal',    fmt: v => '$' + parseFloat(v).toFixed(2) },
+  podsPerNode:    { el: 'podsPerNodeVal',    fmt: v => v },
+  defaultPodCost: { el: 'defaultPodCostVal', fmt: v => parseInt(v) },
+  candidateIdx:   { el: 'candidateIdxVal',   fmt: v => 'Node ' + (parseInt(v) + 1) },
+  candidatePods:  { el: 'candidatePodsVal',  fmt: v => v },
+  candidatePodCost:{ el: 'candidatePodCostVal', fmt: v => parseInt(v) },
+};
+
+// ── Presets ──
+// The RFC pool: 8x m7i.xlarge ($4.84) + 2x m7i.2xlarge ($9.68) = $58.08/day, 80 pods, disruption 80.
+// nodepoolCost and nodepoolDisruption are set directly to match the RFC exactly.
+// Group definitions: key → { label, href }
+const groups = {
+  examples:   { label: 'RFC §Examples',            href: 'consolidation-cost-threshold.md#examples' },
+  scale:      { label: 'RFC §Scale Invariance',    href: 'consolidation-cost-threshold.md#scale-invariance' },
+  crosspool:  { label: 'RFC §Cross-NodePool',      href: 'consolidation-cost-threshold.md#cross-nodepool-on-demand-and-spot' },
+  disruption: { label: 'RFC §Per-Pod Disruption Cost', href: 'consolidation-cost-threshold.md#per-pod-disruption-cost' },
+  issue8868:  { label: 'aws#8868',                 href: 'https://github.com/aws/karpenter-provider-aws/issues/8868' },
+  issue8536:  { label: 'aws#8536',                 href: 'https://github.com/aws/karpenter-provider-aws/issues/8536' },
+  issue2705:  { label: 'kubernetes-sigs#2705',     href: 'https://github.com/kubernetes-sigs/karpenter/issues/2705' },
+  issue1686:  { label: 'kubernetes-sigs#1686',     href: 'https://github.com/kubernetes-sigs/karpenter/issues/1686' },
+};
+
+const presets = [
+  {
+    id: 'oversized', label: 'Oversized Node (3.33)', approved: true,
+    group: 'examples',
+    note: 'RFC "Oversized Node" — m7i.2xlarge with 3 pods → replace with m7i.large. Saves $7.26/day.',
+    numNodes: 10, costPerNode: 4.84, podsPerNode: 8, defaultPodCost: 1,
+    nodepoolCost: 58.08, nodepoolDisruption: 80,
+    candidateIdx: 0, candidateCost: 9.68, candidatePods: 3, candidatePodCost: 1,
+    moveType: 'replace', replacementCost: 2.42,
+  },
+  {
+    id: 'spare', label: 'Spare Capacity Delete (1.67)', approved: true,
+    group: 'examples',
+    note: 'RFC "Spare Capacity Delete" — m7i.xlarge with 4 pods, other nodes have spare capacity. Full node savings.',
+    numNodes: 10, costPerNode: 4.84, podsPerNode: 8, defaultPodCost: 1,
+    nodepoolCost: 58.08, nodepoolDisruption: 80,
+    candidateIdx: 0, candidateCost: 4.84, candidatePods: 4, candidatePodCost: 1,
+    moveType: 'delete', replacementCost: 0,
+  },
+  {
+    id: 'marginal', label: 'Marginal Move (0.42)', approved: false,
+    group: 'examples',
+    note: 'RFC "Marginal Move" — m7i.xlarge with 8 pods → replace with m7i.large. Disruption outweighs savings.',
+    numNodes: 10, costPerNode: 4.84, podsPerNode: 8, defaultPodCost: 1,
+    nodepoolCost: 58.08, nodepoolDisruption: 80,
+    candidateIdx: 0, candidateCost: 4.84, candidatePods: 8, candidatePodCost: 1,
+    moveType: 'replace', replacementCost: 2.42,
+  },
+  {
+    id: 'wellpacked', label: 'Well-Packed Node (0)', approved: false,
+    group: 'examples',
+    note: 'RFC "Well-Packed Node" — m7i.xlarge fully packed, replacement is same size. Zero savings.',
+    numNodes: 10, costPerNode: 4.84, podsPerNode: 8, defaultPodCost: 1,
+    nodepoolCost: 58.08, nodepoolDisruption: 80,
+    candidateIdx: 0, candidateCost: 4.84, candidatePods: 10, candidatePodCost: 1,
+    moveType: 'replace', replacementCost: 4.84,
+  },
+  {
+    id: 'scale', label: 'Scale Invariance (3.33)', approved: true,
+    group: 'scale',
+    note: 'RFC "Scale Invariance" — same oversized-node scenario at 100-node scale ($580.80/day, 800 disruption). Score is identical.',
+    numNodes: 100, costPerNode: 4.84, podsPerNode: 8, defaultPodCost: 1,
+    nodepoolCost: 580.80, nodepoolDisruption: 800,
+    candidateIdx: 0, candidateCost: 9.68, candidatePods: 3, candidatePodCost: 1,
+    moveType: 'replace', replacementCost: 2.42,
+  },
+  {
+    id: 'cross-od', label: 'On-Demand DELETE (2.67)', approved: true,
+    group: 'crosspool',
+    note: 'RFC "Cross-NodePool" — On-Demand pool DELETE. 10 m7i.xlarge at $4.84/day, candidate has 3 pods.',
+    numNodes: 10, costPerNode: 4.84, podsPerNode: 8, defaultPodCost: 1,
+    nodepoolCost: 48.40, nodepoolDisruption: 80,
+    candidateIdx: 0, candidateCost: 4.84, candidatePods: 3, candidatePodCost: 1,
+    moveType: 'delete', replacementCost: 0,
+  },
+  {
+    id: 'cross-spot', label: 'Spot DELETE (2.67)', approved: true,
+    group: 'crosspool',
+    note: 'RFC "Cross-NodePool" — Spot pool DELETE. 10 m7i.xlarge at $1.45/day, candidate has 3 pods. Same score as On-Demand.',
+    numNodes: 10, costPerNode: 1.45, podsPerNode: 8, defaultPodCost: 1,
+    nodepoolCost: 14.50, nodepoolDisruption: 80,
+    candidateIdx: 0, candidateCost: 1.45, candidatePods: 3, candidatePodCost: 1,
+    moveType: 'delete', replacementCost: 0,
+  },
+  {
+    id: 'cross-spot-8', label: 'Spot 8 pods break-even (1.00)', approved: true,
+    group: 'crosspool',
+    note: 'RFC "Cross-NodePool" — Spot node with 8 pods instead of 3. Barely passes at break-even. Any increase in pod disruption cost would reject.',
+    numNodes: 10, costPerNode: 1.45, podsPerNode: 8, defaultPodCost: 1,
+    nodepoolCost: 14.50, nodepoolDisruption: 80,
+    candidateIdx: 0, candidateCost: 1.45, candidatePods: 8, candidatePodCost: 1,
+    moveType: 'delete', replacementCost: 0,
+  },
+  {
+    id: 'expensive', label: 'One Expensive Pod (0.33)', approved: false,
+    group: 'disruption',
+    note: 'Same as Spare Capacity Delete but pods have disruption cost 5 (e.g. model-serving with warm cache). Score drops from 1.67 to 0.33.',
+    numNodes: 10, costPerNode: 4.84, podsPerNode: 8, defaultPodCost: 1,
+    nodepoolCost: 58.08, nodepoolDisruption: 80,
+    candidateIdx: 0, candidateCost: 4.84, candidatePods: 4, candidatePodCost: 5,
+    moveType: 'delete', replacementCost: 0,
+  },
+  // ── Real-world issues from RFC Motivation ──
+  {
+    id: 'issue-8868', label: '93% node disrupted (0.00)', approved: false,
+    group: 'issue8868',
+    note: '7-node cluster of c5.4xlarge. Karpenter drains a 93-99% utilized node instead of a 4% node. Same instance type replaced — zero savings.',
+    numNodes: 7, costPerNode: 16.32, podsPerNode: 15, defaultPodCost: 1,
+    nodepoolCost: 114.24, nodepoolDisruption: 105,
+    candidateIdx: 0, candidateCost: 16.32, candidatePods: 15, candidatePodCost: 1,
+    moveType: 'replace', replacementCost: 16.32,
+  },
+  {
+    id: 'issue-8536', label: '14-hour churn loop (0.41)', approved: false,
+    group: 'issue8536',
+    note: 'r5a.xlarge ($5.42/day) replaced by c6a.xlarge ($3.67/day) every few minutes for 14 hours. Saves $1.75/day but disrupts 9 pods out of 65 — not worth it.',
+    numNodes: 8, costPerNode: 3.67, podsPerNode: 8, defaultPodCost: 1,
+    nodepoolCost: 31.11, nodepoolDisruption: 65,
+    candidateIdx: 0, candidateCost: 5.42, candidatePods: 9, candidatePodCost: 1,
+    moveType: 'replace', replacementCost: 3.67,
+  },
+  {
+    id: 'issue-2705', label: '99% packed, same type (0.00)', approved: false,
+    group: 'issue2705',
+    note: '10 m7i.8xlarge nodes at 99% packing. Karpenter reshuffles pods into a new underutilized node, disrupting well-packed nodes for zero savings.',
+    numNodes: 10, costPerNode: 38.64, podsPerNode: 20, defaultPodCost: 1,
+    nodepoolCost: 386.40, nodepoolDisruption: 200,
+    candidateIdx: 0, candidateCost: 38.64, candidatePods: 20, candidatePodCost: 1,
+    moveType: 'replace', replacementCost: 38.64,
+  },
+  {
+    id: 'issue-1686', label: '63% mem node deleted (0.58)', approved: false,
+    group: 'issue1686',
+    note: 'Spot m6g.2xlarge at 63% memory utilization with 20 pods deleted. Savings are real ($2.88/day) but disruption fraction (29%) far exceeds savings fraction (17%).',
+    numNodes: 6, costPerNode: 2.88, podsPerNode: 10, defaultPodCost: 1,
+    nodepoolCost: 17.28, nodepoolDisruption: 70,
+    candidateIdx: 0, candidateCost: 2.88, candidatePods: 20, candidatePodCost: 1,
+    moveType: 'delete', replacementCost: 0,
+  },
+];
+
+// Build preset buttons grouped by RFC section, with linked headers
+const presetContainer = document.getElementById('presetContainer');
+let lastGroup = null;
+presets.forEach(p => {
+  if (p.group !== lastGroup) {
+    const g = groups[p.group];
+    const label = document.createElement('a');
+    label.className = 'preset-group-label';
+    label.href = g.href;
+    label.textContent = g.label;
+    presetContainer.appendChild(label);
+    lastGroup = p.group;
+  }
+  const btn = document.createElement('button');
+  btn.className = 'preset-btn ' + (p.approved ? 'approved' : 'rejected');
+  btn.textContent = p.label;
+  btn.dataset.id = p.id;
+  btn.addEventListener('click', () => loadPreset(p.id));
+  presetContainer.appendChild(btn);
+});
+
+// Should the sliders auto-update the totals? Track whether totals were manually edited.
+let totalsManual = false;
+
+function recomputeTotals() {
+  if (totalsManual) return;
+  const n = parseInt(E.numNodes.value);
+  const cpn = parseFloat(E.costPerNode.value);
+  const ppn = parseInt(E.podsPerNode.value);
+  const dpc = parseFloat(E.defaultPodCost.value);
+  const ci = Math.min(parseInt(E.candidateIdx.value), n - 1);
+  const cc = parseFloat(E.candidateCost.value);
+  const cp = parseInt(E.candidatePods.value);
+  const cpc = parseFloat(E.candidatePodCost.value);
+
+  const totalCost = (n - 1) * cpn + cc;
+  const totalDisruption = (n - 1) * ppn * Math.max(0, dpc) + cp * Math.max(0, cpc);
+
+  E.nodepoolCost.value = totalCost.toFixed(2);
+  E.nodepoolDisruption.value = Math.round(totalDisruption);
+}
+
+function getState() {
+  const numNodes = parseInt(E.numNodes.value);
+  const costPerNode = parseFloat(E.costPerNode.value);
+  const podsPerNode = parseInt(E.podsPerNode.value);
+  const defaultPodCost = parseFloat(E.defaultPodCost.value);
+  const candidateIdx = Math.min(parseInt(E.candidateIdx.value), numNodes - 1);
+  const candidateCost = parseFloat(E.candidateCost.value);
+  const candidatePods = parseInt(E.candidatePods.value);
+  const candidatePodCost = parseFloat(E.candidatePodCost.value);
+  const moveType = E.moveType.value;
+  const replacementCost = moveType === 'replace' ? parseFloat(E.replacementCost.value) : 0;
+
+  // Use the totals fields directly (may be preset-overridden or slider-computed)
+  const nodepoolCost = parseFloat(E.nodepoolCost.value) || 0;
+  const nodepoolDisruption = parseFloat(E.nodepoolDisruption.value) || 0;
+
+  // Build visual node array
+  const nodes = [];
+  for (let i = 0; i < numNodes; i++) {
+    if (i === candidateIdx) {
+      nodes.push({ cost: candidateCost, pods: candidatePods, podCost: candidatePodCost, isCandidate: true });
+    } else {
+      nodes.push({ cost: costPerNode, pods: podsPerNode, podCost: defaultPodCost, isCandidate: false });
+    }
+  }
+
+  const savings = candidateCost - replacementCost;
+  const disruptionCost = candidatePods * Math.max(0, candidatePodCost);
+
+  const savingsFraction = nodepoolCost > 0 ? savings / nodepoolCost : 0;
+  const disruptionFraction = nodepoolDisruption > 0 ? disruptionCost / nodepoolDisruption : 0;
+
+  // Score (ratio) — always computed for display even if not the active strategy
+  let score;
+  if (nodepoolCost === 0 || savings <= 0) score = 0;
+  else if (disruptionCost === 0 || nodepoolDisruption === 0) score = Infinity;
+  else score = savingsFraction / disruptionFraction;
+
+  return {
+    nodes, numNodes, candidateIdx, moveType, replacementCost,
+    nodepoolCost, nodepoolDisruption,
+    savings, disruptionCost,
+    savingsFraction, disruptionFraction,
+    score, candidatePodCost,
+  };
+}
+
+function fmt(n, dp) { return isFinite(n) ? n.toFixed(dp) : '∞'; }
+
+function pct(n) {
+  if (!isFinite(n)) return '∞';
+  const p = n * 100;
+  return p.toFixed(p >= 10 ? 1 : 2) + '%';
+}
+
+function updateDisplay() {
+  // Sync range value labels
+  for (const [id, cfg] of Object.entries(rangeDisplays)) {
+    document.getElementById(cfg.el).textContent = cfg.fmt(E[id].value);
+  }
+
+  // Clamp candidate index
+  const maxIdx = parseInt(E.numNodes.value) - 1;
+  E.candidateIdx.max = maxIdx;
+  if (parseInt(E.candidateIdx.value) > maxIdx) {
+    E.candidateIdx.value = maxIdx;
+    document.getElementById('candidateIdxVal').textContent = 'Node ' + (maxIdx + 1);
+  }
+
+  // Show/hide replacement cost
+  const isReplace = E.moveType.value === 'replace';
+  E.replacementCostField.style.display = isReplace ? '' : 'none';
+
+  // Strategy UI
+  const strategy = E.strategy.value;
+  const threshold = parseFloat(E.strategyThreshold.value) / 100;
+  E.strategyThresholdField.style.display = strategy === 'ratio' ? 'none' : '';
+  E.strategyThresholdLabel.textContent = strategy === 'savings'
+    ? 'Min savings fraction' : 'Max disruption fraction';
+  document.getElementById('strategyThresholdVal').textContent =
+    parseFloat(E.strategyThreshold.value).toFixed(1) + '%';
+
+  const s = getState();
+
+  // ── Decision based on strategy ──
+  let decision, displayValue, formula, sentence;
+  const scoreStr = isFinite(s.score) ? fmt(s.score, 2) : '∞';
+
+  if (strategy === 'ratio') {
+    if (s.savings <= 0) decision = 'rejected';
+    else if (s.disruptionCost === 0 || s.nodepoolDisruption === 0) decision = 'approved';
+    else decision = s.score >= 1.0 - 1e-9 ? 'approved' : 'rejected';
+    displayValue = scoreStr;
+
+    const arrow = decision === 'approved' ? '→ approved' : '→ rejected';
+    const cmp = s.score === Infinity ? '> 1.0'
+      : Math.abs(s.score - 1.0) < 1e-9 ? '= 1.0'
+      : s.score > 1.0 ? '> 1.0' : '< 1.0';
+
+    if (s.savings <= 0) {
+      formula = `savings             = ${fmt(s.savings, 2)}  (no cost reduction)\nscore               = 0  ${arrow}`;
+    } else if (s.disruptionCost === 0) {
+      formula = `savings_fraction    = ${fmt(s.savings, 2)} / ${fmt(s.nodepoolCost, 2)}  = ${pct(s.savingsFraction)}\ndisruption_fraction = 0 / ${fmt(s.nodepoolDisruption, 0)}      = 0%\nscore               = positive savings, zero disruption  ${arrow}`;
+    } else {
+      const sfDp = s.savingsFraction < 0.01 ? 4 : 3;
+      const dfDp = s.disruptionFraction < 0.01 ? 5 : 4;
+      formula = `savings_fraction    = ${fmt(s.savings, 2)} / ${fmt(s.nodepoolCost, 2)}  = ${pct(s.savingsFraction)}\ndisruption_fraction = ${fmt(s.disruptionCost, 0)} / ${fmt(s.nodepoolDisruption, 0)}      = ${pct(s.disruptionFraction)}\nscore               = ${fmt(s.savingsFraction, sfDp)} / ${fmt(s.disruptionFraction, dfDp)}  = ${scoreStr}  ${cmp}  ${arrow}`;
+    }
+    sentence = s.savings <= 0
+      ? 'This move saves nothing. No consolidation is justified.'
+      : s.disruptionCost === 0
+        ? `This move saves ${pct(s.savingsFraction)} of NodePool cost with zero disruption. Approved.`
+        : `This move saves ${pct(s.savingsFraction)} of NodePool cost by disrupting ${pct(s.disruptionFraction)} of NodePool disruption. Score: ${scoreStr}.`;
+
+  } else if (strategy === 'savings') {
+    decision = s.savingsFraction >= threshold - 1e-9 && s.savings > 0 ? 'approved' : 'rejected';
+    displayValue = pct(s.savingsFraction);
+    const arrow = decision === 'approved' ? '→ approved' : '→ rejected';
+    const cmp = s.savingsFraction >= threshold - 1e-9 ? '>=' : '<';
+    formula = `savings_fraction    = ${fmt(s.savings, 2)} / ${fmt(s.nodepoolCost, 2)}  = ${pct(s.savingsFraction)}\nthreshold           = ${pct(threshold)}\n                      ${pct(s.savingsFraction)} ${cmp} ${pct(threshold)}  ${arrow}`;
+    sentence = `Savings-only: this move saves ${pct(s.savingsFraction)} of NodePool cost. Threshold is ${pct(threshold)}. Disruption (${pct(s.disruptionFraction)}) is ignored.`;
+
+  } else { // disruption
+    decision = s.savings > 0 && s.disruptionFraction <= threshold + 1e-9 ? 'approved' : 'rejected';
+    displayValue = pct(s.disruptionFraction);
+    const arrow = decision === 'approved' ? '→ approved' : '→ rejected';
+    const cmp = s.disruptionFraction <= threshold + 1e-9 ? '<=' : '>';
+    formula = `disruption_fraction = ${fmt(s.disruptionCost, 0)} / ${fmt(s.nodepoolDisruption, 0)}  = ${pct(s.disruptionFraction)}\nthreshold           = ${pct(threshold)}\n                      ${pct(s.disruptionFraction)} ${cmp} ${pct(threshold)}  ${arrow}`;
+    if (s.savings <= 0) {
+      sentence = 'This move saves nothing. No consolidation is justified.';
+      decision = 'rejected';
+    } else {
+      sentence = `Disruption-only: this move disrupts ${pct(s.disruptionFraction)} of NodePool disruption. Threshold is ${pct(threshold)}. Savings (${pct(s.savingsFraction)}) are ignored beyond requiring > 0.`;
+    }
+  }
+
+  E.formulaBlock.textContent = formula;
+  E.scoreNumber.textContent = displayValue;
+  E.scoreNumber.style.color = decision === 'approved' ? 'var(--green)' : 'var(--red)';
+  E.scoreBadge.textContent = decision === 'approved' ? 'APPROVED' : 'REJECTED';
+  E.scoreBadge.className = 'badge ' + decision;
+  E.sentenceBlock.textContent = sentence;
+
+  drawDiagram(s);
+}
+
+// ── SVG Diagram ──
+function drawDiagram(s) {
+  const svg = E.diagram;
+  const ns = 'http://www.w3.org/2000/svg';
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+  const containerWidth = svg.parentElement.clientWidth || 1060;
+  const margin = { left: 10, right: 10, top: 44, gap: 42 };
+  const usable = containerWidth - margin.left - margin.right;
+  const nodeH = 54, podSize = 12, podGap = 3, nodeGap = 6;
+  const maxVis = Math.min(s.numNodes, 20);
+  const nodeW = Math.max(30, Math.min(80, (usable - (maxVis - 1) * nodeGap) / maxVis));
+
+  // Before row — non-candidate nodes first, candidate at right end
+  addText(svg, ns, margin.left, margin.top - 20, 'BEFORE', 'section-label');
+  const beforeY = margin.top;
+  let bi = 0;
+  for (let i = 0; i < Math.min(s.numNodes, maxVis); i++) {
+    if (i === s.candidateIdx) continue;
+    const node = s.nodes[i];
+    drawNode(svg, ns, margin.left + bi * (nodeW + nodeGap), beforeY, nodeW, nodeH, node, false, false, podSize, podGap);
+    bi++;
+  }
+  // Candidate node at right end
+  const candidateVisIdx = bi;
+  const candidateX = margin.left + candidateVisIdx * (nodeW + nodeGap);
+  drawNode(svg, ns, candidateX, beforeY, nodeW, nodeH, s.nodes[s.candidateIdx], true, false, podSize, podGap);
+
+  if (s.numNodes > maxVis) {
+    addText(svg, ns, margin.left + (candidateVisIdx + 1) * (nodeW + nodeGap), beforeY + nodeH / 2 + 4,
+      `+${s.numNodes - maxVis} more`, 'section-label');
+  }
+
+  // Gap between rows (no arrow — the dashed-red candidate and its absence/replacement tell the story)
+
+  // After row — non-candidate nodes, then replacement at right end (aligned under candidate)
+  const afterY = beforeY + nodeH + margin.gap;
+  addText(svg, ns, margin.left, afterY - 20, 'AFTER', 'section-label');
+  let ai = 0;
+  for (let i = 0; i < Math.min(s.numNodes, maxVis); i++) {
+    if (i === s.candidateIdx) continue;
+    const node = s.nodes[i];
+    drawNode(svg, ns, margin.left + ai * (nodeW + nodeGap), afterY, nodeW, nodeH, node, false, false, podSize, podGap);
+    ai++;
+  }
+  if (s.moveType === 'replace' && s.replacementCost > 0) {
+    // Place replacement directly below candidate position
+    drawNode(svg, ns, candidateX, afterY, nodeW, nodeH, {
+      cost: s.replacementCost,
+      pods: s.nodes[s.candidateIdx]?.pods || 0,
+      podCost: s.nodes[s.candidateIdx]?.podCost || 1.0,
+    }, false, true, podSize, podGap);
+    addText(svg, ns, candidateX + nodeW / 2, afterY + nodeH + 14, 'replacement', 'section-label', 'middle');
+  }
+
+  const totalH = afterY + nodeH + 24;
+  svg.setAttribute('height', totalH);
+  svg.setAttribute('viewBox', `0 0 ${containerWidth} ${totalH}`);
+}
+
+function drawNode(svg, ns, x, y, w, h, node, isCandidate, isReplacement, podSize, podGap) {
+  const rect = document.createElementNS(ns, 'rect');
+  rect.setAttribute('x', x); rect.setAttribute('y', y);
+  rect.setAttribute('width', w); rect.setAttribute('height', h); rect.setAttribute('rx', 6);
+  rect.setAttribute('fill', isCandidate ? '#fff5f5' : isReplacement ? '#f0fff4' : '#f1f3f5');
+  rect.setAttribute('stroke', isCandidate ? '#c92a2a' : isReplacement ? '#2b8a3e' : '#ced4da');
+  rect.setAttribute('stroke-width', isCandidate ? '2' : '1');
+  if (isCandidate) rect.setAttribute('stroke-dasharray', '5,3');
+  svg.appendChild(rect);
+
+  addText(svg, ns, x + w / 2, y - 6, '$' + node.cost.toFixed(2), '', 'middle', '#868e96', '9px');
+
+  const cols = Math.max(1, Math.floor((w - 6) / (podSize + podGap)));
+  for (let p = 0; p < node.pods; p++) {
+    const px = x + 4 + (p % cols) * (podSize + podGap);
+    const py = y + 6 + Math.floor(p / cols) * (podSize + podGap);
+    if (py + podSize > y + h - 2) break;
+    const pr = document.createElementNS(ns, 'rect');
+    pr.setAttribute('x', px); pr.setAttribute('y', py);
+    pr.setAttribute('width', podSize); pr.setAttribute('height', podSize); pr.setAttribute('rx', 2);
+    const cost = node.podCost;
+    pr.setAttribute('fill', cost <= 1 ? '#4dabf7' : cost <= 3 ? '#ffd43b' : cost <= 6 ? '#ff922b' : '#ff6b6b');
+    if (isCandidate) { pr.setAttribute('stroke', '#c92a2a'); pr.setAttribute('stroke-width', '1'); }
+    svg.appendChild(pr);
+  }
+}
+
+function addText(svg, ns, x, y, text, cls, anchor, fill, size) {
+  const t = document.createElementNS(ns, 'text');
+  t.setAttribute('x', x); t.setAttribute('y', y);
+  if (cls) t.setAttribute('class', cls);
+  if (anchor) t.setAttribute('text-anchor', anchor);
+  if (fill) t.setAttribute('fill', fill);
+  if (size) t.setAttribute('font-size', size);
+  t.textContent = text;
+  svg.appendChild(t);
+}
+
+// ── Preset Loading ──
+function loadPreset(id) {
+  const p = presets.find(x => x.id === id);
+  if (!p) return;
+
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.preset-btn[data-id="${id}"]`).classList.add('active');
+  E.presetNote.textContent = p.note;
+
+  // Set all fields including totals
+  totalsManual = true; // prevent slider changes from overwriting preset totals
+  const fields = [
+    'numNodes', 'costPerNode', 'podsPerNode', 'defaultPodCost',
+    'nodepoolCost', 'nodepoolDisruption',
+    'candidateIdx', 'candidateCost', 'candidatePods', 'candidatePodCost',
+    'moveType', 'replacementCost',
+  ];
+  for (const k of fields) {
+    if (p[k] !== undefined && E[k]) E[k].value = p[k];
+  }
+
+  updateDisplay();
+}
+
+// ── Event wiring ──
+// Slider/select changes recompute totals (unless in manual/preset mode)
+const sliderIds = ['numNodes', 'costPerNode', 'podsPerNode', 'defaultPodCost',
+  'candidateIdx', 'candidateCost', 'candidatePods', 'candidatePodCost'];
+
+sliderIds.forEach(id => {
+  E[id].addEventListener('input', () => {
+    totalsManual = false;
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    E.presetNote.textContent = '';
+    recomputeTotals();
+    updateDisplay();
+  });
+});
+
+// Move type, replacement cost, strategy controls don't affect totals
+['moveType', 'replacementCost', 'strategy', 'strategyThreshold'].forEach(id => {
+  E[id].addEventListener('input', () => {
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    E.presetNote.textContent = '';
+    updateDisplay();
+  });
+});
+
+// Direct edits to totals fields enter manual mode
+['nodepoolCost', 'nodepoolDisruption'].forEach(id => {
+  E[id].addEventListener('input', () => {
+    totalsManual = true;
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    E.presetNote.textContent = '';
+    updateDisplay();
+  });
+});
+
+// Initialize with oversized preset
+loadPreset('oversized');
+</script>
+</body>
+</html>
