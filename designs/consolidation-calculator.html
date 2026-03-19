@@ -295,6 +295,7 @@ const rangeDisplays = {
 const groups = {
   examples:   { label: 'RFC §Examples',            href: 'consolidation-cost-threshold.md#examples' },
   scale:      { label: 'RFC §Scale Invariance',    href: 'consolidation-cost-threshold.md#scale-invariance' },
+  dcinvar:    { label: 'RFC §Disruption Cost Invariance', href: 'consolidation-cost-threshold.md#disruption-cost-invariance' },
   crosspool:  { label: 'RFC §Cross-NodePool',      href: 'consolidation-cost-threshold.md#cross-nodepool-on-demand-and-spot' },
   disruption: { label: 'RFC §Per-Pod Disruption Cost', href: 'consolidation-cost-threshold.md#per-pod-disruption-cost' },
   issue8868:  { label: 'aws#8868',                 href: 'https://github.com/aws/karpenter-provider-aws/issues/8868' },
@@ -348,6 +349,15 @@ const presets = [
     nodepoolCost: 580.80, nodepoolDisruption: 800,
     candidateIdx: 0, candidateCost: 9.68, candidatePods: 3, candidatePodCost: 1,
     moveType: 'replace', replacementCost: 2.42,
+  },
+  {
+    id: 'dcinvar', label: 'All Pods Cost 10 (1.67)', approved: true,
+    group: 'dcinvar',
+    note: 'RFC "Disruption Cost Invariance" — same as Spare Capacity Delete but every pod has disruption cost 10. Score is identical: uniform cost cancels in the ratio.',
+    numNodes: 10, costPerNode: 4.84, podsPerNode: 8, defaultPodCost: 10,
+    nodepoolCost: 58.08, nodepoolDisruption: 800,
+    candidateIdx: 0, candidateCost: 4.84, candidatePods: 4, candidatePodCost: 10,
+    moveType: 'delete', replacementCost: 0,
   },
   {
     id: 'cross-od', label: 'On-Demand DELETE (2.67)', approved: true,
