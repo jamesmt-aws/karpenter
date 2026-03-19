@@ -35,7 +35,7 @@ A move is approved only when the fraction of NodePool cost saved is at least as 
 
 Per-pod disruption cost is computed from the standard Kubernetes `controller.kubernetes.io/pod-deletion-cost` annotation and pod scheduling priority, which Karpenter already uses today. Pods that are expensive to restart naturally resist consolidation. We use NodePool-wide infrastructure cost and disruption cost as the normalization denominators, so that each move's savings and disruption are contextualized against the NodePool it affects.
 
-- `consolidationPolicy` defaults to `WhenEmptyOrUnderutilized` (unchanged from current behavior).
+- `consolidationPolicy` defaults to `WhenEmptyOrUnderutilized` at launch (unchanged from current behavior). The intent is for `WhenSavingsJustifyDisruption` to become the default at GA. With default per-pod disruption cost of 1.0, most moves that `WhenEmptyOrUnderutilized` would execute also pass the break-even threshold; the new policy primarily rejects moves where disruption fraction exceeds savings fraction. Operators who prefer the current aggressive consolidation after the default changes can use `WhenEmptyOrUnderutilized` explicitly.
 - Per-pod disruption cost is computed by the existing `EvictionCost` function.
 
 ### How Scoring Works
@@ -239,19 +239,23 @@ Scoring applies only to voluntary consolidation decisions — moves that Karpent
 
 ## API Choices
 
-### Fixed Break-Even Threshold vs. Configurable Slider [Recommended: Fixed]
+### Consolidation Aggressiveness Tuning [Recommended: Fixed Break-Even at Launch]
 
-The threshold could be a fixed break-even (score >= 1.0) or a configurable slider (0-100) on the NodePool. This proposal recommends the fixed threshold.
+This proposal ships a fixed break-even threshold (score >= 1.0) with no operator-facing aggressiveness knob. The behavior is equivalent to a slider value of 50 in the alternatives below, so any extension is non-breaking.
 
-The break-even threshold has a clear meaning: don't disrupt a larger share of the NodePool than the share of cost you save. Users who need different consolidation aggressiveness across workloads can achieve this through the existing `controller.kubernetes.io/pod-deletion-cost` annotation and pod priority. A cluster-wide slider would invite tuning without clear guidance on what value to choose. It also moves the cost-disruption tradeoff away from application developers, who know which pods are expensive to restart, to cluster operators, who often do not.
+The break-even threshold has a clear meaning: don't disrupt a larger share of the NodePool than the share of cost you save. Users who need different consolidation aggressiveness across workloads can achieve this through the existing `controller.kubernetes.io/pod-deletion-cost` annotation and pod priority. This keeps the cost-disruption tradeoff with application developers, who know which pods are expensive to restart, rather than cluster operators, who often do not.
 
-A configurable slider could be added later as a `consolidationThreshold` field (0-100, mapping to a log-scale threshold) if users demonstrate a need. The slider formula is `10^((x-50)/25)`, where 0 means consolidate aggressively (threshold 0.01), 50 is break-even (threshold 1.0), and 100 means consolidate only for extreme savings (threshold 100). Each 25-point increment is a 10x change in required savings-per-disruption. The fixed threshold is equivalent to slider value 50, so adding the slider later is a non-breaking extension.
+Two alternatives were considered for operator-level aggressiveness control:
 
-* 👍👍 Fixed threshold requires zero configuration and has a clear meaning
+**Low/Medium/High (three-state).** A `consolidationAggressiveness` field on the NodePool with three values: Low (conservative, equivalent threshold ~3.16), Medium (break-even, threshold 1.0), High (aggressive, equivalent threshold ~0.32). Each step is a 10x change in required savings-per-disruption. This avoids the "what number do I pick?" problem of a continuous range while giving operators a meaningful knob. Not preferred at launch, but this is the most likely extension if users demonstrate a need for NodePool-level tuning beyond per-pod annotations.
+
+**Continuous slider (0-100).** A `consolidationThreshold` field (0-100) mapping to a log-scale threshold via `10^((x-50)/25)`, where 0 means consolidate aggressively (threshold 0.01), 50 is break-even (threshold 1.0), and 100 means consolidate only for extreme savings (threshold 100). Each 25-point increment is a 10x change. Maximum tunability, but 0-100 is a wide range with no obvious guidance on what value to pick. This is the most extreme alternative considered.
+
+* 👍👍 Fixed break-even requires zero configuration and has a clear meaning
 * 👍👍 Shifts the tuning lever to per-pod annotations where domain knowledge lives
 * 👍 Avoids "what value should I set this to?" questions from operators
-* 👍 Slider can be added later as a non-breaking extension if needed
-* 👎 Operators who want a NodePool-level aggressiveness knob must wait for the slider
+* 👍 Both alternatives can be added later as non-breaking extensions
+* 👎 Operators who want a NodePool-level aggressiveness knob must wait
 * 👎 Cannot express "consolidate aggressively on my batch NodePool" without per-pod annotations
 
 ### Per-NodePool vs. Per-Cluster Normalization [Recommended: Per-NodePool]
@@ -313,9 +317,9 @@ A dedicated `karpenter.sh/disruption-cost` annotation separate from the existing
 
 ## Future Work
 
-### Configurable Threshold Slider
+### Configurable Aggressiveness
 
-If operators demonstrate a need for per-NodePool aggressiveness tuning beyond what per-pod annotations provide, a `consolidationThreshold` field (0-100) can be added to the disruption block. The fixed break-even threshold is equivalent to slider value 50, so this is a non-breaking extension. See [API Choices](#fixed-break-even-threshold-vs-configurable-slider-recommended-fixed) for the slider formula.
+If operators demonstrate a need for per-NodePool aggressiveness tuning beyond what per-pod annotations provide, a Low/Medium/High `consolidationAggressiveness` field is the most likely extension. A continuous 0-100 slider is possible but less likely. The fixed break-even threshold is equivalent to Medium (or slider value 50), so either extension is non-breaking. See [API Choices](#consolidation-aggressiveness-tuning-recommended-fixed-break-even-at-launch) for details.
 
 ### Move Prioritization
 
@@ -349,6 +353,6 @@ After community feedback confirms the break-even threshold produces good behavio
 
 ### Phase 3: GA (feature gate removed)
 
-The feature gate is removed. `WhenSavingsJustifyDisruption` is a permanent policy option alongside `WhenEmpty` and `WhenEmptyOrUnderutilized`.
+The feature gate is removed. `WhenSavingsJustifyDisruption` becomes the default `consolidationPolicy`, replacing `WhenEmptyOrUnderutilized`. Existing NodePool specs that explicitly set `WhenEmptyOrUnderutilized` continue to work unchanged.
 
 Graduation is community-driven based on adoption, GitHub issues, and real-world feedback.
