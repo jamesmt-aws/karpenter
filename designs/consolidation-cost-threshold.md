@@ -142,6 +142,18 @@ score             = 0.0125 / 0.00375 = 3.33
 
 The break-even threshold produces the same decision regardless of NodePool size.
 
+#### Disruption Cost Invariance
+
+The Spare Capacity Delete above uses default per-pod disruption cost of 1 (total disruption cost 80). If every pod instead has disruption cost 10 (total disruption cost 800):
+
+```
+savings_fraction  = 4.84 / 58.08  =  8.3%
+disruption_fraction = 40 / 800    =  5.0%
+score             = 0.083 / 0.05  =  1.67
+```
+
+The score is identical. Uniform disruption cost cancels in the ratio: `(n * k) / (N * k) = n / N`. The score only differentiates pods when their disruption costs differ. Setting every pod to the same value — whether 1 or 10 — has no effect on any score.
+
 #### Cross-NodePool: On-Demand and Spot
 
 A cluster has two NodePools. The On-Demand pool has 10 m7i.xlarge nodes at $4.84/day each ($48.40/day total, 80 pods, total disruption cost 80). The Spot pool has 10 m7i.xlarge nodes at $1.45/day each ($14.50/day total, 80 pods, total disruption cost 80).
