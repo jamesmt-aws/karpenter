@@ -263,7 +263,7 @@ Adding `WhenSavingsJustifyDisruption` as a policy value keeps the new behavior g
 
 Pros: No behavior change for existing users. Clear migration path: change `WhenEmptyOrUnderutilized` to `WhenSavingsJustifyDisruption`.
 
-Cons: Another enum value to document.
+Cons: Three enum values where two (`WhenEmptyOrUnderutilized` and `WhenSavingsJustifyDisruption`) consolidate non-empty nodes with a subtle difference. If scoring becomes the default, the distinction between these two values is "with scoring" vs "without scoring," which could be a boolean field on the existing policy instead of a separate enum value.
 
 ## Alternatives Considered
 
