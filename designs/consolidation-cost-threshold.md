@@ -153,7 +153,7 @@ Two m7i.xlarge nodes each run 4 pods and can be deleted (pods fit on other nodes
 
 ```
 savings_fraction    = 4.84 / 58.08  =  8.3%
-disruption_fraction = 4 / 107      =  3.7%
+disruption_fraction = 4 / 107       =  3.7%
 score               = 0.083 / 0.037 =  2.24  > 1.0  --> approved
 ```
 
@@ -161,8 +161,8 @@ score               = 0.083 / 0.037 =  2.24  > 1.0  --> approved
 
 ```
 savings_fraction    = 4.84 / 58.08  =  8.3%
-disruption_fraction = 31 / 107     = 29.0%
-score               = 0.083 / 0.29  =  0.29  < 1.0  --> rejected
+disruption_fraction = 31 / 107      = 29.0%
+score               = 0.083 / 0.290 =  0.29  < 1.0  --> rejected
 ```
 
 Same savings, same node count, same pod count. The score rejects node B because the model-serving pods are expensive to restart. This is the score's main advantage over alternatives that ignore disruption cost: it distinguishes nodes where disruption is cheap from nodes where it is not.
