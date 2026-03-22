@@ -285,7 +285,7 @@ Disable single-node consolidation (replace) while keeping multi-node and emptine
 
 ### Separate Disruption Cost Annotation
 
-A dedicated `karpenter.sh/disruption-cost` annotation separate from the existing `EvictionCost` inputs. This would let application developers independently control eviction ordering and consolidation gating. The existing `controller.kubernetes.io/pod-deletion-cost` and pod priority already express the same intent. A separate annotation could be introduced later if eviction ordering and consolidation gating need to diverge.
+A dedicated `karpenter.sh/disruption-cost` annotation separate from the existing `EvictionCost` inputs. This would let application developers independently control eviction ordering and consolidation gating. Our preference is to reuse intent from parameters that already exist rather than adding new ones. The existing `controller.kubernetes.io/pod-deletion-cost` and pod priority already express disruption cost. A separate annotation could be introduced later if eviction ordering and consolidation gating need to diverge.
 
 ### Related Work
 
