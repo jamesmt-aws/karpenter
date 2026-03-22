@@ -263,7 +263,7 @@ Adding `WhenSavingsJustifyDisruption` as a policy value keeps the new behavior g
 
 Pros: No behavior change for existing users. Clear migration path: change `WhenEmptyOrUnderutilized` to `WhenSavingsJustifyDisruption`.
 
-Cons: Three enum values where two (`WhenEmptyOrUnderutilized` and `WhenSavingsJustifyDisruption`) consolidate non-empty nodes with a subtle difference. If scoring becomes the default, the distinction between these two values is "with scoring" vs "without scoring," which could be a boolean field on the existing policy instead of a separate enum value.
+Cons: The three values (`WhenEmpty`, `WhenEmptyOrUnderutilized`, `WhenSavingsJustifyDisruption`) sensibly bracket the space -- never disrupt pods, always consolidate ignoring disruption, balance savings with disruption -- but the names evolved incrementally and do not convey this spectrum clearly. Future API work could introduce shorter synonyms (e.g., `Never`, `Always`, `WhenWorthIt`) to make the intent more obvious.
 
 ## Alternatives Considered
 
