@@ -239,19 +239,13 @@ All existing feasibility checks still apply: NodePool disruption budgets, PodDis
 
 ### Consolidation Aggressiveness Tuning [Recommended: Fixed Threshold at Launch]
 
-This proposal ships a fixed threshold (score >= 1.0) with no operator-facing aggressiveness knob. The behavior is equivalent to a slider value of 50 in the alternatives below, so any extension is non-breaking.
+This proposal uses a fixed threshold (score >= 1.0) with no operator-facing aggressiveness knob. Operators who need to tune the cost-disruption tradeoff do so per-pod through `pod-deletion-cost` and priority, where the domain knowledge lives.
 
-The threshold has a clear meaning: don't disrupt a larger share of the NodePool than the share of cost you save. Per-pod annotations put the cost-disruption tradeoff with application developers, who know which pods are expensive to restart.
-
-Two alternatives were considered for operator-level aggressiveness control:
+Two alternatives were considered for operator-level aggressiveness control. The fixed threshold of 1.0 is equivalent to Medium in the first alternative and 50 in the second, so either alternative can be added later without breaking existing behavior.
 
 **Low/Medium/High (three-state).** A `consolidationAggressiveness` field with three values: Low (conservative, equivalent threshold ~3.16), Medium (default, threshold 1.0), High (aggressive, equivalent threshold ~0.32). Each step is a 10x change in required savings-per-disruption. This avoids the "what number do I pick?" problem of a continuous range. Not preferred at launch, but this is the most likely extension if users demonstrate a need for NodePool-level tuning beyond per-pod annotations.
 
-**Continuous slider (0-100).** A `consolidationThreshold` field (0-100) mapping to a log-scale threshold via `10^((x-50)/25)`, where 0 means consolidate aggressively (threshold 0.01), 50 is the default (threshold 1.0), and 100 means consolidate only for extreme savings (threshold 100). Each 25-point increment is a 10x change. 0-100 is a wide range with no guidance on what value to pick. This is the most extreme alternative considered.
-
-Pros: Zero configuration. Clear meaning. Shifts tuning to per-pod annotations where domain knowledge lives. Both alternatives can be added later as non-breaking extensions.
-
-Cons: Operators who want a NodePool-level aggressiveness knob must wait. Cannot express "consolidate aggressively on my batch NodePool" without per-pod annotations.
+**Continuous slider (0-100).** A `consolidationThreshold` field (0-100) mapping to a log-scale threshold via `10^((x-50)/25)`, where 0 means consolidate aggressively (threshold 0.01), 50 is the default (threshold 1.0), and 100 means consolidate only for extreme savings (threshold 100). Each 25-point increment is a 10x change. 0-100 is a wide range with no guidance on what value to pick.
 
 ### Per-NodePool vs. Per-Cluster Normalization [Recommended: Per-NodePool]
 
