@@ -362,6 +362,55 @@ def plot_ranking(moves, title, output_path):
     print(f"  Saved {output_path}")
 
 
+def _plot_panel(ax, moves, title):
+    """Plot one panel of cumulative savings vs disruption."""
+    rng = np.random.default_rng(SEED + 1)
+    n = len(moves)
+
+    savings = np.array([m["savings_frac"] for m in moves])
+    disruption = np.array([m["disruption_frac"] for m in moves])
+    scores = np.array([m["score"] for m in moves])
+
+    strategies = {
+        "Score (benefit/cost)": np.argsort(-scores),
+        "Savings only": np.argsort(-savings),
+        "Disruption only (asc)": np.argsort(disruption),
+        "Random": rng.permutation(n),
+    }
+
+    for label, order in strategies.items():
+        cum_disruption = np.cumsum(disruption[order])
+        cum_savings = np.cumsum(savings[order])
+        if cum_disruption[-1] > 0:
+            cum_disruption = cum_disruption / cum_disruption[-1]
+        if cum_savings[-1] > 0:
+            cum_savings = cum_savings / cum_savings[-1]
+        ax.plot(cum_disruption, cum_savings, label=label, linewidth=2)
+
+    ax.set_xlabel("Cumulative disruption (fraction of total)")
+    ax.set_ylabel("Cumulative savings (fraction of total)")
+    ax.set_title(title)
+    ax.legend(loc="lower right", fontsize=8)
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.set_aspect("equal")
+    ax.grid(True, alpha=0.3)
+
+
+def plot_ranking_sidebyside(replace_moves, delete_moves, output_path):
+    """Plot REPLACE and DELETE ranking charts side by side."""
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
+
+    if replace_moves:
+        _plot_panel(ax1, replace_moves, "REPLACE moves")
+    if delete_moves:
+        _plot_panel(ax2, delete_moves, "DELETE moves")
+
+    fig.tight_layout()
+    fig.savefig(output_path, dpi=150)
+    print(f"  Saved {output_path}")
+
+
 def main():
     rng = np.random.default_rng(SEED)
 
@@ -401,15 +450,9 @@ def main():
     print(f"  Combined: {len(all_moves)} moves")
 
     print("Plotting...")
-    plot_ranking(
-        replace_moves,
-        "Ranking REPLACE moves: score vs. single-dimension ranking",
-        OUTPUT_DIR / "ranking-strategies-replace.png",
-    )
-    plot_ranking(
-        delete_moves,
-        "Ranking DELETE moves: score vs. single-dimension ranking",
-        OUTPUT_DIR / "ranking-strategies-delete.png",
+    plot_ranking_sidebyside(
+        replace_moves, delete_moves,
+        OUTPUT_DIR / "ranking-strategies.png",
     )
 
     # Write CSVs for inspection

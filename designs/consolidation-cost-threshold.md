@@ -48,7 +48,7 @@ Each move has a cost savings and a disruption cost. The score compares these as 
 
 #### NodePool Totals
 
-The score normalizes both savings and disruption against NodePool totals. This lets the score answer two questions: is the candidate node cheap or expensive relative to the NodePool, and are the pods on the node a big or small part of the NodePool's total disruption cost? The score is the ratio of these two fractions.
+The score normalizes savings and disruption against NodePool totals: what fraction of the NodePool's cost does this move save, and what fraction of the NodePool's disruption does it incur?
 
 ```
 nodepool_cost = sum(node.price for node in nodepool.nodes)
@@ -87,11 +87,9 @@ Consider a move that saves $4.84/day by draining an m7i.xlarge and disrupts 4 po
 
 #### Move Score Determines Move Order
 
-When multiple moves pass the threshold and a disruption budget limits how many can execute, we also use the score to determine execution order. Ranking by benefit/cost ratio is a strong heuristic in general and is optimal for the fractional knapsack problem.
+When multiple moves pass the threshold and a disruption budget limits how many can execute, we also use the score to determine execution order. Ranking by benefit/cost ratio is a strong heuristic in general and is [optimal for the fractional knapsack problem](https://en.wikipedia.org/wiki/Continuous_knapsack_problem#Solution).
 
-![Ranking REPLACE moves: score vs. single-dimension ranking](ranking-strategies-replace.png)
-
-![Ranking DELETE moves: score vs. single-dimension ranking](ranking-strategies-delete.png)
+![Ranking consolidation moves: score vs. single-dimension ranking](ranking-strategies.png)
 
 The graphs above show REPLACE and DELETE moves generated from a simulated cluster. The simulation places 5000 pods with log-normal resource requests onto c7i, m7i, and r7i instance types via first-fit-decreasing bin-packing, then runs 10 rounds of workload churn (killing 0-80% of each node's pods and adding new pods with different resource profiles).
 
@@ -221,7 +219,7 @@ delete_ratio = (node.price / nodepool_cost) / (node.disruption_cost / nodepool_t
 
 If this ratio is below 1.0, no single-node move from that node can pass the threshold. A DELETE saves the full node cost. A REPLACE saves strictly less, because the replacement node has positive cost. The system can skip move generation for that node entirely.
 
-This filter applies strictly to single-node consolidation. For multi-node moves, a failing node could participate in a passing batch if other nodes compensate. But those compensating nodes would already be good single-node candidates, so in practice the filter eliminates most multi-node candidates too.
+This filter applies strictly to single-node consolidation. For multi-node moves, a failing node could participate in a passing batch if other nodes compensate. But those compensating nodes would already be good single-node candidates on their own. Computation is not free. It is generally sensible to take the easy-to-find single-node savings first and only search for multi-node moves when single-node opportunities are exhausted.
 
 ### Interaction with Existing Features
 
