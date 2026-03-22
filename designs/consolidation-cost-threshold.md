@@ -104,9 +104,9 @@ All examples use a NodePool with 10 nodes: eight m7i.xlarge (4 vCPU, 16 GiB, $4.
 One m7i.2xlarge runs 3 pods requesting 1.5 vCPU and 6 GiB total. Disruption cost is 3. These pods fit on an m7i.large at $2.42/day. Savings is $7.26.
 
 ```
-savings_fraction    = 7.26 / 58.08   = 12.5%
-disruption_fraction = 3 / 80         =  3.75%
-score               = 0.125 / 0.0375 =  3.33  > 1.0  --> approved
+savings_fraction = 7.26 / 58.08 = 12.5%
+disruption_fraction = 3 / 80 = 3.75%
+score = 0.125 / 0.0375 = 3.33 > 1.0 --> approved
 ```
 
 #### Spare Capacity Delete (approved)
@@ -114,9 +114,9 @@ score               = 0.125 / 0.0375 =  3.33  > 1.0  --> approved
 One m7i.xlarge runs 4 pods requesting 1.5 vCPU and 6 GiB. Disruption cost is 4. Another node has spare capacity. Savings is $4.84 (full node cost, no replacement needed).
 
 ```
-savings_fraction    = 4.84 / 58.08 =  8.3%
-disruption_fraction = 4 / 80      =  5.0%
-score               = 0.083 / 0.05 =  1.67  > 1.0  --> approved
+savings_fraction = 4.84 / 58.08 = 8.3%
+disruption_fraction = 4 / 80 = 5.0%
+score = 0.083 / 0.05 = 1.67 > 1.0 --> approved
 ```
 
 #### Marginal Move (rejected)
@@ -124,9 +124,9 @@ score               = 0.083 / 0.05 =  1.67  > 1.0  --> approved
 One m7i.xlarge runs 8 pods requesting 1.8 vCPU and 7 GiB. Disruption cost is 8. The pods fit on an m7i.large at $2.42/day. Savings is $2.42.
 
 ```
-savings_fraction    = 2.42 / 58.08 =  4.2%
-disruption_fraction = 8 / 80      = 10.0%
-score               = 0.042 / 0.10 =  0.42  < 1.0  --> rejected
+savings_fraction = 2.42 / 58.08 = 4.2%
+disruption_fraction = 8 / 80 = 10.0%
+score = 0.042 / 0.10 = 0.42 < 1.0 --> rejected
 ```
 
 #### Well-Packed Node (rejected)
@@ -138,9 +138,9 @@ One m7i.xlarge runs 10 pods requesting 3.5 vCPU and 14 GiB. The smallest fitting
 The same oversized-node scenario on a 100-node NodePool ($580.80/day total cost, 800 total disruption cost) produces the same score:
 
 ```
-savings_fraction    = 7.26 / 580.80    = 1.25%
-disruption_fraction = 3 / 800          = 0.375%
-score               = 0.0125 / 0.00375 = 3.33
+savings_fraction = 7.26 / 580.80 = 1.25%
+disruption_fraction = 3 / 800 = 0.375%
+score = 0.0125 / 0.00375 = 3.33
 ```
 
 The threshold produces the same decision regardless of NodePool size.
@@ -152,17 +152,17 @@ Two m7i.xlarge nodes each run 4 pods and can be deleted (pods fit on other nodes
 **Node A (approved):**
 
 ```
-savings_fraction    = 4.84 / 58.08  =  8.3%
-disruption_fraction = 4 / 107       =  3.7%
-score               = 0.083 / 0.037 =  2.24  > 1.0  --> approved
+savings_fraction = 4.84 / 58.08 = 8.3%
+disruption_fraction = 4 / 107 = 3.7%
+score = 0.083 / 0.037 = 2.24 > 1.0 --> approved
 ```
 
 **Node B (rejected):**
 
 ```
-savings_fraction    = 4.84 / 58.08  =  8.3%
-disruption_fraction = 31 / 107      = 29.0%
-score               = 0.083 / 0.290 =  0.29  < 1.0  --> rejected
+savings_fraction = 4.84 / 58.08 = 8.3%
+disruption_fraction = 31 / 107 = 29.0%
+score = 0.083 / 0.29 = 0.29 < 1.0 --> rejected
 ```
 
 Same savings, same node count, same pod count. The score rejects node B because the model-serving pods are expensive to restart. This is the score's main advantage over alternatives that ignore disruption cost: it distinguishes nodes where disruption is cheap from nodes where it is not.
@@ -176,17 +176,17 @@ One node in each pool runs 3 pods requesting 1 vCPU. Disruption cost is 3. The p
 **On-Demand pool DELETE:**
 
 ```
-savings_fraction    = 4.84 / 48.40  = 10.0%
-disruption_fraction = 3 / 80       =  3.75%
-score               = 0.10 / 0.0375 =  2.67  > 1.0  --> approved
+savings_fraction = 4.84 / 48.40 = 10.0%
+disruption_fraction = 3 / 80 = 3.75%
+score = 0.10 / 0.0375 = 2.67 > 1.0 --> approved
 ```
 
 **Spot pool DELETE:**
 
 ```
-savings_fraction    = 1.45 / 14.50  = 10.0%
-disruption_fraction = 3 / 80       =  3.75%
-score               = 0.10 / 0.0375 =  2.67  > 1.0  --> approved
+savings_fraction = 1.45 / 14.50 = 10.0%
+disruption_fraction = 3 / 80 = 3.75%
+score = 0.10 / 0.0375 = 2.67 > 1.0 --> approved
 ```
 
 Both moves score identically because each node represents the same fraction of its pool's cost and disrupts the same fraction of its pool's pods.
@@ -194,9 +194,9 @@ Both moves score identically because each node represents the same fraction of i
 If the Spot pool node instead runs 8 pods with disruption cost 8:
 
 ```
-savings_fraction    = 1.45 / 14.50 = 10.0%
-disruption_fraction = 8 / 80      = 10.0%
-score               = 0.10 / 0.10  =  1.0  --> approved (at threshold)
+savings_fraction = 1.45 / 14.50 = 10.0%
+disruption_fraction = 8 / 80 = 10.0%
+score = 0.10 / 0.10 = 1.0 --> approved (at threshold)
 ```
 
 The move barely passes. Increasing disruption cost on any pod would push it below the threshold.
