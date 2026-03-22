@@ -348,8 +348,6 @@ def plot_ranking(moves, title, output_path):
             cum_savings = cum_savings / cum_savings[-1]
         ax.plot(cum_disruption, cum_savings, label=label, linewidth=2)
 
-    ax.plot([0, 1], [0, 1], "--", color="gray", linewidth=1, label="Break-even")
-
     ax.set_xlabel("Cumulative disruption (fraction of total)")
     ax.set_ylabel("Cumulative savings (fraction of total)")
     ax.set_title(title)

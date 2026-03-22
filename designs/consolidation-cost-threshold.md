@@ -45,7 +45,7 @@ Both savings and disruption are expressed as fractions of their NodePool totals 
 
 Consider a move that saves $4.84/day by draining an m7i.xlarge and disrupts 4 pods. Is this a good move? First, we need to decide locally whether the move is worth doing at all in isolation. Then, if it passes, we need to decide whether the move is worth doing *now* given PodDisruptionBudgets, NodePool disruption budgets, and the NodePool's `consolidateAfter` delay. The score answers the first question.
 
-On a NodePool costing $48.40/day with 40 pods, you save 10% of cost for 10% of disruption. On a NodePool costing $4,840/day with 4000 pods, you save 0.1% of cost for 0.1% of disruption. Both score 1.0 despite very different absolute numbers. But saving 0.1% of cost for 10% of disruption scores 0.01 and fails the break-even threshold by 100x.
+On a NodePool costing $48.40/day with 40 pods, you save 10% of cost for 10% of disruption. On a NodePool costing $4,840/day with 4000 pods, you save 0.1% of cost for 0.1% of disruption. Both score 1.0 despite very different absolute numbers. But saving 0.1% of cost for 10% of disruption scores 0.01 and fails the threshold by 100x.
 
 For cross-NodePool consolidation, the source NodePool's total dollar cost, total disruption cost, and consolidation policy govern the decision to accept or reject the move. Cross-pool moves may be DELETEs (source node removed, pods land on existing capacity in another pool) or REPLACEs (source node removed, replacement node created in the source pool). In either case, the dollar cost savings comes from the difference between the source nodes (priced by the source NodePool) and any replacement nodes (priced by their respective NodePools).
 
@@ -61,7 +61,7 @@ disruption_fraction = disruption_cost / nodepool_total_disruption_cost
 score = savings_fraction / disruption_fraction
 ```
 
-A move is approved when `score >= 1.0`. A score of 1.0 is break-even: savings fraction equals disruption fraction. Higher scores indicate better value per unit of disruption. When comparing moves, the log2 scale gives scores symmetric dynamic range: +1 means the move saves 2x more cost fraction than disruption fraction, -1 means 2x worse.
+A move is approved when `score >= 1.0`, meaning the savings fraction is at least as large as the disruption fraction. Higher scores indicate better value per unit of disruption. When comparing moves, the log2 scale gives scores symmetric dynamic range: +1 means the move saves 2x more cost fraction than disruption fraction, -1 means 2x worse.
 
 **Division-by-zero handling.** If `disruption_cost` is zero (no pods, or all pods have zero disruption cost), then `disruption_fraction` is zero. DELETE operations with zero disruption cost are approved if savings are non-negative, similar to what `WhenEmpty` does for empty nodes. REPLACE operations with zero disruption cost are approved if savings are positive. If `nodepool_total_disruption_cost` is zero, any move with positive savings is approved, matching `WhenEmptyOrUnderutilized`. If `nodepool_total_cost` is zero, `savings_fraction` is undefined and no consolidation happens. See [Edge Cases](#edge-cases) for worked examples.
 
@@ -73,7 +73,7 @@ When multiple moves pass the threshold and a disruption budget limits how many c
 
 ![Ranking DELETE moves: score vs. single-dimension ranking](ranking-strategies-delete.png)
 
-The graphs above show REPLACE and DELETE moves generated from a simulated cluster. The simulation builds a cluster by placing 5000 pods with log-normal resource requests onto c7i, m7i, and r7i instance types via first-fit-decreasing bin-packing, then runs 10 rounds of workload churn (killing 0-80% of each node's pods and adding new pods with different shapes). REPLACE moves reprovision each node's remaining pods on the cheapest fitting instance type. DELETE moves scatter a node's pods onto existing spare capacity. Each curve shows cumulative savings (y-axis) as a function of cumulative disruption (x-axis) under a different ranking strategy. The diagonal is break-even. Ranking by score dominates: at every disruption level, it delivers more savings than ranking by savings alone, disruption alone, or randomly. The script to reproduce these charts is in [`designs/scripts/ranking-strategies.py`](scripts/ranking-strategies.py).
+The graphs above show REPLACE and DELETE moves generated from a simulated cluster. The simulation builds a cluster by placing 5000 pods with log-normal resource requests onto c7i, m7i, and r7i instance types via first-fit-decreasing bin-packing, then runs 10 rounds of workload churn (killing 0-80% of each node's pods and adding new pods with different shapes). REPLACE moves reprovision each node's remaining pods on the cheapest fitting instance type. DELETE moves scatter a node's pods onto existing spare capacity. Each curve shows cumulative savings (y-axis) as a function of cumulative disruption (x-axis) under a different ranking strategy. Ranking by score dominates: at every disruption level, it delivers more savings than ranking by savings alone, disruption alone, or randomly. The script to reproduce these charts is in [`designs/scripts/ranking-strategies.py`](scripts/ranking-strategies.py).
 
 #### Calculating Per-Pod Disruption Cost
 
@@ -145,7 +145,7 @@ disruption_fraction = 3 / 800      = 0.375%
 score             = 0.0125 / 0.00375 = 3.33
 ```
 
-The break-even threshold produces the same decision regardless of NodePool size.
+The threshold produces the same decision regardless of NodePool size.
 
 #### Disruption Cost Invariance
 
@@ -188,10 +188,10 @@ If the Spot pool node instead runs 8 pods with disruption cost 8:
 ```
 savings_fraction  = 1.45 / 14.50  = 10.0%
 disruption_fraction = 8 / 80      = 10.0%
-score             = 0.10 / 0.10   =  1.0   = 1.0  --> approved (at break-even)
+score             = 0.10 / 0.10   =  1.0   = 1.0  --> approved (at threshold)
 ```
 
-The move barely passes. Increasing disruption cost on any pod would push it below break-even.
+The move barely passes. Increasing disruption cost on any pod would push it below the threshold.
 
 ### Edge Cases
 
@@ -229,17 +229,17 @@ Scoring determines which moves are *worth doing*. All existing feasibility check
 
 ## API Choices
 
-### Consolidation Aggressiveness Tuning [Recommended: Fixed Break-Even at Launch]
+### Consolidation Aggressiveness Tuning [Recommended: Fixed Threshold at Launch]
 
-This proposal ships a fixed break-even threshold (score >= 1.0) with no operator-facing aggressiveness knob. The behavior is equivalent to a slider value of 50 in the alternatives below, so any extension is non-breaking.
+This proposal ships a fixed threshold (score >= 1.0) with no operator-facing aggressiveness knob. The behavior is equivalent to a slider value of 50 in the alternatives below, so any extension is non-breaking.
 
-The break-even threshold has a clear meaning: don't disrupt a larger share of the NodePool than the share of cost you save. Users who need different aggressiveness across workloads can use `controller.kubernetes.io/pod-deletion-cost` and pod priority. This keeps the cost-disruption tradeoff with application developers, who know which pods are expensive to restart, rather than cluster operators, who often do not.
+The threshold has a clear meaning: don't disrupt a larger share of the NodePool than the share of cost you save. Users who need different aggressiveness across workloads can use `controller.kubernetes.io/pod-deletion-cost` and pod priority. This keeps the cost-disruption tradeoff with application developers, who know which pods are expensive to restart, rather than cluster operators, who often do not.
 
 Two alternatives were considered for operator-level aggressiveness control:
 
-**Low/Medium/High (three-state).** A `consolidationAggressiveness` field with three values: Low (conservative, equivalent threshold ~3.16), Medium (break-even, threshold 1.0), High (aggressive, equivalent threshold ~0.32). Each step is a 10x change in required savings-per-disruption. This avoids the "what number do I pick?" problem of a continuous range. Not preferred at launch, but this is the most likely extension if users demonstrate a need for NodePool-level tuning beyond per-pod annotations.
+**Low/Medium/High (three-state).** A `consolidationAggressiveness` field with three values: Low (conservative, equivalent threshold ~3.16), Medium (default, threshold 1.0), High (aggressive, equivalent threshold ~0.32). Each step is a 10x change in required savings-per-disruption. This avoids the "what number do I pick?" problem of a continuous range. Not preferred at launch, but this is the most likely extension if users demonstrate a need for NodePool-level tuning beyond per-pod annotations.
 
-**Continuous slider (0-100).** A `consolidationThreshold` field (0-100) mapping to a log-scale threshold via `10^((x-50)/25)`, where 0 means consolidate aggressively (threshold 0.01), 50 is break-even (threshold 1.0), and 100 means consolidate only for extreme savings (threshold 100). Each 25-point increment is a 10x change. 0-100 is a wide range with no guidance on what value to pick. This is the most extreme alternative considered.
+**Continuous slider (0-100).** A `consolidationThreshold` field (0-100) mapping to a log-scale threshold via `10^((x-50)/25)`, where 0 means consolidate aggressively (threshold 0.01), 50 is the default (threshold 1.0), and 100 means consolidate only for extreme savings (threshold 100). Each 25-point increment is a 10x change. 0-100 is a wide range with no guidance on what value to pick. This is the most extreme alternative considered.
 
 Pros: Zero configuration. Clear meaning. Shifts tuning to per-pod annotations where domain knowledge lives. Both alternatives can be added later as non-breaking extensions.
 
@@ -301,7 +301,7 @@ A dedicated `karpenter.sh/disruption-cost` annotation separate from the existing
 
 ### Configurable Aggressiveness
 
-If operators demonstrate a need for per-NodePool aggressiveness tuning beyond what per-pod annotations provide, a Low/Medium/High `consolidationAggressiveness` field is the most likely extension. A continuous 0-100 slider is possible but less likely. The fixed break-even threshold is equivalent to Medium (or slider value 50), so either extension is non-breaking. See [API Choices](#consolidation-aggressiveness-tuning-recommended-fixed-break-even-at-launch) for details.
+If operators demonstrate a need for per-NodePool aggressiveness tuning beyond what per-pod annotations provide, a Low/Medium/High `consolidationAggressiveness` field is the most likely extension. A continuous 0-100 slider is possible but less likely. The fixed threshold is equivalent to Medium (or slider value 50), so either extension is non-breaking. See [API Choices](#consolidation-aggressiveness-tuning-recommended-fixed-threshold-at-launch) for details.
 
 ### Move Prioritization
 
@@ -331,9 +331,11 @@ This dual criterion eliminates the need for iterative re-evaluation (accept best
 
 ### Does the score account for kube-scheduler pod placement?
 
-No. The score evaluates the consolidation move as proposed: source nodes are deleted, replacement nodes (if any) are created, and moved pods are assumed to land on the intended destination. In practice, kube-scheduler may place pods on different nodes than Karpenter expects. If pods scatter across existing nodes instead of packing onto the replacement, the replacement may be underutilized, triggering another consolidation cycle.
+No. The score evaluates the consolidation move as proposed: source nodes are deleted, replacement nodes (if any) are created, and moved pods are assumed to land on the intended destination. In practice, kube-scheduler may place pods on different nodes than Karpenter expects. If pods scatter across existing nodes instead of packing onto the replacement, the replacement may be underutilized, triggering another consolidation cycle. This is a real scenario: Karpenter provisions node K to consolidate nodes B and C, but kube-scheduler distributes B's and C's pods across existing nodes D through J instead of packing them onto K. K ends up nearly empty and becomes a consolidation candidate itself.
 
-This is an existing limitation of Karpenter's consolidation, not introduced by scoring. `WhenEmptyOrUnderutilized` has the same gap. The cost threshold reduces the frequency of this problem by rejecting marginal moves that are most likely to produce churn, but it does not eliminate it. Closing the gap between Karpenter's placement assumptions and kube-scheduler's actual decisions is complementary work.
+This is an existing limitation of Karpenter's consolidation, not introduced by scoring. `WhenEmptyOrUnderutilized` has the same gap. The cost threshold reduces the frequency by rejecting marginal moves that are most likely to produce churn, but it does not eliminate it.
+
+The root cause is that Karpenter's provisioner and consolidation controller simulate scheduling internally, but kube-scheduler makes the actual placement decision independently. Both controllers estimate what the scheduler will do, and those estimates can diverge from reality. The [Workload-Aware Scheduling proposal](https://docs.google.com/document/d/1mPYqS4cFmsHPaVQDKyCz7-TKyWNJGjTaZQD3Umkvmgk) (Kepka, Feb 2026) identifies this as a fundamental problem in the Kubernetes scheduling architecture. Today, the best mitigation is configuring kube-scheduler with a `MostAllocated` scoring strategy, which biases placement toward already-utilized nodes and reduces the divergence between Karpenter's assumptions and actual placement. Future work on a shared constraint-passing interface between the scheduler and provisioner will address this more directly.
 
 ### What disruption budgets does scoring respect?
 
@@ -373,7 +375,7 @@ Each scored move is logged at DEBUG level with the score, savings fraction, disr
 
 ### Phase 2: Beta (feature gate, enabled by default)
 
-After community feedback confirms the break-even threshold works across diverse workloads, the feature gate defaults to enabled. Operators who encounter issues can disable it.
+After community feedback confirms the threshold works across diverse workloads, the feature gate defaults to enabled. Operators who encounter issues can disable it.
 
 ### Phase 3: GA (feature gate removed)
 
