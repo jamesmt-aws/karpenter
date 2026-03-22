@@ -35,7 +35,7 @@ spec:
 
 ### How Scoring Works
 
-Each move has a cost savings and a disruption cost. The score compares these as fractions of NodePool totals. This section defines the inputs, then the formula, then explains why normalization matters.
+Each move has a cost savings and a disruption cost. The score compares these as fractions of NodePool totals.
 
 #### Per-Pod Disruption Cost
 
@@ -145,17 +145,27 @@ score               = 0.0125 / 0.00375 = 3.33
 
 The threshold produces the same decision regardless of NodePool size.
 
-#### Disruption Cost Invariance
+#### Heterogeneous Disruption Cost
 
-The Spare Capacity Delete above uses default per-pod disruption cost of 1 (total disruption cost 80). If every pod instead has disruption cost 10 (total disruption cost 800):
+Two m7i.xlarge nodes each run 4 pods and can be deleted (pods fit on other nodes). Both save $4.84/day. Node A runs 4 stateless proxies with default disruption cost (total 4). Node B runs 1 stateless proxy (cost 1) and 3 model-serving pods with `pod-deletion-cost: 134217728` (cost ~10 each, total 31). The NodePool total disruption cost is 107 (76 default-cost pods + node B's 31).
+
+**Node A (approved):**
 
 ```
-savings_fraction    = 4.84 / 58.08 =  8.3%
-disruption_fraction = 40 / 800     =  5.0%
-score               = 0.083 / 0.05 =  1.67
+savings_fraction    = 4.84 / 58.08  =  8.3%
+disruption_fraction = 4 / 107      =  3.7%
+score               = 0.083 / 0.037 =  2.24  > 1.0  --> approved
 ```
 
-The score is identical. Uniform disruption cost cancels in the ratio: `(n * k) / (N * k) = n / N`. The score only differentiates pods when their disruption costs differ. Setting every pod to the same value (whether 1 or 10) has no effect on any score.
+**Node B (rejected):**
+
+```
+savings_fraction    = 4.84 / 58.08  =  8.3%
+disruption_fraction = 31 / 107     = 29.0%
+score               = 0.083 / 0.29  =  0.29  < 1.0  --> rejected
+```
+
+Same savings, same node count, same pod count. The score rejects node B because the model-serving pods are expensive to restart. This is the score's main advantage over alternatives that ignore disruption cost: it distinguishes nodes where disruption is cheap from nodes where it is not.
 
 #### Cross-NodePool: On-Demand and Spot
 
