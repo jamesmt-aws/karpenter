@@ -2,9 +2,9 @@
 
 ## Motivation
 
-Karpenter's consolidation is all-or-nothing. `WhenEmptyOrUnderutilized` consolidates any node where pods can be repacked more cheaply, regardless of how little is saved or how many pods are disrupted. `WhenEmpty` consolidates only nodes with no pods. A move that saves $0.02/day by evicting a pod with a 30-minute warm-up cache is treated the same as a move that saves $5/day by evicting a stateless proxy.
+Today, Karpenter's consolidation is all-or-nothing. `WhenEmptyOrUnderutilized` consolidates any node where pods can be repacked more cheaply, regardless of how little is saved or how many pods are disrupted. `WhenEmpty` consolidates only nodes with no pods. A move that saves $0.02/day by evicting a pod with a 30-minute warm-up cache is treated the same as a move that saves $5/day by evicting a stateless proxy.
 
-In clusters with high pod turnover, consolidation creates tight packing that is immediately loosened by subsequent pod departures, triggering more consolidation. Related issues:
+Consolidation happens when Karpenter can find a cost savings, and terminating an empty node that will not be used for future pods is an obviously good idea. But terminating a non-empty node requires starting up replacement pods and terminating running pods (pod disruption), ideally in that order. Customers report cases where the pod disruption is not worth the cost savings. Related issues:
 
 - Nodes at 93-99% CPU utilization disrupted instead of lightly utilized ones ([aws#8868](https://github.com/aws/karpenter-provider-aws/issues/8868), [kubernetes-sigs#2319](https://github.com/kubernetes-sigs/karpenter/issues/2319))
 - Multi-hour consolidation loops replacing the same instance types with no net savings ([aws#8536](https://github.com/aws/karpenter-provider-aws/issues/8536), [aws#6642](https://github.com/aws/karpenter-provider-aws/issues/6642), [aws#7146](https://github.com/aws/karpenter-provider-aws/issues/7146))
@@ -12,7 +12,7 @@ In clusters with high pod turnover, consolidation creates tight packing that is 
 - `consolidateAfter` not preventing disruption of well-packed nodes ([kubernetes-sigs#2705](https://github.com/kubernetes-sigs/karpenter/issues/2705), [aws#3577](https://github.com/aws/karpenter-provider-aws/issues/3577))
 - Direct requests for a savings threshold or utilization-based consolidation gating ([kubernetes-sigs#2883](https://github.com/kubernetes-sigs/karpenter/issues/2883), [kubernetes-sigs#1440](https://github.com/kubernetes-sigs/karpenter/issues/1440), [kubernetes-sigs#1686](https://github.com/kubernetes-sigs/karpenter/issues/1686), [kubernetes-sigs#1430](https://github.com/kubernetes-sigs/karpenter/issues/1430), [aws#5218](https://github.com/aws/karpenter-provider-aws/issues/5218))
 
-We propose a new `consolidationPolicy` value, `WhenSavingsJustifyDisruption`, that scores each consolidation move and rejects moves where the disruption outweighs the savings.
+This RFC characterizes individual actions taken by consolidation as *moves*. A move proposes deleting one or more nodes, along with any necessary pod disruption and replacement node creation. We propose a new `consolidationPolicy` value, `WhenSavingsJustifyDisruption`, that scores each move and rejects moves where the disruption outweighs the savings. At launch, `WhenSavingsJustifyDisruption` is opt-in. After user feedback, we will consider making it the default, replacing `WhenEmptyOrUnderutilized`.
 
 ## Proposal
 
@@ -33,22 +33,23 @@ spec:
 
 A move is approved only when the fraction of NodePool cost saved is at least as large as the fraction of NodePool disruption incurred (score >= 1.0).
 
-Per-pod disruption cost is computed from the standard Kubernetes `controller.kubernetes.io/pod-deletion-cost` annotation and pod scheduling priority, which Karpenter already uses today. Pods that are expensive to restart naturally resist consolidation. We use NodePool-wide infrastructure cost and disruption cost as the normalization denominators, so each move is measured against its NodePool.
+Each move has a cost savings and a disruption cost. Cost savings is the difference between the cost of candidate and replacement nodes. Disruption cost for the move is the sum of per-pod disruption costs, computed by the existing [`EvictionCost`](../pkg/utils/disruption/disruption.go) function. This function combines the standard Kubernetes `controller.kubernetes.io/pod-deletion-cost` annotation with pod scheduling priority. Pods that are expensive to restart naturally resist consolidation.
 
-- `consolidationPolicy` defaults to `WhenEmptyOrUnderutilized` at launch (unchanged from current behavior). The intent is for `WhenSavingsJustifyDisruption` to become the default at GA. With default per-pod disruption cost of 1.0, most moves that `WhenEmptyOrUnderutilized` would execute also pass the break-even threshold; the new policy primarily rejects moves where disruption fraction exceeds savings fraction. Operators who prefer aggressive consolidation can use `WhenEmptyOrUnderutilized` explicitly.
-- Per-pod disruption cost is computed by the existing `EvictionCost` function.
+Both savings and disruption are expressed as fractions of their NodePool totals before being compared. This normalization makes both sides dimensionless. A move saving 10% of a $50/day pool's cost is equivalent to a move saving 10% of a $5,000/day pool's cost. Similarly, disrupting 4 pods out of 40 (10%) is equivalent to disrupting 400 pods out of 4000 (10%). All else being equal, a move with 2% savings fraction and 1% disruption fraction (score 2.0) is strictly better than a move with 2% savings fraction and 3% disruption fraction (score 0.67).
+
+`WhenSavingsJustifyDisruption` is a new `consolidationPolicy` enum value. We believe this behavior is strictly better than `WhenEmptyOrUnderutilized` for most workloads, but we want feedback from opt-in users before making it the Karpenter-wide default. The default remains `WhenEmptyOrUnderutilized` (no behavior change for existing users). Operators opt in by setting `consolidationPolicy: WhenSavingsJustifyDisruption` on their NodePool.
 
 ### How Scoring Works
 
 #### Intuition
 
-Consider a move that saves $4.84/day by draining an m7i.xlarge and disrupts 4 pods. Is this a good trade? It depends on context. On a NodePool costing $48.40/day with 40 pods, you save 10% of cost for 10% of disruption. On a NodePool costing $4,840/day with 4000 pods, you save 0.1% of cost for 0.1% of disruption. Both score 1.0 despite very different absolute numbers. But saving 0.1% of cost for 10% of disruption scores 0.01 and fails the break-even threshold by 100x.
+Consider a move that saves $4.84/day by draining an m7i.xlarge and disrupts 4 pods. Is this a good move? First, we need to decide locally whether the move is worth doing at all in isolation. Then, if it passes, we need to decide whether the move is worth doing *now* given PodDisruptionBudgets, NodePool disruption budgets, and the NodePool's `consolidateAfter` delay. The score answers the first question.
 
-Normalizing both sides to the NodePool makes the score dimensionless and comparable across NodePools of any size.
+On a NodePool costing $48.40/day with 40 pods, you save 10% of cost for 10% of disruption. On a NodePool costing $4,840/day with 4000 pods, you save 0.1% of cost for 0.1% of disruption. Both score 1.0 despite very different absolute numbers. But saving 0.1% of cost for 10% of disruption scores 0.01 and fails the break-even threshold by 100x.
 
-For cross-NodePool consolidation, the score uses the source NodePool's totals for normalization and the source NodePool's policy applies. Cross-pool moves are always DELETEs: the source node is removed and its pods land on existing capacity in another pool. If pods from a deleted On-Demand node land on a Spot node in another pool, the score reflects the On-Demand pool's cost and disruption structure. Replacement nodes are created in the source pool, so same-pool normalization applies.
+For cross-NodePool consolidation, the source NodePool's total dollar cost, total disruption cost, and consolidation policy govern the decision to accept or reject the move. Cross-pool moves may be DELETEs (source node removed, pods land on existing capacity in another pool) or REPLACEs (source node removed, replacement node created in the source pool). In either case, the dollar cost savings comes from the difference between the source nodes (priced by the source NodePool) and any replacement nodes (priced by their respective NodePools).
 
-#### Formula
+#### Calculation
 
 ```
 savings = sum(deleted_node.price) - sum(created_node.price)
@@ -60,24 +61,28 @@ disruption_fraction = disruption_cost / nodepool_total_disruption_cost
 score = savings_fraction / disruption_fraction
 ```
 
-A move is approved when `score >= 1.0`. A score of 1.0 is break-even: savings fraction equals disruption fraction. Higher scores indicate better value per unit of disruption.
+A move is approved when `score >= 1.0`. A score of 1.0 is break-even: savings fraction equals disruption fraction. Higher scores indicate better value per unit of disruption. When comparing moves, the log2 scale gives scores symmetric dynamic range: +1 means the move saves 2x more cost fraction than disruption fraction, -1 means 2x worse.
 
-#### Why the Ratio
+**Division-by-zero handling.** If `disruption_cost` is zero (no pods, or all pods have zero disruption cost), then `disruption_fraction` is zero. DELETE operations with zero disruption cost are approved if savings are non-negative, similar to what `WhenEmpty` does for empty nodes. REPLACE operations with zero disruption cost are approved if savings are positive. If `nodepool_total_disruption_cost` is zero, any move with positive savings is approved, matching `WhenEmptyOrUnderutilized`. If `nodepool_total_cost` is zero, `savings_fraction` is undefined and no consolidation happens. See [Edge Cases](#edge-cases) for worked examples.
 
-When multiple moves pass the threshold and a disruption budget limits how many can execute, the score also determines execution order. Ranking by value-to-weight ratio is optimal for the fractional knapsack problem and a strong heuristic for the indivisible case. Since consolidation moves are indivisible, this is a heuristic, but with many candidate moves the approximation is tight.
+#### Move Score Determines Move Order
 
-![Ranking consolidation moves: score vs. single-dimension ranking](ranking-strategies.png)
+When multiple moves pass the threshold and a disruption budget limits how many can execute, we also use the score to determine execution order. Ranking by benefit/cost ratio is a strong heuristic in general and is optimal for the fractional knapsack problem.
 
-200 simulated moves with log-normal savings and disruption costs. Each curve shows cumulative savings (y-axis) as a function of cumulative disruption (x-axis) under a different ranking strategy. The diagonal is break-even (each unit of disruption buys one unit of savings). Ranking by score dominates: at every disruption level, it delivers more savings than ranking by savings alone, disruption alone, or randomly.
+![Ranking REPLACE moves: score vs. single-dimension ranking](ranking-strategies-replace.png)
 
-#### Per-Pod Disruption Cost
+![Ranking DELETE moves: score vs. single-dimension ranking](ranking-strategies-delete.png)
 
-`EvictionCost` in `pkg/utils/disruption/disruption.go` starts with a base cost of 1.0 and adds two terms:
+The graphs above show REPLACE and DELETE moves generated from a simulated cluster. The simulation builds a cluster by placing 5000 pods with log-normal resource requests onto c7i, m7i, and r7i instance types via first-fit-decreasing bin-packing, then runs 10 rounds of workload churn (killing 0-80% of each node's pods and adding new pods with different shapes). REPLACE moves reprovision each node's remaining pods on the cheapest fitting instance type. DELETE moves scatter a node's pods onto existing spare capacity. Each curve shows cumulative savings (y-axis) as a function of cumulative disruption (x-axis) under a different ranking strategy. The diagonal is break-even. Ranking by score dominates: at every disruption level, it delivers more savings than ranking by savings alone, disruption alone, or randomly. The script to reproduce these charts is in [`designs/scripts/ranking-strategies.py`](scripts/ranking-strategies.py).
 
-1. **`controller.kubernetes.io/pod-deletion-cost` annotation**, divided by 2^27, contributing roughly -16 to +16.
-2. **Pod scheduling priority**, divided by 2^25, contributing roughly -64 to +30 for standard priority classes.
+#### Calculating Per-Pod Disruption Cost
 
-The result is clamped to [-10, 10]. For the score, negative values are clamped to 0, because a negative disruption cost would invert the ratio. This gives an effective per-pod range of [0, 10] with a default of 1.0 for pods with no annotation and default priority.
+`EvictionCost` in `pkg/utils/disruption/disruption.go` starts with a base of 1.0 per pod and adds two terms:
+
+1. **`controller.kubernetes.io/pod-deletion-cost` annotation**, divided by 2^27, contributing roughly -16 to +16. Karpenter uses this annotation to determine which nodes are cheaper to disrupt: nodes whose pods have lower deletion costs are preferred as consolidation candidates.
+2. **Pod scheduling priority**, divided by 2^25, contributing roughly -64 to +30 for standard priority classes. Priority serves a similar role: higher-priority pods increase their node's disruption cost, making that node less attractive for consolidation. The two terms differ in intent -- pod-deletion-cost is an explicit opt-in signal from the pod author, while priority is an existing Kubernetes scheduling concept -- but both contribute additively to the same disruption cost.
+
+The result of the `EvictionCost` function is clamped to [-10, 10]. For calculating per-pod disruption cost for this RFC, we clamp negative values to 0, because a negative disruption cost would invert the ratio. This gives an effective per-pod range of [0, 10] with a default of 1.0 for pods with no annotation and default priority.
 
 Pod authors can set a high `controller.kubernetes.io/pod-deletion-cost` to resist consolidation. Priority classes resist consolidation automatically through the priority term.
 
@@ -216,36 +221,11 @@ delete_ratio = (node.price / nodepool_cost) / (node.disruption_cost / nodepool_t
 
 If a node's delete ratio falls below the threshold, no single-node move from that node can clear the threshold. The system can skip move generation for that node.
 
-For multi-node consolidation (drain N nodes, create 1 replacement), the combined score of the batch depends on all nodes in the batch. Karpenter today creates at most one replacement node per consolidation move, so multi-node consolidation is a common path, not a corner case. A node with a low individual delete ratio could participate in a passing batch if other nodes in the batch contribute enough savings to offset it.
-
-The delete ratio filter cannot be applied to individual nodes in a multi-node candidate set without risking false negatives. Two options:
-
-1. **Skip the filter for multi-node candidates.** Score all multi-node batches without pre-filtering. This is correct but expensive when many nodes are candidates.
-2. **Filter on the batch's combined delete ratio.** Compute the delete ratio for the full set of candidate nodes as a group: `sum(node.price) / nodepool_cost` over `sum(node.disruption_cost) / nodepool_total_disruption_cost`. If the combined ratio fails, no subset can pass either (removing nodes from the batch can only worsen the ratio if the removed nodes had above-average ratios, but can improve it if they had below-average ratios). This is not a valid upper bound for subsets, so it cannot be used as a filter.
-
-The implementation should apply the delete ratio filter only to single-node moves. For multi-node consolidation, all candidates proceed to full move generation and scoring. The cost of multi-node move generation is already dominated by scheduling simulation, not candidate enumeration, so the filter's value is lower.
+For multi-node consolidation (drain N nodes, create 1 replacement), the combined score depends on all nodes in the batch. A node with a low individual delete ratio could participate in a passing batch if other nodes contribute enough savings. The delete ratio filter cannot be applied to individual nodes without risking false negatives, so it applies only to single-node moves. For multi-node consolidation, all candidates proceed to full move generation and scoring.
 
 ### Interaction with Existing Features
 
-#### Disruption Budgets
-
-Budgets constrain how many nodes can be disrupted concurrently. Scoring determines which moves enter the pipeline. When multiple moves pass the threshold, they can be ranked by score and the highest-scoring moves executed first within the budget.
-
-#### PodDisruptionBudgets
-
-PDBs constrain which moves are feasible. Scoring evaluates which feasible moves are worth doing.
-
-#### consolidateAfter
-
-A node must satisfy both the `consolidateAfter` time delay and the cost threshold before being consolidated.
-
-#### karpenter.sh/do-not-disrupt
-
-Pods with `do-not-disrupt` still block consolidation of their node.
-
-#### Spot Interruptions and Involuntary Disruption
-
-Scoring applies only to voluntary consolidation decisions — moves that Karpenter chooses to make. Spot interruptions, cloud-initiated terminations, and other involuntary disruptions are not gated by the score. There is no decision to make: the node is being taken away regardless.
+Scoring determines which moves are *worth doing*. All existing feasibility checks still apply: NodePool disruption budgets, PodDisruptionBudgets, `consolidateAfter`, and `karpenter.sh/do-not-disrupt`. Scoring applies only to voluntary consolidation decisions. Spot interruptions and other involuntary disruptions are not gated by the score.
 
 ## API Choices
 
@@ -261,35 +241,27 @@ Two alternatives were considered for operator-level aggressiveness control:
 
 **Continuous slider (0-100).** A `consolidationThreshold` field (0-100) mapping to a log-scale threshold via `10^((x-50)/25)`, where 0 means consolidate aggressively (threshold 0.01), 50 is break-even (threshold 1.0), and 100 means consolidate only for extreme savings (threshold 100). Each 25-point increment is a 10x change. 0-100 is a wide range with no guidance on what value to pick. This is the most extreme alternative considered.
 
-* 👍👍 Fixed break-even requires zero configuration and has a clear meaning
-* 👍👍 Shifts the tuning lever to per-pod annotations where domain knowledge lives
-* 👍 Avoids "what value should I set this to?" questions from operators
-* 👍 Both alternatives can be added later as non-breaking extensions
-* 👎 Operators who want a NodePool-level aggressiveness knob must wait
-* 👎 Cannot express "consolidate aggressively on my batch NodePool" without per-pod annotations
+Pros: Zero configuration. Clear meaning. Shifts tuning to per-pod annotations where domain knowledge lives. Both alternatives can be added later as non-breaking extensions.
+
+Cons: Operators who want a NodePool-level aggressiveness knob must wait. Cannot express "consolidate aggressively on my batch NodePool" without per-pod annotations.
 
 ### Per-NodePool vs. Per-Cluster Normalization [Recommended: Per-NodePool]
 
 The score denominators (total cost, total disruption cost) could be computed per-NodePool or across the entire cluster. This proposal recommends per-NodePool.
 
-Per-NodePool normalization keeps scores meaningful at the scope operators configure. A 1000-node batch pool and a 10-node stateful pool have different cost structures and disruption tolerances. Per-cluster normalization would dilute the stateful pool's scores. A single node in the stateful pool represents 10% of its own pool but 0.1% of the cluster. Moves that are significant within a pool become invisible at cluster scale.
+Per-NodePool normalization keeps scores meaningful at the scope operators configure. A 1000-node batch pool and a 10-node stateful pool have different cost structures. Per-cluster normalization would dilute the stateful pool's scores: a single node representing 10% of its own pool becomes 0.1% of the cluster. Per-NodePool also matches Karpenter's existing architecture -- consolidation policies, budgets, and `consolidateAfter` are already per-NodePool.
 
-Per-NodePool also matches Karpenter's existing architecture. Consolidation policies, budgets, and `consolidateAfter` are already per-NodePool. The score should use the same scope.
+Pros: Matches Karpenter's per-NodePool architecture. Prevents large pools from diluting small pool scores. Each pool's operator controls its own cost-disruption tradeoff.
 
-For zero-cost NodePools (ODCRs, reserved capacity), per-NodePool normalization produces correct behavior: savings are zero, so nodes are never consolidated. See [Zero-Cost Nodes](#zero-cost-nodes-odcrs-reserved-capacity).
-
-* 👍👍 Matches Karpenter's per-NodePool architecture
-* 👍👍 Prevents large pools from diluting small pool scores
-* 👍 Each pool's operator controls its own cost-disruption tradeoff
-* 👎 Cannot directly compare scores across pools (but no current feature needs this)
+Cons: Cannot directly compare scores across pools (but no current feature needs this).
 
 ### New consolidationPolicy Value vs. New Field
 
 Adding `WhenSavingsJustifyDisruption` as a policy value keeps the new behavior gated behind an explicit opt-in.
 
-* 👍 No behavior change for existing users
-* 👍 Clear migration path: change `WhenEmptyOrUnderutilized` to `WhenSavingsJustifyDisruption`
-* 👎 Another enum value to document
+Pros: No behavior change for existing users. Clear migration path: change `WhenEmptyOrUnderutilized` to `WhenSavingsJustifyDisruption`.
+
+Cons: Another enum value to document.
 
 ## Alternatives Considered
 
@@ -347,6 +319,48 @@ Cost scoring enables a shift from synchronous per-cycle consolidation to a conti
 
 Surface the move count and estimated savings at the current threshold. Scoring a representative sample of moves shows operators how many moves would pass.
 
+## Frequently Asked Questions
+
+### What happens in a uniformly inefficient cluster where no single move clears the threshold?
+
+If every node is slightly underutilized by a similar amount, each individual move produces a small savings fraction relative to its disruption fraction, and no move reaches `score >= 1.0`. This is by design: the cost threshold is conservative and rejects moves where the disruption is not clearly justified.
+
+A complementary acceptance criterion addresses this case. A move is accepted if **either** (a) it clears the cost threshold (`score >= 1.0`), **or** (b) the destination state costs no more than what the provisioner would produce if it placed the affected pods on fresh capacity from scratch. Criterion (b) says: "this move reaches provisioning-quality packing, so the result is at least as good as starting over." DELETE moves trivially pass criterion (b) because removing a node is always at least as cheap as provisioning a new one for those pods. REPLACE moves pass when the replacement node costs no more than the provisioner's cheapest feasible selection.
+
+This dual criterion eliminates the need for iterative re-evaluation (accept best move, re-score all remaining, repeat). A move either clears the cost threshold or matches provisioning quality. If it does neither, it is correctly rejected. The provisioning-equivalence criterion is proposed in a separate RFC.
+
+### Does the score account for kube-scheduler pod placement?
+
+No. The score evaluates the consolidation move as proposed: source nodes are deleted, replacement nodes (if any) are created, and moved pods are assumed to land on the intended destination. In practice, kube-scheduler may place pods on different nodes than Karpenter expects. If pods scatter across existing nodes instead of packing onto the replacement, the replacement may be underutilized, triggering another consolidation cycle.
+
+This is an existing limitation of Karpenter's consolidation, not introduced by scoring. `WhenEmptyOrUnderutilized` has the same gap. The cost threshold reduces the frequency of this problem by rejecting marginal moves that are most likely to produce churn, but it does not eliminate it. Closing the gap between Karpenter's placement assumptions and kube-scheduler's actual decisions is complementary work.
+
+### What disruption budgets does scoring respect?
+
+All of them. Scoring determines which moves are *worth doing*. Budgets determine which moves are *allowed*. Both must pass. NodePool disruption budgets (`spec.disruption.budgets`), PodDisruptionBudgets, `consolidateAfter`, and `karpenter.sh/do-not-disrupt` all apply unchanged. When multiple moves pass the threshold, they are ranked by score and the highest-scoring moves execute first within budget.
+
+### Why doesn't the score account for reserved instance or ODCR opportunity cost?
+
+Zero-cost nodes produce zero savings and are never consolidated. This is correct within the RFC's cost model, which uses the financial cost reported by the cloud provider. Reserved capacity has real opportunity cost, but modeling it requires expressing what freed capacity is worth, which varies by organization and time horizon. This RFC defers opportunity-cost modeling. Operators who want to consolidate zero-cost capacity can use `WhenEmptyOrUnderutilized`.
+
+Karpenter does not currently have access to the amortized hourly cost of reservations (purchase price / term / hours). Surfacing amortized cost would require billing API integration (e.g., AWS Cost Explorer), which is out of scope.
+
+### Where is the score visible?
+
+Scored moves are logged at DEBUG level with score, savings fraction, disruption fraction, source node(s), and decision. A Prometheus histogram (`karpenter_consolidation_score`) records scores partitioned by decision and NodePool. The score is also surfaced as an event on the NodeClaim (`kubectl describe nodeclaim`).
+
+### Which NodePool governs a cross-NodePool consolidation move?
+
+The source NodePool (the one that owns the candidate node). Its policy, threshold, total cost, and total disruption cost are used for normalization. The destination pool's settings are not relevant.
+
+### Will this become the default consolidation policy?
+
+Not at launch. `WhenSavingsJustifyDisruption` is opt-in behind a feature gate. Whether it becomes the default is a community decision deferred to GA graduation.
+
+### Does constraining maximum node size improve this proposal?
+
+Smaller nodes mean smaller disruption fractions per move, making it easier for moves to clear the threshold. The formula works correctly regardless of node size, but clusters with very large nodes (50+ pods) will see more rejections. This is complementary work. Operators can manage node size through NodePool instance-type constraints today.
+
 ## Rollout
 
 This feature follows Karpenter's standard feature gate pattern, consistent with SpotToSpotConsolidation and NodeOverlay.
@@ -363,6 +377,6 @@ After community feedback confirms the break-even threshold works across diverse 
 
 ### Phase 3: GA (feature gate removed)
 
-The feature gate is removed. `WhenSavingsJustifyDisruption` becomes the default `consolidationPolicy`, replacing `WhenEmptyOrUnderutilized`. Existing NodePool specs that explicitly set `WhenEmptyOrUnderutilized` continue to work unchanged.
+The feature gate is removed. `WhenSavingsJustifyDisruption` is always available without a gate. Whether it becomes the default policy is a separate community decision. Existing NodePool specs are unaffected.
 
 Graduation is community-driven based on adoption, GitHub issues, and real-world feedback.
