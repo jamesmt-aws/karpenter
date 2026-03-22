@@ -13,7 +13,7 @@ Produces two charts showing cumulative savings vs. cumulative disruption
 under four ranking strategies: score, savings-only, disruption-only, random.
 
 Usage:
-    python3 designs/scripts/ranking-strategies.py
+    python3 designs/scripts/consolidation-cost-threshold-ranking.py
 
 Output:
     designs/ranking-strategies-replace.png
