@@ -255,7 +255,7 @@ Per-NodePool normalization keeps scores meaningful at the scope operators config
 
 Pros: Matches Karpenter's per-NodePool architecture. Prevents large pools from diluting small pool scores. Each pool's operator controls its own cost-disruption tradeoff. Scores are dimensionless ratios and can still be compared across pools.
 
-Cons: A 1% improvement in a $50/hr pool scores the same as a 1% improvement in a $10,000/hr pool, even though the latter saves 200x more money. If a global disruption budget limits how many moves can execute across pools, per-NodePool scoring cannot prioritize by absolute dollar savings.
+Cons: Scores reflect relative efficiency within a pool, not absolute dollar impact. A score of 2.0 in a $50/hr pool and a score of 2.0 in a $10,000/hr pool look identical, but the latter saves 200x more money. This does not affect behavior (each pool runs consolidation independently with its own budget), but it limits what operators can conclude from comparing scores across pools.
 
 ### New consolidationPolicy Value vs. New Field
 
