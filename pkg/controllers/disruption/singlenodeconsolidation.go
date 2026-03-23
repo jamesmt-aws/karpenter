@@ -43,6 +43,7 @@ type SingleNodeConsolidation struct {
 }
 
 func NewSingleNodeConsolidation(c consolidation, opts ...option.Function[MethodOptions]) *SingleNodeConsolidation {
+	c.consolidationType = SingleNodeConsolidationType
 	o := option.Resolve(append([]option.Function[MethodOptions]{WithValidator(NewSingleConsolidationValidator(c))}, opts...)...)
 	return &SingleNodeConsolidation{
 		consolidation:             c,

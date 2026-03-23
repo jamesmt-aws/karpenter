@@ -41,6 +41,7 @@ type MultiNodeConsolidation struct {
 }
 
 func NewMultiNodeConsolidation(c consolidation, opts ...option.Function[MethodOptions]) *MultiNodeConsolidation {
+	c.consolidationType = MultiNodeConsolidationType
 	o := option.Resolve(append([]option.Function[MethodOptions]{WithValidator(NewMultiConsolidationValidator(c))}, opts...)...)
 	return &MultiNodeConsolidation{
 		consolidation: c,

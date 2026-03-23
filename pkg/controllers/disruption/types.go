@@ -152,6 +152,8 @@ func replacementsFromNodeClaims(newNodeClaims ...*scheduling.NodeClaim) []*Repla
 type Command struct {
 	Method
 
+	ConsolidationLabel string
+
 	Succeeded bool
 
 	CreationTimestamp time.Time
@@ -264,14 +266,22 @@ func (c Command) EstimatedSavings() float64 {
 // EmitCandidateEvents emits ConsolidationCandidate events for all candidates in this command
 func (c Command) EmitCandidateEvents(recorder events.Recorder) {
 	for _, candidate := range c.Candidates {
-		recorder.Publish(disruptionevents.ConsolidationCandidate(candidate.Node, candidate.NodeClaim, c.StringForNode(candidate), c.EstimatedSavings())...)
+		msg := c.StringForNode(candidate)
+		if c.ConsolidationLabel != "" {
+			msg = fmt.Sprintf("%s: %s", c.ConsolidationLabel, msg)
+		}
+		recorder.Publish(disruptionevents.ConsolidationCandidate(candidate.Node, candidate.NodeClaim, msg, c.EstimatedSavings())...)
 	}
 }
 
 // EmitRejectedEvents emits ConsolidationRejected events for all candidates in this command
 func (c Command) EmitRejectedEvents(recorder events.Recorder, reason string) {
 	for _, candidate := range c.Candidates {
-		recorder.Publish(disruptionevents.ConsolidationRejected(candidate.Node, candidate.NodeClaim, c.StringForNode(candidate), reason, c.EstimatedSavings())...)
+		msg := c.StringForNode(candidate)
+		if c.ConsolidationLabel != "" {
+			msg = fmt.Sprintf("%s: %s", c.ConsolidationLabel, msg)
+		}
+		recorder.Publish(disruptionevents.ConsolidationRejected(candidate.Node, candidate.NodeClaim, msg, reason, c.EstimatedSavings())...)
 	}
 }
 
