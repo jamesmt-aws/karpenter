@@ -82,6 +82,17 @@ func (m *MultiNodeConsolidation) ComputeCommands(ctx context.Context, disruption
 		disruptionBudgetMapping[candidate.NodePool.Name]--
 	}
 
+	if len(disruptableCandidates) < 2 {
+		if constrainedByBudgets {
+			log.FromContext(ctx).V(1).Info("multi-node consolidation skipped, budget filtering reduced candidates below minimum of 2",
+				"disruptable_candidates", len(disruptableCandidates),
+				"total_candidates", len(candidates))
+		} else {
+			m.markConsolidated()
+		}
+		return []Command{}, nil
+	}
+
 	// Only consider a maximum batch of 100 NodeClaims to save on computation.
 	// This could be further configurable in the future.
 	maxParallel := lo.Clamp(len(disruptableCandidates), 0, 100)
@@ -118,6 +129,7 @@ func (m *MultiNodeConsolidation) ComputeCommands(ctx context.Context, disruption
 func (m *MultiNodeConsolidation) firstNConsolidationOption(ctx context.Context, candidates []*Candidate, max int) (Command, error) {
 	// we always operate on at least two NodeClaims at once, for single NodeClaims standard consolidation will find all solutions
 	if len(candidates) < 2 {
+		log.FromContext(ctx).V(1).Info("multi-node consolidation requires at least 2 candidates", "candidates", len(candidates))
 		return Command{}, nil
 	}
 	min := 1
