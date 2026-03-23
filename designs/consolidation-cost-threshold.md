@@ -57,8 +57,6 @@ nodepool_total_disruption_cost = sum(node.disruption_cost for node in nodepool.n
 
 Each node's disruption cost is the sum of `max(0, EvictionCost(pod))` for its pods.
 
-The totals only need to be sensible relative to each other. It would be consistent with this proposal to cache NodePool totals or to estimate them from a subset of nodes, as long as cost and disruption are estimated from the same sample.
-
 For cross-NodePool consolidation, the source NodePool's total dollar cost, total disruption cost, and consolidation policy govern the decision to accept or reject the move. Cross-pool moves may be DELETEs (source node removed, pods land on existing capacity in another pool) or REPLACEs (source node removed, replacement node created in the source pool). In either case, the dollar cost savings comes from the difference between the source nodes (priced by the source NodePool) and any replacement nodes (priced by their respective NodePools).
 
 #### Calculation
@@ -231,6 +229,8 @@ If this ratio is below 1.0, no single-node move from that node can pass the thre
 
 This filter applies strictly to single-node consolidation. For multi-node moves, a failing node could participate in a passing batch if other nodes compensate. But those compensating nodes would already be good single-node candidates on their own. Computation is not free. It is generally sensible to take the easy-to-find single-node savings first and only search for multi-node moves when single-node opportunities are exhausted.
 
+The NodePool totals only need to be sensible relative to each other. The implementation may cache totals or estimate them from a subset of nodes, as long as cost and disruption are estimated from the same sample.
+
 ### Interaction with Existing Features
 
 All existing feasibility checks still apply: NodePool disruption budgets, PodDisruptionBudgets, `consolidateAfter`, and `karpenter.sh/do-not-disrupt`. Scoring applies only to consolidation. Spot interruptions, expiration, and drift are handled by separate controllers and are not gated by the score. Static NodePools are excluded from consolidation entirely, consistent with all existing consolidation methods (emptiness, single-node, multi-node). Only drift applies to static NodePools.
@@ -335,7 +335,7 @@ In a cluster where every node is underutilized by a similar amount, each REPLACE
 
 DELETE moves are not affected. In a uniformly underutilized cluster, some nodes have pods that fit on other nodes' spare capacity. A DELETE saves the full node cost with no replacement, so its savings fraction equals the node's share of NodePool cost and its disruption fraction equals the node's share of NodePool disruption. For identical nodes, every DELETE scores exactly 1.0.
 
-The scenario where every REPLACE is rejected but DELETEs pass is correct behavior. The system consolidates by deleting nodes whose pods fit elsewhere (cheap, no new capacity needed) and rejects REPLACEs where the savings do not justify the disruption. If a REPLACE genuinely saves more than it disrupts, it will score above 1.0. If it does not, rejecting it is the right decision. Customers who want to force consolidation despite unfavorable scores can use `WhenEmptyOrUnderutilized`.
+The scenario where every REPLACE is rejected but DELETEs pass is correct behavior. The system consolidates by deleting nodes whose pods fit elsewhere (cheap, no new capacity needed) and rejects REPLACEs where the savings do not justify the disruption. If a REPLACE genuinely saves more than it disrupts, it will score above 1.0. If it does not, rejecting it is the right decision (see [Zero-Cost Nodes](#zero-cost-nodes-odcrs-reserved-capacity) for the `WhenEmptyOrUnderutilized` fallback).
 
 ### Does the score account for kube-scheduler pod placement?
 
@@ -347,7 +347,7 @@ The root cause is that Karpenter's provisioner and consolidation controller simu
 
 ### Why doesn't the score account for reserved instance or ODCR opportunity cost?
 
-Under this policy, zero-cost nodes produce zero savings and are not consolidated. Empty nodes are still deleted by the emptiness controller regardless of cost. Reserved capacity has real opportunity cost, but modeling it requires expressing what freed capacity is worth, which varies by organization and time horizon. This RFC defers opportunity-cost modeling.
+Under this policy, zero-cost nodes produce zero savings and are not consolidated (see [Zero-Cost Nodes](#zero-cost-nodes-odcrs-reserved-capacity)). Reserved capacity has real opportunity cost, but modeling it requires expressing what freed capacity is worth, which varies by organization and time horizon. This RFC defers opportunity-cost modeling.
 
 Karpenter does not currently have access to the amortized hourly cost of reservations (purchase price / term / hours). Surfacing amortized cost would require billing API integration (e.g., AWS Cost Explorer), which is out of scope.
 
