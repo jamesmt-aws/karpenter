@@ -295,6 +295,7 @@ const rangeDisplays = {
 const groups = {
   examples:   { label: 'RFC §Examples',            href: 'consolidation-cost-threshold.md#examples' },
   scale:      { label: 'RFC §Scale Invariance',    href: 'consolidation-cost-threshold.md#scale-invariance' },
+  uniform:    { label: 'RFC §Uniform Pool Replace',       href: 'consolidation-cost-threshold.md#uniform-pool-replace-approved' },
   dcinvar:    { label: 'RFC §Disruption Cost Invariance', href: 'consolidation-cost-threshold.md#disruption-cost-invariance' },
   crosspool:  { label: 'RFC §Cross-NodePool',      href: 'consolidation-cost-threshold.md#cross-nodepool-on-demand-and-spot' },
   disruption: { label: 'RFC §Per-Pod Disruption Cost', href: 'consolidation-cost-threshold.md#per-pod-disruption-cost' },
@@ -342,6 +343,15 @@ const presets = [
     moveType: 'replace', replacementCost: 4.84,
   },
   {
+    id: 'uniform', label: 'Uniform Pool Replace (0.50)', approved: true,
+    group: 'uniform',
+    note: 'RFC "Uniform Pool Replace" — 10 identical m7i.xlarge, replace one with m7i.large (50% savings). Right at the 0.5 boundary. At threshold 1.0 this move is rejected in any uniform pool.',
+    numNodes: 10, costPerNode: 4.84, podsPerNode: 8, defaultPodCost: 1,
+    nodepoolCost: 48.40, nodepoolDisruption: 80,
+    candidateIdx: 0, candidateCost: 4.84, candidatePods: 8, candidatePodCost: 1,
+    moveType: 'replace', replacementCost: 2.42,
+  },
+  {
     id: 'scale', label: 'Scale Invariance (3.33)', approved: true,
     group: 'scale',
     note: 'RFC "Scale Invariance" — same oversized-node scenario at 100-node scale ($580.80/day, 800 disruption). Score is identical.',
@@ -378,9 +388,9 @@ const presets = [
     moveType: 'delete', replacementCost: 0,
   },
   {
-    id: 'cross-spot-8', label: 'Spot 8 pods break-even (1.00)', approved: true,
+    id: 'cross-spot-8', label: 'Spot 8 pods (1.00)', approved: true,
     group: 'crosspool',
-    note: 'RFC "Cross-NodePool" — Spot node with 8 pods instead of 3. Barely passes at break-even. Any increase in pod disruption cost would reject.',
+    note: 'RFC "Cross-NodePool" — Spot node with 8 pods instead of 3. Score 1.0 passes comfortably. Pods would need disruption cost 2 to reach the 0.5 boundary.',
     numNodes: 10, costPerNode: 1.45, podsPerNode: 8, defaultPodCost: 1,
     nodepoolCost: 14.50, nodepoolDisruption: 80,
     candidateIdx: 0, candidateCost: 1.45, candidatePods: 8, candidatePodCost: 1,
@@ -567,13 +577,13 @@ function updateDisplay() {
   if (strategy === 'ratio') {
     if (s.savings <= 0) decision = 'rejected';
     else if (s.disruptionCost === 0 || s.nodepoolDisruption === 0) decision = 'approved';
-    else decision = s.score >= 1.0 - 1e-9 ? 'approved' : 'rejected';
+    else decision = s.score >= 0.5 - 1e-9 ? 'approved' : 'rejected';
     displayValue = scoreStr;
 
     const arrow = decision === 'approved' ? '→ approved' : '→ rejected';
-    const cmp = s.score === Infinity ? '> 1.0'
-      : Math.abs(s.score - 1.0) < 1e-9 ? '= 1.0'
-      : s.score > 1.0 ? '> 1.0' : '< 1.0';
+    const cmp = s.score === Infinity ? '> 0.5'
+      : Math.abs(s.score - 0.5) < 1e-9 ? '= 0.5'
+      : s.score > 0.5 ? '> 0.5' : '< 0.5';
 
     if (s.savings <= 0) {
       formula = `savings             = ${fmt(s.savings, 2)}  (no cost reduction)\nscore               = 0  ${arrow}`;

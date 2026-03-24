@@ -71,7 +71,7 @@ disruption_fraction = disruption_cost / nodepool_total_disruption_cost
 score = savings_fraction / disruption_fraction
 ```
 
-A move is approved when `score >= 1.0`, meaning the savings fraction is at least as large as the disruption fraction. Higher scores indicate better value per unit of disruption.
+A move is approved when `score >= 0.5`, meaning the savings fraction is at least half the disruption fraction. A dollar of savings buys two units of disruption. Higher scores indicate better value per unit of disruption.
 
 **Division-by-zero handling.** If `disruption_cost` is zero (no pods, or all pods have zero disruption cost), `disruption_fraction` is zero. DELETE operations with zero disruption cost are approved if savings are non-negative. REPLACE operations with zero disruption cost are approved if savings are positive. If `nodepool_total_disruption_cost` is zero, any move with positive savings is approved. If `nodepool_total_cost` is zero, `savings_fraction` is undefined and no consolidation happens. See [Edge Cases](#edge-cases) for worked examples.
 
@@ -81,7 +81,7 @@ Feasibility checks (PodDisruptionBudgets, `karpenter.sh/do-not-disrupt`, schedul
 
 Both savings and disruption are expressed as fractions of their NodePool totals. This makes both sides dimensionless. A move saving 10% of a $50/day pool's cost is equivalent to a move saving 10% of a $5,000/day pool's cost. Disrupting 4 pods out of 40 (10%) is equivalent to disrupting 400 pods out of 4000 (10%). A move with 2% savings fraction and 1% disruption fraction (score 2.0) is strictly better than a move with 2% savings fraction and 3% disruption fraction (score 0.67).
 
-Consider a move that saves $4.84/day by draining an m7i.xlarge and disrupts 4 pods. On a NodePool costing $48.40/day with 40 pods, you save 10% of cost for 10% of disruption. On a NodePool costing $4,840/day with 4000 pods, you save 0.1% of cost for 0.1% of disruption. Both score 1.0 despite very different absolute numbers. But saving 0.1% of cost for 10% of disruption scores 0.01 and fails the threshold by 100x.
+Consider a move that saves $4.84/day by draining an m7i.xlarge and disrupts 4 pods. On a NodePool costing $48.40/day with 40 pods, you save 10% of cost for 10% of disruption. On a NodePool costing $4,840/day with 4000 pods, you save 0.1% of cost for 0.1% of disruption. Both score 1.0 despite very different absolute numbers, and both are approved. But saving 0.1% of cost for 10% of disruption scores 0.01, far below the 0.5 threshold.
 
 #### Move Score Determines Move Order
 
@@ -104,7 +104,7 @@ One m7i.2xlarge runs 3 pods requesting 1.5 vCPU and 6 GiB total. Disruption cost
 ```
 savings_fraction = 7.26 / 58.08 = 12.5%
 disruption_fraction = 3 / 80 = 3.75%
-score = 0.125 / 0.0375 = 3.33 > 1.0 --> approved
+score = 0.125 / 0.0375 = 3.33 > 0.5 --> approved
 ```
 
 #### Spare Capacity Delete (approved)
@@ -114,7 +114,7 @@ One m7i.xlarge runs 4 pods requesting 1.5 vCPU and 6 GiB. Disruption cost is 4. 
 ```
 savings_fraction = 4.84 / 58.08 = 8.3%
 disruption_fraction = 4 / 80 = 5.0%
-score = 0.083 / 0.05 = 1.67 > 1.0 --> approved
+score = 0.083 / 0.05 = 1.67 > 0.5 --> approved
 ```
 
 #### Marginal Move (rejected)
@@ -124,12 +124,24 @@ One m7i.xlarge runs 8 pods requesting 1.8 vCPU and 7 GiB. Disruption cost is 8. 
 ```
 savings_fraction = 2.42 / 58.08 = 4.2%
 disruption_fraction = 8 / 80 = 10.0%
-score = 0.042 / 0.10 = 0.42 < 1.0 --> rejected
+score = 0.042 / 0.10 = 0.42 < 0.5 --> rejected
 ```
 
 #### Well-Packed Node (rejected)
 
 One m7i.xlarge runs 10 pods requesting 3.5 vCPU and 14 GiB. The smallest fitting replacement is another m7i.xlarge. Savings is $0. No threshold approves this move.
+
+#### Uniform Pool Replace (approved)
+
+All 10 nodes are m7i.xlarge ($4.84/day each, $48.40/day total, 80 pods, disruption cost 80). One node's 8 pods fit on an m7i.large ($2.42/day). Savings is $2.42.
+
+```
+savings_fraction = 2.42 / 48.40 = 5.0%
+disruption_fraction = 8 / 80 = 10.0%
+score = 0.05 / 0.10 = 0.50 >= 0.5 --> approved
+```
+
+The replacement costs exactly half the original. This is the boundary: a replace that saves less than 50% of the source node's cost is rejected. At a threshold of 1.0 (break-even), this move scores 0.50 and is rejected regardless of pool size, because the score for a uniform-pool replace simplifies to `1 - replacement_price / node_price`, which can never reach 1.0.
 
 #### Scale Invariance
 
@@ -152,7 +164,7 @@ Two m7i.xlarge nodes each run 4 pods and can be deleted (pods fit on other nodes
 ```
 savings_fraction = 4.84 / 58.08 = 8.3%
 disruption_fraction = 4 / 107 = 3.7%
-score = 0.083 / 0.037 = 2.24 > 1.0 --> approved
+score = 0.083 / 0.037 = 2.24 > 0.5 --> approved
 ```
 
 **Node B (rejected):**
@@ -160,7 +172,7 @@ score = 0.083 / 0.037 = 2.24 > 1.0 --> approved
 ```
 savings_fraction = 4.84 / 58.08 = 8.3%
 disruption_fraction = 31 / 107 = 29.0%
-score = 0.083 / 0.29 = 0.29 < 1.0 --> rejected
+score = 0.083 / 0.29 = 0.29 < 0.5 --> rejected
 ```
 
 Same savings, same node count, same pod count. The score rejects node B because the model-serving pods are expensive to restart. This is the score's main advantage over alternatives that ignore disruption cost: it distinguishes nodes where disruption is cheap from nodes where it is not.
@@ -176,7 +188,7 @@ One node in each pool runs 3 pods requesting 1 vCPU. Disruption cost is 3. The p
 ```
 savings_fraction = 4.84 / 48.40 = 10.0%
 disruption_fraction = 3 / 80 = 3.75%
-score = 0.10 / 0.0375 = 2.67 > 1.0 --> approved
+score = 0.10 / 0.0375 = 2.67 > 0.5 --> approved
 ```
 
 **Spot pool DELETE:**
@@ -184,7 +196,7 @@ score = 0.10 / 0.0375 = 2.67 > 1.0 --> approved
 ```
 savings_fraction = 1.45 / 14.50 = 10.0%
 disruption_fraction = 3 / 80 = 3.75%
-score = 0.10 / 0.0375 = 2.67 > 1.0 --> approved
+score = 0.10 / 0.0375 = 2.67 > 0.5 --> approved
 ```
 
 Both moves score identically because each node represents the same fraction of its pool's cost and disrupts the same fraction of its pool's pods.
@@ -194,10 +206,10 @@ If the Spot pool node instead runs 8 pods with disruption cost 8:
 ```
 savings_fraction = 1.45 / 14.50 = 10.0%
 disruption_fraction = 8 / 80 = 10.0%
-score = 0.10 / 0.10 = 1.0 --> approved (at threshold)
+score = 0.10 / 0.10 = 1.0 > 0.5 --> approved
 ```
 
-The move barely passes. Increasing disruption cost on any pod would push it below the threshold.
+The move is approved. To reach the 0.5 boundary, each of the 8 pods would need disruption cost 2 (disruption fraction 20%, score 0.50).
 
 ### Edge Cases
 
@@ -225,7 +237,7 @@ If we know the NodePool's total cost and total disruption cost, and we know a no
 delete_ratio = (node.price / nodepool_cost) / (node.disruption_cost / nodepool_total_disruption_cost)
 ```
 
-If this ratio is below 1.0, no single-node move from that node can pass the threshold. A DELETE saves the full node cost. A REPLACE saves strictly less, because the replacement node has positive cost. The system can skip move generation for that node entirely.
+If this ratio is below 0.5, no single-node move from that node can pass the threshold. A DELETE saves the full node cost. A REPLACE saves strictly less, because the replacement node has positive cost. The system can skip move generation for that node entirely.
 
 This filter applies strictly to single-node consolidation. For multi-node moves, a failing node could participate in a passing batch if other nodes compensate. But those compensating nodes would already be good single-node candidates on their own. Computation is not free. It is generally sensible to take the easy-to-find single-node savings first and only search for multi-node moves when single-node opportunities are exhausted.
 
@@ -239,13 +251,13 @@ All existing feasibility checks still apply: NodePool disruption budgets, PodDis
 
 ### Consolidation Aggressiveness Tuning [Recommended: Fixed Threshold at Launch]
 
-This proposal uses a fixed threshold (score >= 1.0) with no operator-facing aggressiveness knob. Operators who need to tune the cost-disruption tradeoff do so per-pod through `pod-deletion-cost` and priority, where the domain knowledge lives.
+This proposal uses a fixed threshold (score >= 0.5) with no operator-facing aggressiveness knob. A dollar of savings buys two units of disruption. Operators who need to tune the cost-disruption tradeoff do so per-pod through `pod-deletion-cost` and priority, where the domain knowledge lives.
 
-Two alternatives were considered for operator-level aggressiveness control. The fixed threshold of 1.0 is equivalent to Medium in the first alternative and 50 in the second, so either alternative can be added later without breaking existing behavior.
+Two alternatives were considered for operator-level aggressiveness control. The fixed threshold of 0.5 is equivalent to Medium in the first alternative and 50 in the second, so either alternative can be added later without breaking existing behavior.
 
-**Low/Medium/High (three-state).** A `consolidationAggressiveness` field with three values: Low (conservative, equivalent threshold ~3.16), Medium (default, threshold 1.0), High (aggressive, equivalent threshold ~0.32). Each step is a 10x change in required savings-per-disruption. This avoids the "what number do I pick?" problem of a continuous range. Not preferred at launch, but this is the most likely extension if users demonstrate a need for NodePool-level tuning beyond per-pod annotations.
+**Low/Medium/High (three-state).** A `consolidationAggressiveness` field with three values: Low (conservative, threshold ~1.58), Medium (default, threshold 0.5), High (aggressive, threshold ~0.16). Each step is a 10x change in required savings-per-disruption. This avoids the "what number do I pick?" problem of a continuous range. Not preferred at launch, but this is the most likely extension if users demonstrate a need for NodePool-level tuning beyond per-pod annotations.
 
-**Continuous slider (0-100).** A `consolidationThreshold` field (0-100) mapping to a log-scale threshold via `10^((x-50)/25)`, where 0 means consolidate aggressively (threshold 0.01), 50 is the default (threshold 1.0), and 100 means consolidate only for extreme savings (threshold 100). Each 25-point increment is a 10x change. 0-100 is a wide range with no guidance on what value to pick.
+**Continuous slider (0-100).** A `consolidationThreshold` field (0-100) mapping to a log-scale threshold via `10^((x-50)/25) / 2`, where 0 means consolidate aggressively (threshold ~0.005), 50 is the default (threshold 0.5), and 100 means consolidate only for extreme savings (threshold 50). Each 25-point increment is a 10x change. 0-100 is a wide range with no guidance on what value to pick.
 
 ### Per-NodePool vs. Per-Cluster Normalization [Recommended: Per-NodePool]
 
@@ -319,7 +331,7 @@ Surface the move count and estimated savings at the current threshold. Scoring a
 
 ## Open Questions
 
-- **Is 1.0 the right threshold?** We chose score >= 1.0 because the meaning is clear (savings fraction >= disruption fraction) and it requires no configuration. We do not know whether this threshold works well across diverse workloads. Some workloads may need a more conservative threshold (e.g., 3.0) and others a more aggressive one (e.g., 0.5). The feature gate and opt-in rollout exist to answer this question empirically.
+- **Is 0.5 the right threshold?** We chose score >= 0.5 because it is the smallest threshold that approves replaces in uniform pools (where the replacement costs less than half the original). Exhaustive enumeration of all configurations from real instance types confirms that 1.0 (break-even) produces a design hole: no replace is ever approved in a uniform pool, because the score simplifies to `1 - replacement_price / node_price` which can never reach 1.0. We do not know whether 0.5 works well across diverse workloads. Some workloads may need a more conservative threshold (e.g., 1.0) and others a more aggressive one (e.g., 0.3). The feature gate and opt-in rollout exist to answer this question empirically.
 
 - **How many customers use `pod-deletion-cost` today?** If few do, every pod has default disruption cost 1.0 and the score reduces to pod-count-versus-savings. The score's main differentiator (distinguishing expensive-to-restart pods from cheap ones) depends on customers setting this annotation. [PR #2894](https://github.com/kubernetes-sigs/karpenter/pull/2894) would automate this.
 
@@ -335,7 +347,7 @@ In a cluster where every node is underutilized by a similar amount, each REPLACE
 
 DELETE moves are not affected. In a uniformly underutilized cluster, some nodes have pods that fit on other nodes' spare capacity. A DELETE saves the full node cost with no replacement, so its savings fraction equals the node's share of NodePool cost and its disruption fraction equals the node's share of NodePool disruption. For identical nodes, every DELETE scores exactly 1.0.
 
-The scenario where every REPLACE is rejected but DELETEs pass is correct behavior. The system consolidates by deleting nodes whose pods fit elsewhere (cheap, no new capacity needed) and rejects REPLACEs where the savings do not justify the disruption. If a REPLACE genuinely saves more than it disrupts, it will score above 1.0. If it does not, rejecting it is the right decision (see [Zero-Cost Nodes](#zero-cost-nodes-odcrs-reserved-capacity) for the `WhenEmptyOrUnderutilized` fallback).
+The scenario where every REPLACE is rejected but DELETEs pass is correct behavior. The system consolidates by deleting nodes whose pods fit elsewhere (cheap, no new capacity needed) and rejects REPLACEs where the savings do not justify the disruption. A REPLACE that saves at least half the source node's cost (score >= 0.5) is approved. If it does not, rejecting it is the right decision (see [Zero-Cost Nodes](#zero-cost-nodes-odcrs-reserved-capacity) for the `WhenEmptyOrUnderutilized` fallback).
 
 ### Does the score account for kube-scheduler pod placement?
 
