@@ -245,6 +245,43 @@ score = 0.10 / 0.10 = 1.0 > 0.5 --> approved
 
 The move is approved. To reach the 0.5 boundary, each of the 8 pods would need disruption cost 2 (disruption fraction 20%, score 0.50).
 
+## Threshold Verification
+
+The scoring formula has one free parameter: the decision constant k, where a move is approved when `score >= 1/k`. At k=1 (break-even), one dollar of savings buys one unit of disruption. At k=2, one dollar buys two. We chose k=2 (threshold 0.5) by exhaustive enumeration.
+
+### State Space
+
+We enumerate all configurations in a bounded space drawn from real EC2 instance types: 1 to 6 nodes per pool, node prices in {4, 7, 8, 13, 14, 17, 27} cents/hour (m7i.medium through m7i.4xlarge), 0 to 4 pods per node, per-pod disruption cost in {1, 2, 5, 10}. For each configuration, we evaluate every candidate move (Delete and Replace to every cheaper price) at every k from 1 through 5.
+
+### Properties
+
+Eight properties define correctness for the scoring function, independent of k:
+
+1. **Monotonicity in savings.** Cheaper replacement never makes approval harder.
+2. **Monotonicity in disruption.** Higher disruption never makes approval easier.
+3. **Empty nodes always deletable.** Zero disruption, positive savings: always approved.
+4. **Zero-savings moves never approved.** Same-price replacement scores zero.
+5. **Replaces work in uniform pools.** The minimum useful k is the smallest value where meaningful replaces pass.
+6. **Skewed disruption differentiates.** High-disruption pods make their node harder to approve.
+7. **Fleet size independence.** Pool size cancels algebraically in uniform pools.
+8. **Bounded churn.** Replace chains converge and terminate quickly.
+
+Properties 1-4, 6, and 7 hold at all k values. They are structural properties of the formula. Properties 5 and 8 select k.
+
+### Results
+
+| k | threshold | approved replace pairs | max churn chain |
+|---|-----------|----------------------|-----------------|
+| 1 | 1.000 | 0 (design hole) | 0 |
+| 2 | 0.500 | 11 | 2 steps |
+| 3 | 0.333 | 17 | 3 steps |
+| 4 | 0.250 | 17 | 3 steps |
+| 5 | 0.200 | 18 | 4 steps |
+
+At k=1, no replace is ever approved in a uniform pool. The score for a uniform-pool replace simplifies to `1 - replacement_price / node_price`, which requires a free replacement to reach 1.0. This is the design hole.
+
+k=2 is the smallest integer that fixes it. It admits 11 price pairs (every pair where the replacement costs at most half the original) and produces the shortest churn chains (2 steps, e.g., 27c to 13c to 4c). k=3 admits 6 more pairs and longer chains. k=4 admits zero new pairs over k=3 with real instance types (the discrete price set has no replacement/original ratios between 1/3 and 1/4). The script to reproduce these results is in [`designs/scripts/consolidation-cost-threshold-properties.py`](scripts/consolidation-cost-threshold-properties.py).
+
 ## API Choices
 
 ### Consolidation Aggressiveness Tuning [Recommended: Fixed Threshold at Launch]
@@ -329,7 +366,7 @@ Surface the move count and estimated savings at the current threshold. Scoring a
 
 ## Open Questions
 
-- **Is 0.5 the right threshold?** We chose score >= 0.5 because it is the smallest threshold that approves replaces in uniform pools (where the replacement costs less than half the original). EC2 instance types within a family follow power-of-2 scaling: each size doubles the resources and price. The most common single-step downsize (xlarge → large, 2xlarge → xlarge) saves exactly 50%, so the 0.5 threshold aligns with the smallest natural optimization step. Exhaustive enumeration of all configurations from real instance types confirms that 1.0 (break-even) produces a design hole: no replace is ever approved in a uniform pool, because the score simplifies to `1 - replacement_price / node_price` which can never reach 1.0. We do not know whether 0.5 works well across diverse workloads. Some workloads may need a more conservative threshold (e.g., 1.0) and others a more aggressive one (e.g., 0.3). The feature gate and opt-in rollout exist to answer this question empirically.
+- **Is 0.5 the right threshold?** [Threshold Verification](#threshold-verification) explains why k=2 (threshold 0.5) is the smallest value that fixes the design hole at k=1. We do not know whether 0.5 works well across diverse workloads. Some workloads may need a more conservative threshold (e.g., 1.0) and others a more aggressive one (e.g., 0.3). The feature gate and opt-in rollout exist to answer this question empirically.
 
 - **How many customers use `pod-deletion-cost` today?** If few do, every pod has default disruption cost 1.0 and the score reduces to pod-count-versus-savings. The score's main differentiator (distinguishing expensive-to-restart pods from cheap ones) depends on customers setting this annotation. [PR #2894](https://github.com/kubernetes-sigs/karpenter/pull/2894) would automate this.
 
