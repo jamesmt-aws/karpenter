@@ -5,8 +5,9 @@ Exhaustive check of consolidation scoring properties.
 Decision rule: approved iff k * savings_fraction >= disruption_fraction
 Cross-multiplied: k * savings * pool_disruption >= move_disruption * pool_cost
 
-State space (from alloy.md):
-  - 1-6 nodes, prices in {4, 7, 8, 13, 14, 17, 27} cents/hour
+State space:
+  - 1-6 nodes
+  - Prices from m7i on-demand (us-east-1), scaled to integers for exact arithmetic
   - 0-4 pods per node, disruption cost in {1, 2, 5, 10}
   - Actions: Delete(node), Replace(node, new_price)
   - k: the decision constant (1 = break-even, 2 = savings count 2x)
@@ -15,7 +16,13 @@ State space (from alloy.md):
 from itertools import product as cartesian
 from collections import defaultdict
 
-PRICES = [4, 7, 8, 13, 14, 17, 27]
+# m7i on-demand prices in us-east-1, $/hr × 10000 for exact integer arithmetic.
+# m7i.medium  $0.0504/hr  →  504
+# m7i.large   $0.1008/hr  → 1008
+# m7i.xlarge  $0.2016/hr  → 2016
+# m7i.2xlarge $0.4032/hr  → 4032
+# m7i.4xlarge $0.8064/hr  → 8064
+PRICES = [504, 1008, 2016, 4032, 8064]
 DCOSTS = [1, 2, 5, 10]
 K_VALUES = [1, 2, 3, 4, 5]
 
@@ -335,15 +342,13 @@ def main():
     results = check_p5()
     for k in K_VALUES:
         moves = results.get(k, [])
-        if moves:
-            print(f"  k={k}: {len(moves)} approved replaces")
-            for m in moves[:5]:
-                print(f"    {m['price']}¢ → {m['replacement']}¢  "
-                      f"saves {m['savings_pct']:.0f}%  "
-                      f"disruption={m['disruption']}  "
-                      f"score={m['score']:.2f}")
-        else:
-            print(f"  k={k}: NO approved replaces (design hole at this k)")
+        pairs = set((m['price'], m['replacement']) for m in moves)
+        print(f"  k={k}: {len(pairs)} unique price pairs, {len(moves)} configurations")
+        for m in moves[:5]:
+            print(f"    {m['price']} → {m['replacement']}  "
+                  f"saves {m['savings_pct']:.0f}%  "
+                  f"disruption={m['disruption']}  "
+                  f"score={m['score']:.2f}")
 
     print("\n── P6: Skewed disruption cost ──")
     examples = check_p6()

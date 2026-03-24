@@ -251,7 +251,7 @@ The scoring formula has one free parameter: the decision constant k, where a mov
 
 ### State Space
 
-We enumerate all configurations in a bounded space drawn from real EC2 instance types: 1 to 6 nodes per pool, node prices in {4, 7, 8, 13, 14, 17, 27} cents/hour (m7i.medium through m7i.4xlarge), 0 to 4 pods per node, per-pod disruption cost in {1, 2, 5, 10}. For each configuration, we evaluate every candidate move (Delete and Replace to every cheaper price) at every k from 1 through 5.
+We enumerate all configurations in a bounded space using m7i on-demand prices in us-east-1: 1 to 6 nodes per pool, node prices in {$0.0504, $0.1008, $0.2016, $0.4032, $0.8064}/hr (m7i.medium through m7i.4xlarge), 0 to 4 pods per node, per-pod disruption cost in {1, 2, 5, 10}. For each configuration, we evaluate every candidate move (Delete and Replace to every cheaper price) at every k from 1 through 5.
 
 ### Properties
 
@@ -272,15 +272,15 @@ Properties 1-4, 6, and 7 hold at all k values. They are structural properties of
 
 | k | threshold | approved replace pairs | max churn chain |
 |---|-----------|----------------------|-----------------|
-| 1 | 1.000 | 0 (design hole) | 0 |
-| 2 | 0.500 | 11 | 2 steps |
-| 3 | 0.333 | 17 | 3 steps |
-| 4 | 0.250 | 17 | 3 steps |
-| 5 | 0.200 | 18 | 4 steps |
+| 1 | 1.000 | 0 | 0 |
+| 2 | 0.500 | 10 | 4 steps |
+| 3 | 0.333 | 10 | 4 steps |
+| 4 | 0.250 | 10 | 4 steps |
+| 5 | 0.200 | 10 | 4 steps |
 
-At k=1, no replace is ever approved in a uniform pool. The score for a uniform-pool replace simplifies to `1 - replacement_price / node_price`, which requires a free replacement to reach 1.0. This is the design hole.
+At k=1, no replace is ever approved in a uniform pool. The score for a uniform-pool replace simplifies to `1 - replacement_price / node_price`, which requires a free replacement to reach 1.0.
 
-k=2 is the smallest integer that fixes it. It admits 11 price pairs (every pair where the replacement costs at most half the original) and produces the shortest churn chains (2 steps, e.g., 27c to 13c to 4c). k=3 admits 6 more pairs and longer chains. k=4 admits zero new pairs over k=3 with real instance types (the discrete price set has no replacement/original ratios between 1/3 and 1/4). The script to reproduce these results is in [`designs/scripts/consolidation-cost-threshold-properties.py`](scripts/consolidation-cost-threshold-properties.py).
+k=2 is the smallest integer that fixes this. With power-of-2 instance pricing, every replacement ratio is exactly 0.5 or less, so k=2 captures all 10 price pairs and k≥3 adds zero. The max churn chain is 4 steps (m7i.4xlarge → 2xlarge → xlarge → large → medium), the natural downsize path through the instance family, identical at every k. The script to reproduce these results is in [`designs/scripts/consolidation-cost-threshold-properties.py`](scripts/consolidation-cost-threshold-properties.py).
 
 ## API Choices
 
