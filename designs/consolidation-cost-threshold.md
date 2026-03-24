@@ -73,13 +73,13 @@ score = savings_fraction / disruption_fraction
 
 A move is approved when `score >= 0.5`, meaning the savings fraction is at least half the disruption fraction. A dollar of savings buys two units of disruption. Higher scores indicate better value per unit of disruption.
 
-**Division-by-zero handling.** If `disruption_cost` is zero (no pods, or all pods have zero disruption cost), `disruption_fraction` is zero. DELETE operations with zero disruption cost are approved if savings are non-negative. REPLACE operations with zero disruption cost are approved if savings are positive. If `nodepool_total_disruption_cost` is zero, any move with positive savings is approved. If `nodepool_total_cost` is zero, `savings_fraction` is undefined and no consolidation happens. See [Edge Cases](#edge-cases) for worked examples.
-
-Feasibility checks (PodDisruptionBudgets, `karpenter.sh/do-not-disrupt`, scheduling constraints) filter which moves can be generated. Scoring evaluates which feasible moves are worth executing. Disruption budgets and `consolidateAfter` gate when and how many moves execute.
-
 Both savings and disruption are expressed as fractions of their NodePool totals. This makes both sides dimensionless. A move saving 10% of a $50/day pool's cost is equivalent to a move saving 10% of a $5,000/day pool's cost. Disrupting 4 pods out of 40 (10%) is equivalent to disrupting 400 pods out of 4000 (10%). A move with 2% savings fraction and 1% disruption fraction (score 2.0) is better than a move with 2% savings fraction and 3% disruption fraction (score 0.67).
 
 Consider a move that saves $4.84/day by draining an m7i.xlarge and disrupts 4 pods. On a NodePool costing $48.40/day with 40 pods, you save 10% of cost for 10% of disruption. On a NodePool costing $4,840/day with 4000 pods, you save 0.1% of cost for 0.1% of disruption. Both score 1.0 despite very different absolute numbers, and both are approved. But saving 0.1% of cost for 10% of disruption scores 0.01, far below the 0.5 threshold.
+
+**Division-by-zero handling.** If `disruption_cost` is zero (no pods, or all pods have zero disruption cost), `disruption_fraction` is zero. DELETE operations with zero disruption cost are approved if savings are non-negative. REPLACE operations with zero disruption cost are approved if savings are positive. If `nodepool_total_disruption_cost` is zero, any move with positive savings is approved. If `nodepool_total_cost` is zero, `savings_fraction` is undefined and no consolidation happens. See [Edge Cases](#edge-cases) for worked examples.
+
+Feasibility checks (PodDisruptionBudgets, `karpenter.sh/do-not-disrupt`, scheduling constraints) filter which moves can be generated. Scoring evaluates which feasible moves are worth executing. Disruption budgets and `consolidateAfter` gate when and how many moves execute.
 
 ### Move Score as Ranking Function
 
@@ -345,7 +345,7 @@ In a cluster where every node is underutilized by a similar amount, each REPLACE
 
 DELETE moves are not affected. In a uniformly underutilized cluster, some nodes have pods that fit on other nodes' spare capacity. A DELETE saves the full node cost with no replacement, so its savings fraction equals the node's share of NodePool cost and its disruption fraction equals the node's share of NodePool disruption. For identical nodes, every DELETE scores exactly 1.0.
 
-The scenario where every REPLACE is rejected but DELETEs pass is correct behavior. The system consolidates by deleting nodes whose pods fit elsewhere (cheap, no new capacity needed) and rejects REPLACEs where the savings do not justify the disruption. A REPLACE that saves at least half the source node's cost (score >= 0.5) is approved. If it does not, rejecting it is the right decision (see [Zero-Cost Nodes](#zero-cost-nodes-odcrs-reserved-capacity) for the `WhenEmptyOrUnderutilized` fallback).
+The scenario where every REPLACE is rejected but DELETEs pass is correct behavior. The system consolidates by deleting nodes whose pods fit elsewhere (cheap, no new capacity needed) and rejects REPLACEs where the savings do not justify the disruption. A REPLACE that saves at least half the source node's cost (score >= 0.5) is approved. If it does not, rejecting it is the right decision. Operators who want all feasible moves to execute regardless of savings can use `WhenEmptyOrUnderutilized`.
 
 ### Does the score account for kube-scheduler pod placement?
 
