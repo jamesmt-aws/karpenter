@@ -77,13 +77,11 @@ A move is approved when `score >= 0.5`, meaning the savings fraction is at least
 
 Feasibility checks (PodDisruptionBudgets, `karpenter.sh/do-not-disrupt`, scheduling constraints) filter which moves can be generated. Scoring evaluates which feasible moves are worth executing. Disruption budgets and `consolidateAfter` gate when and how many moves execute.
 
-#### Why Normalize
-
 Both savings and disruption are expressed as fractions of their NodePool totals. This makes both sides dimensionless. A move saving 10% of a $50/day pool's cost is equivalent to a move saving 10% of a $5,000/day pool's cost. Disrupting 4 pods out of 40 (10%) is equivalent to disrupting 400 pods out of 4000 (10%). A move with 2% savings fraction and 1% disruption fraction (score 2.0) is better than a move with 2% savings fraction and 3% disruption fraction (score 0.67).
 
 Consider a move that saves $4.84/day by draining an m7i.xlarge and disrupts 4 pods. On a NodePool costing $48.40/day with 40 pods, you save 10% of cost for 10% of disruption. On a NodePool costing $4,840/day with 4000 pods, you save 0.1% of cost for 0.1% of disruption. Both score 1.0 despite very different absolute numbers, and both are approved. But saving 0.1% of cost for 10% of disruption scores 0.01, far below the 0.5 threshold.
 
-#### Move Score Determines Move Order
+### Move Score as Ranking Function
 
 When multiple moves pass the threshold and a disruption budget limits how many can execute, we also use the score to determine execution order. Ranking by benefit/cost ratio is [optimal for the fractional knapsack problem](https://en.wikipedia.org/wiki/Continuous_knapsack_problem#Solution).
 
@@ -93,11 +91,47 @@ The graphs above show REPLACE and DELETE moves generated from a simulated cluste
 
 Each curve shows cumulative savings (y-axis) as a function of cumulative disruption (x-axis) under a different ranking strategy. Ranking by score dominates: at every disruption level, it delivers more savings than ranking by savings alone, disruption alone, or randomly. The script to reproduce these charts is in [`designs/scripts/consolidation-cost-threshold-ranking.py`](scripts/consolidation-cost-threshold-ranking.py).
 
-### Examples
+### Edge Cases
+
+#### Zero Total Disruption Cost
+
+If a node has no pods (or all its pods have disruption cost 0), the move's `disruption_cost` is zero and `disruption_fraction` is zero. The implementation approves the move if savings are positive.
+
+If the entire NodePool's `nodepool_total_disruption_cost` is zero, any move with positive savings is approved.
+
+#### Zero-Cost Nodes (ODCRs, Reserved Capacity)
+
+If a node's cost is zero (ODCR or reserved instance), the savings from any consolidation move involving that node are zero. The score is zero and the node is not consolidated by the scoring policy. The emptiness controller still deletes empty nodes regardless of cost.
+
+If the entire NodePool has zero total cost, `savings_fraction` produces a division by zero. The implementation treats this as no consolidation.
+
+When a positive-cost source node is consolidated and its pods land on a zero-cost destination node, this is a DELETE from the source pool's perspective. The score reflects the source pool's cost structure. The destination node's cost does not affect the score.
+
+### Candidate Filtering
+
+Generating consolidation moves is expensive. For each candidate source node, the system must find a destination, compute replacement node costs, and verify scheduling constraints. We can avoid this work for nodes that cannot produce a passing move.
+
+A node's best possible score is its delete ratio: the score of a DELETE, which saves the full node cost with no replacement.
+
+```
+delete_ratio = (node.price / nodepool_cost) / (node.disruption_cost / nodepool_total_disruption_cost)
+```
+
+If this ratio is below 0.5, no single-node move from that node can pass the threshold. A DELETE saves the full node cost. A REPLACE saves strictly less, because the replacement node has positive cost. The system can skip move generation for that node.
+
+This filter applies to single-node consolidation. For multi-node moves, a failing node could participate in a passing batch if other nodes compensate. But those compensating nodes would already be good single-node candidates on their own. Computation is not free. It is generally sensible to take the easy-to-find single-node savings first and only search for multi-node moves when single-node opportunities are exhausted.
+
+The NodePool totals only need to be sensible relative to each other. The implementation may cache totals or estimate them from a subset of nodes, as long as cost and disruption are estimated from the same sample.
+
+### Interaction with Existing Features
+
+All existing feasibility checks still apply: NodePool disruption budgets, PodDisruptionBudgets, `consolidateAfter`, and `karpenter.sh/do-not-disrupt`. Scoring applies only to consolidation. Spot interruptions, expiration, and drift are handled by separate controllers. Static NodePools are excluded from consolidation. Only drift applies to static NodePools.
+
+## Examples
 
 All examples use a NodePool with 10 nodes: eight m7i.xlarge (4 vCPU, 16 GiB, $4.84/day) and two m7i.2xlarge (8 vCPU, 32 GiB, $9.68/day). Total NodePool cost is $58.08/day. The NodePool runs 80 pods with total disruption cost 80.
 
-#### Oversized Node (approved)
+### Oversized Node (approved)
 
 One m7i.2xlarge runs 3 pods requesting 1.5 vCPU and 6 GiB total. Disruption cost is 3. These pods fit on an m7i.large at $2.42/day. Savings is $7.26.
 
@@ -107,7 +141,7 @@ disruption_fraction = 3 / 80 = 3.75%
 score = 0.125 / 0.0375 = 3.33 > 0.5 --> approved
 ```
 
-#### Spare Capacity Delete (approved)
+### Spare Capacity Delete (approved)
 
 One m7i.xlarge runs 4 pods requesting 1.5 vCPU and 6 GiB. Disruption cost is 4. Another node has spare capacity. Savings is $4.84 (full node cost, no replacement needed).
 
@@ -117,7 +151,7 @@ disruption_fraction = 4 / 80 = 5.0%
 score = 0.083 / 0.05 = 1.67 > 0.5 --> approved
 ```
 
-#### Marginal Move (rejected)
+### Marginal Move (rejected)
 
 One m7i.xlarge runs 8 pods requesting 1.8 vCPU and 7 GiB. Disruption cost is 8. The pods fit on an m7i.large at $2.42/day. Savings is $2.42.
 
@@ -127,11 +161,11 @@ disruption_fraction = 8 / 80 = 10.0%
 score = 0.042 / 0.10 = 0.42 < 0.5 --> rejected
 ```
 
-#### Well-Packed Node (rejected)
+### Well-Packed Node (rejected)
 
 One m7i.xlarge runs 10 pods requesting 3.5 vCPU and 14 GiB. The smallest fitting replacement is another m7i.xlarge. Savings is $0. No threshold approves this move.
 
-#### Uniform Pool Replace (approved)
+### Uniform Pool Replace (approved)
 
 All 10 nodes are m7i.xlarge ($4.84/day each, $48.40/day total, 80 pods, disruption cost 80). One node's 8 pods fit on an m7i.large ($2.42/day). Savings is $2.42.
 
@@ -143,7 +177,7 @@ score = 0.05 / 0.10 = 0.50 >= 0.5 --> approved
 
 The replacement costs exactly half the original. This is the boundary: a replace that saves less than 50% of the source node's cost is rejected. At a threshold of 1.0 (break-even), this move scores 0.50 and is rejected regardless of pool size, because the score for a uniform-pool replace simplifies to `1 - replacement_price / node_price`, which can never reach 1.0.
 
-#### Scale Invariance
+### Scale Invariance
 
 The same oversized-node scenario on a 100-node NodePool ($580.80/day total cost, 800 total disruption cost) produces the same score:
 
@@ -155,7 +189,7 @@ score = 0.0125 / 0.00375 = 3.33
 
 The threshold produces the same decision regardless of NodePool size.
 
-#### Heterogeneous Disruption Cost
+### Heterogeneous Disruption Cost
 
 Two m7i.xlarge nodes each run 4 pods and can be deleted (pods fit on other nodes). Both save $4.84/day. Node A runs 4 stateless proxies with default disruption cost (total 4). Node B runs 1 stateless proxy (cost 1) and 3 model-serving pods with `pod-deletion-cost: 134217728` (cost ~10 each, total 31). The NodePool total disruption cost is 107 (76 default-cost pods + node B's 31).
 
@@ -177,7 +211,7 @@ score = 0.083 / 0.29 = 0.29 < 0.5 --> rejected
 
 Same savings, same node count, same pod count. The score rejects node B because the model-serving pods are expensive to restart. This is the score's main advantage over alternatives that ignore disruption cost: it distinguishes nodes where disruption is cheap from nodes where it is not.
 
-#### Cross-NodePool: On-Demand and Spot
+### Cross-NodePool: On-Demand and Spot
 
 A cluster has two NodePools. The On-Demand pool has 10 m7i.xlarge nodes at $4.84/day each ($48.40/day total, 80 pods, total disruption cost 80). The Spot pool has 10 m7i.xlarge nodes at $1.45/day each ($14.50/day total, 80 pods, total disruption cost 80).
 
@@ -210,42 +244,6 @@ score = 0.10 / 0.10 = 1.0 > 0.5 --> approved
 ```
 
 The move is approved. To reach the 0.5 boundary, each of the 8 pods would need disruption cost 2 (disruption fraction 20%, score 0.50).
-
-### Edge Cases
-
-#### Zero Total Disruption Cost
-
-If a node has no pods (or all its pods have disruption cost 0), the move's `disruption_cost` is zero and `disruption_fraction` is zero. The implementation approves the move if savings are positive.
-
-If the entire NodePool's `nodepool_total_disruption_cost` is zero, any move with positive savings is approved.
-
-#### Zero-Cost Nodes (ODCRs, Reserved Capacity)
-
-If a node's cost is zero (ODCR or reserved instance), the savings from any consolidation move involving that node are zero. The score is zero and the node is not consolidated by the scoring policy. The emptiness controller still deletes empty nodes regardless of cost.
-
-If the entire NodePool has zero total cost, `savings_fraction` produces a division by zero. The implementation treats this as no consolidation.
-
-When a positive-cost source node is consolidated and its pods land on a zero-cost destination node, this is a DELETE from the source pool's perspective. The score reflects the source pool's cost structure. The destination node's cost does not affect the score.
-
-### Some Nodes Are Bad Consolidation Candidates
-
-Generating consolidation moves is expensive. For each candidate source node, the system must find a destination, compute replacement node costs, and verify scheduling constraints. We can avoid this work for nodes that cannot produce a passing move.
-
-A node's best possible score is its delete ratio: the score of a DELETE, which saves the full node cost with no replacement.
-
-```
-delete_ratio = (node.price / nodepool_cost) / (node.disruption_cost / nodepool_total_disruption_cost)
-```
-
-If this ratio is below 0.5, no single-node move from that node can pass the threshold. A DELETE saves the full node cost. A REPLACE saves strictly less, because the replacement node has positive cost. The system can skip move generation for that node.
-
-This filter applies to single-node consolidation. For multi-node moves, a failing node could participate in a passing batch if other nodes compensate. But those compensating nodes would already be good single-node candidates on their own. Computation is not free. It is generally sensible to take the easy-to-find single-node savings first and only search for multi-node moves when single-node opportunities are exhausted.
-
-The NodePool totals only need to be sensible relative to each other. The implementation may cache totals or estimate them from a subset of nodes, as long as cost and disruption are estimated from the same sample.
-
-### Interaction with Existing Features
-
-All existing feasibility checks still apply: NodePool disruption budgets, PodDisruptionBudgets, `consolidateAfter`, and `karpenter.sh/do-not-disrupt`. Scoring applies only to consolidation. Spot interruptions, expiration, and drift are handled by separate controllers. Static NodePools are excluded from consolidation. Only drift applies to static NodePools.
 
 ## API Choices
 
@@ -355,7 +353,7 @@ No. The score evaluates the move as proposed: source nodes are deleted, replacem
 
 This limitation exists in all consolidation modes. `WhenEmptyOrUnderutilized` has the same gap. The cost threshold reduces the frequency by rejecting marginal moves that are most likely to produce churn, but it does not eliminate it.
 
-The root cause is that Karpenter's provisioner and consolidation controller simulate scheduling internally, but kube-scheduler makes the actual placement decision independently. Both controllers estimate what the scheduler will do, and those estimates can diverge from reality. The [Workload-Aware Scheduling proposal](https://docs.google.com/document/d/1mPYqS4cFmsHPaVQDKyCz7-TKyWNJGjTaZQD3Umkvmgk) (Kepka, Feb 2026) identifies this as a fundamental problem in the Kubernetes scheduling architecture. Today, the best mitigation is configuring kube-scheduler with a `MostAllocated` scoring strategy, which biases placement toward full nodes, reducing divergence from Karpenter's expectations. Future work on a shared constraint-passing interface between the scheduler and provisioner will address this more directly.
+The root cause is that Karpenter simulates scheduling internally while kube-scheduler makes the actual placement decision. Configuring kube-scheduler with a `MostAllocated` scoring strategy reduces divergence. The [Workload-Aware Scheduling proposal](https://docs.google.com/document/d/1mPYqS4cFmsHPaVQDKyCz7-TKyWNJGjTaZQD3Umkvmgk) (Kepka, Feb 2026) addresses this more directly.
 
 ### Why doesn't the score account for reserved instance or ODCR opportunity cost?
 
