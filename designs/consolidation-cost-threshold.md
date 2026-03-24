@@ -251,7 +251,7 @@ The scoring formula has one free parameter: the decision constant k, where a mov
 
 ### State Space
 
-We enumerate all configurations in a bounded space using m7i on-demand prices in us-east-1: 1 to 6 nodes per pool, node prices in {$0.0504, $0.1008, $0.2016, $0.4032, $0.8064}/hr (m7i.medium through m7i.4xlarge), 0 to 4 pods per node, per-pod disruption cost in {1, 2, 5, 10}. For each configuration, we evaluate every candidate move (Delete and Replace to every cheaper price) at every k from 1 through 5.
+We enumerate all configurations in a bounded space using on-demand prices from three instance families in us-east-1: c7i (compute-optimized), m7i (general-purpose), and r7i (memory-optimized), medium through 4xlarge (15 price points). 1 to 6 nodes per pool, 0 to 4 pods per node, per-pod disruption cost in {1, 2, 5, 10}. For each configuration, we evaluate every candidate move (Delete and Replace to every cheaper price) at every k from 1 through 5. Three families matter because cross-family replacement ratios are not power-of-2.
 
 ### Properties
 
@@ -270,17 +270,19 @@ Properties 1-4, 6, and 7 hold at all k values. They are structural properties of
 
 ### Results
 
-| k | threshold | approved replace pairs | max churn chain |
-|---|-----------|----------------------|-----------------|
-| 1 | 1.000 | 0 | 0 |
-| 2 | 0.500 | 10 | 4 steps |
-| 3 | 0.333 | 10 | 4 steps |
-| 4 | 0.250 | 10 | 4 steps |
-| 5 | 0.200 | 10 | 4 steps |
+| k | threshold | approved replace pairs | new pairs vs k-1 | max churn chain |
+|---|-----------|----------------------|-----------------|-----------------|
+| 1 | 1.000 | 0 | — | 0 |
+| 2 | 0.500 | 78 | 78 | 4 steps |
+| 3 | 0.333 | 86 | 8 | 4 steps |
+| 4 | 0.250 | 95 | 9 | 9 steps |
+| 5 | 0.200 | 100 | 5 | 9 steps |
 
 At k=1, no replace is ever approved in a uniform pool. The score for a uniform-pool replace simplifies to `1 - replacement_price / node_price`, which requires a free replacement to reach 1.0.
 
-k=2 is the smallest integer that fixes this. With power-of-2 instance pricing, every replacement ratio is exactly 0.5 or less, so k=2 captures all 10 price pairs and k≥3 adds zero. The max churn chain is 4 steps (m7i.4xlarge → 2xlarge → xlarge → large → medium), the natural downsize path through the instance family, identical at every k. The script to reproduce these results is in [`designs/scripts/consolidation-cost-threshold-properties.py`](scripts/consolidation-cost-threshold-properties.py).
+k=2 is the smallest integer that fixes this. Within a single family, prices follow power-of-2 scaling, so every replacement ratio is exactly 0.5 or less and k≥3 adds nothing. Across families, k=3 opens 8 additional cross-family pairs (e.g., c7i.large → m7i.medium at 43% savings, score 0.43) without increasing the max churn chain. k=4 opens 9 more pairs but allows 9-step churn chains that zigzag through all three families.
+
+k=2 is the right default. "Save at least half" is a clean boundary. The 8 cross-family pairs at k=3 are available to operators who later tune aggressiveness to Low (see [Configurable Aggressiveness](#configurable-aggressiveness)). The script to reproduce these results is in [`designs/scripts/consolidation-cost-threshold-properties.py`](scripts/consolidation-cost-threshold-properties.py).
 
 ## API Choices
 

@@ -7,7 +7,7 @@ Cross-multiplied: k * savings * pool_disruption >= move_disruption * pool_cost
 
 State space:
   - 1-6 nodes
-  - Prices from m7i on-demand (us-east-1), scaled to integers for exact arithmetic
+  - Prices from c7i, m7i, r7i on-demand (us-east-1), scaled to integers
   - 0-4 pods per node, disruption cost in {1, 2, 5, 10}
   - Actions: Delete(node), Replace(node, new_price)
   - k: the decision constant (1 = break-even, 2 = savings count 2x)
@@ -16,13 +16,30 @@ State space:
 from itertools import product as cartesian
 from collections import defaultdict
 
-# m7i on-demand prices in us-east-1, $/hr × 10000 for exact integer arithmetic.
-# m7i.medium  $0.0504/hr  →  504
-# m7i.large   $0.1008/hr  → 1008
-# m7i.xlarge  $0.2016/hr  → 2016
-# m7i.2xlarge $0.4032/hr  → 4032
-# m7i.4xlarge $0.8064/hr  → 8064
-PRICES = [504, 1008, 2016, 4032, 8064]
+# On-demand prices in us-east-1, $/hr × 10000 for exact integer arithmetic.
+# c7i (compute-optimized)
+#   c7i.medium  $0.0446/hr  →  446
+#   c7i.large   $0.0892/hr  →  892
+#   c7i.xlarge  $0.1785/hr  → 1785
+#   c7i.2xlarge $0.3570/hr  → 3570
+#   c7i.4xlarge $0.7140/hr  → 7140
+# m7i (general-purpose)
+#   m7i.medium  $0.0504/hr  →  504
+#   m7i.large   $0.1008/hr  → 1008
+#   m7i.xlarge  $0.2016/hr  → 2016
+#   m7i.2xlarge $0.4032/hr  → 4032
+#   m7i.4xlarge $0.8064/hr  → 8064
+# r7i (memory-optimized)
+#   r7i.medium  $0.0661/hr  →  661
+#   r7i.large   $0.1323/hr  → 1323
+#   r7i.xlarge  $0.2646/hr  → 2646
+#   r7i.2xlarge $0.5292/hr  → 5292
+#   r7i.4xlarge $1.0584/hr  → 10584
+PRICES = sorted([
+    446, 892, 1785, 3570, 7140,     # c7i
+    504, 1008, 2016, 4032, 8064,    # m7i
+    661, 1323, 2646, 5292, 10584,   # r7i
+])
 DCOSTS = [1, 2, 5, 10]
 K_VALUES = [1, 2, 3, 4, 5]
 
