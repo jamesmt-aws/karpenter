@@ -71,7 +71,7 @@ disruption_fraction = disruption_cost / nodepool_total_disruption_cost
 score = savings_fraction / disruption_fraction
 ```
 
-A move is approved when `score >= 0.5`, meaning the savings fraction is at least half the disruption fraction. A dollar of savings buys two units of disruption. Higher scores indicate better value per unit of disruption.
+A move is approved when `score >= 0.5`, meaning the savings fraction is at least half the disruption fraction. A percent of savings buys two percent of disruption. Higher scores indicate better value per unit of disruption.
 
 Both savings and disruption are expressed as fractions of their NodePool totals. This makes both sides dimensionless. A move saving 10% of a $50/day pool's cost is equivalent to a move saving 10% of a $5,000/day pool's cost. Disrupting 4 pods out of 40 (10%) is equivalent to disrupting 400 pods out of 4000 (10%). A move with 2% savings fraction and 1% disruption fraction (score 2.0) is better than a move with 2% savings fraction and 3% disruption fraction (score 0.67).
 
@@ -247,7 +247,7 @@ The move is approved. To reach the 0.5 boundary, each of the 8 pods would need d
 
 ## Threshold Verification
 
-The scoring formula has one free parameter: the decision constant k, where a move is approved when `score >= 1/k`. At k=1 (break-even), one dollar of savings buys one unit of disruption. At k=2, one dollar buys two. We chose k=2 (threshold 0.5) by exhaustive enumeration.
+The scoring formula has one free parameter: the decision constant k, where a move is approved when `score >= 1/k`. At k=1 (break-even), one percent of savings buys one percent of disruption. At k=2, one percent buys two. We chose k=2 (threshold 0.5) by exhaustive enumeration.
 
 ### State Space
 
@@ -288,7 +288,7 @@ k=2 is the right default. "Save at least half" is a clean boundary. The 8 cross-
 
 ### Consolidation Aggressiveness Tuning [Recommended: Fixed Threshold at Launch]
 
-This proposal uses a fixed threshold (score >= 0.5) with no operator-facing aggressiveness knob. A dollar of savings buys two units of disruption. Operators who need to tune the cost-disruption tradeoff do so per-pod through `pod-deletion-cost` and priority, where the domain knowledge lives.
+This proposal uses a fixed threshold (score >= 0.5) with no operator-facing aggressiveness knob. A percent of savings buys two percent of disruption. Operators who need to tune the cost-disruption tradeoff do so per-pod through `pod-deletion-cost` and priority, where the domain knowledge lives.
 
 Two alternatives were considered for operator-level aggressiveness control. The fixed threshold of 0.5 is equivalent to Medium in the first alternative and 50 in the second, so either alternative can be added later without breaking existing behavior.
 
