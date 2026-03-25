@@ -41,10 +41,10 @@ Each move has a cost savings and a disruption cost. The score compares these as 
 
 [`EvictionCost`](../pkg/utils/disruption/disruption.go) in `pkg/utils/disruption/disruption.go` starts with a base of 1.0 per pod and adds two terms:
 
-1. **Pod deletion cost** ([`controller.kubernetes.io/pod-deletion-cost`](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/#pod-deletion-cost) annotation), divided by 2^27, contributing roughly -16 to +16. The ReplicaSet controller uses this to choose which pods to scale down first. Karpenter reuses it to determine which nodes are cheaper to disrupt.
-2. **Pod priority**, divided by 2^25, contributing roughly -64 to +30 for standard priority classes. [Priority](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/) is assigned via `spec.priorityClassName`. Karpenter reuses it as a disruption cost signal: higher-priority pods increase their node's disruption cost. The two terms differ in who sets them. Pod-deletion-cost is set by pod authors. Priority is assigned by cluster operators via PriorityClass. Both contribute additively to the same disruption cost.
+1. **Pod deletion cost** ([`controller.kubernetes.io/pod-deletion-cost`](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/#pod-deletion-cost) annotation), divided by 2^27, contributing a value in the range -16 to +16. Default: 0 (no annotation). Set by pod authors; the ReplicaSet controller uses this to choose which pods to scale down first, and Karpenter reuses it as a disruption signal.
+2. **Pod priority**, divided by 2^25, contributing a value in the range -64 to +30 for standard priority classes. Default: 0 (default priority class). Assigned by cluster operators via [`spec.priorityClassName`](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/). Higher-priority pods increase their node's disruption cost.
 
-`EvictionCost` clamps the result to [-10, 10]. For scoring, we further clamp negative values to 0 because a negative disruption cost would invert the ratio. This gives disruption cost a per-pod range of [0, 10], with a default of 1.0 for pods with no annotation and default priority.
+With neither set, per-pod disruption cost is 1.0. `EvictionCost` clamps the result to [-10, 10]; for scoring, we further clamp negative values to 0 because a negative disruption cost would invert the ratio. Per-pod range: [0, 10].
 
 #### NodePool Totals
 
@@ -396,7 +396,7 @@ The root cause is that Karpenter simulates scheduling internally while kube-sche
 
 ### Why doesn't the score account for reserved instance or ODCR opportunity cost?
 
-Under this policy, zero-cost nodes produce zero savings and are not consolidated (see [Zero-Cost Nodes](#zero-cost-nodes-odcrs-reserved-capacity)). Reserved capacity has real opportunity cost, but modeling it requires expressing what freed capacity is worth, which varies by organization and time horizon. This RFC defers opportunity-cost modeling.
+Under this policy, zero-cost nodes produce zero savings. The scoring policy does not consolidate them, but the emptiness controller still deletes empty zero-cost nodes (see [Zero-Cost Nodes](#zero-cost-nodes-odcrs-reserved-capacity)). Reserved capacity has real opportunity cost, but modeling it requires expressing what freed capacity is worth, which varies by organization and time horizon. This RFC defers opportunity-cost modeling.
 
 Karpenter does not currently have access to the amortized hourly cost of reservations (purchase price / term / hours). Surfacing amortized cost would require billing API integration (e.g., AWS Cost Explorer), which is out of scope.
 
