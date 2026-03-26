@@ -1,4 +1,4 @@
-# WhenSavingsJustifyDisruption: Scoring Consolidation Moves
+# Balanced Consolidation: Scoring Moves by Savings and Disruption
 
 ## Motivation
 
@@ -12,7 +12,7 @@ Consolidation happens when Karpenter can find a cost savings, and terminating an
 - `consolidateAfter` not preventing disruption of well-packed nodes ([kubernetes-sigs#2705](https://github.com/kubernetes-sigs/karpenter/issues/2705), [aws#3577](https://github.com/aws/karpenter-provider-aws/issues/3577))
 - Direct requests for a savings threshold or utilization-based consolidation gating ([kubernetes-sigs#2883](https://github.com/kubernetes-sigs/karpenter/issues/2883), [kubernetes-sigs#1440](https://github.com/kubernetes-sigs/karpenter/issues/1440), [kubernetes-sigs#1686](https://github.com/kubernetes-sigs/karpenter/issues/1686), [kubernetes-sigs#1430](https://github.com/kubernetes-sigs/karpenter/issues/1430), [aws#5218](https://github.com/aws/karpenter-provider-aws/issues/5218))
 
-This RFC calls each consolidation action a *move*. A move deletes one or more nodes, along with any necessary pod disruption and replacement node creation. We propose a new `consolidationPolicy` value, `WhenSavingsJustifyDisruption`, that scores each move and rejects moves where the disruption outweighs the savings. At launch, `WhenSavingsJustifyDisruption` is opt-in. After user feedback, we will consider making it the default, replacing `WhenEmptyOrUnderutilized`.
+This RFC calls each consolidation action a *move*. A move deletes one or more nodes, along with any necessary pod disruption and replacement node creation. We propose a new `consolidationPolicy` value, `Balanced`, that scores each move and rejects moves where the disruption outweighs the savings. A `disruptionTolerance` parameter (default 2) controls the tradeoff. The existing policies (`WhenEmpty`, `WhenEmptyOrUnderutilized`) are points on the same spectrum. At launch, `Balanced` is opt-in. After user feedback, we will consider making it the default.
 
 ## Proposal
 
@@ -25,13 +25,24 @@ metadata:
   name: default
 spec:
   disruption:
-    consolidationPolicy: WhenSavingsJustifyDisruption
+    consolidationPolicy: Balanced
+    disruptionTolerance: 2
     consolidateAfter: 30s
     budgets:
     - nodes: 10%
 ```
 
-`WhenSavingsJustifyDisruption` is a new `consolidationPolicy` enum value. The default remains `WhenEmptyOrUnderutilized`. Operators opt in per-NodePool.
+`Balanced` is a new `consolidationPolicy` enum value. It scores each consolidation move and approves it when savings justify the disruption. `disruptionTolerance` (default 2) controls how much disruption one unit of savings can buy: a move is approved when `score >= 1/disruptionTolerance`.
+
+The three consolidation policies are points on a single spectrum:
+
+| Policy | Equivalent k | Threshold | Behavior |
+|---|---|---|---|
+| `WhenEmpty` | 0 | ∞ | Only empty nodes (zero disruption) |
+| `Balanced` | 2 (default) | 0.5 | Savings must justify disruption |
+| `WhenEmptyOrUnderutilized` | ∞ | 0 | Any positive savings |
+
+`disruptionTolerance` is only valid with `Balanced`. The default `consolidationPolicy` remains `WhenEmptyOrUnderutilized`.
 
 ### How Scoring Works
 
@@ -71,11 +82,11 @@ disruption_fraction = disruption_cost / nodepool_total_disruption_cost
 score = savings_fraction / disruption_fraction
 ```
 
-A move is approved when `score >= 0.5`, meaning the savings fraction is at least half the disruption fraction. A percent of savings buys two percent of disruption. Higher scores indicate better value per unit of disruption.
+A move is approved when `score >= 1/k`, where k is `disruptionTolerance` (default 2). At the default k=2, one dollar of savings buys two units of disruption. Higher k values approve more aggressively. Higher scores indicate better value per unit of disruption.
 
 Both savings and disruption are expressed as fractions of their NodePool totals. This makes both sides dimensionless. A move saving 10% of a $50/day pool's cost is equivalent to a move saving 10% of a $5,000/day pool's cost. Disrupting 4 pods out of 40 (10%) is equivalent to disrupting 400 pods out of 4000 (10%). A move with 2% savings fraction and 1% disruption fraction (score 2.0) is better than a move with 2% savings fraction and 3% disruption fraction (score 0.67).
 
-Consider a move that saves $4.84/day by draining an m7i.xlarge and disrupts 4 pods. On a NodePool costing $48.40/day with 40 pods, you save 10% of cost for 10% of disruption. On a NodePool costing $4,840/day with 4000 pods, you save 0.1% of cost for 0.1% of disruption. Both score 1.0 despite very different absolute numbers, and both are approved. But saving 0.1% of cost for 10% of disruption scores 0.01, far below the 0.5 threshold.
+Consider a move that saves $4.84/day by draining an m7i.xlarge and disrupts 4 pods. On a NodePool costing $48.40/day with 40 pods, you save 10% of cost for 10% of disruption. On a NodePool costing $4,840/day with 4000 pods, you save 0.1% of cost for 0.1% of disruption. Both score 1.0 despite very different absolute numbers, and both are approved. But saving 0.1% of cost for 10% of disruption scores 0.01, far below the threshold.
 
 **Division-by-zero handling.** If `disruption_cost` is zero (no pods, or all pods have zero disruption cost), `disruption_fraction` is zero. DELETE operations with zero disruption cost are approved if savings are non-negative. REPLACE operations with zero disruption cost are approved if savings are positive. If `nodepool_total_disruption_cost` is zero, any move with positive savings is approved. If `nodepool_total_cost` is zero, `savings_fraction` is undefined and no consolidation happens. See [Edge Cases](#edge-cases) for worked examples.
 
@@ -117,7 +128,7 @@ A node's best possible score is its delete ratio: the score of a DELETE, which s
 delete_ratio = (node.price / nodepool_cost) / (node.disruption_cost / nodepool_total_disruption_cost)
 ```
 
-If this ratio is below 0.5, no single-node move from that node can pass the threshold. A DELETE saves the full node cost. A REPLACE saves strictly less, because the replacement node has positive cost. The system can skip move generation for that node.
+If this ratio is below 1/k (0.5 at the default k=2), no single-node move from that node can pass the threshold. A DELETE saves the full node cost. A REPLACE saves strictly less, because the replacement node has positive cost. The system can skip move generation for that node.
 
 This filter applies to single-node consolidation. For multi-node moves, a failing node could participate in a passing batch if other nodes compensate. But those compensating nodes would already be good single-node candidates on their own. Computation is not free. It is generally sensible to take the easy-to-find single-node savings first and only search for multi-node moves when single-node opportunities are exhausted.
 
@@ -129,7 +140,7 @@ All existing feasibility checks still apply: NodePool disruption budgets, PodDis
 
 ## Examples
 
-All examples use a NodePool with 10 nodes: eight m7i.xlarge (4 vCPU, 16 GiB, $4.84/day) and two m7i.2xlarge (8 vCPU, 32 GiB, $9.68/day). Total NodePool cost is $58.08/day. The NodePool runs 80 pods with total disruption cost 80.
+All examples use the default `disruptionTolerance` of 2 (threshold 0.5). The NodePool has 10 nodes: eight m7i.xlarge (4 vCPU, 16 GiB, $4.84/day) and two m7i.2xlarge (8 vCPU, 32 GiB, $9.68/day). Total NodePool cost is $58.08/day. The NodePool runs 80 pods with total disruption cost 80.
 
 ### Oversized Node (approved)
 
@@ -175,7 +186,7 @@ disruption_fraction = 8 / 80 = 10.0%
 score = 0.05 / 0.10 = 0.50 >= 0.5 --> approved
 ```
 
-The replacement costs exactly half the original. This is the boundary: a replace that saves less than 50% of the source node's cost is rejected. At a threshold of 1.0 (break-even), this move scores 0.50 and is rejected regardless of pool size, because the score for a uniform-pool replace simplifies to `1 - replacement_price / node_price`, which can never reach 1.0.
+The replacement costs exactly half the original. This is the boundary at k=2: a replace that saves less than 50% of the source node's cost is rejected. At k=1 (break-even), no replace is ever approved in a uniform pool, because the score simplifies to `1 - replacement_price / node_price`, which can never reach 1.0. This design hole is why k=2 is the recommended default.
 
 ### Scale Invariance
 
@@ -247,7 +258,7 @@ The move is approved. To reach the 0.5 boundary, each of the 8 pods would need d
 
 ## Threshold Verification
 
-The scoring formula has one free parameter: the decision constant k, where a move is approved when `score >= 1/k`. At k=1 (break-even), one percent of savings buys one percent of disruption. At k=2, one percent buys two. We chose k=2 (threshold 0.5) by exhaustive enumeration.
+The scoring formula has one free parameter: the decision constant k, where a move is approved when `score >= 1/k`. At k=1 (break-even), one dollar of savings buys one unit of disruption. At k=2, one dollar buys two. We chose k=2 (threshold 0.5) by exhaustive enumeration.
 
 ### State Space
 
@@ -282,19 +293,19 @@ At k=1, no replace is ever approved in a uniform pool. The score for a uniform-p
 
 k=2 is the smallest integer that fixes this. Within a single family, prices follow power-of-2 scaling, so every replacement ratio is exactly 0.5 or less and k≥3 adds nothing. Across families, k=3 opens 8 additional cross-family pairs (e.g., c7i.large → m7i.medium at 43% savings, score 0.43) without increasing the max churn chain. k=4 opens 9 more pairs but allows 9-step churn chains that zigzag through all three families.
 
-k=2 is the right default. "Save at least half" is a clean boundary. The 8 cross-family pairs at k=3 are available to operators who later tune aggressiveness to Low (see [Configurable Aggressiveness](#configurable-aggressiveness)). The script to reproduce these results is in [`designs/scripts/consolidation-cost-threshold-properties.py`](scripts/consolidation-cost-threshold-properties.py).
+k=2 is the right default. "Save at least half" is a clean boundary. The 8 cross-family pairs at k=3 are available to operators who set `disruptionTolerance: 3`. The script to reproduce these results is in [`designs/scripts/consolidation-cost-threshold-properties.py`](scripts/consolidation-cost-threshold-properties.py).
 
 ## API Choices
 
-### Consolidation Aggressiveness Tuning [Recommended: Fixed Threshold at Launch]
+### Consolidation Aggressiveness Tuning [Recommended: disruptionTolerance]
 
-This proposal uses a fixed threshold (score >= 0.5) with no operator-facing aggressiveness knob. A percent of savings buys two percent of disruption. Operators who need to tune the cost-disruption tradeoff do so per-pod through `pod-deletion-cost` and priority, where the domain knowledge lives.
+`disruptionTolerance` exposes the decision constant k directly. The threshold is `1/k`. Operators set k=2 (default) for within-family replaces, k=3 for cross-family replaces, or higher for more aggressive consolidation. The [Threshold Verification](#threshold-verification) section characterizes behavior at each k value.
 
-Two alternatives were considered for operator-level aggressiveness control. The fixed threshold of 0.5 is equivalent to Medium in the first alternative and 50 in the second, so either alternative can be added later without breaking existing behavior.
+Two alternatives were considered:
 
-**Low/Medium/High (three-state).** A `consolidationAggressiveness` field with three values: Low (conservative, threshold ~1.58), Medium (default, threshold 0.5), High (aggressive, threshold ~0.16). Each step is a 10x change in required savings-per-disruption. This avoids the "what number do I pick?" problem of a continuous range. Not preferred at launch, but this is the most likely extension if users demonstrate a need for NodePool-level tuning beyond per-pod annotations.
+**Named presets (Low/Medium/High).** A `consolidationAggressiveness` enum mapping to k values (e.g., Low=1, Medium=2, High=3). This hides the math but limits choices to three points. Not preferred because the direct parameter is equally simple and more flexible.
 
-**Continuous slider (0-100).** A `consolidationThreshold` field (0-100) mapping to a log-scale threshold via `10^((x-50)/25) / 2`, where 0 means consolidate aggressively (threshold ~0.005), 50 is the default (threshold 0.5), and 100 means consolidate only for extreme savings (threshold 50). Each 25-point increment is a 10x change. 0-100 is a wide range with no guidance on what value to pick.
+**Continuous slider (0-100).** A `consolidationThreshold` field mapping to a log-scale threshold. This adds a nonlinear transformation that obscures the underlying math. Not preferred.
 
 ### Per-NodePool vs. Per-Cluster Normalization [Recommended: Per-NodePool]
 
@@ -306,13 +317,13 @@ Pros: Matches Karpenter's per-NodePool architecture. Prevents large pools from d
 
 Cons: Scores reflect relative efficiency within a pool, not absolute dollar impact. A score of 2.0 in a $50/hr pool and a score of 2.0 in a $10,000/hr pool look identical, but the latter saves 200x more money. This does not affect behavior (each pool runs consolidation independently with its own budget), but it limits what operators can conclude from comparing scores across pools.
 
-### New consolidationPolicy Value vs. New Field
+### New consolidationPolicy Value with disruptionTolerance
 
-Adding `WhenSavingsJustifyDisruption` as a policy value keeps the new behavior gated behind an explicit opt-in.
+Adding `Balanced` as a policy value with `disruptionTolerance` gives operators an explicit opt-in and a tuning knob. The three policies (`WhenEmpty`, `Balanced`, `WhenEmptyOrUnderutilized`) span the full spectrum from zero tolerance to unlimited tolerance.
 
-Pros: No behavior change for existing users. Clear migration path: change `WhenEmptyOrUnderutilized` to `WhenSavingsJustifyDisruption`.
+Pros: No behavior change for existing users. Clear migration path: change `WhenEmptyOrUnderutilized` to `Balanced`. Operators who need to tune have a single, interpretable parameter.
 
-Cons: The three values (`WhenEmpty`, `WhenEmptyOrUnderutilized`, `WhenSavingsJustifyDisruption`) sensibly bracket the space (never disrupt pods, always consolidate ignoring disruption, balance savings with disruption) but the names evolved incrementally and do not convey this spectrum clearly. Future API work could introduce shorter synonyms (e.g., `Never`, `Always`, `WhenWorthIt`) to make the intent more obvious.
+Cons: The names evolved incrementally and do not convey the spectrum clearly. `WhenEmpty` and `WhenEmptyOrUnderutilized` are named for their behavior; `Balanced` is named for its character. Future API work could introduce shorter aliases (e.g., `Never`, `Balanced`, `Always`) to make the spectrum more obvious.
 
 ## Alternatives Considered
 
@@ -350,10 +361,6 @@ A dedicated `karpenter.sh/disruption-cost` annotation separate from the existing
 
 ## Future Work
 
-### Configurable Aggressiveness
-
-If operators demonstrate a need for per-NodePool aggressiveness tuning beyond what per-pod annotations provide, a Low/Medium/High `consolidationAggressiveness` field is the most likely extension. A continuous 0-100 slider is possible but less likely. The fixed threshold is equivalent to Medium (or slider value 50), so either extension is non-breaking. See [API Choices](#consolidation-aggressiveness-tuning-recommended-fixed-threshold-at-launch) for details.
-
 ### Move Quality Tracking
 
 Annotate each moved pod with the consolidation move's score. Track how many moved pods are re-disrupted before savings are realized (e.g., the pod is evicted again within minutes). A high rate of premature re-disruption indicates the threshold is too aggressive. A low rate with many moves rejected indicates it may be too conservative.
@@ -368,13 +375,13 @@ Surface the move count and estimated savings at the current threshold. Scoring a
 
 ## Open Questions
 
-- **Is 0.5 the right threshold?** [Threshold Verification](#threshold-verification) explains why k=2 (threshold 0.5) is the smallest value that fixes the design hole at k=1. We do not know whether 0.5 works well across diverse workloads. Some workloads may need a more conservative threshold (e.g., 1.0) and others a more aggressive one (e.g., 0.3). The feature gate and opt-in rollout exist to answer this question empirically.
+- **Is k=2 the right default?** [Threshold Verification](#threshold-verification) explains why k=2 is the smallest value that fixes the design hole at k=1. We do not know whether k=2 works well across diverse workloads. Operators can adjust `disruptionTolerance` per-NodePool. The feature gate and opt-in rollout exist to answer this question empirically.
 
 - **How many customers use `pod-deletion-cost` today?** If few do, every pod has default disruption cost 1.0 and the score reduces to pod-count-versus-savings. The score's main differentiator (distinguishing expensive-to-restart pods from cheap ones) depends on customers setting this annotation. [PR #2894](https://github.com/kubernetes-sigs/karpenter/pull/2894) would automate this.
 
 - **Should there be a per-node baseline disruption cost?** Consolidating any node has fixed overhead (cordon, drain, delete) independent of pod count. Adding a baseline of 1.0 per node means an empty node still has nonzero disruption cost. We have not validated whether this improves decisions in practice.
 
-- **How should multi-NodePool moves interact with different policies?** If NodePool A uses `WhenSavingsJustifyDisruption` and NodePool B uses `WhenEmptyOrUnderutilized`, a cross-pool move uses the source pool's policy. Whether this is always the right behavior when pools have different disruption tolerances is an open question.
+- **How should multi-NodePool moves interact with different policies?** If NodePool A uses `Balanced` and NodePool B uses `WhenEmptyOrUnderutilized`, a cross-pool move uses the source pool's policy. Whether this is always the right behavior when pools have different disruption tolerances is an open question.
 
 ## Frequently Asked Questions
 
@@ -406,7 +413,7 @@ Scored moves are logged at DEBUG level with score, savings fraction, disruption 
 
 ### Will this become the default consolidation policy?
 
-Not at launch. `WhenSavingsJustifyDisruption` is opt-in behind a feature gate. Whether it becomes the default is a community decision deferred to GA graduation.
+Not at launch. `Balanced` is opt-in behind a feature gate. Whether it becomes the default is a community decision deferred to GA graduation.
 
 ### Does constraining maximum node size improve this proposal?
 
@@ -418,7 +425,7 @@ This feature follows Karpenter's standard feature gate pattern, consistent with 
 
 ### Phase 1: Alpha (feature gate, disabled by default)
 
-`WhenSavingsJustifyDisruption` is gated behind a `SavingsBasedConsolidation` feature gate, disabled by default. Setting `consolidationPolicy: WhenSavingsJustifyDisruption` without the gate enabled is rejected by validation. Operators opt in via `--feature-gates SavingsBasedConsolidation=true`. See [Where is the score visible?](#where-is-the-score-visible) for observability details.
+`Balanced` is gated behind a `BalancedConsolidation` feature gate, disabled by default. Setting `consolidationPolicy: Balanced` without the gate enabled is rejected by validation. Operators opt in via `--feature-gates BalancedConsolidation=true`. See [Where is the score visible?](#where-is-the-score-visible) for observability details.
 
 ### Phase 2: Beta (feature gate, enabled by default)
 
@@ -426,6 +433,6 @@ After community feedback confirms the threshold works across diverse workloads, 
 
 ### Phase 3: GA (feature gate removed)
 
-The feature gate is removed. `WhenSavingsJustifyDisruption` is always available without a gate. Whether it becomes the default policy is a separate community decision. Existing NodePool specs are unaffected.
+The feature gate is removed. `Balanced` is always available without a gate. Whether it becomes the default policy is a separate community decision. Existing NodePool specs are unaffected.
 
 Graduation is community-driven based on adoption, GitHub issues, and real-world feedback.
