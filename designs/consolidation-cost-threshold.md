@@ -258,7 +258,7 @@ The move is approved. To reach the 0.5 boundary, each of the 8 pods would need d
 
 ## Threshold Verification
 
-The scoring formula has one free parameter: the decision constant k, where a move is approved when `score >= 1/k`. At k=1 (break-even), one dollar of savings buys one unit of disruption. At k=2, one dollar buys two. We chose k=2 (threshold 0.5) by exhaustive enumeration.
+The scoring formula has one free parameter: `disruptionTolerance` (k), where a move is approved when `score >= 1/k`. At k=1 (break-even), one dollar of savings buys one unit of disruption. At k=2, one dollar buys two. We chose k=2 (threshold 0.5) by exhaustive enumeration.
 
 ### State Space
 
@@ -391,7 +391,7 @@ In a cluster where every node is underutilized by a similar amount, each REPLACE
 
 DELETE moves are not affected. In a uniformly underutilized cluster, some nodes have pods that fit on other nodes' spare capacity. A DELETE saves the full node cost with no replacement, so its savings fraction equals the node's share of NodePool cost and its disruption fraction equals the node's share of NodePool disruption. For identical nodes, every DELETE scores exactly 1.0.
 
-The scenario where every REPLACE is rejected but DELETEs pass is correct behavior. The system consolidates by deleting nodes whose pods fit elsewhere (cheap, no new capacity needed) and rejects REPLACEs where the savings do not justify the disruption. A REPLACE that saves at least half the source node's cost (score >= 0.5) is approved. If it does not, rejecting it is the right decision. Operators who want all feasible moves to execute regardless of savings can use `WhenEmptyOrUnderutilized`.
+The scenario where every REPLACE is rejected but DELETEs pass is correct behavior. The system consolidates by deleting nodes whose pods fit elsewhere (cheap, no new capacity needed) and rejects REPLACEs where the savings do not justify the disruption. At the default k=2, a REPLACE that saves at least half the source node's cost (score >= 0.5) is approved. If it does not, rejecting it is the right decision. Operators who want all feasible moves to execute regardless of savings can use `WhenEmptyOrUnderutilized`.
 
 ### Does the score account for kube-scheduler pod placement?
 
