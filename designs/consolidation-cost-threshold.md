@@ -42,7 +42,7 @@ The three consolidation policies are points on a single spectrum:
 | `Balanced` | 2 (default) | 0.5 | Savings must justify disruption |
 | `WhenEmptyOrUnderutilized` | ∞ | 0 | Any positive savings |
 
-`disruptionTolerance` is only valid with `Balanced`. The default `consolidationPolicy` remains `WhenEmptyOrUnderutilized`.
+`disruptionTolerance` is only valid with `Balanced`. The default `consolidationPolicy` remains `WhenEmptyOrUnderutilized`. `WhenEmpty` is currently implemented by a separate controller (the emptiness controller), not by scoring. The scoring formula gives the right answer for empty nodes (zero disruption cost, always approved), so these could be unified in the future.
 
 ### How Scoring Works
 
@@ -82,7 +82,7 @@ disruption_fraction = disruption_cost / nodepool_total_disruption_cost
 score = savings_fraction / disruption_fraction
 ```
 
-A move is approved when `score >= 1/k`, where k is `disruptionTolerance` (default 2). At the default k=2, one dollar of savings buys two units of disruption. Higher k values approve more aggressively. Higher scores indicate better value per unit of disruption.
+A move is approved when `score >= 1/k`, where k is `disruptionTolerance` (default 2). At the default k=2, saving $1/hr in a $100/hr pool buys disrupting 2% of the pool's total disruption cost. Higher k values approve more aggressively. Higher scores indicate better value per unit of disruption.
 
 Both savings and disruption are expressed as fractions of their NodePool totals. This makes both sides dimensionless. A move saving 10% of a $50/day pool's cost is equivalent to a move saving 10% of a $5,000/day pool's cost. Disrupting 4 pods out of 40 (10%) is equivalent to disrupting 400 pods out of 4000 (10%). A move with 2% savings fraction and 1% disruption fraction (score 2.0) is better than a move with 2% savings fraction and 3% disruption fraction (score 0.67).
 
@@ -258,7 +258,7 @@ The move is approved. To reach the 0.5 boundary, each of the 8 pods would need d
 
 ## Threshold Verification
 
-The scoring formula has one free parameter: `disruptionTolerance` (k), where a move is approved when `score >= 1/k`. At k=1 (break-even), one dollar of savings buys one unit of disruption. At k=2, one dollar buys two. We chose k=2 (threshold 0.5) by exhaustive enumeration.
+The scoring formula has one free parameter: `disruptionTolerance` (k), where a move is approved when `score >= 1/k`. At k=1, each percent of savings buys one percent of disruption. At k=2, each percent buys two. We chose k=2 (threshold 0.5) by exhaustive enumeration.
 
 ### State Space
 
