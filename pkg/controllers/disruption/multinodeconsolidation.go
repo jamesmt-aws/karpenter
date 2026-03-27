@@ -35,6 +35,11 @@ import (
 const MultiNodeConsolidationTimeoutDuration = 1 * time.Minute
 const MultiNodeConsolidationType = "multi"
 
+// maxPairCandidates caps the number of candidates considered by the O(N^2) pair
+// search fallback. With 50 candidates the maximum number of pairs is C(50,2) = 1225,
+// keeping the cost predictable. The shared timeout still applies as an outer ceiling.
+const maxPairCandidates = 50
+
 type MultiNodeConsolidation struct {
 	consolidation
 	validator Validator
@@ -167,7 +172,73 @@ func (m *MultiNodeConsolidation) firstNConsolidationOption(ctx context.Context, 
 			max = mid - 1
 		}
 	}
-	return lastSavedCommand, nil
+	// Skip the O(N^2) pair search if the binary search already found a valid command.
+	// This is a performance optimization: when the binary search succeeded, we already
+	// have a good consolidation and can avoid the expensive pair loop entirely.
+	if lastSavedCommand.Decision() != NoOpDecision {
+		return lastSavedCommand, nil
+	}
+
+	// With only 2 candidates the binary search already evaluated the single pair [0,1].
+	// Re-trying the same pair in the fallback loop would produce the same result.
+	if len(candidates) <= 2 {
+		return Command{}, nil
+	}
+
+	return m.pairConsolidationFallback(ctx, timeoutCtx, candidates)
+}
+
+// pairConsolidationFallback tries all pairs (i, j) of candidates after the binary search
+// returns no-op. The binary search only evaluates contiguous prefixes candidates[0:mid+1],
+// so it misses valid pairs when a non-consolidatable node sorts between two consolidatable ones.
+// This is O(N^2) on the budget-filtered candidate list but only runs when the binary search fails.
+//
+// The iteration order is biased toward low-index (low-disruption-cost) candidates, so this
+// returns the first valid pair found, not the best pair overall. This matches the binary
+// search's bias toward consolidating low-cost nodes first.
+func (m *MultiNodeConsolidation) pairConsolidationFallback(ctx context.Context, timeoutCtx context.Context, candidates []*Candidate) (Command, error) {
+	// Check if the binary search already exhausted the timeout before we enter the loop.
+	if err := timeoutCtx.Err(); err != nil {
+		ConsolidationTimeoutsTotal.Inc(map[string]string{ConsolidationTypeLabel: m.ConsolidationType()})
+		log.FromContext(ctx).V(1).Info("pair search skipped, timeout exhausted by binary search")
+		return Command{}, nil
+	}
+
+	// Cap the candidate slice to limit the number of pairs evaluated.
+	pairCandidates := candidates
+	if len(pairCandidates) > maxPairCandidates {
+		pairCandidates = pairCandidates[:maxPairCandidates]
+	}
+
+	for i := 0; i < len(pairCandidates); i++ {
+		for j := i + 1; j < len(pairCandidates); j++ {
+			MultiNodeConsolidationPairSearchEvaluatedTotal.Inc(map[string]string{})
+			pair := []*Candidate{pairCandidates[i], pairCandidates[j]}
+			cmd, err := m.computeConsolidation(timeoutCtx, pair...)
+			if err != nil {
+				if errors.Is(err, context.DeadlineExceeded) {
+					ConsolidationTimeoutsTotal.Inc(map[string]string{ConsolidationTypeLabel: m.ConsolidationType()})
+					log.FromContext(ctx).V(1).Info("pair search timed out during evaluation")
+					return Command{}, nil
+				}
+				return Command{}, err
+			}
+			validDecision := cmd.Decision() == DeleteDecision
+			if cmd.Decision() == ReplaceDecision {
+				cmd.Replacements[0], err = filterOutSameInstanceType(cmd.Replacements[0], pair)
+				if err == nil && len(cmd.Replacements[0].InstanceTypeOptions) > 0 {
+					validDecision = true
+				}
+			}
+			if validDecision {
+				MultiNodeConsolidationPairSearchSuccessTotal.Inc(map[string]string{})
+				log.FromContext(ctx).Info("multi-node consolidation pair search found valid consolidation after binary search returned no-op",
+					"nodes", []string{pairCandidates[i].Node.Name, pairCandidates[j].Node.Name})
+				return cmd, nil
+			}
+		}
+	}
+	return Command{}, nil
 }
 
 // filterOutSameInstanceType filters out instance types that are more expensive than the cheapest instance type that is being

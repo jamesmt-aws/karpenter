@@ -4858,4 +4858,476 @@ var _ = Describe("Consolidation", func() {
 			Expect(cmds).To(HaveLen(0))
 		})
 	})
+	Context("Pair Search Fallback", func() {
+		It("should find a valid consolidation pair when a non-consolidatable node sorts between two consolidatable ones", func() {
+			nodePool = test.NodePool(v1.NodePool{
+				Spec: v1.NodePoolSpec{
+					Disruption: v1.Disruption{
+						ConsolidationPolicy: v1.ConsolidationPolicyWhenEmptyOrUnderutilized,
+						Budgets: []v1.Budget{{
+							Nodes: "100%",
+						}},
+						ConsolidateAfter: v1.MustParseNillableDuration("0s"),
+					},
+				},
+			})
+			// Create 3 nodes with the most expensive instance type (32 CPU allocatable).
+			// After sorting by DisruptionCost (ascending by pod count), the order will be:
+			//   nodeA (1 pod, cost ~1) < nodeB (2 pods, cost ~2) < nodeC (3 pods, cost ~3)
+			//
+			// nodeB is the "poison" node: its pods require 14 CPU each (28 total),
+			// so any prefix containing it ([A,B] or [A,B,C]) needs >= 32 CPU on the
+			// replacement -- which filterOutSameInstanceType rejects because the
+			// replacement would be the same type we're removing.
+			//
+			// The pair search fallback should find [A,C] (4+3 = 7 CPU), which fits
+			// on a much smaller replacement node.
+			makeNode := func(name string) (*v1.NodeClaim, *corev1.Node) {
+				nc, n := test.NodeClaimAndNode(v1.NodeClaim{
+					ObjectMeta: metav1.ObjectMeta{
+						Labels: map[string]string{
+							v1.NodePoolLabelKey:            nodePool.Name,
+							corev1.LabelInstanceTypeStable: mostExpensiveInstance.Name,
+							v1.CapacityTypeLabelKey:        mostExpensiveOffering.Requirements.Get(v1.CapacityTypeLabelKey).Any(),
+							corev1.LabelTopologyZone:       mostExpensiveOffering.Requirements.Get(corev1.LabelTopologyZone).Any(),
+						},
+					},
+					Status: v1.NodeClaimStatus{
+						Allocatable: map[corev1.ResourceName]resource.Quantity{
+							corev1.ResourceCPU:  resource.MustParse("32"),
+							corev1.ResourcePods: resource.MustParse("100"),
+						},
+					},
+				})
+				nc.StatusConditions().SetTrue(v1.ConditionTypeConsolidatable)
+				return nc, n
+			}
+			ncA, nodeA := makeNode("nodeA")
+			ncB, nodeB := makeNode("nodeB")
+			ncC, nodeC := makeNode("nodeC")
+
+			rs := test.ReplicaSet()
+			ExpectApplied(ctx, env.Client, rs)
+			Expect(env.Client.Get(ctx, client.ObjectKeyFromObject(rs), rs)).To(Succeed())
+
+			ownerRef := []metav1.OwnerReference{{
+				APIVersion:         "apps/v1",
+				Kind:               "ReplicaSet",
+				Name:               rs.Name,
+				UID:                rs.UID,
+				Controller:         lo.ToPtr(true),
+				BlockOwnerDeletion: lo.ToPtr(true),
+			}}
+
+			// nodeA: 1 pod requesting 4 CPU (low disruption cost, sorts first)
+			podA := test.Pod(test.PodOptions{
+				ObjectMeta:           metav1.ObjectMeta{Labels: labels, OwnerReferences: ownerRef},
+				ResourceRequirements: corev1.ResourceRequirements{Requests: corev1.ResourceList{corev1.ResourceCPU: resource.MustParse("4")}},
+			})
+			// nodeB: 2 pods requesting 14 CPU each (medium cost, sorts second -- the poison)
+			podsB := test.Pods(2, test.PodOptions{
+				ObjectMeta:           metav1.ObjectMeta{Labels: labels, OwnerReferences: ownerRef},
+				ResourceRequirements: corev1.ResourceRequirements{Requests: corev1.ResourceList{corev1.ResourceCPU: resource.MustParse("14")}},
+			})
+			// nodeC: 3 pods requesting 1 CPU each (highest cost, sorts last)
+			podsC := test.Pods(3, test.PodOptions{
+				ObjectMeta:           metav1.ObjectMeta{Labels: labels, OwnerReferences: ownerRef},
+				ResourceRequirements: corev1.ResourceRequirements{Requests: corev1.ResourceList{corev1.ResourceCPU: resource.MustParse("1")}},
+			})
+
+			ExpectApplied(ctx, env.Client, nodePool, ncA, nodeA, ncB, nodeB, ncC, nodeC,
+				podA, podsB[0], podsB[1], podsC[0], podsC[1], podsC[2])
+
+			ExpectManualBinding(ctx, env.Client, podA, nodeA)
+			ExpectManualBinding(ctx, env.Client, podsB[0], nodeB)
+			ExpectManualBinding(ctx, env.Client, podsB[1], nodeB)
+			ExpectManualBinding(ctx, env.Client, podsC[0], nodeC)
+			ExpectManualBinding(ctx, env.Client, podsC[1], nodeC)
+			ExpectManualBinding(ctx, env.Client, podsC[2], nodeC)
+
+			// Re-apply after bindings
+			ExpectApplied(ctx, env.Client, nodePool, ncA, nodeA, ncB, nodeB, ncC, nodeC)
+			ExpectMakeNodesAndNodeClaimsInitializedAndStateUpdated(ctx, env.Client, nodeStateController, nodeClaimStateController,
+				[]*corev1.Node{nodeA, nodeB, nodeC}, []*v1.NodeClaim{ncA, ncB, ncC})
+
+			c := disruption.MakeConsolidation(fakeClock, cluster, env.Client, prov, cloudProvider, recorder, queue)
+			multiNodeConsolidation := disruption.NewMultiNodeConsolidation(c, disruption.WithValidator(NopValidator{}))
+			budgets, err := disruption.BuildDisruptionBudgetMapping(ctx, cluster, fakeClock, env.Client, cloudProvider, recorder, multiNodeConsolidation.Reason())
+			Expect(err).To(Succeed())
+
+			candidates, err := disruption.GetCandidates(ctx, cluster, env.Client, recorder, fakeClock, cloudProvider, multiNodeConsolidation.ShouldDisrupt, multiNodeConsolidation.Class(), queue)
+			Expect(err).To(Succeed())
+
+			cmds, err := multiNodeConsolidation.ComputeCommands(ctx, budgets, candidates...)
+			Expect(err).To(Succeed())
+			// The pair search fallback should have found a valid consolidation
+			Expect(cmds).To(HaveLen(1))
+			// The command should consolidate exactly 2 nodes (the non-poison pair)
+			Expect(cmds[0].Candidates).To(HaveLen(2))
+			// Verify the specific nodes: the pair must be [nodeA, nodeC], not [nodeA, nodeB]
+			candidateNames := sets.New[string](cmds[0].Candidates[0].Node.Name, cmds[0].Candidates[1].Node.Name)
+			Expect(candidateNames.Has(nodeA.Name)).To(BeTrue(), "expected nodeA in consolidation pair")
+			Expect(candidateNames.Has(nodeC.Name)).To(BeTrue(), "expected nodeC in consolidation pair")
+			Expect(candidateNames.Has(nodeB.Name)).To(BeFalse(), "nodeB (poison) should not be in consolidation pair")
+		})
+		It("should skip the pair search when there are only 2 candidates", func() {
+			nodePool = test.NodePool(v1.NodePool{
+				Spec: v1.NodePoolSpec{
+					Disruption: v1.Disruption{
+						ConsolidationPolicy: v1.ConsolidationPolicyWhenEmptyOrUnderutilized,
+						Budgets: []v1.Budget{{
+							Nodes: "100%",
+						}},
+						ConsolidateAfter: v1.MustParseNillableDuration("0s"),
+					},
+				},
+			})
+			// With only 2 candidates that can't consolidate, the binary search evaluates
+			// the single pair [0,1]. The pair search should be skipped (len <= 2).
+			makeNode := func() (*v1.NodeClaim, *corev1.Node) {
+				nc, n := test.NodeClaimAndNode(v1.NodeClaim{
+					ObjectMeta: metav1.ObjectMeta{
+						Labels: map[string]string{
+							v1.NodePoolLabelKey:            nodePool.Name,
+							corev1.LabelInstanceTypeStable: mostExpensiveInstance.Name,
+							v1.CapacityTypeLabelKey:        mostExpensiveOffering.Requirements.Get(v1.CapacityTypeLabelKey).Any(),
+							corev1.LabelTopologyZone:       mostExpensiveOffering.Requirements.Get(corev1.LabelTopologyZone).Any(),
+						},
+					},
+					Status: v1.NodeClaimStatus{
+						Allocatable: map[corev1.ResourceName]resource.Quantity{
+							corev1.ResourceCPU:  resource.MustParse("32"),
+							corev1.ResourcePods: resource.MustParse("100"),
+						},
+					},
+				})
+				nc.StatusConditions().SetTrue(v1.ConditionTypeConsolidatable)
+				return nc, n
+			}
+			ncA, nodeA := makeNode()
+			ncB, nodeB := makeNode()
+
+			rs := test.ReplicaSet()
+			ExpectApplied(ctx, env.Client, rs)
+			Expect(env.Client.Get(ctx, client.ObjectKeyFromObject(rs), rs)).To(Succeed())
+
+			ownerRef := []metav1.OwnerReference{{
+				APIVersion:         "apps/v1",
+				Kind:               "ReplicaSet",
+				Name:               rs.Name,
+				UID:                rs.UID,
+				Controller:         lo.ToPtr(true),
+				BlockOwnerDeletion: lo.ToPtr(true),
+			}}
+
+			// Each node gets a heavy pod so the pair can't consolidate (same instance type filter)
+			podA := test.Pod(test.PodOptions{
+				ObjectMeta:           metav1.ObjectMeta{Labels: labels, OwnerReferences: ownerRef},
+				ResourceRequirements: corev1.ResourceRequirements{Requests: corev1.ResourceList{corev1.ResourceCPU: resource.MustParse("20")}},
+			})
+			podB := test.Pod(test.PodOptions{
+				ObjectMeta:           metav1.ObjectMeta{Labels: labels, OwnerReferences: ownerRef},
+				ResourceRequirements: corev1.ResourceRequirements{Requests: corev1.ResourceList{corev1.ResourceCPU: resource.MustParse("20")}},
+			})
+
+			ExpectApplied(ctx, env.Client, nodePool, ncA, nodeA, ncB, nodeB, podA, podB)
+			ExpectManualBinding(ctx, env.Client, podA, nodeA)
+			ExpectManualBinding(ctx, env.Client, podB, nodeB)
+			ExpectApplied(ctx, env.Client, nodePool, ncA, nodeA, ncB, nodeB)
+			ExpectMakeNodesAndNodeClaimsInitializedAndStateUpdated(ctx, env.Client, nodeStateController, nodeClaimStateController,
+				[]*corev1.Node{nodeA, nodeB}, []*v1.NodeClaim{ncA, ncB})
+
+			c := disruption.MakeConsolidation(fakeClock, cluster, env.Client, prov, cloudProvider, recorder, queue)
+			multiNodeConsolidation := disruption.NewMultiNodeConsolidation(c, disruption.WithValidator(NopValidator{}))
+			budgets, err := disruption.BuildDisruptionBudgetMapping(ctx, cluster, fakeClock, env.Client, cloudProvider, recorder, multiNodeConsolidation.Reason())
+			Expect(err).To(Succeed())
+
+			candidates, err := disruption.GetCandidates(ctx, cluster, env.Client, recorder, fakeClock, cloudProvider, multiNodeConsolidation.ShouldDisrupt, multiNodeConsolidation.Class(), queue)
+			Expect(err).To(Succeed())
+
+			cmds, err := multiNodeConsolidation.ComputeCommands(ctx, budgets, candidates...)
+			Expect(err).To(Succeed())
+			// With only 2 candidates, pair search should be skipped; binary search already tried [0,1]
+			Expect(cmds).To(HaveLen(0))
+		})
+		It("should return no command when no valid pair exists", func() {
+			nodePool = test.NodePool(v1.NodePool{
+				Spec: v1.NodePoolSpec{
+					Disruption: v1.Disruption{
+						ConsolidationPolicy: v1.ConsolidationPolicyWhenEmptyOrUnderutilized,
+						Budgets: []v1.Budget{{
+							Nodes: "100%",
+						}},
+						ConsolidateAfter: v1.MustParseNillableDuration("0s"),
+					},
+				},
+			})
+			// Create 3 nodes each using ~30 CPU. No pair can consolidate because the
+			// replacement would need the same expensive instance type.
+			makeNode := func() (*v1.NodeClaim, *corev1.Node) {
+				nc, n := test.NodeClaimAndNode(v1.NodeClaim{
+					ObjectMeta: metav1.ObjectMeta{
+						Labels: map[string]string{
+							v1.NodePoolLabelKey:            nodePool.Name,
+							corev1.LabelInstanceTypeStable: mostExpensiveInstance.Name,
+							v1.CapacityTypeLabelKey:        mostExpensiveOffering.Requirements.Get(v1.CapacityTypeLabelKey).Any(),
+							corev1.LabelTopologyZone:       mostExpensiveOffering.Requirements.Get(corev1.LabelTopologyZone).Any(),
+						},
+					},
+					Status: v1.NodeClaimStatus{
+						Allocatable: map[corev1.ResourceName]resource.Quantity{
+							corev1.ResourceCPU:  resource.MustParse("32"),
+							corev1.ResourcePods: resource.MustParse("100"),
+						},
+					},
+				})
+				nc.StatusConditions().SetTrue(v1.ConditionTypeConsolidatable)
+				return nc, n
+			}
+			ncA, nodeA := makeNode()
+			ncB, nodeB := makeNode()
+			ncC, nodeC := makeNode()
+
+			rs := test.ReplicaSet()
+			ExpectApplied(ctx, env.Client, rs)
+			Expect(env.Client.Get(ctx, client.ObjectKeyFromObject(rs), rs)).To(Succeed())
+
+			ownerRef := []metav1.OwnerReference{{
+				APIVersion:         "apps/v1",
+				Kind:               "ReplicaSet",
+				Name:               rs.Name,
+				UID:                rs.UID,
+				Controller:         lo.ToPtr(true),
+				BlockOwnerDeletion: lo.ToPtr(true),
+			}}
+
+			// All nodes are heavy -- no pair fits on a cheaper replacement
+			podA := test.Pod(test.PodOptions{
+				ObjectMeta:           metav1.ObjectMeta{Labels: labels, OwnerReferences: ownerRef},
+				ResourceRequirements: corev1.ResourceRequirements{Requests: corev1.ResourceList{corev1.ResourceCPU: resource.MustParse("30")}},
+			})
+			podB := test.Pod(test.PodOptions{
+				ObjectMeta:           metav1.ObjectMeta{Labels: labels, OwnerReferences: ownerRef},
+				ResourceRequirements: corev1.ResourceRequirements{Requests: corev1.ResourceList{corev1.ResourceCPU: resource.MustParse("30")}},
+			})
+			podC := test.Pod(test.PodOptions{
+				ObjectMeta:           metav1.ObjectMeta{Labels: labels, OwnerReferences: ownerRef},
+				ResourceRequirements: corev1.ResourceRequirements{Requests: corev1.ResourceList{corev1.ResourceCPU: resource.MustParse("30")}},
+			})
+
+			ExpectApplied(ctx, env.Client, nodePool, ncA, nodeA, ncB, nodeB, ncC, nodeC, podA, podB, podC)
+			ExpectManualBinding(ctx, env.Client, podA, nodeA)
+			ExpectManualBinding(ctx, env.Client, podB, nodeB)
+			ExpectManualBinding(ctx, env.Client, podC, nodeC)
+			ExpectApplied(ctx, env.Client, nodePool, ncA, nodeA, ncB, nodeB, ncC, nodeC)
+			ExpectMakeNodesAndNodeClaimsInitializedAndStateUpdated(ctx, env.Client, nodeStateController, nodeClaimStateController,
+				[]*corev1.Node{nodeA, nodeB, nodeC}, []*v1.NodeClaim{ncA, ncB, ncC})
+
+			c := disruption.MakeConsolidation(fakeClock, cluster, env.Client, prov, cloudProvider, recorder, queue)
+			multiNodeConsolidation := disruption.NewMultiNodeConsolidation(c, disruption.WithValidator(NopValidator{}))
+			budgets, err := disruption.BuildDisruptionBudgetMapping(ctx, cluster, fakeClock, env.Client, cloudProvider, recorder, multiNodeConsolidation.Reason())
+			Expect(err).To(Succeed())
+
+			candidates, err := disruption.GetCandidates(ctx, cluster, env.Client, recorder, fakeClock, cloudProvider, multiNodeConsolidation.ShouldDisrupt, multiNodeConsolidation.Class(), queue)
+			Expect(err).To(Succeed())
+
+			cmds, err := multiNodeConsolidation.ComputeCommands(ctx, budgets, candidates...)
+			Expect(err).To(Succeed())
+			// No valid pair exists -- should return empty
+			Expect(cmds).To(HaveLen(0))
+		})
+		It("should find a valid pair when the poison node is at index 0", func() {
+			nodePool = test.NodePool(v1.NodePool{
+				Spec: v1.NodePoolSpec{
+					Disruption: v1.Disruption{
+						ConsolidationPolicy: v1.ConsolidationPolicyWhenEmptyOrUnderutilized,
+						Budgets: []v1.Budget{{
+							Nodes: "100%",
+						}},
+						ConsolidateAfter: v1.MustParseNillableDuration("0s"),
+					},
+				},
+			})
+			// The poison node has 0 pods (lowest disruption cost, sorts first at index 0)
+			// but its presence in contiguous prefixes [0,1] and [0,1,2] blocks the binary search.
+			// Nodes B and C have light pods that should consolidate together.
+			makeNode := func() (*v1.NodeClaim, *corev1.Node) {
+				nc, n := test.NodeClaimAndNode(v1.NodeClaim{
+					ObjectMeta: metav1.ObjectMeta{
+						Labels: map[string]string{
+							v1.NodePoolLabelKey:            nodePool.Name,
+							corev1.LabelInstanceTypeStable: mostExpensiveInstance.Name,
+							v1.CapacityTypeLabelKey:        mostExpensiveOffering.Requirements.Get(v1.CapacityTypeLabelKey).Any(),
+							corev1.LabelTopologyZone:       mostExpensiveOffering.Requirements.Get(corev1.LabelTopologyZone).Any(),
+						},
+					},
+					Status: v1.NodeClaimStatus{
+						Allocatable: map[corev1.ResourceName]resource.Quantity{
+							corev1.ResourceCPU:  resource.MustParse("32"),
+							corev1.ResourcePods: resource.MustParse("100"),
+						},
+					},
+				})
+				nc.StatusConditions().SetTrue(v1.ConditionTypeConsolidatable)
+				return nc, n
+			}
+			ncA, nodeA := makeNode()
+			ncB, nodeB := makeNode()
+			ncC, nodeC := makeNode()
+
+			rs := test.ReplicaSet()
+			ExpectApplied(ctx, env.Client, rs)
+			Expect(env.Client.Get(ctx, client.ObjectKeyFromObject(rs), rs)).To(Succeed())
+
+			ownerRef := []metav1.OwnerReference{{
+				APIVersion:         "apps/v1",
+				Kind:               "ReplicaSet",
+				Name:               rs.Name,
+				UID:                rs.UID,
+				Controller:         lo.ToPtr(true),
+				BlockOwnerDeletion: lo.ToPtr(true),
+			}}
+
+			// nodeA: 2 heavy pods (poison at index 0 after sorting -- 2 pods, 28 CPU)
+			podsA := test.Pods(2, test.PodOptions{
+				ObjectMeta:           metav1.ObjectMeta{Labels: labels, OwnerReferences: ownerRef},
+				ResourceRequirements: corev1.ResourceRequirements{Requests: corev1.ResourceList{corev1.ResourceCPU: resource.MustParse("14")}},
+			})
+			// nodeB: 3 pods requesting 1 CPU each (sorts after nodeA by pod count)
+			podsB := test.Pods(3, test.PodOptions{
+				ObjectMeta:           metav1.ObjectMeta{Labels: labels, OwnerReferences: ownerRef},
+				ResourceRequirements: corev1.ResourceRequirements{Requests: corev1.ResourceList{corev1.ResourceCPU: resource.MustParse("1")}},
+			})
+			// nodeC: 4 pods requesting 1 CPU each (sorts last)
+			podsC := test.Pods(4, test.PodOptions{
+				ObjectMeta:           metav1.ObjectMeta{Labels: labels, OwnerReferences: ownerRef},
+				ResourceRequirements: corev1.ResourceRequirements{Requests: corev1.ResourceList{corev1.ResourceCPU: resource.MustParse("1")}},
+			})
+
+			ExpectApplied(ctx, env.Client, nodePool, ncA, nodeA, ncB, nodeB, ncC, nodeC,
+				podsA[0], podsA[1], podsB[0], podsB[1], podsB[2], podsC[0], podsC[1], podsC[2], podsC[3])
+			ExpectManualBinding(ctx, env.Client, podsA[0], nodeA)
+			ExpectManualBinding(ctx, env.Client, podsA[1], nodeA)
+			ExpectManualBinding(ctx, env.Client, podsB[0], nodeB)
+			ExpectManualBinding(ctx, env.Client, podsB[1], nodeB)
+			ExpectManualBinding(ctx, env.Client, podsB[2], nodeB)
+			ExpectManualBinding(ctx, env.Client, podsC[0], nodeC)
+			ExpectManualBinding(ctx, env.Client, podsC[1], nodeC)
+			ExpectManualBinding(ctx, env.Client, podsC[2], nodeC)
+			ExpectManualBinding(ctx, env.Client, podsC[3], nodeC)
+
+			ExpectApplied(ctx, env.Client, nodePool, ncA, nodeA, ncB, nodeB, ncC, nodeC)
+			ExpectMakeNodesAndNodeClaimsInitializedAndStateUpdated(ctx, env.Client, nodeStateController, nodeClaimStateController,
+				[]*corev1.Node{nodeA, nodeB, nodeC}, []*v1.NodeClaim{ncA, ncB, ncC})
+
+			c := disruption.MakeConsolidation(fakeClock, cluster, env.Client, prov, cloudProvider, recorder, queue)
+			multiNodeConsolidation := disruption.NewMultiNodeConsolidation(c, disruption.WithValidator(NopValidator{}))
+			budgets, err := disruption.BuildDisruptionBudgetMapping(ctx, cluster, fakeClock, env.Client, cloudProvider, recorder, multiNodeConsolidation.Reason())
+			Expect(err).To(Succeed())
+
+			candidates, err := disruption.GetCandidates(ctx, cluster, env.Client, recorder, fakeClock, cloudProvider, multiNodeConsolidation.ShouldDisrupt, multiNodeConsolidation.Class(), queue)
+			Expect(err).To(Succeed())
+
+			cmds, err := multiNodeConsolidation.ComputeCommands(ctx, budgets, candidates...)
+			Expect(err).To(Succeed())
+			Expect(cmds).To(HaveLen(1))
+			Expect(cmds[0].Candidates).To(HaveLen(2))
+			// The pair should be [nodeB, nodeC], not include nodeA (the poison)
+			candidateNames := sets.New[string](cmds[0].Candidates[0].Node.Name, cmds[0].Candidates[1].Node.Name)
+			Expect(candidateNames.Has(nodeB.Name)).To(BeTrue(), "expected nodeB in consolidation pair")
+			Expect(candidateNames.Has(nodeC.Name)).To(BeTrue(), "expected nodeC in consolidation pair")
+			Expect(candidateNames.Has(nodeA.Name)).To(BeFalse(), "nodeA (poison at index 0) should not be in consolidation pair")
+		})
+		It("should return no command and increment timeout metric when pair search times out", func() {
+			nodePool = test.NodePool(v1.NodePool{
+				Spec: v1.NodePoolSpec{
+					Disruption: v1.Disruption{
+						ConsolidationPolicy: v1.ConsolidationPolicyWhenEmptyOrUnderutilized,
+						Budgets: []v1.Budget{{
+							Nodes: "100%",
+						}},
+						ConsolidateAfter: v1.MustParseNillableDuration("0s"),
+					},
+				},
+			})
+			makeNode := func() (*v1.NodeClaim, *corev1.Node) {
+				nc, n := test.NodeClaimAndNode(v1.NodeClaim{
+					ObjectMeta: metav1.ObjectMeta{
+						Labels: map[string]string{
+							v1.NodePoolLabelKey:            nodePool.Name,
+							corev1.LabelInstanceTypeStable: mostExpensiveInstance.Name,
+							v1.CapacityTypeLabelKey:        mostExpensiveOffering.Requirements.Get(v1.CapacityTypeLabelKey).Any(),
+							corev1.LabelTopologyZone:       mostExpensiveOffering.Requirements.Get(corev1.LabelTopologyZone).Any(),
+						},
+					},
+					Status: v1.NodeClaimStatus{
+						Allocatable: map[corev1.ResourceName]resource.Quantity{
+							corev1.ResourceCPU:  resource.MustParse("32"),
+							corev1.ResourcePods: resource.MustParse("100"),
+						},
+					},
+				})
+				nc.StatusConditions().SetTrue(v1.ConditionTypeConsolidatable)
+				return nc, n
+			}
+			ncA, nodeA := makeNode()
+			ncB, nodeB := makeNode()
+			ncC, nodeC := makeNode()
+
+			rs := test.ReplicaSet()
+			ExpectApplied(ctx, env.Client, rs)
+			Expect(env.Client.Get(ctx, client.ObjectKeyFromObject(rs), rs)).To(Succeed())
+
+			ownerRef := []metav1.OwnerReference{{
+				APIVersion:         "apps/v1",
+				Kind:               "ReplicaSet",
+				Name:               rs.Name,
+				UID:                rs.UID,
+				Controller:         lo.ToPtr(true),
+				BlockOwnerDeletion: lo.ToPtr(true),
+			}}
+
+			// Light pods so consolidation would normally work, but we'll exhaust the timeout
+			podA := test.Pod(test.PodOptions{
+				ObjectMeta:           metav1.ObjectMeta{Labels: labels, OwnerReferences: ownerRef},
+				ResourceRequirements: corev1.ResourceRequirements{Requests: corev1.ResourceList{corev1.ResourceCPU: resource.MustParse("1")}},
+			})
+			podB := test.Pod(test.PodOptions{
+				ObjectMeta:           metav1.ObjectMeta{Labels: labels, OwnerReferences: ownerRef},
+				ResourceRequirements: corev1.ResourceRequirements{Requests: corev1.ResourceList{corev1.ResourceCPU: resource.MustParse("14")}},
+			})
+			podC := test.Pod(test.PodOptions{
+				ObjectMeta:           metav1.ObjectMeta{Labels: labels, OwnerReferences: ownerRef},
+				ResourceRequirements: corev1.ResourceRequirements{Requests: corev1.ResourceList{corev1.ResourceCPU: resource.MustParse("1")}},
+			})
+
+			ExpectApplied(ctx, env.Client, nodePool, ncA, nodeA, ncB, nodeB, ncC, nodeC, podA, podB, podC)
+			ExpectManualBinding(ctx, env.Client, podA, nodeA)
+			ExpectManualBinding(ctx, env.Client, podB, nodeB)
+			ExpectManualBinding(ctx, env.Client, podC, nodeC)
+			ExpectApplied(ctx, env.Client, nodePool, ncA, nodeA, ncB, nodeB, ncC, nodeC)
+			ExpectMakeNodesAndNodeClaimsInitializedAndStateUpdated(ctx, env.Client, nodeStateController, nodeClaimStateController,
+				[]*corev1.Node{nodeA, nodeB, nodeC}, []*v1.NodeClaim{ncA, ncB, ncC})
+
+			// Advance the clock past the timeout so the pair search will immediately time out
+			fakeClock.Step(disruption.MultiNodeConsolidationTimeoutDuration + time.Second)
+
+			c := disruption.MakeConsolidation(fakeClock, cluster, env.Client, prov, cloudProvider, recorder, queue)
+			multiNodeConsolidation := disruption.NewMultiNodeConsolidation(c, disruption.WithValidator(NopValidator{}))
+			budgets, err := disruption.BuildDisruptionBudgetMapping(ctx, cluster, fakeClock, env.Client, cloudProvider, recorder, multiNodeConsolidation.Reason())
+			Expect(err).To(Succeed())
+
+			candidates, err := disruption.GetCandidates(ctx, cluster, env.Client, recorder, fakeClock, cloudProvider, multiNodeConsolidation.ShouldDisrupt, multiNodeConsolidation.Class(), queue)
+			Expect(err).To(Succeed())
+
+			cmds, err := multiNodeConsolidation.ComputeCommands(ctx, budgets, candidates...)
+			Expect(err).To(Succeed())
+			// Timeout should have caused a no-op
+			Expect(cmds).To(HaveLen(0))
+			// Timeout metric should have been incremented
+			ExpectMetricCounterValue(disruption.ConsolidationTimeoutsTotal, 1, map[string]string{
+				disruption.ConsolidationTypeLabel: disruption.MultiNodeConsolidationType,
+			})
+		})
+	})
 })

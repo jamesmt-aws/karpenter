@@ -34,6 +34,8 @@ const (
 func init() {
 	ConsolidationTimeoutsTotal.Add(0, map[string]string{ConsolidationTypeLabel: MultiNodeConsolidationType})
 	ConsolidationTimeoutsTotal.Add(0, map[string]string{ConsolidationTypeLabel: SingleNodeConsolidationType})
+	MultiNodeConsolidationPairSearchSuccessTotal.Add(0, map[string]string{})
+	MultiNodeConsolidationPairSearchEvaluatedTotal.Add(0, map[string]string{})
 }
 
 var (
@@ -117,6 +119,26 @@ var (
 			Help:      "The number of nodes consuming the budget of a nodepool at a point in time. Labeled by NodePool.",
 		},
 		[]string{metrics.NodePoolLabel, metrics.ReasonLabel},
+	)
+	MultiNodeConsolidationPairSearchSuccessTotal = opmetrics.NewPrometheusCounter(
+		crmetrics.Registry,
+		prometheus.CounterOpts{
+			Namespace: metrics.Namespace,
+			Subsystem: voluntaryDisruptionSubsystem,
+			Name:      "multi_node_consolidation_pair_search_success_total",
+			Help:      "Number of times the pair search fallback found a valid consolidation after the binary search returned no-op.",
+		},
+		[]string{},
+	)
+	MultiNodeConsolidationPairSearchEvaluatedTotal = opmetrics.NewPrometheusCounter(
+		crmetrics.Registry,
+		prometheus.CounterOpts{
+			Namespace: metrics.Namespace,
+			Subsystem: voluntaryDisruptionSubsystem,
+			Name:      "multi_node_consolidation_pair_search_evaluated_total",
+			Help:      "Number of candidate pairs evaluated by the pair search fallback.",
+		},
+		[]string{},
 	)
 	DisruptionQueueFailuresTotal = opmetrics.NewPrometheusCounter(
 		crmetrics.Registry,
