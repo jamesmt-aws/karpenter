@@ -6,7 +6,7 @@
 
 **Consolidation**: a disruption method that removes or replaces nodes to reduce cost. There are three consolidation methods: empty-node consolidation, multi-node consolidation, and single-node consolidation.
 
-**Consolidation method**: one of the three algorithms (empty-node, multi-node, single-node) that evaluate whether nodes can be removed or replaced to save money. Each method implements the `Method` interface and runs in a fixed order within the disruption loop.
+**Consolidation method**: one of the three algorithms (empty-node, multi-node, single-node) that evaluate whether nodes can be removed or replaced to save money. Each method runs in a fixed order within the disruption loop.
 
 **Candidate**: a node that passes all eligibility checks for a given disruption method. Not every candidate will be disrupted; candidates are inputs to the evaluation algorithm.
 
@@ -22,9 +22,9 @@
 
 ## Purpose
 
-Single-node consolidation evaluates each node independently, asking whether one node can be removed or replaced with a cheaper one. This works well for individual inefficiencies but cannot see situations where removing several underutilized nodes together and replacing them with fewer, better-sized nodes would save money. Multi-node consolidation fills this gap by evaluating groups of nodes as a unit, finding moves that no single-node evaluation could discover.
+Single-node consolidation evaluates each node independently: can this one node be removed or replaced with a cheaper one? This catches individual inefficiencies but misses cases where removing several underutilized nodes together and replacing them with fewer, better-sized nodes would save money. Multi-node consolidation fills this gap by evaluating groups of nodes as a unit.
 
-The canonical example: a cluster with three nodes, each running a handful of small pods. No single node's pods can be absorbed by the remaining two, so single-node consolidation does nothing. Multi-node consolidation can see that all three nodes' pods fit on one properly sized replacement. The savings here are the difference between the combined cost of the three candidates and the cost of the one replacement -- not the total cost of the three nodes, but the waste across them that a better-sized node eliminates.
+The canonical example: three nodes, each running a handful of small pods. No single node's pods can be absorbed by the remaining two, so single-node consolidation does nothing. Multi-node consolidation sees that all three nodes' pods fit on one properly sized replacement. The savings are the difference between the combined cost of the three candidates and the cost of the replacement -- not the total cost of the three nodes, but the waste across them that a better-sized node eliminates.
 
 ## When It Runs
 
@@ -34,13 +34,13 @@ Both multi-node and single-node consolidation skip evaluation when the cluster's
 
 ## Candidate Selection
 
-Candidates are nodes that Karpenter manages and that pass the disruption eligibility checks defined in `consolidation.ShouldDisrupt()`. Each eligibility criterion exists for a specific reason:
+Candidates are nodes that Karpenter manages and that pass the consolidation eligibility checks. Each eligibility criterion exists for a specific reason:
 
-- **Instance type, capacity type, and availability zone must be known.** "Known" means the node carries the standard Kubernetes labels (`node.kubernetes.io/instance-type`, `karpenter.sh/capacity-type`, `topology.kubernetes.io/zone`) and that Karpenter's cloud provider returns a matching instance type object with pricing data. Without these, Karpenter cannot compute the node's cost and therefore cannot determine whether a move saves money.
+- **Instance type, capacity type, and availability zone must be known.** "Known" means the node carries the standard Kubernetes labels (`node.kubernetes.io/instance-type`, `karpenter.sh/capacity-type`, `topology.kubernetes.io/zone`) and that Karpenter's cloud provider returns a matching instance type with pricing data. Without these, Karpenter cannot compute the node's cost and therefore cannot determine whether a move saves money.
 
 - **The NodePool must use the `WhenEmptyOrUnderutilized` consolidation policy.** The emptiness controller handles nodes in NodePools with the `WhenEmpty` policy. Multi-node and single-node consolidation only run for NodePools that allow underutilization-based disruption.
 
-- **`consolidateAfter` must be non-nil.** A nil `consolidateAfter` disables consolidation entirely for the NodePool. When set, `consolidateAfter` controls how long after the last pod scheduling event a node becomes eligible for consolidation. A separate controller (`nodeclaim/disruption/consolidation.go`) watches each NodeClaim and sets the `Consolidatable` status condition to true only after the `consolidateAfter` duration elapses from the last pod event. Multi-node consolidation then requires this condition to be true. This means `consolidateAfter` is relevant to multi-node consolidation: it determines when each node becomes a candidate.
+- **`consolidateAfter` must be set.** An unset `consolidateAfter` disables consolidation for the NodePool. When set, `consolidateAfter` controls how long after the last pod scheduling event a node becomes eligible for consolidation. A separate controller watches each NodeClaim and sets the `Consolidatable` status condition to true only after the `consolidateAfter` duration elapses from the last pod event. Multi-node consolidation then requires this condition to be true. A node that recently had pods scheduled to it will not be eligible for multi-node consolidation until the `consolidateAfter` duration elapses, even if it is underutilized.
 
 - **The node must not belong to a static NodePool (one with explicit replicas).** Static NodePools maintain a fixed count of nodes; consolidation would conflict with that intent.
 
@@ -94,6 +94,10 @@ If the simulation needs two or more new nodes, the prefix is too large -- that m
 
 The binary search operates under a one-minute timeout. If the timeout expires, the algorithm returns the last valid move it found, if any. If no valid move has been found by timeout, the method returns no action. The candidate set is also capped at 100 nodes to bound computation.
 
+### Validation
+
+After finding a valid move, multi-node consolidation waits for a brief re-check period (on the order of seconds) and then re-validates the command by re-checking candidate eligibility and re-running the scheduling simulation. If the cluster state changed during this window -- for example, a new pod was scheduled, a node was added, or a candidate became ineligible -- the move is rejected and no action is taken for that cycle. This means a consolidation that was found valid can be silently dropped. The re-check guards against acting on stale cluster state, but operators should be aware that valid moves may not always result in action if the cluster is actively changing.
+
 ## Cost Comparison
 
 A move is only valid if the replacement costs strictly less than the combined cost of the candidates it replaces. Each candidate's cost is the price of its instance type's cheapest compatible offering given the node's current labels (zone, capacity type). The replacement's cost is the price of the cheapest offering among its eligible instance types.
@@ -102,11 +106,11 @@ These prices come from the cloud provider's current offering data. For on-demand
 
 Karpenter uses current prices because the goal is to evaluate whether a move saves money going forward. A node's launch price is irrelevant if its instance type now costs more or less than it did at launch.
 
-Using the cheapest compatible offering rather than any other price (average, historical, launch-time) is a deliberate choice: it represents the best price achievable for a node with those characteristics right now. If spot prices have risen since launch, the candidate's current offering price reflects that, and the cost comparison accounts for it.
+Using the cheapest compatible offering rather than any other price (average, historical, launch-time) is deliberate: it represents the best price achievable for a node with those characteristics right now. If spot prices have risen since launch, the candidate's current offering price reflects that.
 
 ### Same-Type Filtering
 
-An additional filter handles the case where the replacement's eligible instance types overlap with instance types being removed. If the replacement could launch as the same instance type as one of the candidates, that is equivalent to deleting the other candidates -- no true replacement is needed. To prevent this:
+An additional filter handles the case where the replacement's eligible instance types overlap with types being removed. If the replacement could launch as the same type as a candidate, that is equivalent to deleting the other candidates -- no true replacement is needed. To prevent this:
 
 When an instance type appears in both the candidate set and the replacement options, the filter finds the cheapest such overlapping type and removes it and every type at or above its price from the replacement options. If no replacement options remain after filtering, the move is rejected.
 
@@ -114,7 +118,7 @@ For example, if candidates are [t3a.2xlarge, t3a.2xlarge, t3a.small] and replace
 
 ## Interaction with Single-Node Consolidation
 
-Multi-node consolidation runs before single-node consolidation. The original commit introducing multi-node consolidation (978daf3a, Nov 2022) established this ordering with the rationale that consolidating N nodes in a single move causes less pod churn than N sequential single-node moves.
+Multi-node consolidation runs before single-node consolidation. The original implementation (Nov 2022) established this ordering with the rationale that consolidating N nodes in a single move causes less pod churn than N sequential single-node moves.
 
 This rationale holds when multi-node consolidation finds a valid move: one scheduling simulation, one replacement launch, one round of pod evictions. N sequential single-node moves would mean N separate rounds of eviction and rescheduling, with intermediate cluster states that may not be optimal.
 
@@ -122,7 +126,7 @@ However, the claim that multi-node always causes less churn than sequential sing
 
 The ordering also creates a structural issue: multi-node's prefix-only search may find no valid move for a given cycle, consuming up to one minute of timeout, while single-node could have quickly found and executed a valid move. The current ordering prioritizes finding the largest possible consolidation over speed of execution.
 
-We could not find a commit or design discussion that explicitly evaluated these trade-offs. The ordering appears to have been chosen based on the intuition that batch moves are more efficient, which is true in the common case but not guaranteed.
+No design discussion that explicitly evaluated these trade-offs has been found. The ordering appears to rest on the intuition that batch moves are more efficient, which holds in the common case but is not guaranteed.
 
 Single-node consolidation catches cases that multi-node structurally cannot:
 
@@ -140,13 +144,15 @@ Candidates are processed in disruption-cost order (cheapest first). For each can
 
 If any candidate was skipped due to budget constraints, multi-node consolidation does not mark itself consolidated, because the next evaluation cycle may have different budget availability.
 
+Because multi-node consolidation requires at least two candidates, budget filtering can silently disable it. If the budget reduces the candidate count below two, the method returns no action without evaluating. For example, a NodePool with `nodes: "5%"` and 20 nodes allows only 1 candidate after rounding, which is below the two-candidate minimum. An operator with tight budgets may not realize that multi-node consolidation is effectively disabled for that NodePool.
+
 ### The Consolidated Mark
 
-Multi-node consolidation holds an in-memory `lastConsolidationState` timestamp. After a full evaluation that finds no valid move and was not constrained by budgets, the method records the current cluster consolidation state via `markConsolidated()`. On subsequent disruption cycles, `IsConsolidated()` compares this stored timestamp against the cluster's current consolidation state. If they match, the method skips evaluation entirely.
+Multi-node consolidation holds an in-memory timestamp. After a full evaluation that finds no valid move and was not constrained by budgets, the method records the current cluster consolidation state. On subsequent disruption cycles, it compares this stored timestamp against the cluster's current consolidation state. If they match, the method skips evaluation entirely.
 
 This mark is not a Kubernetes annotation or status condition. It is an in-memory timestamp that resets when Karpenter restarts or when the cluster state changes.
 
-Single-node consolidation uses the same mechanism independently -- it has its own `lastConsolidationState` and marks itself consolidated separately.
+Single-node consolidation uses the same mechanism independently -- each method tracks its own timestamp and marks itself consolidated separately.
 
 The invariant: if a consolidation method marked itself consolidated and nothing in the cluster has changed, re-running the same evaluation would produce the same result, so it can be skipped. Not marking when constrained by budgets preserves the possibility that the next cycle, with different budget availability, could find a move.
 
@@ -158,7 +164,7 @@ The most significant limitation is the prefix-only evaluation strategy. Multi-no
 
 For example, if nodes 3, 5, and 7 in the sorted list could be consolidated together but no prefix containing all three also forms a valid move, that opportunity is missed.
 
-This is a deliberate trade-off favoring computational tractability. The number of arbitrary subsets of N candidates is described by the Bell number. Bell(10) is about 115,000. Bell(20) is about 51.7 trillion. Evaluating arbitrary subsets is not feasible at any meaningful scale. The prefix-only strategy reduces the search space to O(log N) scheduling simulations via binary search, making it practical for clusters with hundreds of nodes.
+This is a deliberate trade-off for computational tractability. The number of arbitrary subsets of N candidates grows as the Bell number: Bell(10) is about 115,000; Bell(20) is about 51.7 trillion. The prefix-only strategy reduces the search space to O(log N) scheduling simulations via binary search, making it practical for clusters with hundreds of nodes.
 
 A related limitation: the minimal set of cluster changes that would invalidate the consolidated mark would only need to affect the top 100 nodes (by disruption cost) in a NodePool. Changes to nodes beyond position 100 are invisible to multi-node evaluation.
 
