@@ -34,15 +34,17 @@ spec:
 
 `Balanced` is a new `consolidationPolicy` enum value. It scores each consolidation move and approves it when savings justify the disruption. `disruptionTolerance` (default 2) controls how much disruption one unit of savings can buy: a move is approved when `score >= 1/disruptionTolerance`.
 
-The three consolidation policies are points on a single spectrum:
+The three consolidation policies form a spectrum of increasing willingness to disrupt:
 
-| Policy | Equivalent k | Threshold | Behavior |
-|---|---|---|---|
-| `WhenEmpty` | 0 | ∞ | Only empty nodes (zero disruption) |
-| `Balanced` | 2 (default) | 0.5 | Savings must justify disruption |
-| `WhenEmptyOrUnderutilized` | ∞ | 0 | Any positive savings |
+| Policy | Behavior |
+|---|---|
+| `WhenEmpty` | Only empty nodes (zero disruption) |
+| `Balanced` | Savings must justify disruption (configurable via `disruptionTolerance`) |
+| `WhenEmptyOrUnderutilized` | Any positive savings |
 
-`disruptionTolerance` is only valid with `Balanced`. The default `consolidationPolicy` remains `WhenEmptyOrUnderutilized`. `WhenEmpty` is currently implemented by a separate controller (the emptiness controller), not by scoring. The scoring formula gives the right answer for empty nodes (zero disruption cost, always approved), so these could be unified in the future.
+`disruptionTolerance` is only valid with `Balanced`. It accepts integers from 1 to 100, defaulting to 2 when not set. The threshold is `1/disruptionTolerance`: at k=1, savings fraction must equal disruption fraction (break-even); at k=2, savings fraction must be at least half.
+
+The default `consolidationPolicy` remains `WhenEmptyOrUnderutilized`. `WhenEmpty` is implemented by the emptiness controller, a separate code path that deletes empty nodes regardless of scoring. The scoring formula gives the right answer for empty nodes (zero disruption cost, always approved), so these could be unified in the future.
 
 ### How Scoring Works
 
