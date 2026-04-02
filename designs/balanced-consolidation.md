@@ -295,11 +295,9 @@ We enumerate configurations in a bounded space using on-demand prices from three
 
 The enumeration caps at 4 pods per node for tractability. Properties 1-4, 6, and 7 are algebraic and hold for any pod count. Properties 5 and 8 depend on the price structure, not pod count.
 
-### Properties
+### What a good scoring function does
 
-A **churn chain** is a sequence of REPLACEs where each replacement becomes a candidate (e.g., m7i.xlarge → m7i.large → c7i.medium). Chains converge when no further replacement passes. The verification confirms all chains converge (no cycles).
-
-Eight properties define correctness, independent of k:
+Eight properties define what we want from the scoring formula. The first seven are about the formula itself. The eighth is about what happens over time: a REPLACE creates a new node, and that node might itself be a consolidation candidate. An m7i.xlarge replaces to m7i.large, which replaces to c7i.medium, and so on. We call this sequence a **churn chain**. A good scoring function produces churn chains that converge (reach a stable instance type) rather than cycle.
 
 1. **Monotonicity in savings.** Cheaper replacement never makes approval harder.
 2. **Monotonicity in disruption.** Higher disruption never makes approval easier.
@@ -308,9 +306,9 @@ Eight properties define correctness, independent of k:
 5. **Replaces work in uniform pools.** The minimum useful k is the smallest value where meaningful replaces pass.
 6. **Skewed disruption differentiates.** High-disruption pods make their node harder to approve.
 7. **Fleet size independence.** Pool size cancels algebraically in uniform pools.
-8. **Bounded churn.** Replace chains converge and terminate quickly.
+8. **Bounded churn.** Churn chains converge and terminate quickly.
 
-Properties 1-4, 6, and 7 hold at all k values. They are structural properties of the formula. Properties 5 and 8 select k.
+Properties 1-4, 6, and 7 hold at all k values (structural properties of the ratio). Properties 5 and 8 select k.
 
 ### Results
 
