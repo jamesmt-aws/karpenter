@@ -103,7 +103,7 @@ A move is approved when `score >= 1/k`, where k is `consolidationThreshold` (def
 | positive | positive | positive | compute score normally |
 | zero | any | any | reject (no benefit) |
 | negative | any | any | reject (net loss) |
-| near-zero | near-zero (ODCR pool) | any | compute normally; both numerator and denominator of savings_fraction are near-zero, score is indeterminate but negligible in practice |
+| near-zero | near-zero (ODCR pool) | any | compute normally; the 1/10M divisor cancels and the score equals the on-demand price ratio |
 | any | any | zero | cannot happen (per-node baseline ensures > 0) |
 
 See [Edge Cases](#edge-cases) for worked examples.
