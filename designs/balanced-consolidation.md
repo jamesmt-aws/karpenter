@@ -14,6 +14,37 @@ Terminating a non-empty node requires evicting running pods and starting replace
 
 This RFC calls each consolidation action a *move*. A move deletes one or more nodes, along with pod eviction and optional replacement node creation. We propose a new `consolidationPolicy` value, `Balanced`, that scores each move and rejects moves where the disruption outweighs the savings. A `consolidationThreshold` parameter (default 2) controls the tradeoff.
 
+## Alternatives Considered
+
+Five approaches were considered and rejected. Each fails to account for something the scoring approach captures.
+
+### Cost Improvement Factor
+
+Require a minimum price improvement ratio (e.g., old_price / new_price >= 2). Considered for spot consolidation ([spot-consolidation.md](https://github.com/kubernetes-sigs/karpenter/blob/main/designs/spot-consolidation.md)). A move that saves 50% of a node's cost passes a 2x factor whether it disrupts 2 default-cost pods or 20 high-cost pods. The factor ignores disruption entirely.
+
+### Absolute Dollar Threshold
+
+Require savings to exceed a fixed dollar amount (e.g., $1/day). Two moves that each save $1/day and disrupt 4 default-cost pods: on a $50/day NodePool with 40 pods, this saves 2% of cost for 10% of disruption. On a $5,000/day NodePool with 4000 pods, the same $1 saves 0.02% for 0.1% of disruption. A $1 threshold approves both. The threshold does not scale with NodePool size.
+
+### Utilization-Based Threshold
+
+Exclude nodes above a resource utilization percentage (e.g., 70%) from consolidation, like CA's `scale-down-utilization-threshold` ([kubernetes-sigs#1686](https://github.com/kubernetes-sigs/karpenter/issues/1686), [aws#5218](https://github.com/aws/karpenter-provider-aws/issues/5218)). This is the most frequently requested alternative. A node at 40% utilization running one pod with `pod-deletion-cost: 2147483647` (a model-serving pod with a 2-hour warm-up cache) and a node at 40% running ten stateless pods both pass a 70% threshold. The utilization threshold cannot distinguish them.
+
+### Selective Consolidation Type Disable
+
+Disable single-node consolidation (replace) while keeping multi-node and emptiness consolidation ([kubernetes-sigs#1430](https://github.com/kubernetes-sigs/karpenter/issues/1430), [kubernetes-sigs#684](https://github.com/kubernetes-sigs/karpenter/issues/684), [PR #1433](https://github.com/kubernetes-sigs/karpenter/pull/1433)). An m7i.2xlarge ($9.68/day) running 2 pods requesting 2 vCPU total could replace to an m7i.large ($2.42/day), saving $7.26/day for 2 pods of disruption. Disabling replace blocks this move along with every other replace, regardless of the savings-to-disruption ratio.
+
+### Separate Disruption Cost Annotation
+
+A dedicated `karpenter.sh/disruption-cost` annotation separate from the existing `EvictionCost` inputs. This would let application developers independently control eviction ordering and consolidation gating. We prefer reusing existing parameters. `controller.kubernetes.io/pod-deletion-cost` and pod priority already express disruption cost. A separate annotation could be introduced later if eviction ordering and consolidation gating need to diverge.
+
+### Related Work
+
+- [PR #2562](https://github.com/kubernetes-sigs/karpenter/pull/2562): `ConsolidationPriceImprovementFactor` field (0.0-1.0) with operator-level default and NodePool override. Cost Improvement Factor with a different UX.
+- [PR #2893](https://github.com/kubernetes-sigs/karpenter/pull/2893): Decision ratio with a configurable `DecisionRatioThreshold` (default 1.0). Same scoring approach as this RFC but exposes the threshold from day one.
+- [PR #2901](https://github.com/kubernetes-sigs/karpenter/pull/2901): External health signal probes on NodePools that block disruption when a probe fails. Orthogonal and complementary.
+- [PR #2894](https://github.com/kubernetes-sigs/karpenter/pull/2894): Controller that automatically manages `controller.kubernetes.io/pod-deletion-cost` based on pluggable ranking strategies. Complementary.
+
 ## Proposal
 
 ### Proposed Spec
@@ -352,61 +383,22 @@ No behavior change for existing users. Migration: change `WhenEmptyOrUnderutiliz
 
 Con: `WhenEmpty` and `WhenEmptyOrUnderutilized` describe behavior; `Balanced` describes character. Alternatives: `Scored` (exposes implementation), `CostWeighted` (implies cost-only), `WhenWorthIt` (too informal). `Balanced` is the least-bad option.
 
-## Alternatives Considered
-
-### Cost Improvement Factor
-
-Require a minimum price improvement ratio (e.g., old_price / new_price >= 2). Considered for spot consolidation ([spot-consolidation.md](https://github.com/kubernetes-sigs/karpenter/blob/main/designs/spot-consolidation.md)). A move that saves 50% of a node's cost passes a 2x factor whether it disrupts 2 default-cost pods or 20 high-cost pods. The factor ignores disruption entirely.
-
-### Absolute Dollar Threshold
-
-Require savings to exceed a fixed dollar amount (e.g., $1/day). Two moves that each save $1/day and disrupt 4 default-cost pods: on a $50/day NodePool with 40 pods, this saves 2% of cost for 10% of disruption. On a $5,000/day NodePool with 4000 pods, the same $1 saves 0.02% for 0.1% of disruption. A $1 threshold approves both. The threshold does not scale with NodePool size.
-
-### Utilization-Based Threshold
-
-Exclude nodes above a resource utilization percentage (e.g., 70%) from consolidation, like CA's `scale-down-utilization-threshold` ([kubernetes-sigs#1686](https://github.com/kubernetes-sigs/karpenter/issues/1686), [aws#5218](https://github.com/aws/karpenter-provider-aws/issues/5218)). This is the most frequently requested alternative. A node at 40% utilization running one pod with `pod-deletion-cost: 2147483647` (a model-serving pod with a 2-hour warm-up cache) and a node at 40% running ten stateless pods both pass a 70% threshold. The utilization threshold cannot distinguish them.
-
-### Selective Consolidation Type Disable
-
-Disable single-node consolidation (replace) while keeping multi-node and emptiness consolidation ([kubernetes-sigs#1430](https://github.com/kubernetes-sigs/karpenter/issues/1430), [kubernetes-sigs#684](https://github.com/kubernetes-sigs/karpenter/issues/684), [PR #1433](https://github.com/kubernetes-sigs/karpenter/pull/1433)). An m7i.2xlarge ($9.68/day) running 2 pods requesting 2 vCPU total could replace to an m7i.large ($2.42/day), saving $7.26/day for 2 pods of disruption. Disabling replace blocks this move along with every other replace, regardless of the savings-to-disruption ratio.
-
-### Separate Disruption Cost Annotation
-
-A dedicated `karpenter.sh/disruption-cost` annotation separate from the existing `EvictionCost` inputs. This would let application developers independently control eviction ordering and consolidation gating. We prefer reusing existing parameters. `controller.kubernetes.io/pod-deletion-cost` and pod priority already express disruption cost. A separate annotation could be introduced later if eviction ordering and consolidation gating need to diverge.
-
-### Related Work
-
-- [PR #2562](https://github.com/kubernetes-sigs/karpenter/pull/2562): `ConsolidationPriceImprovementFactor` field (0.0-1.0) with operator-level default and NodePool override. Cost Improvement Factor with a different UX.
-- [PR #2893](https://github.com/kubernetes-sigs/karpenter/pull/2893): Decision ratio with a configurable `DecisionRatioThreshold` (default 1.0). Same scoring approach as this RFC but exposes the threshold from day one.
-- [PR #2901](https://github.com/kubernetes-sigs/karpenter/pull/2901): External health signal probes on NodePools that block disruption when a probe fails. Orthogonal and complementary.
-- [PR #2894](https://github.com/kubernetes-sigs/karpenter/pull/2894): Controller that automatically manages `controller.kubernetes.io/pod-deletion-cost` based on pluggable ranking strategies. Complementary.
-
 ## Backward Compatibility
 
 - `WhenEmptyOrUnderutilized` and `WhenEmpty` are unchanged. Existing NodePool specs continue to work.
 - Per-pod disruption cost is computed from the existing `controller.kubernetes.io/pod-deletion-cost` annotation and pod priority via `EvictionCost`. Pods without these inputs default to disruption cost 1.0, matching current behavior (all pods are equal).
 
-## Future Work
-
-### Move Quality Tracking
-
-Annotate each moved pod with the consolidation move's score. Track how many moved pods are re-disrupted before savings are realized (e.g., the pod is evicted again within minutes). A high rate of premature re-disruption indicates the threshold is too aggressive. A low rate with many moves rejected indicates it may be too conservative.
-
-### Async Move Generation and Execution
-
-Cost scoring enables a shift from synchronous per-cycle consolidation to a continuous async pipeline. A background worker can generate candidate moves, score them, enqueue them by priority, and execute them as budget allows. Moves are re-validated before execution. This architecture eliminates the per-cycle timeout problem.
-
-### Scoring Observability
-
-Surface the move count and estimated savings at the current threshold. Scoring a representative sample of moves shows operators how many moves would pass.
-
 ## Open Questions
 
-- **Is k=2 the right default?** [Why k=2](#why-k2) explains why k=2 is the smallest value that makes uniform-pool REPLACEs viable. We do not know whether k=2 works well across diverse workloads. Operators can adjust `consolidationThreshold` per-NodePool. The feature gate and opt-in rollout exist to answer this question empirically.
+- **Is k=2 the right default?** [Why k=2](#why-k2) explains why k=2 is the smallest value that makes uniform-pool REPLACEs viable. We do not know whether k=2 works well across diverse workloads. The feature gate and opt-in rollout exist to answer this empirically.
 
-- **Should single-node pools be exempt from scoring?** A single-node pool DELETE scores 1.0 and passes the default threshold, making all pods unschedulable until provisioning creates a replacement. Disruption budgets (`nodes: 0`) prevent this today. The formula could also refuse by requiring pool size > 1, but that adds a special case for something disruption budgets already handle.
+- **Should single-node pools be exempt from scoring?** A single-node pool DELETE scores 1.0 and passes, making all pods unschedulable until provisioning creates a replacement. Disruption budgets (`nodes: 0`) prevent this today. The formula could refuse by requiring pool size > 1, but that adds a special case for something disruption budgets already handle.
 
-- **How many customers use `pod-deletion-cost` today?** If few do, every pod has default disruption cost 1.0 and the score reduces to pod-count-versus-savings. The score's main differentiator (distinguishing expensive-to-restart pods from cheap ones) depends on customers setting this annotation. [PR #2894](https://github.com/kubernetes-sigs/karpenter/pull/2894) would automate this.
+- **How many customers use `pod-deletion-cost` today?** If few do, the score reduces to savings-versus-pod-count. [PR #2894](https://github.com/kubernetes-sigs/karpenter/pull/2894) would automate annotation.
+
+- **Move quality tracking.** Annotate moved pods with the move's score. Track re-disruption rate (pods evicted again within minutes). High re-disruption means the threshold is too aggressive.
+
+- **Async move generation.** Scoring enables a shift from synchronous per-cycle consolidation to a continuous pipeline: generate, score, enqueue by priority, execute as budget allows. This eliminates the per-cycle timeout problem.
 
 
 ## Frequently Asked Questions
