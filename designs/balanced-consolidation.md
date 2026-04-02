@@ -285,7 +285,7 @@ score = 0.10 / 0.10 = 1.0 > 0.5 --> approved
 
 The move is approved. To reach the 0.5 boundary, each of the 8 pods would need disruption cost 2 (disruption fraction 20%, score 0.50).
 
-## Threshold Verification
+## Why k=2
 
 The scoring formula has one free parameter: `consolidationThreshold` (k). We chose k=2 by exhaustive enumeration.
 
@@ -404,7 +404,7 @@ Surface the move count and estimated savings at the current threshold. Scoring a
 
 ## Open Questions
 
-- **Is k=2 the right default?** [Threshold Verification](#threshold-verification) explains why k=2 is the smallest value that makes uniform-pool REPLACEs viable. We do not know whether k=2 works well across diverse workloads. Operators can adjust `consolidationThreshold` per-NodePool. The feature gate and opt-in rollout exist to answer this question empirically.
+- **Is k=2 the right default?** [Why k=2](#why-k2) explains why k=2 is the smallest value that makes uniform-pool REPLACEs viable. We do not know whether k=2 works well across diverse workloads. Operators can adjust `consolidationThreshold` per-NodePool. The feature gate and opt-in rollout exist to answer this question empirically.
 
 - **Should single-node pools be exempt from scoring?** A single-node pool DELETE scores 1.0 and passes the default threshold, making all pods unschedulable until provisioning creates a replacement. Disruption budgets (`nodes: 0`) prevent this today. The formula could also refuse by requiring pool size > 1, but that adds a special case for something disruption budgets already handle.
 
