@@ -44,7 +44,7 @@ The three consolidation policies sit on a spectrum from conservative to aggressi
 
 `WhenEmpty` and `WhenEmptyOrUnderutilized` are implemented by their existing controllers. `Balanced` uses the scoring formula. The spectrum is conceptual — `WhenEmpty` and `WhenEmptyOrUnderutilized` are not special cases of the formula. They remain separate code paths.
 
-`consolidationThreshold` controls how aggressively `Balanced` consolidates. Higher values approve more moves. The default is 2, meaning each percent of savings permits two percent of disruption. The parameter accepts any positive real number (k=2.5 sits between k=2 and k=3). Validation rejects zero, negative values, and `consolidationThreshold` without `consolidationPolicy: Balanced`.
+`consolidationThreshold` controls how aggressively `Balanced` consolidates. Higher values approve more moves. At the default of 2, a move passes when its disruption fraction is at most 2x its savings fraction. The parameter accepts any positive real number (k=2.5 sits between k=2 and k=3). Validation rejects zero, negative values, and `consolidationThreshold` without `consolidationPolicy: Balanced`.
 
 If an operator enables `BalancedConsolidation`, sets `consolidationPolicy: Balanced`, then disables the feature gate during rollback, the controller falls back to `WhenEmptyOrUnderutilized` behavior and sets a `ConsolidationPolicyUnsupported` status condition on the NodePool. The condition message directs the operator to change the policy or re-enable the gate. This avoids reconcile failures while making the fallback visible.
 
@@ -330,7 +330,7 @@ k=2 is the right default. It is the smallest value that makes within-family REPL
 
 ### Consolidation Aggressiveness Tuning [Recommended: consolidationThreshold]
 
-`consolidationThreshold` exposes k directly. The threshold is `1/k`. Higher k = lower threshold = more moves approved. This inversion is a usability risk, but k has a direct interpretation (each percent of savings permits k percent of disruption) and the alternatives obscure the relationship to the verification results. k=2 for within-family replaces, k=3 for cross-family. Real-valued. Scoring properties hold for all k > 0.
+`consolidationThreshold` exposes k directly. The threshold is `1/k`. Higher k = lower threshold = more moves approved. This inversion is a usability risk, but k has a direct interpretation (a move passes when disruption fraction is at most k times savings fraction) and the alternatives obscure the relationship to the verification results. k=2 for within-family replaces, k=3 for cross-family. Real-valued. Scoring properties hold for all k > 0.
 
 Two alternatives were considered:
 
