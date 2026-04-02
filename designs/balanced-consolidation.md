@@ -116,7 +116,7 @@ When multiple moves pass the threshold and a disruption budget limits how many e
 
 ![Ranking consolidation moves: score vs. single-dimension ranking](ranking-strategies.png)
 
-The graphs show REPLACE and DELETE moves from a simulated cluster: 5000 pods with log-normal CPU/memory requests, packed across c7i/m7i/r7i instances, after 10 rounds of workload churn. Each curve shows cumulative savings vs. cumulative disruption under a different ranking strategy. Score-based ranking dominates at every disruption level (see [`balanced-consolidation-ranking.py`](scripts/balanced-consolidation-ranking.py)).
+The graphs show REPLACE and DELETE moves from a simulated cluster: 5000 pods with log-normal CPU/memory requests, packed across c7i/m7i/r7i instances, after 10 rounds of workload churn. Each curve shows cumulative savings vs. cumulative disruption under a different ranking strategy. At every disruption level, score-based ranking delivers more savings than the alternatives (see [`balanced-consolidation-ranking.py`](scripts/balanced-consolidation-ranking.py)).
 
 ### Edge Cases
 
