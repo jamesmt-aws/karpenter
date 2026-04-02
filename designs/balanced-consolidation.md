@@ -94,7 +94,7 @@ score = savings_fraction / disruption_fraction
 
 `evicted_pods` is all pods on deleted source nodes. Every pod is evicted regardless of where it lands. The disruption cost counts every eviction.
 
-A move is approved when `score >= 1/k`, where k is `consolidationThreshold` (default 2). Both sides are dimensionless fractions, so the score is scale-invariant (see [Scale Invariance](#scale-invariance)).
+A move is approved when `score >= 1/k`, where k is `consolidationThreshold` (default 2). At k=2, `score >= 0.5`. Both sides are dimensionless fractions, so the score is scale-invariant (see [Scale Invariance](#scale-invariance)).
 
 **Division-by-zero handling.** With the per-node baseline of 1.0, `disruption_cost` is always positive for any node, eliminating the zero-disruption special case. The remaining edge cases:
 
@@ -142,7 +142,7 @@ Move generation is expensive (find a destination, compute replacement costs, ver
 delete_ratio = (node.price / nodepool_cost) / (node.disruption_cost / nodepool_total_disruption_cost)
 ```
 
-If this ratio is below 1/k (0.5 at the default k=2), this node is not a good consolidation candidate. A DELETE saves the full node cost — a REPLACE saves strictly less because the replacement has positive cost. If the best case (DELETE) doesn't pass, nothing will. The system skips move generation for that node.
+If this ratio is below 1/k, this node is not a good consolidation candidate. A DELETE saves the full node cost — a REPLACE saves strictly less because the replacement has positive cost. If the best case (DELETE) doesn't pass, nothing will. The system skips move generation for that node.
 
 This filter applies to single-node consolidation. A group of individually-failing nodes could produce a passing batch if their combined savings outweigh combined disruption. The filter misses these opportunities. Evaluating all multi-node combinations is exponential, so the implementation takes single-node savings first and attempts multi-node moves only when single-node opportunities are exhausted.
 
@@ -169,7 +169,7 @@ How to use these: if `moves_total{decision="rejected"}` is high and the histogra
 
 ## Examples
 
-All examples use the default `consolidationThreshold` of 2 (threshold 0.5). The NodePool has 10 nodes: eight m7i.xlarge (4 vCPU, 16 GiB, $4.84/day) and two m7i.2xlarge (8 vCPU, 32 GiB, $9.68/day). Total NodePool cost is $58.08/day. The NodePool runs 80 pods with total disruption cost 80.
+All examples use the default `consolidationThreshold` of 2. The NodePool has 10 nodes: eight m7i.xlarge (4 vCPU, 16 GiB, $4.84/day) and two m7i.2xlarge (8 vCPU, 32 GiB, $9.68/day). Total NodePool cost is $58.08/day. The NodePool runs 80 pods with total disruption cost 80.
 
 ### Oversized Node (approved)
 
@@ -287,7 +287,7 @@ The move is approved. To reach the 0.5 boundary, each of the 8 pods would need d
 
 ## Threshold Verification
 
-The scoring formula has one free parameter: `consolidationThreshold` (k). We chose k=2 (threshold 0.5) by exhaustive enumeration.
+The scoring formula has one free parameter: `consolidationThreshold` (k). We chose k=2 by exhaustive enumeration.
 
 ### State Space
 
@@ -314,8 +314,8 @@ Properties 1-4, 6, and 7 hold at all k values. They are structural properties of
 
 ### Results
 
-| k | threshold | approved replace pairs | new pairs vs k-1 | max churn chain |
-|---|-----------|----------------------|-----------------|-----------------|
+| k | min score (1/k) | approved replace pairs | new pairs vs k-1 | max churn chain |
+|---|-----------------|----------------------|-----------------|-----------------|
 | 1 | 1.000 | 0 | — | 0 |
 | 2 | 0.500 | 78 | 78 | 4 steps |
 | 3 | 0.333 | 86 | 8 | 4 steps |
@@ -332,7 +332,7 @@ k=2 is the right default. It is the smallest value that makes within-family REPL
 
 ### Consolidation Aggressiveness Tuning [Recommended: consolidationThreshold]
 
-`consolidationThreshold` exposes k directly. The threshold is `1/k`. Higher k = lower threshold = more moves approved. This inversion is a usability risk, but k has a direct interpretation (a move passes when disruption fraction is at most k times savings fraction) and the alternatives obscure the relationship to the verification results. k=2 for within-family replaces, k=3 for cross-family. Real-valued. Scoring properties hold for all k > 0.
+`consolidationThreshold` exposes k directly. A move passes when its disruption fraction is at most k times its savings fraction. Higher k approves more moves. k=2 for within-family replaces, k=3 for cross-family. Real-valued. Scoring properties hold for all k > 0.
 
 Two alternatives were considered:
 
