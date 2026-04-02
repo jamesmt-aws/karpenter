@@ -39,7 +39,7 @@ The three consolidation policies sit on a spectrum from conservative to aggressi
 | Policy | Behavior |
 |---|---|
 | `WhenEmpty` | Only empty nodes (emptiness controller, no scoring) |
-| `Balanced` | Scoring: savings must justify disruption |
+| `Balanced` | Savings must justify disruption |
 | `WhenEmptyOrUnderutilized` | Any positive savings |
 
 `WhenEmpty` and `WhenEmptyOrUnderutilized` are implemented by their existing controllers. `Balanced` uses the scoring formula. The spectrum is conceptual — `WhenEmpty` and `WhenEmptyOrUnderutilized` are not special cases of the formula. They remain separate code paths.
