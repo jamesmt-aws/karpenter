@@ -396,6 +396,66 @@ var _ = Describe("ClusterCost", func() {
 		})
 	})
 
+	Context("CostAccuracy", func() {
+		It("should not double-count cost when re-adding an offering after internalNodepoolUpdate recomputes", func() {
+			// When a nodeclaim is added for an offering key that was previously
+			// deleted from the map (count hit 0), internalAddOffering calls
+			// internalNodepoolUpdate which recomputes cost from scratch via
+			// updateCost(). Then line 322 adds oc.Price on top of the already-
+			// correct recomputed cost. This double-counts the new offering's price.
+			//
+			// Additionally, the retry path doesn't increment oc.Count, leaving
+			// the count at 0 even though a nodeclaim was added.
+			//
+			// To trigger: keep an anchor alive (so nodepool survives), cycle a
+			// different offering through add→remove→re-add.
+
+			// Use two different instance types so the offering key deleted
+			// for one doesn't get recreated when the other's nodepool update runs
+			spotInstance := &cloudprovider.InstanceType{
+				Name:      "spot-only",
+				Offerings: []*cloudprovider.Offering{spotOffering},
+			}
+			odInstance := &cloudprovider.InstanceType{
+				Name:      "od-only",
+				Offerings: []*cloudprovider.Offering{onDemandOffering},
+			}
+			cloudProvider.InstanceTypes = []*cloudprovider.InstanceType{spotInstance, odInstance}
+
+			// Add anchor with on-demand instance
+			anchor := createTestNodeClaim(testNodePool, odInstance.Name, onDemandOffering.CapacityType(), onDemandOffering.Zone())
+			anchor.Name = "anchor"
+			Expect(clusterCost.UpdateNodeClaim(ctx, anchor)).To(Succeed())
+			Expect(clusterCost.GetClusterCost()).To(BeNumerically("~", 3.00, 0.001))
+
+			// Add and remove a spot nodeclaim
+			nc1 := createTestNodeClaim(testNodePool, spotInstance.Name, spotOffering.CapacityType(), spotOffering.Zone())
+			nc1.Name = "spot-first"
+			Expect(clusterCost.UpdateNodeClaim(ctx, nc1)).To(Succeed())
+			Expect(clusterCost.GetClusterCost()).To(BeNumerically("~", 4.50, 0.001))
+			Expect(clusterCost.DeleteNodeClaim(ctx, client.ObjectKeyFromObject(nc1))).To(Succeed())
+			Expect(clusterCost.GetClusterCost()).To(BeNumerically("~", 3.00, 0.001))
+
+			// Re-add spot — the spot offering key was deleted from the map
+			// but nodepool survives. This triggers internalNodepoolUpdate.
+			nc2 := createTestNodeClaim(testNodePool, spotInstance.Name, spotOffering.CapacityType(), spotOffering.Zone())
+			nc2.Name = "spot-second"
+			Expect(clusterCost.UpdateNodeClaim(ctx, nc2)).To(Succeed())
+
+			cost := clusterCost.GetClusterCost()
+			Expect(cost).To(BeNumerically("~", 4.50, 0.001),
+				fmt.Sprintf("cost should be 4.50 (3.00 anchor + 1.50 spot), got %v", cost))
+
+			// Now trigger UpdateOfferings which recomputes cost from Count * Price.
+			// If the count was not incremented properly (stayed at 0 instead of 1),
+			// updateCost() will compute 0*1.50 + 1*3.00 = 3.00 instead of 4.50.
+			clusterCost.UpdateOfferings(ctx, testNodePool, cloudProvider.InstanceTypes)
+			costAfterRefresh := clusterCost.GetClusterCost()
+			Expect(costAfterRefresh).To(BeNumerically("~", 4.50, 0.001),
+				fmt.Sprintf("cost should still be 4.50 after UpdateOfferings recomputes from counts, got %v — indicates count was not incremented on re-add", costAfterRefresh))
+		})
+	})
+
 	Context("Concurrency", func() {
 		It("should be thread-safe with concurrent UpdateNodeClaim calls", func() {
 			GinkgoHelper()
