@@ -44,7 +44,7 @@ The three consolidation policies sit on a spectrum from conservative to aggressi
 
 `WhenEmpty` and `WhenEmptyOrUnderutilized` are implemented by their existing controllers. `Balanced` uses the scoring formula. The spectrum is conceptual — `WhenEmpty` and `WhenEmptyOrUnderutilized` are not special cases of the formula. They remain separate code paths.
 
-`consolidationThreshold` is a positive real number, only valid with `Balanced`. At k=0.5 the threshold is 2.0 (savings fraction must double the disruption fraction). At k < 1, no REPLACE passes in a uniform pool. At k=1000, the behavior is equivalent to `WhenEmptyOrUnderutilized`. k=2.5 (threshold 0.4) sits between k=2 and k=3. Zero and negative values are rejected by validation. Setting `consolidationThreshold` without `consolidationPolicy: Balanced` is rejected by validation.
+`consolidationThreshold` controls how aggressively `Balanced` consolidates. Higher values approve more moves. The default is 2, meaning each percent of savings permits two percent of disruption. The parameter accepts any positive real number (k=2.5 sits between k=2 and k=3). Validation rejects zero, negative values, and `consolidationThreshold` without `consolidationPolicy: Balanced`.
 
 If an operator enables `BalancedConsolidation`, sets `consolidationPolicy: Balanced`, then disables the feature gate during rollback, the controller falls back to `WhenEmptyOrUnderutilized` behavior and sets a `ConsolidationPolicyUnsupported` status condition on the NodePool. The condition message directs the operator to change the policy or re-enable the gate. This avoids reconcile failures while making the fallback visible.
 
