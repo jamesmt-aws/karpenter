@@ -163,7 +163,9 @@ Approved and rejected moves are surfaced as events. Single-node moves emit on th
 
 Scored moves are also logged at DEBUG level.
 
-A Prometheus histogram `karpenter_consolidation_score` records scores by decision and NodePool, with buckets {0.1, 0.25, 0.33, 0.5, 1.0, 2.0, 5.0, 10.0}. A counter `karpenter_consolidation_moves_total` by decision and NodePool tracks move volume. No new status fields or labels are needed.
+A Prometheus histogram `karpenter_consolidation_score` records scores by decision and NodePool, with buckets {0.1, 0.25, 0.33, 0.5, 1.0, 2.0, 5.0, 10.0}. A counter `karpenter_consolidation_moves_total` by decision and NodePool tracks move volume.
+
+How to use these: if `moves_total{decision="rejected"}` is high and the histogram shows most rejected scores clustered just below the threshold, the operator's k is slightly too conservative — raising it by 0.5 would capture those moves. If `moves_total{decision="approved"}` is zero and `moves_total{decision="rejected"}` is also zero, there are no candidates (the cluster is well-packed or `consolidateAfter` hasn't elapsed). If approved moves are high but savings aren't materializing, kube-scheduler divergence may be undoing the moves (check for rapidly churning NodeClaims).
 
 ## Examples
 
