@@ -54,12 +54,12 @@ The score compares a move's savings and disruption as fractions of NodePool tota
 
 #### Per-Pod Disruption Cost
 
-[`EvictionCost`](../pkg/utils/disruption/disruption.go) in `pkg/utils/disruption/disruption.go` starts with a base of 1.0 per pod and adds two terms:
+[`EvictionCost`](../pkg/utils/disruption/disruption.go) starts at 1.0 per pod and adds two terms:
 
-1. **Pod deletion cost** ([`controller.kubernetes.io/pod-deletion-cost`](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/#pod-deletion-cost) annotation), divided by 2^27, contributing a value in the range -16 to +16. Default: 0 (no annotation). Set by pod authors; the ReplicaSet controller uses this to choose which pods to scale down first, and Karpenter reuses it as a disruption signal.
-2. **Pod priority**, divided by 2^25, contributing a value in the range -64 to +30 for standard priority classes. Default: 0 (default priority class). Assigned by cluster operators via [`spec.priorityClassName`](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/). Higher-priority pods increase their node's disruption cost.
+1. **Pod deletion cost** ([`controller.kubernetes.io/pod-deletion-cost`](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/#pod-deletion-cost)), divided by 2^27, range -16 to +16. Default 0. The ReplicaSet controller uses this for scale-down ordering; Karpenter reuses it as a disruption signal.
+2. **Pod priority**, divided by 2^25, range -64 to +30. Default 0. Higher-priority pods increase their node's disruption cost.
 
-With neither set, per-pod disruption cost is 1.0. `EvictionCost` clamps the result to [-10, 10]. The scoring path (not `EvictionCost` itself) clamps negative values to 0 via the `max(0, EvictionCost(pod))` in the per-node disruption cost formula (see [NodePool Totals](#nodepool-totals)). Other consumers of `EvictionCost` (eviction ordering) continue to see negative values. Per-pod range for scoring: [0, 10].
+With neither set, per-pod disruption cost is 1.0. `EvictionCost` clamps to [-10, 10]. The scoring path clamps negative values to 0 via `max(0, EvictionCost(pod))` in the per-node formula (see [NodePool Totals](#nodepool-totals)). Other consumers of `EvictionCost` (eviction ordering) still see negatives. Scoring range per pod: [0, 10].
 
 #### Default Behavior: Savings vs. Pod Count
 
@@ -74,15 +74,11 @@ nodepool_cost = sum(node.price for node in nodepool.nodes)
 nodepool_total_disruption_cost = sum(node.disruption_cost for node in nodepool.nodes)
 ```
 
-Each node's disruption cost is 1.0 (per-node baseline) plus the sum of `max(0, EvictionCost(pod))` for its pods. The baseline is a mathematical convenience that eliminates division-by-zero for empty nodes, not a calibrated estimate of cordon/drain overhead. 1.0 is the smallest value that does the job without dominating per-pod costs (a 10-pod node has disruption cost 11, so the baseline is 9% of the total). An empty node has disruption cost 1.0. A node whose only pod has `EvictionCost = -10` also has disruption cost 1.0 (the clamped pod contributes 0). Negative eviction cost does not make a node easier to consolidate than an empty node. The baseline eliminates division-by-zero: an empty node DELETE scores `(node.price / nodepool_cost) / (1.0 / nodepool_total_disruption_cost)`, always well-defined.
+Each node's disruption cost is 1.0 (per-node baseline) plus `sum(max(0, EvictionCost(pod)))` for its pods. The baseline eliminates division-by-zero for empty nodes. It is not a calibrated estimate of cordon/drain overhead. A 10-pod node has disruption cost 11; the baseline is 9% of the total. A node whose only pod has `EvictionCost = -10` has disruption cost 1.0, same as an empty node.
 
-For cross-NodePool consolidation, the source NodePool's total dollar cost, total disruption cost, and consolidation policy govern the decision to accept or reject the move. Cross-pool moves may be DELETEs (source node removed, pods land on existing capacity in another pool) or REPLACEs (source node removed, replacement node created in the source pool). The savings is the difference between the source nodes and any replacement nodes.
+For cross-NodePool moves, the source pool's totals, policy, and budget govern scoring. Cross-pool DELETEs require scheduling simulation to confirm pods fit on the destination. The destination pool's budget is not consumed (it absorbs pods, not loses a node). The source pool's policy governs regardless of the destination's policy; otherwise a permissive destination could override a conservative source.
 
-Cross-pool DELETEs are only generated when scheduling simulation confirms pods fit on existing destination capacity. The feasibility check runs before scoring. If the pods don't fit, no move is generated and no score is computed. The destination pool's disruption budget is not consumed by a cross-pool DELETE — the destination pool is not losing a node, only absorbing pods onto existing capacity. Only the source pool's budget governs the move.
-
-The source pool's policy governs scoring regardless of the destination pool's policy. The source pool loses a node and disrupts pods. The destination pool absorbs pods passively. Consulting the destination pool's policy would let a permissive destination override a conservative source.
-
-NodePool totals are snapshotted once per consolidation cycle. If multiple moves execute in the same cycle, later moves use stale totals. A move that scored 1.5 against a 100-node snapshot still passes against a 98-node pool. Moves near the threshold boundary could flip; the next cycle corrects. Re-scoring within a cycle is not required.
+NodePool totals are snapshotted once per cycle. Later moves in the same cycle use stale totals. A move that scored 1.5 against a 100-node snapshot still passes against a 98-node pool. Moves near the boundary could flip; the next cycle corrects.
 
 #### Calculation
 
@@ -96,9 +92,9 @@ disruption_fraction = disruption_cost / nodepool_total_disruption_cost
 score = savings_fraction / disruption_fraction
 ```
 
-`evicted_pods` is all pods on deleted source nodes. When a source node is deleted, all its pods are evicted regardless of where they land (replacement node, existing capacity, or rescheduled elsewhere). The disruption cost counts every eviction, not just pods that change nodes.
+`evicted_pods` is all pods on deleted source nodes. Every pod is evicted regardless of where it lands. The disruption cost counts every eviction.
 
-A move is approved when `score >= 1/k`, where k is `consolidationThreshold` (default 2). At k=2, each percent of savings fraction permits two percent of disruption fraction. Higher k approves more aggressively. Both sides are dimensionless fractions, so the score is scale-invariant (see [Scale Invariance](#scale-invariance)).
+A move is approved when `score >= 1/k`, where k is `consolidationThreshold` (default 2). Both sides are dimensionless fractions, so the score is scale-invariant (see [Scale Invariance](#scale-invariance)).
 
 **Division-by-zero handling.** With the per-node baseline of 1.0, `disruption_cost` is always positive for any node, eliminating the zero-disruption special case. The remaining edge cases:
 
@@ -140,9 +136,7 @@ When a positive-cost source node is consolidated and its pods land on an ODCR de
 
 ### Candidate Filtering
 
-Generating consolidation moves is expensive. For each candidate source node, the system must find a destination, compute replacement node costs, and verify scheduling constraints. We can avoid this work for nodes that cannot produce a passing move.
-
-A node's best possible score is its delete ratio: the score of a DELETE, which saves the full node cost with no replacement.
+Move generation is expensive (find a destination, compute replacement costs, verify scheduling). A node's best possible score is its delete ratio: a DELETE saving the full node cost with no replacement.
 
 ```
 delete_ratio = (node.price / nodepool_cost) / (node.disruption_cost / nodepool_total_disruption_cost)
@@ -156,9 +150,9 @@ The NodePool totals only need to be sensible relative to each other. The impleme
 
 ### Interaction with Existing Features
 
-All existing feasibility checks still apply: NodePool disruption budgets, PodDisruptionBudgets, `consolidateAfter`, and `karpenter.sh/do-not-disrupt`. Scoring applies only to consolidation. Spot interruptions, expiration, and drift are handled by separate controllers. Static NodePools are excluded from consolidation. Only drift applies to static NodePools.
+Existing feasibility checks (disruption budgets, PDBs, `consolidateAfter`, `do-not-disrupt`) are unchanged. Scoring applies only to consolidation, not to spot interruptions, expiration, or drift.
 
-`consolidateAfter` determines candidacy, not scoring. Young nodes are not candidates but they contribute to the denominators. If 10 of 20 nodes just launched as replacements, scores are computed against the full 20-node pool, preventing the post-replacement cycle from being artificially aggressive.
+`consolidateAfter` determines candidacy. Young nodes are not candidates but contribute to the denominators, preventing the post-replacement cycle from being artificially aggressive.
 
 ### Observability
 
@@ -297,13 +291,13 @@ The scoring formula has one free parameter: `consolidationThreshold` (k). We cho
 
 We enumerate configurations in a bounded space using on-demand prices from three instance families in us-east-1: c7i (compute-optimized), m7i (general-purpose), and r7i (memory-optimized), medium through 4xlarge (15 price points). 1 to 6 nodes per pool, 0 to 4 pods per node, per-pod disruption cost in {1, 2, 5, 10}. For each configuration, we evaluate every candidate move (Delete and Replace to every cheaper price) at every k from 1 through 5. Three families matter because cross-family replacement ratios are not power-of-2.
 
-The enumeration uses small pools (up to 4 pods per node) for tractability. Properties 1-4, 6, and 7 are algebraic properties of the ratio and hold for any pod count. Properties 5 and 8 depend on the price structure, not on pod count. The examples section uses 8-10 pods per node; the properties apply.
+The enumeration caps at 4 pods per node for tractability. Properties 1-4, 6, and 7 are algebraic and hold for any pod count. Properties 5 and 8 depend on the price structure, not pod count.
 
 ### Properties
 
-A **churn chain** is a sequence of REPLACE moves where each replacement node itself becomes a consolidation candidate. For example: m7i.xlarge replaces to m7i.large, then m7i.large replaces to c7i.large, then c7i.large replaces to c7i.medium. Churn chains converge when the sequence terminates at an instance type where no further replacement passes the threshold. Churn chains cycle if the sequence revisits an instance type. The verification below confirms that all chains converge (no cycles) and measures chain length.
+A **churn chain** is a sequence of REPLACEs where each replacement becomes a candidate (e.g., m7i.xlarge → m7i.large → c7i.medium). Chains converge when no further replacement passes. The verification confirms all chains converge (no cycles).
 
-Eight properties define correctness for the scoring function, independent of k:
+Eight properties define correctness, independent of k:
 
 1. **Monotonicity in savings.** Cheaper replacement never makes approval harder.
 2. **Monotonicity in disruption.** Higher disruption never makes approval easier.
@@ -336,7 +330,7 @@ k=2 is the right default. It is the smallest value that makes within-family REPL
 
 ### Consolidation Aggressiveness Tuning [Recommended: consolidationThreshold]
 
-`consolidationThreshold` exposes k directly. The threshold is `1/k`. Higher k = lower threshold = more moves approved. This inversion is a usability risk: an operator who "wants to raise the threshold" must lower the number. We accept the trade-off because k has a direct interpretation (each percent of savings permits k percent of disruption) and the alternatives (exposing the threshold directly, using a percentage) obscure the relationship to the verification results. k=2 (default) for within-family replaces, k=3 for cross-family, higher for more aggressive. Real-valued: k=2.5 (threshold 0.4) sits between k=2 and k=3. The scoring properties (monotonicity, scale invariance, differentiation) hold for all k > 0. Approved replace pairs increase monotonically with k.
+`consolidationThreshold` exposes k directly. The threshold is `1/k`. Higher k = lower threshold = more moves approved. This inversion is a usability risk, but k has a direct interpretation (each percent of savings permits k percent of disruption) and the alternatives obscure the relationship to the verification results. k=2 for within-family replaces, k=3 for cross-family. Real-valued. Scoring properties hold for all k > 0.
 
 Two alternatives were considered:
 
@@ -348,19 +342,15 @@ Two alternatives were considered:
 
 The score denominators (total cost, total disruption cost) could be computed per-NodePool or across the entire cluster. This proposal recommends per-NodePool.
 
-Per-NodePool normalization keeps scores meaningful at the scope operators configure. A 1000-node batch pool and a 10-node stateful pool have different cost structures. Per-cluster normalization would dilute the stateful pool's scores: a single node representing 10% of its own pool becomes 0.1% of the cluster. Per-NodePool also matches Karpenter's existing architecture. Consolidation policies, budgets, and `consolidateAfter` are already per-NodePool.
+Per-NodePool normalization matches Karpenter's existing architecture (policies, budgets, `consolidateAfter` are already per-NodePool). Per-cluster normalization would dilute small pool scores: a single node representing 10% of its own pool becomes 0.1% of the cluster.
 
-Pros: Matches Karpenter's per-NodePool architecture. Prevents large pools from diluting small pool scores. Each pool's operator controls its own cost-disruption tradeoff. Scores are dimensionless ratios and can still be compared across pools.
-
-Cons: Scores reflect relative efficiency within a pool, not absolute dollar impact. A score of 2.0 in a $50/hr pool and a score of 2.0 in a $10,000/hr pool look identical, but the latter saves 200x more money. This does not affect behavior (each pool runs consolidation independently with its own budget), but it limits what operators can conclude from comparing scores across pools.
+Con: scores reflect relative efficiency within a pool, not absolute dollar impact. A score of 2.0 in a $50/hr pool and 2.0 in a $10,000/hr pool look identical. This does not affect behavior but limits cross-pool comparison.
 
 ### New consolidationPolicy Value with consolidationThreshold
 
-Adding `Balanced` as a policy value with `consolidationThreshold` gives operators an explicit opt-in and a tuning knob. The three policies (`WhenEmpty`, `Balanced`, `WhenEmptyOrUnderutilized`) span the full spectrum from zero tolerance to unlimited tolerance.
+No behavior change for existing users. Migration: change `WhenEmptyOrUnderutilized` to `Balanced`.
 
-Pros: No behavior change for existing users. Clear migration path: change `WhenEmptyOrUnderutilized` to `Balanced`. Operators who need to tune have a single, interpretable parameter.
-
-Cons: `WhenEmpty` and `WhenEmptyOrUnderutilized` describe behavior; `Balanced` describes character. Alternatives: `Scored` (exposes implementation), `CostWeighted` (implies cost-only), `WhenWorthIt` (too informal). `Balanced` is the least-bad option.
+Con: `WhenEmpty` and `WhenEmptyOrUnderutilized` describe behavior; `Balanced` describes character. Alternatives: `Scored` (exposes implementation), `CostWeighted` (implies cost-only), `WhenWorthIt` (too informal). `Balanced` is the least-bad option.
 
 ## Alternatives Considered
 
@@ -423,21 +413,15 @@ Surface the move count and estimated savings at the current threshold. Scoring a
 
 ### What happens in a uniformly inefficient cluster where no single REPLACE clears the threshold?
 
-In a cluster where every node is underutilized by a similar amount, each REPLACE move produces a small savings fraction relative to its disruption fraction. For example, if every node can downsize one tier and save 20% of its cost but must disrupt all its pods, every REPLACE scores 0.2 and is rejected.
-
-DELETE moves are not affected. In a uniformly underutilized cluster, some nodes have pods that fit on other nodes' spare capacity. A DELETE saves the full node cost with no replacement, so its savings fraction equals the node's share of NodePool cost and its disruption fraction equals the node's share of NodePool disruption. For identical nodes, every DELETE scores exactly 1.0.
-
-Operators who want all feasible moves to execute regardless of savings can use `WhenEmptyOrUnderutilized`.
+Every REPLACE scores low (e.g., 0.2 for a one-tier downsize) and is rejected. DELETEs still work: a DELETE of a node whose pods fit elsewhere scores 1.0 in a uniform pool. The system consolidates by deleting nodes, not replacing them. Operators who want all feasible moves can use `WhenEmptyOrUnderutilized`.
 
 ### Does the score account for kube-scheduler pod placement?
 
-No. The score evaluates the move as proposed: source nodes are deleted, replacement nodes (if any) are created, and moved pods are assumed to land on the intended destination. In practice, kube-scheduler may place pods on different nodes than Karpenter expects. If pods scatter across existing nodes instead of packing onto the replacement, the replacement may be underutilized, triggering another consolidation cycle. Karpenter provisions node K to consolidate nodes B and C, but kube-scheduler distributes B's and C's pods across existing nodes D through J instead of packing them onto K. K ends up nearly empty and becomes a consolidation candidate itself.
+No. The score assumes pods land on the intended destination. In practice, kube-scheduler may scatter pods across existing nodes instead of packing onto the replacement. The replacement ends up nearly empty and becomes a consolidation candidate itself.
 
-This limitation exists in all consolidation modes. The cost threshold reduces the count of affected moves but concentrates them onto higher-impact candidates with more pods. Fewer moves, higher stakes per move.
+This exists in all consolidation modes. The cost threshold concentrates the remaining moves onto higher-impact candidates. The system self-corrects: a nearly-empty replacement scores as a trivial DELETE next cycle. Cascades terminate because each round has strictly fewer displaced nodes.
 
-The system self-corrects: a nearly-empty replacement node scores as a trivial DELETE next cycle. If divergence hits multiple moves, the resulting cascade terminates because each round has strictly fewer displaced nodes. The disruption budget bounds per-cycle concurrency but not cascade depth.
-
-The root cause is that Karpenter simulates scheduling internally while kube-scheduler makes the actual placement decision. Configuring kube-scheduler with a `MostAllocated` scoring strategy reduces divergence. The [Workload-Aware Scheduling proposal](https://docs.google.com/document/d/1mPYqS4cFmsHPaVQDKyCz7-TKyWNJGjTaZQD3Umkvmgk) (Kepka, Feb 2026) addresses this more directly.
+Configuring kube-scheduler with `MostAllocated` scoring reduces divergence. The [Workload-Aware Scheduling proposal](https://docs.google.com/document/d/1mPYqS4cFmsHPaVQDKyCz7-TKyWNJGjTaZQD3Umkvmgk) (Kepka, Feb 2026) addresses this more directly.
 
 ### Why doesn't the score account for reserved instance or ODCR opportunity cost?
 
@@ -457,18 +441,8 @@ Rejections are driven by high disruption fraction relative to savings fraction. 
 
 ## Rollout
 
-This feature follows Karpenter's standard feature gate pattern, consistent with SpotToSpotConsolidation and NodeOverlay.
+Standard feature gate pattern (SpotToSpotConsolidation, NodeOverlay).
 
-### Phase 1: Alpha (feature gate, disabled by default)
-
-`Balanced` is gated behind a `BalancedConsolidation` feature gate, disabled by default. Setting `consolidationPolicy: Balanced` without the gate enabled is rejected by validation. Operators opt in via `--feature-gates BalancedConsolidation=true`. See [Observability](#observability) for details.
-
-### Phase 2: Beta (feature gate, enabled by default)
-
-After community feedback confirms the threshold works across diverse workloads, the feature gate defaults to enabled. Operators who encounter issues can disable it.
-
-### Phase 3: GA (feature gate removed)
-
-The feature gate is removed. `Balanced` is always available without a gate. Whether it becomes the default policy is a separate community decision. Existing NodePool specs are unaffected.
-
-Graduation is community-driven based on adoption, GitHub issues, and real-world feedback.
+- **Alpha**: disabled by default. `--feature-gates BalancedConsolidation=true` to opt in.
+- **Beta**: enabled by default. Disable if issues arise.
+- **GA**: gate removed. Whether `Balanced` becomes the default policy is a separate decision.
