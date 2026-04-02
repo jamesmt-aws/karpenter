@@ -130,7 +130,7 @@ A single-node pool DELETE scores exactly 1.0 (`savings_fraction = 1.0`, `disrupt
 
 #### Near-Zero-Cost Nodes (ODCRs, Reserved Capacity)
 
-Karpenter prices ODCRs and reserved instances at on-demand price / 10,000,000, keeping the most expensive ODCR cheaper than the cheapest spot node. Within an ODCR-only pool, the 1/10M factor cancels in the score (it divides both savings and total cost). Scores equal the on-demand price ratios, so ODCR pools consolidate normally. This is correct: replacing an expensive reservation with a cheaper one frees capacity. The 1/10M values are ~1e-7, well within float64 precision (15 significant digits). No numerical stability concern.
+Karpenter prices ODCRs and reserved instances at on-demand price divided by a large constant, keeping the most expensive ODCR cheaper than the cheapest spot node (see the provider's pricing implementation for the exact divisor). Within an ODCR-only pool, the divisor cancels in the score (it divides both savings and total cost). Scores equal the on-demand price ratios, so ODCR pools consolidate normally. This is correct: replacing an expensive reservation with a cheaper one frees capacity. The divided values are small but well within float64 precision.
 
 When a positive-cost source node is consolidated and its pods land on an ODCR destination node, this is a DELETE from the source pool's perspective. The score reflects the source pool's cost structure. The destination node's near-zero cost does not affect the score.
 
