@@ -130,7 +130,7 @@ A single-node pool DELETE scores exactly 1.0 (`savings_fraction = 1.0`, `disrupt
 
 #### Near-Zero-Cost Nodes (ODCRs, Reserved Capacity)
 
-Karpenter prices ODCRs and reserved instances at on-demand price / 10,000,000, keeping the most expensive ODCR cheaper than the cheapest spot node. Savings within an ODCR-only pool are negligible, so scores are near-zero and rejected. The emptiness controller still deletes empty ODCR nodes.
+Karpenter prices ODCRs and reserved instances at on-demand price / 10,000,000, keeping the most expensive ODCR cheaper than the cheapest spot node. Within an ODCR-only pool, the 1/10M factor cancels in the score (it divides both savings and total cost). Scores equal the on-demand price ratios, so ODCR pools consolidate normally. This is correct: replacing an expensive reservation with a cheaper one frees capacity. The 1/10M values are ~1e-7, well within float64 precision (15 significant digits). No numerical stability concern.
 
 When a positive-cost source node is consolidated and its pods land on an ODCR destination node, this is a DELETE from the source pool's perspective. The score reflects the source pool's cost structure. The destination node's near-zero cost does not affect the score.
 
@@ -425,7 +425,7 @@ Configuring kube-scheduler with `MostAllocated` scoring reduces divergence. The 
 
 ### Why doesn't the score account for reserved instance or ODCR opportunity cost?
 
-See [Near-Zero-Cost Nodes](#near-zero-cost-nodes-odcrs-reserved-capacity). Reserved capacity has real opportunity cost, but modeling it requires expressing what freed capacity is worth, which varies by organization and time horizon. This RFC defers opportunity-cost modeling.
+See [Near-Zero-Cost Nodes](#near-zero-cost-nodes-odcrs-reserved-capacity). The 1/10M factor cancels in the score, so ODCR pools consolidate using on-demand price ratios. Real opportunity cost (what freed capacity is worth to the organization) is a different question that requires billing API integration. This RFC defers opportunity-cost modeling.
 
 ### Where is the score visible?
 
