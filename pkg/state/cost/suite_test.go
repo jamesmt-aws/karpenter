@@ -394,15 +394,12 @@ var _ = Describe("ClusterCost", func() {
 			Expect(finalClusterCost).To(BeNumerically("~", 8.00, 0.001), // 5.50 + 2.50
 				"Cluster cost should be sum of all updated nodepool costs")
 		})
-		It("should not double-count cost when re-adding an offering after internalNodepoolUpdate recomputes", func() {
-			// When a nodeclaim is added for an offering key that was previously
-			// deleted from the map (count hit 0), internalAddOffering calls
-			// internalNodepoolUpdate which recomputes cost from scratch via
-			// updateCost(). Then the `cost += oc.Price` line adds the price
-			// on top of the already-correct recomputed cost, double-counting.
-			//
-			// Additionally, the retry path doesn't increment oc.Count, leaving
-			// the count at 0 even though a nodeclaim was added.
+		It("should track count correctly when re-adding an offering after the key was deleted", func() {
+			// The retry path in internalAddOffering (when an offering key was
+			// deleted after count hit 0) didn't increment oc.Count. The offering
+			// was re-added with Count: 0, so UpdateOfferings recomputed
+			// 0 * price = $0 instead of 1 * price. This caused cost tracking
+			// to undercount after any offering type fully scaled down and back up.
 			//
 			// To trigger: keep an anchor alive (so nodepool survives), cycle a
 			// different offering through add→remove→re-add.
