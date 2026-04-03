@@ -394,9 +394,6 @@ var _ = Describe("ClusterCost", func() {
 			Expect(finalClusterCost).To(BeNumerically("~", 8.00, 0.001), // 5.50 + 2.50
 				"Cluster cost should be sum of all updated nodepool costs")
 		})
-	})
-
-	Context("CostAccuracy", func() {
 		It("should not double-count cost when re-adding an offering after internalNodepoolUpdate recomputes", func() {
 			// When a nodeclaim is added for an offering key that was previously
 			// deleted from the map (count hit 0), internalAddOffering calls
