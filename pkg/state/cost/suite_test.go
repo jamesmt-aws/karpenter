@@ -401,8 +401,8 @@ var _ = Describe("ClusterCost", func() {
 			// When a nodeclaim is added for an offering key that was previously
 			// deleted from the map (count hit 0), internalAddOffering calls
 			// internalNodepoolUpdate which recomputes cost from scratch via
-			// updateCost(). Then line 322 adds oc.Price on top of the already-
-			// correct recomputed cost. This double-counts the new offering's price.
+			// updateCost(). Then the `cost += oc.Price` line adds the price
+			// on top of the already-correct recomputed cost, double-counting.
 			//
 			// Additionally, the retry path doesn't increment oc.Count, leaving
 			// the count at 0 even though a nodeclaim was added.
