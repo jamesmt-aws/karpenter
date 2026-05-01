@@ -48,16 +48,18 @@ const MultiNodePairwiseSearchTimeoutDuration = 10 * time.Second
 
 type MultiNodeConsolidation struct {
 	consolidation
-	validator        Validator
-	binarySearchOnly bool
+	validator             Validator
+	binarySearchOnly      bool
+	bruteForceEnumeration bool
 }
 
 func NewMultiNodeConsolidation(c consolidation, opts ...option.Function[MethodOptions]) *MultiNodeConsolidation {
 	o := option.Resolve(append([]option.Function[MethodOptions]{WithValidator(NewMultiConsolidationValidator(c))}, opts...)...)
 	return &MultiNodeConsolidation{
-		consolidation:    c,
-		validator:        o.validator,
-		binarySearchOnly: o.binarySearchOnly,
+		consolidation:         c,
+		validator:             o.validator,
+		binarySearchOnly:      o.binarySearchOnly,
+		bruteForceEnumeration: o.bruteForceEnumeration,
 	}
 }
 
@@ -147,6 +149,14 @@ func (m *MultiNodeConsolidation) firstNConsolidationOption(ctx context.Context, 
 	// we always operate on at least two NodeClaims at once, for single NodeClaims standard consolidation will find all solutions
 	if len(candidates) < 2 {
 		return Command{}, nil
+	}
+
+	if m.bruteForceEnumeration {
+		// Test-only oracle: enumerate the powerset, return the
+		// largest-savings feasible subset of size >= 2. Used by the
+		// A/B/C corpus harness to seed violations that do not encode
+		// the production pairwise algorithm's behavior.
+		return m.bruteForceSearch(ctx, candidates, max)
 	}
 
 	primary, err := m.binarySearchPrefix(ctx, candidates, max)
@@ -378,4 +388,79 @@ func (m *MultiNodeConsolidation) Class() string {
 
 func (m *MultiNodeConsolidation) ConsolidationType() string {
 	return MultiNodeConsolidationType
+}
+
+// bruteForceSearch enumerates every non-empty subset of candidates of
+// size >= 2 (capped to 8 candidates so the powerset stays manageable),
+// asks the simulator about each, and returns the largest-savings
+// feasible Command. This is a test-only oracle, used by the A/B/C
+// comparison harness to produce violations that do not depend on the
+// pairwise non-prefix walk's behavior. Bounded by
+// MultiNodeConsolidationTimeoutDuration so a runaway powerset
+// doesn't starve the controller.
+//
+// nolint:gocyclo
+func (m *MultiNodeConsolidation) bruteForceSearch(ctx context.Context, candidates []*Candidate, max int) (Command, error) {
+	const bruteForceCandidateCap = 8
+	if len(candidates) > max {
+		candidates = candidates[:max]
+	}
+	if len(candidates) > bruteForceCandidateCap {
+		candidates = candidates[:bruteForceCandidateCap]
+	}
+	n := len(candidates)
+	if n < 2 {
+		return Command{}, nil
+	}
+
+	timeoutCtx, cancel := context.WithTimeout(ctx, MultiNodeConsolidationTimeoutDuration)
+	defer cancel()
+
+	bestCmd := Command{}
+	bestSize := 0
+	bestDisruption := 0.0
+	for mask := 1; mask < (1 << n); mask++ {
+		if err := timeoutCtx.Err(); err != nil {
+			if errors.Is(err, context.DeadlineExceeded) {
+				ConsolidationTimeoutsTotal.Inc(map[string]string{ConsolidationTypeLabel: m.ConsolidationType()})
+				return bestCmd, nil
+			}
+			return Command{}, err
+		}
+		size := 0
+		for i := 0; i < n; i++ {
+			if mask&(1<<i) != 0 {
+				size++
+			}
+		}
+		if size < 2 {
+			continue
+		}
+		subset := make([]*Candidate, 0, size)
+		var totalCost float64
+		for i := 0; i < n; i++ {
+			if mask&(1<<i) != 0 {
+				subset = append(subset, candidates[i])
+				totalCost += candidates[i].DisruptionCost
+			}
+		}
+		cmd, err := m.computeConsolidation(timeoutCtx, subset...)
+		if err != nil {
+			if errors.Is(err, context.DeadlineExceeded) {
+				continue
+			}
+			return Command{}, err
+		}
+		if cmd.Decision() == NoOpDecision {
+			continue
+		}
+		// Score: prefer larger subset, tie-break on summed disruption
+		// cost (more cost removed = bigger nominal savings).
+		if size > bestSize || (size == bestSize && totalCost > bestDisruption) {
+			bestSize = size
+			bestDisruption = totalCost
+			bestCmd = cmd
+		}
+	}
+	return bestCmd, nil
 }

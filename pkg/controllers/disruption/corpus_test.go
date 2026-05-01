@@ -64,6 +64,7 @@ type corpusEntry struct {
 	Description string            `json:"description"`
 	Mainline    corpusRun         `json:"mainline"`
 	Branch      corpusRun         `json:"branch"`
+	Oracle      corpusRun         `json:"oracle,omitempty"`
 }
 
 type corpusRun struct {
@@ -124,27 +125,38 @@ func runCorpusScenario(seed int64) corpusEntry {
 	nodePool := built.NodePools[0]
 	priceFor := makeCorpusPriceFunc(cloudProvider.InstanceTypes)
 
-	mainlineMoves, mainlineDur := computeMoves(nodePool, true)
+	mainlineMoves, mainlineDur := computeMoves(nodePool, "mainline")
 	mainlineMetrics, mainlineErr := scenarios.Evaluate(built, mainlineMoves, priceFor, scenarios.DefaultEntropyWeights, mainlineDur)
 
-	branchMoves, branchDur := computeMoves(nodePool, false)
+	branchMoves, branchDur := computeMoves(nodePool, "branch")
 	branchMetrics, branchErr := scenarios.Evaluate(built, branchMoves, priceFor, scenarios.DefaultEntropyWeights, branchDur)
+
+	oracleMoves, oracleDur := computeMoves(nodePool, "oracle")
+	oracleMetrics, oracleErr := scenarios.Evaluate(built, oracleMoves, priceFor, scenarios.DefaultEntropyWeights, oracleDur)
 
 	return corpusEntry{
 		Seed:        seed,
 		Description: s.Description,
 		Mainline:    metricsToRun(mainlineMetrics, mainlineErr),
 		Branch:      metricsToRun(branchMetrics, branchErr),
+		Oracle:      metricsToRun(oracleMetrics, oracleErr),
 	}
 }
 
-func computeMoves(nodePool *v1.NodePool, binarySearchOnly bool) ([]scenarios.Move, time.Duration) {
+func computeMoves(nodePool *v1.NodePool, algo string) ([]scenarios.Move, time.Duration) {
 	c := disruption.MakeConsolidation(fakeClock, cluster, env.Client, prov, cloudProvider, recorder, queue)
 	opts := []option.Function[disruption.MethodOptions]{
 		disruption.WithValidator(NewTestMultiConsolidationValidator(nodePool)),
 	}
-	if binarySearchOnly {
+	switch algo {
+	case "mainline":
 		opts = append(opts, disruption.WithBinarySearchOnly())
+	case "oracle":
+		opts = append(opts, disruption.WithBruteForceEnumeration())
+	case "branch":
+		// default, no extra option
+	default:
+		Fail(fmt.Sprintf("unknown algorithm %q", algo))
 	}
 	multi := disruption.NewMultiNodeConsolidation(c, opts...)
 

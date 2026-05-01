@@ -50,8 +50,9 @@ const (
 )
 
 type MethodOptions struct {
-	validator        Validator
-	binarySearchOnly bool
+	validator              Validator
+	binarySearchOnly       bool
+	bruteForceEnumeration  bool
 }
 
 func WithValidator(v Validator) option.Function[MethodOptions] {
@@ -68,6 +69,18 @@ func WithValidator(v Validator) option.Function[MethodOptions] {
 func WithBinarySearchOnly() option.Function[MethodOptions] {
 	return func(o *MethodOptions) {
 		o.binarySearchOnly = true
+	}
+}
+
+// WithBruteForceEnumeration replaces the binary search and pairwise
+// fallback with full powerset enumeration over candidate subsets of
+// size >= 2 (capped at 8 candidates so the powerset fits in a single
+// cycle's wall-time budget). The largest-savings feasible subset is
+// returned. Test-only oracle; used to seed violations that do not
+// encode the production pairwise algorithm's behavior.
+func WithBruteForceEnumeration() option.Function[MethodOptions] {
+	return func(o *MethodOptions) {
+		o.bruteForceEnumeration = true
 	}
 }
 
