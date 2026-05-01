@@ -1,0 +1,1602 @@
+[
+  {
+    "seed": 0,
+    "description": "seed=0 node_count=3 allocCPU=16",
+    "mainline": {
+      "total_savings": 0,
+      "total_disruption": 0,
+      "compute_time_ms": 16.319,
+      "slack_entropy": 1.0985848289225222
+    },
+    "branch": {
+      "total_savings": 0.4147483648,
+      "total_disruption": 2,
+      "compute_time_ms": 95.187,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 1,
+    "description": "seed=1 node_count=6 allocCPU=32",
+    "mainline": {
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 103.145,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 99.514,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 2,
+    "description": "seed=2 node_count=3 allocCPU=8",
+    "mainline": {
+      "total_savings": 0,
+      "total_disruption": 0,
+      "compute_time_ms": 15.093,
+      "slack_entropy": 1.096692663308951
+    },
+    "branch": {
+      "total_savings": 0.4147483648,
+      "total_disruption": 2,
+      "compute_time_ms": 87.546,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 3,
+    "description": "seed=3 node_count=8 allocCPU=8",
+    "mainline": {
+      "total_savings": 1.4516192767999998,
+      "total_disruption": 7,
+      "compute_time_ms": 111.789,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.4516192767999998,
+      "total_disruption": 7,
+      "compute_time_ms": 113.19,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 4,
+    "description": "seed=4 node_count=7 allocCPU=16",
+    "mainline": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 114.875,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 105.088,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 5,
+    "description": "seed=5 node_count=7 allocCPU=16",
+    "mainline": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 109.055,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 119.733,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 6,
+    "description": "seed=6 node_count=8 allocCPU=32",
+    "mainline": {
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 98.328,
+      "slack_entropy": 1.0982163804965106
+    },
+    "branch": {
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 97.25,
+      "slack_entropy": 1.0982163804965106
+    }
+  },
+  {
+    "seed": 7,
+    "description": "seed=7 node_count=3 allocCPU=8",
+    "mainline": {
+      "total_savings": 0.3147483648,
+      "total_disruption": 3,
+      "compute_time_ms": 83.302,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.3147483648,
+      "total_disruption": 3,
+      "compute_time_ms": 83.575,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 8,
+    "description": "seed=8 node_count=3 allocCPU=32",
+    "mainline": {
+      "total_savings": 0,
+      "total_disruption": 0,
+      "compute_time_ms": 14.774,
+      "slack_entropy": 1.0985848289225222
+    },
+    "branch": {
+      "total_savings": 0.4147483648,
+      "total_disruption": 2,
+      "compute_time_ms": 91.316,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 9,
+    "description": "seed=9 node_count=7 allocCPU=16",
+    "mainline": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 109.793,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 108.43,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 10,
+    "description": "seed=10 node_count=7 allocCPU=16",
+    "mainline": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 106.878,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 103.644,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 11,
+    "description": "seed=11 node_count=8 allocCPU=32",
+    "mainline": {
+      "total_savings": 1.4516192767999998,
+      "total_disruption": 7,
+      "compute_time_ms": 118.016,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.4516192767999998,
+      "total_disruption": 7,
+      "compute_time_ms": 109.871,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 12,
+    "description": "seed=12 node_count=4 allocCPU=16",
+    "mainline": {
+      "total_savings": 0,
+      "total_disruption": 0,
+      "compute_time_ms": 29.95,
+      "slack_entropy": 1.386168379512894
+    },
+    "branch": {
+      "total_savings": 0.6221225472,
+      "total_disruption": 3,
+      "compute_time_ms": 124.289,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 13,
+    "description": "seed=13 node_count=6 allocCPU=8",
+    "mainline": {
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 108.644,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 101.705,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 14,
+    "description": "seed=14 node_count=5 allocCPU=32",
+    "mainline": {
+      "total_savings": 0.5294967295999999,
+      "total_disruption": 5,
+      "compute_time_ms": 107.758,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.5294967295999999,
+      "total_disruption": 5,
+      "compute_time_ms": 112.402,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 15,
+    "description": "seed=15 node_count=3 allocCPU=16",
+    "mainline": {
+      "total_savings": 0.3147483648,
+      "total_disruption": 3,
+      "compute_time_ms": 83.846,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.3147483648,
+      "total_disruption": 3,
+      "compute_time_ms": 79.127,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 16,
+    "description": "seed=16 node_count=4 allocCPU=32",
+    "mainline": {
+      "total_savings": 0.3221225472,
+      "total_disruption": 4,
+      "compute_time_ms": 88.547,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.3221225472,
+      "total_disruption": 4,
+      "compute_time_ms": 85.118,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 17,
+    "description": "seed=17 node_count=8 allocCPU=16",
+    "mainline": {
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 97.191,
+      "slack_entropy": 1.0984855610879032
+    },
+    "branch": {
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 99.438,
+      "slack_entropy": 1.0984855610879032
+    }
+  },
+  {
+    "seed": 18,
+    "description": "seed=18 node_count=5 allocCPU=16",
+    "mainline": {
+      "total_savings": 0,
+      "total_disruption": 0,
+      "compute_time_ms": 31.75,
+      "slack_entropy": 1.6080872774849813
+    },
+    "branch": {
+      "total_savings": 0.8294967296,
+      "total_disruption": 4,
+      "compute_time_ms": 142.167,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 19,
+    "description": "seed=19 node_count=7 allocCPU=8",
+    "mainline": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 106.492,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 109.185,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 20,
+    "description": "seed=20 node_count=3 allocCPU=32",
+    "mainline": {
+      "total_savings": 0.3147483648,
+      "total_disruption": 3,
+      "compute_time_ms": 86.896,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.3147483648,
+      "total_disruption": 3,
+      "compute_time_ms": 82.334,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 21,
+    "description": "seed=21 node_count=4 allocCPU=8",
+    "mainline": {
+      "total_savings": 0,
+      "total_disruption": 0,
+      "compute_time_ms": 29.39,
+      "slack_entropy": 1.3857739794847803
+    },
+    "branch": {
+      "total_savings": 0.6221225472,
+      "total_disruption": 3,
+      "compute_time_ms": 166.681,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 22,
+    "description": "seed=22 node_count=6 allocCPU=16",
+    "mainline": {
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 107.067,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 101.376,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 23,
+    "description": "seed=23 node_count=7 allocCPU=32",
+    "mainline": {
+      "total_savings": 0,
+      "total_disruption": 0,
+      "compute_time_ms": 29.526,
+      "slack_entropy": 1.9458439841930248
+    },
+    "branch": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 174.803,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 24,
+    "description": "seed=24 node_count=3 allocCPU=16",
+    "mainline": {
+      "total_savings": 0.11474836480000006,
+      "total_disruption": 3,
+      "compute_time_ms": 80.927,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.11474836480000006,
+      "total_disruption": 3,
+      "compute_time_ms": 76.921,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 25,
+    "description": "seed=25 node_count=7 allocCPU=32",
+    "mainline": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 108.956,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 109.769,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 26,
+    "description": "seed=26 node_count=4 allocCPU=8",
+    "mainline": {
+      "total_savings": 0.6221225472,
+      "total_disruption": 3,
+      "compute_time_ms": 75.835,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.6221225472,
+      "total_disruption": 3,
+      "compute_time_ms": 75.863,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 27,
+    "description": "seed=27 node_count=8 allocCPU=32",
+    "mainline": {
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 98.62,
+      "slack_entropy": 1.0984714018581385
+    },
+    "branch": {
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 97.276,
+      "slack_entropy": 1.0984714018581385
+    }
+  },
+  {
+    "seed": 28,
+    "description": "seed=28 node_count=6 allocCPU=32",
+    "mainline": {
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 106.816,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 103.921,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 29,
+    "description": "seed=29 node_count=3 allocCPU=8",
+    "mainline": {
+      "total_savings": 0,
+      "total_disruption": 0,
+      "compute_time_ms": 15.127,
+      "slack_entropy": 1.096692663308951
+    },
+    "branch": {
+      "total_savings": 0.4147483648,
+      "total_disruption": 2,
+      "compute_time_ms": 93.704,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 30,
+    "description": "seed=30 node_count=7 allocCPU=32",
+    "mainline": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 105.529,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 107.277,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 31,
+    "description": "seed=31 node_count=6 allocCPU=16",
+    "mainline": {
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 104.216,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 101.355,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 32,
+    "description": "seed=32 node_count=4 allocCPU=16",
+    "mainline": {
+      "total_savings": 0.3221225472,
+      "total_disruption": 4,
+      "compute_time_ms": 91.062,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.3221225472,
+      "total_disruption": 4,
+      "compute_time_ms": 84.493,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 33,
+    "description": "seed=33 node_count=8 allocCPU=8",
+    "mainline": {
+      "total_savings": 0.6221225472,
+      "total_disruption": 3,
+      "compute_time_ms": 98.43,
+      "slack_entropy": 1.6079964653527954
+    },
+    "branch": {
+      "total_savings": 0.6221225472,
+      "total_disruption": 3,
+      "compute_time_ms": 95.522,
+      "slack_entropy": 1.6079964653527954
+    }
+  },
+  {
+    "seed": 34,
+    "description": "seed=34 node_count=3 allocCPU=8",
+    "mainline": {
+      "total_savings": 0.11474836480000006,
+      "total_disruption": 3,
+      "compute_time_ms": 82.713,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.11474836480000006,
+      "total_disruption": 3,
+      "compute_time_ms": 78.199,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 35,
+    "description": "seed=35 node_count=5 allocCPU=8",
+    "mainline": {
+      "total_savings": 0.12949672959999992,
+      "total_disruption": 5,
+      "compute_time_ms": 101.919,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.12949672959999992,
+      "total_disruption": 5,
+      "compute_time_ms": 101.573,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 36,
+    "description": "seed=36 node_count=3 allocCPU=16",
+    "mainline": {
+      "total_savings": 0.11474836480000006,
+      "total_disruption": 3,
+      "compute_time_ms": 83.15,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.11474836480000006,
+      "total_disruption": 3,
+      "compute_time_ms": 77.15,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 37,
+    "description": "seed=37 node_count=8 allocCPU=16",
+    "mainline": {
+      "total_savings": 1.4516192767999998,
+      "total_disruption": 7,
+      "compute_time_ms": 112.918,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.4516192767999998,
+      "total_disruption": 7,
+      "compute_time_ms": 109.813,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 38,
+    "description": "seed=38 node_count=8 allocCPU=32",
+    "mainline": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 100.468,
+      "slack_entropy": 0.6927683767297783
+    },
+    "branch": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 96.075,
+      "slack_entropy": 0.6927683767297783
+    }
+  },
+  {
+    "seed": 39,
+    "description": "seed=39 node_count=5 allocCPU=8",
+    "mainline": {
+      "total_savings": 0,
+      "total_disruption": 0,
+      "compute_time_ms": 28.827,
+      "slack_entropy": 1.6080872774849813
+    },
+    "branch": {
+      "total_savings": 0.8294967296,
+      "total_disruption": 4,
+      "compute_time_ms": 145.841,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 40,
+    "description": "seed=40 node_count=7 allocCPU=8",
+    "mainline": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 112.803,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 111.234,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 41,
+    "description": "seed=41 node_count=4 allocCPU=32",
+    "mainline": {
+      "total_savings": 0.6221225472,
+      "total_disruption": 3,
+      "compute_time_ms": 76.163,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.6221225472,
+      "total_disruption": 3,
+      "compute_time_ms": 71.313,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 42,
+    "description": "seed=42 node_count=8 allocCPU=32",
+    "mainline": {
+      "total_savings": 0.4147483648,
+      "total_disruption": 2,
+      "compute_time_ms": 97.474,
+      "slack_entropy": 1.7917030797550235
+    },
+    "branch": {
+      "total_savings": 0.4147483648,
+      "total_disruption": 2,
+      "compute_time_ms": 117.247,
+      "slack_entropy": 1.7917030797550235
+    }
+  },
+  {
+    "seed": 43,
+    "description": "seed=43 node_count=4 allocCPU=32",
+    "mainline": {
+      "total_savings": 0.3221225472,
+      "total_disruption": 4,
+      "compute_time_ms": 85.695,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.3221225472,
+      "total_disruption": 4,
+      "compute_time_ms": 89.95,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 44,
+    "description": "seed=44 node_count=7 allocCPU=32",
+    "mainline": {
+      "total_savings": 0,
+      "total_disruption": 0,
+      "compute_time_ms": 33.414,
+      "slack_entropy": 1.9455178536915845
+    },
+    "branch": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 188.324,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 45,
+    "description": "seed=45 node_count=7 allocCPU=8",
+    "mainline": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 114.96,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 108.081,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 46,
+    "description": "seed=46 node_count=8 allocCPU=32",
+    "mainline": {
+      "total_savings": 1.4516192767999998,
+      "total_disruption": 7,
+      "compute_time_ms": 115.841,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.4516192767999998,
+      "total_disruption": 7,
+      "compute_time_ms": 109.685,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 47,
+    "description": "seed=47 node_count=8 allocCPU=16",
+    "mainline": {
+      "total_savings": 1.4516192767999998,
+      "total_disruption": 7,
+      "compute_time_ms": 113.248,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.4516192767999998,
+      "total_disruption": 7,
+      "compute_time_ms": 111.96,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 48,
+    "description": "seed=48 node_count=6 allocCPU=16",
+    "mainline": {
+      "total_savings": 0.4147483648,
+      "total_disruption": 2,
+      "compute_time_ms": 91.613,
+      "slack_entropy": 1.38613803200618
+    },
+    "branch": {
+      "total_savings": 0.4147483648,
+      "total_disruption": 2,
+      "compute_time_ms": 90.563,
+      "slack_entropy": 1.38613803200618
+    }
+  },
+  {
+    "seed": 49,
+    "description": "seed=49 node_count=3 allocCPU=8",
+    "mainline": {
+      "total_savings": 0.11474836480000006,
+      "total_disruption": 3,
+      "compute_time_ms": 81.693,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.11474836480000006,
+      "total_disruption": 3,
+      "compute_time_ms": 81.785,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 50,
+    "description": "seed=50 node_count=3 allocCPU=8",
+    "mainline": {
+      "total_savings": 0,
+      "total_disruption": 0,
+      "compute_time_ms": 15.461,
+      "slack_entropy": 1.0981562798333317
+    },
+    "branch": {
+      "total_savings": 0.4147483648,
+      "total_disruption": 2,
+      "compute_time_ms": 96.718,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 51,
+    "description": "seed=51 node_count=8 allocCPU=16",
+    "mainline": {
+      "total_savings": 1.4516192767999998,
+      "total_disruption": 7,
+      "compute_time_ms": 116.378,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.4516192767999998,
+      "total_disruption": 7,
+      "compute_time_ms": 107.654,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 52,
+    "description": "seed=52 node_count=8 allocCPU=8",
+    "mainline": {
+      "total_savings": 0.9442450943999998,
+      "total_disruption": 7,
+      "compute_time_ms": 128.551,
+      "slack_entropy": 0.6739714617926044
+    },
+    "branch": {
+      "total_savings": 0.9442450943999998,
+      "total_disruption": 7,
+      "compute_time_ms": 129.752,
+      "slack_entropy": 0.6739714617926044
+    }
+  },
+  {
+    "seed": 53,
+    "description": "seed=53 node_count=7 allocCPU=8",
+    "mainline": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 109.876,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 105.267,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 54,
+    "description": "seed=54 node_count=3 allocCPU=8",
+    "mainline": {
+      "total_savings": 0,
+      "total_disruption": 0,
+      "compute_time_ms": 16.655,
+      "slack_entropy": 1.0981562798333317
+    },
+    "branch": {
+      "total_savings": 0.4147483648,
+      "total_disruption": 2,
+      "compute_time_ms": 91.373,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 55,
+    "description": "seed=55 node_count=5 allocCPU=8",
+    "mainline": {
+      "total_savings": 0.5294967295999999,
+      "total_disruption": 5,
+      "compute_time_ms": 107.373,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.5294967295999999,
+      "total_disruption": 5,
+      "compute_time_ms": 101.678,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 56,
+    "description": "seed=56 node_count=3 allocCPU=32",
+    "mainline": {
+      "total_savings": 0.3147483648,
+      "total_disruption": 3,
+      "compute_time_ms": 85.049,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.3147483648,
+      "total_disruption": 3,
+      "compute_time_ms": 81.246,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 57,
+    "description": "seed=57 node_count=8 allocCPU=16",
+    "mainline": {
+      "total_savings": 1.4516192767999998,
+      "total_disruption": 7,
+      "compute_time_ms": 113.825,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.4516192767999998,
+      "total_disruption": 7,
+      "compute_time_ms": 108.661,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 58,
+    "description": "seed=58 node_count=8 allocCPU=16",
+    "mainline": {
+      "total_savings": 1.4516192767999998,
+      "total_disruption": 7,
+      "compute_time_ms": 112.71,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.4516192767999998,
+      "total_disruption": 7,
+      "compute_time_ms": 112.681,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 59,
+    "description": "seed=59 node_count=5 allocCPU=8",
+    "mainline": {
+      "total_savings": 0.6221225472,
+      "total_disruption": 3,
+      "compute_time_ms": 73.398,
+      "slack_entropy": 0.6929818821956966
+    },
+    "branch": {
+      "total_savings": 0.6221225472,
+      "total_disruption": 3,
+      "compute_time_ms": 71.244,
+      "slack_entropy": 0.6929818821956966
+    }
+  },
+  {
+    "seed": 60,
+    "description": "seed=60 node_count=5 allocCPU=16",
+    "mainline": {
+      "total_savings": 0.6221225472,
+      "total_disruption": 3,
+      "compute_time_ms": 77.261,
+      "slack_entropy": 0.6929932791588755
+    },
+    "branch": {
+      "total_savings": 0.6221225472,
+      "total_disruption": 3,
+      "compute_time_ms": 74.298,
+      "slack_entropy": 0.6929932791588755
+    }
+  },
+  {
+    "seed": 61,
+    "description": "seed=61 node_count=7 allocCPU=8",
+    "mainline": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 111.315,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 104.71,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 62,
+    "description": "seed=62 node_count=4 allocCPU=8",
+    "mainline": {
+      "total_savings": 0.5221225472,
+      "total_disruption": 4,
+      "compute_time_ms": 88.119,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.5221225472,
+      "total_disruption": 4,
+      "compute_time_ms": 97.689,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 63,
+    "description": "seed=63 node_count=5 allocCPU=8",
+    "mainline": {
+      "total_savings": 0.6221225472,
+      "total_disruption": 3,
+      "compute_time_ms": 74.118,
+      "slack_entropy": 0.6925092898114951
+    },
+    "branch": {
+      "total_savings": 0.6221225472,
+      "total_disruption": 3,
+      "compute_time_ms": 72.46,
+      "slack_entropy": 0.6925092898114951
+    }
+  },
+  {
+    "seed": 64,
+    "description": "seed=64 node_count=7 allocCPU=32",
+    "mainline": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 110.347,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 107.766,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 65,
+    "description": "seed=65 node_count=7 allocCPU=16",
+    "mainline": {
+      "total_savings": 0.4147483648,
+      "total_disruption": 2,
+      "compute_time_ms": 97.143,
+      "slack_entropy": 1.6074822715323354
+    },
+    "branch": {
+      "total_savings": 0.4147483648,
+      "total_disruption": 2,
+      "compute_time_ms": 89.75,
+      "slack_entropy": 1.6074822715323354
+    }
+  },
+  {
+    "seed": 66,
+    "description": "seed=66 node_count=6 allocCPU=16",
+    "mainline": {
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 101.631,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 102.451,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 67,
+    "description": "seed=67 node_count=8 allocCPU=16",
+    "mainline": {
+      "total_savings": 1.4516192767999998,
+      "total_disruption": 7,
+      "compute_time_ms": 118.088,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.4516192767999998,
+      "total_disruption": 7,
+      "compute_time_ms": 112.45,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 68,
+    "description": "seed=68 node_count=4 allocCPU=8",
+    "mainline": {
+      "total_savings": 0.3221225472,
+      "total_disruption": 4,
+      "compute_time_ms": 90.485,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.3221225472,
+      "total_disruption": 4,
+      "compute_time_ms": 88.389,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 69,
+    "description": "seed=69 node_count=5 allocCPU=16",
+    "mainline": {
+      "total_savings": 0,
+      "total_disruption": 0,
+      "compute_time_ms": 30.339,
+      "slack_entropy": 1.6094181965066547
+    },
+    "branch": {
+      "total_savings": 0.8294967296,
+      "total_disruption": 4,
+      "compute_time_ms": 142.614,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 70,
+    "description": "seed=70 node_count=5 allocCPU=16",
+    "mainline": {
+      "total_savings": 0.12949672959999992,
+      "total_disruption": 5,
+      "compute_time_ms": 188.992,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.12949672959999992,
+      "total_disruption": 5,
+      "compute_time_ms": 95.644,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 71,
+    "description": "seed=71 node_count=5 allocCPU=32",
+    "mainline": {
+      "total_savings": 0.12949672959999992,
+      "total_disruption": 5,
+      "compute_time_ms": 99.91,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.12949672959999992,
+      "total_disruption": 5,
+      "compute_time_ms": 99.665,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 72,
+    "description": "seed=72 node_count=3 allocCPU=8",
+    "mainline": {
+      "total_savings": 0.3147483648,
+      "total_disruption": 3,
+      "compute_time_ms": 85.946,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.3147483648,
+      "total_disruption": 3,
+      "compute_time_ms": 82.942,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 73,
+    "description": "seed=73 node_count=3 allocCPU=8",
+    "mainline": {
+      "total_savings": 0.3147483648,
+      "total_disruption": 3,
+      "compute_time_ms": 84.433,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.3147483648,
+      "total_disruption": 3,
+      "compute_time_ms": 80.796,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 74,
+    "description": "seed=74 node_count=3 allocCPU=16",
+    "mainline": {
+      "total_savings": 0.3147483648,
+      "total_disruption": 3,
+      "compute_time_ms": 83.785,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.3147483648,
+      "total_disruption": 3,
+      "compute_time_ms": 81.779,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 75,
+    "description": "seed=75 node_count=7 allocCPU=8",
+    "mainline": {
+      "total_savings": 0.4147483648,
+      "total_disruption": 2,
+      "compute_time_ms": 98.151,
+      "slack_entropy": 1.6082264909807202
+    },
+    "branch": {
+      "total_savings": 0.4147483648,
+      "total_disruption": 2,
+      "compute_time_ms": 100.781,
+      "slack_entropy": 1.6082264909807202
+    }
+  },
+  {
+    "seed": 76,
+    "description": "seed=76 node_count=4 allocCPU=16",
+    "mainline": {
+      "total_savings": 0.3221225472,
+      "total_disruption": 4,
+      "compute_time_ms": 90.713,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.3221225472,
+      "total_disruption": 4,
+      "compute_time_ms": 84.193,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 77,
+    "description": "seed=77 node_count=3 allocCPU=16",
+    "mainline": {
+      "total_savings": 0.11474836480000006,
+      "total_disruption": 3,
+      "compute_time_ms": 81.982,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.11474836480000006,
+      "total_disruption": 3,
+      "compute_time_ms": 78.234,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 78,
+    "description": "seed=78 node_count=8 allocCPU=16",
+    "mainline": {
+      "total_savings": 1.4516192767999998,
+      "total_disruption": 7,
+      "compute_time_ms": 113.745,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.4516192767999998,
+      "total_disruption": 7,
+      "compute_time_ms": 110.947,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 79,
+    "description": "seed=79 node_count=7 allocCPU=16",
+    "mainline": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 111.174,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 107.582,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 80,
+    "description": "seed=80 node_count=3 allocCPU=8",
+    "mainline": {
+      "total_savings": 0,
+      "total_disruption": 0,
+      "compute_time_ms": 16.274,
+      "slack_entropy": 1.0900596587107838
+    },
+    "branch": {
+      "total_savings": 0.4147483648,
+      "total_disruption": 2,
+      "compute_time_ms": 93.11,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 81,
+    "description": "seed=81 node_count=4 allocCPU=16",
+    "mainline": {
+      "total_savings": 0.6221225472,
+      "total_disruption": 3,
+      "compute_time_ms": 74.466,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.6221225472,
+      "total_disruption": 3,
+      "compute_time_ms": 75.177,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 82,
+    "description": "seed=82 node_count=6 allocCPU=16",
+    "mainline": {
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 102.975,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 100.923,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 83,
+    "description": "seed=83 node_count=6 allocCPU=8",
+    "mainline": {
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 105.805,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 100.539,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 84,
+    "description": "seed=84 node_count=6 allocCPU=16",
+    "mainline": {
+      "total_savings": 0.6221225472,
+      "total_disruption": 3,
+      "compute_time_ms": 178.709,
+      "slack_entropy": 1.0983062550244482
+    },
+    "branch": {
+      "total_savings": 0.6221225472,
+      "total_disruption": 3,
+      "compute_time_ms": 86.969,
+      "slack_entropy": 1.0983062550244482
+    }
+  },
+  {
+    "seed": 85,
+    "description": "seed=85 node_count=5 allocCPU=16",
+    "mainline": {
+      "total_savings": 0.5294967295999999,
+      "total_disruption": 5,
+      "compute_time_ms": 108.491,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.5294967295999999,
+      "total_disruption": 5,
+      "compute_time_ms": 103.215,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 86,
+    "description": "seed=86 node_count=5 allocCPU=8",
+    "mainline": {
+      "total_savings": 0.4147483648,
+      "total_disruption": 2,
+      "compute_time_ms": 78.403,
+      "slack_entropy": 1.0928305535284886
+    },
+    "branch": {
+      "total_savings": 0.4147483648,
+      "total_disruption": 2,
+      "compute_time_ms": 72.44,
+      "slack_entropy": 1.0928305535284886
+    }
+  },
+  {
+    "seed": 87,
+    "description": "seed=87 node_count=3 allocCPU=8",
+    "mainline": {
+      "total_savings": 0.11474836480000006,
+      "total_disruption": 3,
+      "compute_time_ms": 82.688,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.11474836480000006,
+      "total_disruption": 3,
+      "compute_time_ms": 82.156,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 88,
+    "description": "seed=88 node_count=5 allocCPU=32",
+    "mainline": {
+      "total_savings": 0.5294967295999999,
+      "total_disruption": 5,
+      "compute_time_ms": 117.602,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.5294967295999999,
+      "total_disruption": 5,
+      "compute_time_ms": 104.007,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 89,
+    "description": "seed=89 node_count=3 allocCPU=8",
+    "mainline": {
+      "total_savings": 0.11474836480000006,
+      "total_disruption": 3,
+      "compute_time_ms": 86.569,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.11474836480000006,
+      "total_disruption": 3,
+      "compute_time_ms": 80.9,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 90,
+    "description": "seed=90 node_count=7 allocCPU=16",
+    "mainline": {
+      "total_savings": 0.4147483648,
+      "total_disruption": 2,
+      "compute_time_ms": 94.885,
+      "slack_entropy": 1.6076588154371987
+    },
+    "branch": {
+      "total_savings": 0.4147483648,
+      "total_disruption": 2,
+      "compute_time_ms": 92.827,
+      "slack_entropy": 1.6076588154371987
+    }
+  },
+  {
+    "seed": 91,
+    "description": "seed=91 node_count=6 allocCPU=16",
+    "mainline": {
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 103.979,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 100.713,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 92,
+    "description": "seed=92 node_count=4 allocCPU=32",
+    "mainline": {
+      "total_savings": 0.4147483648,
+      "total_disruption": 2,
+      "compute_time_ms": 67.956,
+      "slack_entropy": 0.6929354770224556
+    },
+    "branch": {
+      "total_savings": 0.4147483648,
+      "total_disruption": 2,
+      "compute_time_ms": 67.018,
+      "slack_entropy": 0.6929354770224556
+    }
+  },
+  {
+    "seed": 93,
+    "description": "seed=93 node_count=7 allocCPU=8",
+    "mainline": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 112.374,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 109.858,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 94,
+    "description": "seed=94 node_count=8 allocCPU=8",
+    "mainline": {
+      "total_savings": 1.1442450943999998,
+      "total_disruption": 7,
+      "compute_time_ms": 133.776,
+      "slack_entropy": 0.6931416331621223
+    },
+    "branch": {
+      "total_savings": 1.1442450943999998,
+      "total_disruption": 7,
+      "compute_time_ms": 132.447,
+      "slack_entropy": 0.6931416331621223
+    }
+  },
+  {
+    "seed": 95,
+    "description": "seed=95 node_count=5 allocCPU=8",
+    "mainline": {
+      "total_savings": 0.12949672959999992,
+      "total_disruption": 5,
+      "compute_time_ms": 106.28,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.12949672959999992,
+      "total_disruption": 5,
+      "compute_time_ms": 102.622,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 96,
+    "description": "seed=96 node_count=7 allocCPU=32",
+    "mainline": {
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 105.356,
+      "slack_entropy": 0.6930598485526611
+    },
+    "branch": {
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 92.023,
+      "slack_entropy": 0.6930598485526611
+    }
+  },
+  {
+    "seed": 97,
+    "description": "seed=97 node_count=6 allocCPU=32",
+    "mainline": {
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 110.694,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 105.114,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 98,
+    "description": "seed=98 node_count=4 allocCPU=16",
+    "mainline": {
+      "total_savings": 0.3221225472,
+      "total_disruption": 4,
+      "compute_time_ms": 87.024,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.3221225472,
+      "total_disruption": 4,
+      "compute_time_ms": 87.34,
+      "slack_entropy": 0
+    }
+  },
+  {
+    "seed": 99,
+    "description": "seed=99 node_count=4 allocCPU=8",
+    "mainline": {
+      "total_savings": 0.3221225472,
+      "total_disruption": 4,
+      "compute_time_ms": 86.073,
+      "slack_entropy": 0
+    },
+    "branch": {
+      "total_savings": 0.3221225472,
+      "total_disruption": 4,
+      "compute_time_ms": 82.92,
+      "slack_entropy": 0
+    }
+  }
+]
