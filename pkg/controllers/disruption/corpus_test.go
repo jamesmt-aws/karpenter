@@ -165,9 +165,23 @@ func computeMoves(nodePool *v1.NodePool, binarySearchOnly bool) ([]scenarios.Mov
 		for _, cand := range cmd.Candidates {
 			names = append(names, cand.Node.Name)
 		}
-		// Replace decisions: capture deleted candidates only for now;
-		// Replacement support lands in Put 2 of the corpus work.
-		moves = append(moves, scenarios.Move{DeletedNodeNames: names})
+		mv := scenarios.Move{DeletedNodeNames: names}
+		// Replace: Karpenter sorts InstanceTypeOptions by price after
+		// filterInstanceTypesByRequirements, so index 0 is the type
+		// the cloud provider would actually launch. Use it for both
+		// price and allocatable in the post-state.
+		if len(cmd.Replacements) > 0 && cmd.Replacements[0].NodeClaim != nil {
+			rnc := cmd.Replacements[0].NodeClaim
+			if len(rnc.InstanceTypeOptions) > 0 {
+				it := rnc.InstanceTypeOptions[0]
+				mv.Replacement = &scenarios.Replacement{
+					InstanceType: it.Name,
+					Allocatable:  it.Allocatable(),
+					Labels:       map[string]string{},
+				}
+			}
+		}
+		moves = append(moves, mv)
 	}
 	return moves, dur
 }
