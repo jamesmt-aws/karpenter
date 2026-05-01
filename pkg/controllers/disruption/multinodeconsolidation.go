@@ -48,14 +48,16 @@ const MultiNodePairwiseSearchTimeoutDuration = 10 * time.Second
 
 type MultiNodeConsolidation struct {
 	consolidation
-	validator Validator
+	validator        Validator
+	binarySearchOnly bool
 }
 
 func NewMultiNodeConsolidation(c consolidation, opts ...option.Function[MethodOptions]) *MultiNodeConsolidation {
 	o := option.Resolve(append([]option.Function[MethodOptions]{WithValidator(NewMultiConsolidationValidator(c))}, opts...)...)
 	return &MultiNodeConsolidation{
-		consolidation: c,
-		validator:     o.validator,
+		consolidation:    c,
+		validator:        o.validator,
+		binarySearchOnly: o.binarySearchOnly,
 	}
 }
 
@@ -154,6 +156,12 @@ func (m *MultiNodeConsolidation) firstNConsolidationOption(ctx context.Context, 
 	if primary.Decision() != NoOpDecision {
 		// Existing behavior: binary search found a feasible prefix.
 		return primary, nil
+	}
+	if m.binarySearchOnly {
+		// Mainline behavior: no fallback. Used by the A/B comparison
+		// harness to evaluate the legacy algorithm against the current
+		// one on the same snapshot.
+		return Command{}, nil
 	}
 
 	// Binary search exhausted without finding a feasible prefix

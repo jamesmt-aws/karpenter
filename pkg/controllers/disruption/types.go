@@ -50,12 +50,24 @@ const (
 )
 
 type MethodOptions struct {
-	validator Validator
+	validator        Validator
+	binarySearchOnly bool
 }
 
 func WithValidator(v Validator) option.Function[MethodOptions] {
 	return func(o *MethodOptions) {
 		o.validator = v
+	}
+}
+
+// WithBinarySearchOnly forces multi-node consolidation to skip the
+// karpenter#1962 pairwise non-prefix fallback and only run the prior
+// binary-search-over-sorted-prefixes logic. Test-only; used by the
+// A/B comparison harness to evaluate the legacy behavior alongside
+// the current one.
+func WithBinarySearchOnly() option.Function[MethodOptions] {
+	return func(o *MethodOptions) {
+		o.binarySearchOnly = true
 	}
 }
 
