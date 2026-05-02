@@ -2,2202 +2,4894 @@
   {
     "seed": 0,
     "description": "seed=0 node_count=3 allocCPU=16",
+    "sorted_candidates": [
+      "knightstellar-6-jru70uyucr",
+      "herobrindle-11-zevcogzath",
+      "devourerprism-16-2zxneh19rc"
+    ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 18.632,
-      "slack_entropy": 1.0985848289225222
+      "compute_time_ms": 16.42,
+      "slack_entropy": 1.0985848289225222,
+      "candidates": null
     },
     "branch": {
       "total_savings": 0.4147483648,
       "total_disruption": 2,
-      "compute_time_ms": 93.029,
-      "slack_entropy": 0
+      "compute_time_ms": 91.385,
+      "slack_entropy": 0,
+      "candidates": [
+        "knightstellar-6-jru70uyucr",
+        "devourerprism-16-2zxneh19rc"
+      ]
     },
     "oracle": {
       "total_savings": 0.4147483648,
       "total_disruption": 2,
-      "compute_time_ms": 96.442,
-      "slack_entropy": 0
+      "compute_time_ms": 100.233,
+      "slack_entropy": 0,
+      "candidates": [
+        "knightstellar-6-jru70uyucr",
+        "devourerprism-16-2zxneh19rc"
+      ]
     }
   },
   {
     "seed": 1,
     "description": "seed=1 node_count=6 allocCPU=32",
+    "sorted_candidates": [
+      "foebig-24-ippqopcbn1",
+      "foejust-29-wzjdiertuf",
+      "whalecaramel-34-jvfluvumgf",
+      "spikestone-39-hkjd9vpnmm",
+      "lordlime-44-j4enzui4pd",
+      "facemulberry-49-asylcgizb7"
+    ],
     "mainline": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 101.508,
-      "slack_entropy": 0
+      "compute_time_ms": 102.809,
+      "slack_entropy": 0,
+      "candidates": [
+        "foebig-24-ippqopcbn1",
+        "foejust-29-wzjdiertuf",
+        "whalecaramel-34-jvfluvumgf",
+        "spikestone-39-hkjd9vpnmm",
+        "lordlime-44-j4enzui4pd"
+      ]
     },
     "branch": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 99.827,
-      "slack_entropy": 0
+      "compute_time_ms": 130.306,
+      "slack_entropy": 0,
+      "candidates": [
+        "foebig-24-ippqopcbn1",
+        "foejust-29-wzjdiertuf",
+        "whalecaramel-34-jvfluvumgf",
+        "spikestone-39-hkjd9vpnmm",
+        "lordlime-44-j4enzui4pd"
+      ]
     },
     "oracle": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 854.154,
-      "slack_entropy": 0
+      "compute_time_ms": 850.665,
+      "slack_entropy": 0,
+      "candidates": [
+        "foejust-29-wzjdiertuf",
+        "whalecaramel-34-jvfluvumgf",
+        "spikestone-39-hkjd9vpnmm",
+        "lordlime-44-j4enzui4pd",
+        "facemulberry-49-asylcgizb7"
+      ]
     }
   },
   {
     "seed": 2,
     "description": "seed=2 node_count=3 allocCPU=8",
+    "sorted_candidates": [
+      "chanterflash-57-xwtar6gkcg",
+      "minnowtopaz-62-bmg9rn2sok",
+      "seerweed-67-8taklorwir"
+    ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 14.806,
-      "slack_entropy": 1.096692663308951
+      "compute_time_ms": 15.777,
+      "slack_entropy": 1.096692663308951,
+      "candidates": null
     },
     "branch": {
       "total_savings": 0.4147483648,
       "total_disruption": 2,
-      "compute_time_ms": 93.531,
-      "slack_entropy": 0
+      "compute_time_ms": 92.426,
+      "slack_entropy": 0,
+      "candidates": [
+        "chanterflash-57-xwtar6gkcg",
+        "seerweed-67-8taklorwir"
+      ]
     },
     "oracle": {
       "total_savings": 0.4147483648,
       "total_disruption": 2,
-      "compute_time_ms": 99.59,
-      "slack_entropy": 0
+      "compute_time_ms": 100.187,
+      "slack_entropy": 0,
+      "candidates": [
+        "chanterflash-57-xwtar6gkcg",
+        "seerweed-67-8taklorwir"
+      ]
     }
   },
   {
     "seed": 3,
     "description": "seed=3 node_count=8 allocCPU=8",
+    "sorted_candidates": [
+      "facepatch-75-orfh5buaom",
+      "raccoonshade-80-ajs5pmqigc",
+      "wingbush-85-ze6i4ygvow",
+      "shouldertwilight-90-r6h7wbsv4w",
+      "volefrill-95-fe2fnvmvzh",
+      "unicorndew-100-uatsgelxix",
+      "robinlake-105-xpickucf0i",
+      "curtaincat-110-cravviehdc"
+    ],
     "mainline": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 112.769,
-      "slack_entropy": 0
+      "compute_time_ms": 113.172,
+      "slack_entropy": 0,
+      "candidates": [
+        "facepatch-75-orfh5buaom",
+        "raccoonshade-80-ajs5pmqigc",
+        "wingbush-85-ze6i4ygvow",
+        "shouldertwilight-90-r6h7wbsv4w",
+        "volefrill-95-fe2fnvmvzh",
+        "unicorndew-100-uatsgelxix",
+        "robinlake-105-xpickucf0i"
+      ]
     },
     "branch": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 110.045,
-      "slack_entropy": 0
+      "compute_time_ms": 140.967,
+      "slack_entropy": 0,
+      "candidates": [
+        "facepatch-75-orfh5buaom",
+        "raccoonshade-80-ajs5pmqigc",
+        "wingbush-85-ze6i4ygvow",
+        "shouldertwilight-90-r6h7wbsv4w",
+        "volefrill-95-fe2fnvmvzh",
+        "unicorndew-100-uatsgelxix",
+        "robinlake-105-xpickucf0i"
+      ]
     },
     "oracle": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 3560.483,
-      "slack_entropy": 0
+      "compute_time_ms": 3560.662,
+      "slack_entropy": 0,
+      "candidates": [
+        "raccoonshade-80-ajs5pmqigc",
+        "wingbush-85-ze6i4ygvow",
+        "shouldertwilight-90-r6h7wbsv4w",
+        "volefrill-95-fe2fnvmvzh",
+        "unicorndew-100-uatsgelxix",
+        "robinlake-105-xpickucf0i",
+        "curtaincat-110-cravviehdc"
+      ]
     }
   },
   {
     "seed": 4,
     "description": "seed=4 node_count=7 allocCPU=16",
+    "sorted_candidates": [
+      "kangaroocyber-118-rtpeamp2lj",
+      "saverpond-123-bigbgtez7f",
+      "takerquark-128-nqhen30eee",
+      "donkeyebony-133-azlvyjmuy6",
+      "hissercloud-138-d9b9jzhiq3",
+      "boneapple-143-sfzrrzmocy",
+      "soarerbitter-148-g1m4bbehhi"
+    ],
     "mainline": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 112.837,
-      "slack_entropy": 0
+      "compute_time_ms": 106.645,
+      "slack_entropy": 0,
+      "candidates": [
+        "kangaroocyber-118-rtpeamp2lj",
+        "saverpond-123-bigbgtez7f",
+        "takerquark-128-nqhen30eee",
+        "donkeyebony-133-azlvyjmuy6",
+        "hissercloud-138-d9b9jzhiq3",
+        "boneapple-143-sfzrrzmocy"
+      ]
     },
     "branch": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 105.808,
-      "slack_entropy": 0
+      "compute_time_ms": 138.685,
+      "slack_entropy": 0,
+      "candidates": [
+        "kangaroocyber-118-rtpeamp2lj",
+        "saverpond-123-bigbgtez7f",
+        "takerquark-128-nqhen30eee",
+        "donkeyebony-133-azlvyjmuy6",
+        "hissercloud-138-d9b9jzhiq3",
+        "boneapple-143-sfzrrzmocy"
+      ]
     },
     "oracle": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 1741.967,
-      "slack_entropy": 0
+      "compute_time_ms": 1759.244,
+      "slack_entropy": 0,
+      "candidates": [
+        "saverpond-123-bigbgtez7f",
+        "takerquark-128-nqhen30eee",
+        "donkeyebony-133-azlvyjmuy6",
+        "hissercloud-138-d9b9jzhiq3",
+        "boneapple-143-sfzrrzmocy",
+        "soarerbitter-148-g1m4bbehhi"
+      ]
     }
   },
   {
     "seed": 5,
     "description": "seed=5 node_count=7 allocCPU=16",
+    "sorted_candidates": [
+      "singerballistic-156-nbygleiydl",
+      "elfshadow-161-7wals0gvl9",
+      "chopperdaffodil-166-yq21lmcqty",
+      "stealersleet-171-cik5dj40xb",
+      "maskbutton-176-5b5l8lbgg9",
+      "chanterpear-181-y3fl6ipb9p",
+      "gamblerlaser-186-ggq1f8d8hm"
+    ],
     "mainline": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 110.155,
-      "slack_entropy": 0
+      "compute_time_ms": 118.389,
+      "slack_entropy": 0,
+      "candidates": [
+        "singerballistic-156-nbygleiydl",
+        "elfshadow-161-7wals0gvl9",
+        "chopperdaffodil-166-yq21lmcqty",
+        "stealersleet-171-cik5dj40xb",
+        "maskbutton-176-5b5l8lbgg9",
+        "chanterpear-181-y3fl6ipb9p"
+      ]
     },
     "branch": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 105.572,
-      "slack_entropy": 0
+      "compute_time_ms": 136.176,
+      "slack_entropy": 0,
+      "candidates": [
+        "singerballistic-156-nbygleiydl",
+        "elfshadow-161-7wals0gvl9",
+        "chopperdaffodil-166-yq21lmcqty",
+        "stealersleet-171-cik5dj40xb",
+        "maskbutton-176-5b5l8lbgg9",
+        "chanterpear-181-y3fl6ipb9p"
+      ]
     },
     "oracle": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 1753.617,
-      "slack_entropy": 0
+      "compute_time_ms": 1738.572,
+      "slack_entropy": 0,
+      "candidates": [
+        "elfshadow-161-7wals0gvl9",
+        "chopperdaffodil-166-yq21lmcqty",
+        "stealersleet-171-cik5dj40xb",
+        "maskbutton-176-5b5l8lbgg9",
+        "chanterpear-181-y3fl6ipb9p",
+        "gamblerlaser-186-ggq1f8d8hm"
+      ]
     }
   },
   {
     "seed": 6,
     "description": "seed=6 node_count=8 allocCPU=32",
+    "sorted_candidates": [
+      "doomiris-194-yadticc5gy",
+      "shiftriver-199-216hhlbphi",
+      "cockatooglacier-204-gpnj5awl10",
+      "legendsunrise-209-1eznxdfhws",
+      "chillbead-214-5ombxnuigx",
+      "princelizard-219-bnx8oiuzt5",
+      "givergold-224-xjdat4vkjk",
+      "duckfork-229-86zqopqqpi"
+    ],
     "mainline": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 100.673,
-      "slack_entropy": 1.0982163804965106
+      "compute_time_ms": 99.05,
+      "slack_entropy": 1.0982163804965106,
+      "candidates": [
+        "doomiris-194-yadticc5gy",
+        "shiftriver-199-216hhlbphi",
+        "cockatooglacier-204-gpnj5awl10",
+        "legendsunrise-209-1eznxdfhws",
+        "chillbead-214-5ombxnuigx"
+      ]
     },
     "branch": {
-      "total_savings": 1.036870912,
-      "total_disruption": 5,
-      "compute_time_ms": 96.303,
-      "slack_entropy": 1.0982163804965106
+      "total_savings": 1.4516192767999998,
+      "total_disruption": 7,
+      "compute_time_ms": 138.993,
+      "slack_entropy": 0,
+      "candidates": [
+        "doomiris-194-yadticc5gy",
+        "shiftriver-199-216hhlbphi",
+        "cockatooglacier-204-gpnj5awl10",
+        "legendsunrise-209-1eznxdfhws",
+        "chillbead-214-5ombxnuigx",
+        "givergold-224-xjdat4vkjk",
+        "duckfork-229-86zqopqqpi"
+      ]
     },
     "oracle": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 3630.779,
-      "slack_entropy": 0
+      "compute_time_ms": 3657.213,
+      "slack_entropy": 0,
+      "candidates": [
+        "doomiris-194-yadticc5gy",
+        "shiftriver-199-216hhlbphi",
+        "cockatooglacier-204-gpnj5awl10",
+        "legendsunrise-209-1eznxdfhws",
+        "chillbead-214-5ombxnuigx",
+        "givergold-224-xjdat4vkjk",
+        "duckfork-229-86zqopqqpi"
+      ]
     }
   },
   {
     "seed": 7,
     "description": "seed=7 node_count=3 allocCPU=8",
+    "sorted_candidates": [
+      "falconhurricane-237-7ssnbmhrzj",
+      "facejelly-242-syy9djqj8c",
+      "dutchesspeat-247-uhxnc1kwwt"
+    ],
     "mainline": {
       "total_savings": 0.3147483648,
       "total_disruption": 3,
-      "compute_time_ms": 82.481,
-      "slack_entropy": 0
+      "compute_time_ms": 80.495,
+      "slack_entropy": 0,
+      "candidates": [
+        "falconhurricane-237-7ssnbmhrzj",
+        "facejelly-242-syy9djqj8c",
+        "dutchesspeat-247-uhxnc1kwwt"
+      ]
     },
     "branch": {
       "total_savings": 0.3147483648,
       "total_disruption": 3,
-      "compute_time_ms": 79.624,
-      "slack_entropy": 0
+      "compute_time_ms": 81.521,
+      "slack_entropy": 0,
+      "candidates": [
+        "falconhurricane-237-7ssnbmhrzj",
+        "facejelly-242-syy9djqj8c",
+        "dutchesspeat-247-uhxnc1kwwt"
+      ]
     },
     "oracle": {
       "total_savings": 0.3147483648,
       "total_disruption": 3,
-      "compute_time_ms": 110.26,
-      "slack_entropy": 0
+      "compute_time_ms": 107.645,
+      "slack_entropy": 0,
+      "candidates": [
+        "falconhurricane-237-7ssnbmhrzj",
+        "facejelly-242-syy9djqj8c",
+        "dutchesspeat-247-uhxnc1kwwt"
+      ]
     }
   },
   {
     "seed": 8,
     "description": "seed=8 node_count=3 allocCPU=32",
+    "sorted_candidates": [
+      "buggeode-255-mjqzssmnps",
+      "playerfoil-260-nqsl9xkgkb",
+      "collarolive-265-b3wnt82a62"
+    ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 16.672,
-      "slack_entropy": 1.0985848289225222
+      "compute_time_ms": 15.22,
+      "slack_entropy": 1.0985848289225222,
+      "candidates": null
     },
     "branch": {
       "total_savings": 0.4147483648,
       "total_disruption": 2,
-      "compute_time_ms": 92.053,
-      "slack_entropy": 0
+      "compute_time_ms": 97.158,
+      "slack_entropy": 0,
+      "candidates": [
+        "buggeode-255-mjqzssmnps",
+        "collarolive-265-b3wnt82a62"
+      ]
     },
     "oracle": {
       "total_savings": 0.4147483648,
       "total_disruption": 2,
-      "compute_time_ms": 99.749,
-      "slack_entropy": 0
+      "compute_time_ms": 96.368,
+      "slack_entropy": 0,
+      "candidates": [
+        "buggeode-255-mjqzssmnps",
+        "collarolive-265-b3wnt82a62"
+      ]
     }
   },
   {
     "seed": 9,
     "description": "seed=9 node_count=7 allocCPU=16",
+    "sorted_candidates": [
+      "panthermuck-273-mk1kern5y5",
+      "wizardcute-278-y55zfhmfwc",
+      "banenimble-283-jc65cvybvt",
+      "butterflyfringe-288-cupmny7dqg",
+      "gamblerpond-293-dwjk0cpnhg",
+      "snakesand-298-wbc2a8ywop",
+      "shakersleet-303-zz53mt5pi1"
+    ],
     "mainline": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 106.365,
-      "slack_entropy": 0
+      "compute_time_ms": 109.321,
+      "slack_entropy": 0,
+      "candidates": [
+        "panthermuck-273-mk1kern5y5",
+        "wizardcute-278-y55zfhmfwc",
+        "banenimble-283-jc65cvybvt",
+        "butterflyfringe-288-cupmny7dqg",
+        "gamblerpond-293-dwjk0cpnhg",
+        "snakesand-298-wbc2a8ywop"
+      ]
     },
     "branch": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 106.284,
-      "slack_entropy": 0
+      "compute_time_ms": 132.806,
+      "slack_entropy": 0,
+      "candidates": [
+        "panthermuck-273-mk1kern5y5",
+        "wizardcute-278-y55zfhmfwc",
+        "banenimble-283-jc65cvybvt",
+        "butterflyfringe-288-cupmny7dqg",
+        "gamblerpond-293-dwjk0cpnhg",
+        "snakesand-298-wbc2a8ywop"
+      ]
     },
     "oracle": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 1773.573,
-      "slack_entropy": 0
+      "compute_time_ms": 1779.348,
+      "slack_entropy": 0,
+      "candidates": [
+        "wizardcute-278-y55zfhmfwc",
+        "banenimble-283-jc65cvybvt",
+        "butterflyfringe-288-cupmny7dqg",
+        "gamblerpond-293-dwjk0cpnhg",
+        "snakesand-298-wbc2a8ywop",
+        "shakersleet-303-zz53mt5pi1"
+      ]
     }
   },
   {
     "seed": 10,
     "description": "seed=10 node_count=7 allocCPU=16",
+    "sorted_candidates": [
+      "sageround-311-wmzdyjeiac",
+      "shirtsticky-316-wmdtgz9e8p",
+      "banegranite-321-lvzmt265kn",
+      "stingershy-326-5rclybd4we",
+      "twisterancient-331-wbi0wslejo",
+      "vulturewool-336-1efio6swqk",
+      "wingmeadow-341-qpfdeiithk"
+    ],
     "mainline": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 110.103,
-      "slack_entropy": 0
+      "compute_time_ms": 112.083,
+      "slack_entropy": 0,
+      "candidates": [
+        "sageround-311-wmzdyjeiac",
+        "shirtsticky-316-wmdtgz9e8p",
+        "banegranite-321-lvzmt265kn",
+        "stingershy-326-5rclybd4we",
+        "twisterancient-331-wbi0wslejo",
+        "vulturewool-336-1efio6swqk"
+      ]
     },
     "branch": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 106.266,
-      "slack_entropy": 0
+      "compute_time_ms": 135.862,
+      "slack_entropy": 0,
+      "candidates": [
+        "sageround-311-wmzdyjeiac",
+        "shirtsticky-316-wmdtgz9e8p",
+        "banegranite-321-lvzmt265kn",
+        "stingershy-326-5rclybd4we",
+        "twisterancient-331-wbi0wslejo",
+        "vulturewool-336-1efio6swqk"
+      ]
     },
     "oracle": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 1779.64,
-      "slack_entropy": 0
+      "compute_time_ms": 1760.769,
+      "slack_entropy": 0,
+      "candidates": [
+        "shirtsticky-316-wmdtgz9e8p",
+        "banegranite-321-lvzmt265kn",
+        "stingershy-326-5rclybd4we",
+        "twisterancient-331-wbi0wslejo",
+        "vulturewool-336-1efio6swqk",
+        "wingmeadow-341-qpfdeiithk"
+      ]
     }
   },
   {
     "seed": 11,
     "description": "seed=11 node_count=8 allocCPU=32",
+    "sorted_candidates": [
+      "killerfortune-349-tzn2g9zvuc",
+      "gringlory-354-jysmtc16y2",
+      "piperseed-359-39ujuqwazu",
+      "centaurlava-364-iis3m3z0wl",
+      "witchdiamond-369-zkquikwe2c",
+      "tradersilk-374-bskxocc2ms",
+      "curtaincedar-379-1jqt2oav2c",
+      "frillballistic-384-iuvjhezamm"
+    ],
     "mainline": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 111.416,
-      "slack_entropy": 0
+      "compute_time_ms": 112.602,
+      "slack_entropy": 0,
+      "candidates": [
+        "killerfortune-349-tzn2g9zvuc",
+        "gringlory-354-jysmtc16y2",
+        "piperseed-359-39ujuqwazu",
+        "centaurlava-364-iis3m3z0wl",
+        "witchdiamond-369-zkquikwe2c",
+        "tradersilk-374-bskxocc2ms",
+        "curtaincedar-379-1jqt2oav2c"
+      ]
     },
     "branch": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 109.977,
-      "slack_entropy": 0
+      "compute_time_ms": 142.647,
+      "slack_entropy": 0,
+      "candidates": [
+        "killerfortune-349-tzn2g9zvuc",
+        "gringlory-354-jysmtc16y2",
+        "piperseed-359-39ujuqwazu",
+        "centaurlava-364-iis3m3z0wl",
+        "witchdiamond-369-zkquikwe2c",
+        "tradersilk-374-bskxocc2ms",
+        "curtaincedar-379-1jqt2oav2c"
+      ]
     },
     "oracle": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 3602.564,
-      "slack_entropy": 0
+      "compute_time_ms": 3576.7,
+      "slack_entropy": 0,
+      "candidates": [
+        "gringlory-354-jysmtc16y2",
+        "piperseed-359-39ujuqwazu",
+        "centaurlava-364-iis3m3z0wl",
+        "witchdiamond-369-zkquikwe2c",
+        "tradersilk-374-bskxocc2ms",
+        "curtaincedar-379-1jqt2oav2c",
+        "frillballistic-384-iuvjhezamm"
+      ]
     }
   },
   {
     "seed": 12,
     "description": "seed=12 node_count=4 allocCPU=16",
+    "sorted_candidates": [
+      "lizardwell-392-7te8zbkrqk",
+      "buffalodour-397-wooqvecsu6",
+      "crusherfate-402-ej8y57a8tx",
+      "scarerwheat-407-mj26cjfdya"
+    ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 30.084,
-      "slack_entropy": 1.386168379512894
+      "compute_time_ms": 28.971,
+      "slack_entropy": 1.386168379512894,
+      "candidates": null
     },
     "branch": {
       "total_savings": 0.6221225472,
       "total_disruption": 3,
-      "compute_time_ms": 125.247,
-      "slack_entropy": 0
+      "compute_time_ms": 127.464,
+      "slack_entropy": 0,
+      "candidates": [
+        "lizardwell-392-7te8zbkrqk",
+        "crusherfate-402-ej8y57a8tx",
+        "scarerwheat-407-mj26cjfdya"
+      ]
     },
     "oracle": {
       "total_savings": 0.6221225472,
       "total_disruption": 3,
-      "compute_time_ms": 211.085,
-      "slack_entropy": 0
+      "compute_time_ms": 205.11,
+      "slack_entropy": 0,
+      "candidates": [
+        "lizardwell-392-7te8zbkrqk",
+        "crusherfate-402-ej8y57a8tx",
+        "scarerwheat-407-mj26cjfdya"
+      ]
     }
   },
   {
     "seed": 13,
     "description": "seed=13 node_count=6 allocCPU=8",
+    "sorted_candidates": [
+      "fishercopper-415-gjhozkhikq",
+      "snoutivy-420-f7dznwojuo",
+      "voicemesquite-425-eifpgloq8r",
+      "chanterclever-430-zw3imphwsa",
+      "swordweak-435-ck63pwhbi2",
+      "terrierstone-440-mxjwsyayyr"
+    ],
     "mainline": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 106.848,
-      "slack_entropy": 0
+      "compute_time_ms": 100.758,
+      "slack_entropy": 0,
+      "candidates": [
+        "fishercopper-415-gjhozkhikq",
+        "snoutivy-420-f7dznwojuo",
+        "voicemesquite-425-eifpgloq8r",
+        "chanterclever-430-zw3imphwsa",
+        "swordweak-435-ck63pwhbi2"
+      ]
     },
     "branch": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 101.96,
-      "slack_entropy": 0
+      "compute_time_ms": 128.47,
+      "slack_entropy": 0,
+      "candidates": [
+        "fishercopper-415-gjhozkhikq",
+        "snoutivy-420-f7dznwojuo",
+        "voicemesquite-425-eifpgloq8r",
+        "chanterclever-430-zw3imphwsa",
+        "swordweak-435-ck63pwhbi2"
+      ]
     },
     "oracle": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 893.736,
-      "slack_entropy": 0
+      "compute_time_ms": 888.155,
+      "slack_entropy": 0,
+      "candidates": [
+        "snoutivy-420-f7dznwojuo",
+        "voicemesquite-425-eifpgloq8r",
+        "chanterclever-430-zw3imphwsa",
+        "swordweak-435-ck63pwhbi2",
+        "terrierstone-440-mxjwsyayyr"
+      ]
     }
   },
   {
     "seed": 14,
     "description": "seed=14 node_count=5 allocCPU=32",
+    "sorted_candidates": [
+      "backpuddle-448-icwjphbwuj",
+      "rabbitseason-453-zckpnjl5mt",
+      "flasherpaint-458-ktnbix6g8j",
+      "collarsharp-463-kvzdyvsvha",
+      "rippersheer-468-9az07cmspg"
+    ],
     "mainline": {
       "total_savings": 0.5294967295999999,
       "total_disruption": 5,
-      "compute_time_ms": 103.893,
-      "slack_entropy": 0
+      "compute_time_ms": 104.123,
+      "slack_entropy": 0,
+      "candidates": [
+        "backpuddle-448-icwjphbwuj",
+        "rabbitseason-453-zckpnjl5mt",
+        "flasherpaint-458-ktnbix6g8j",
+        "collarsharp-463-kvzdyvsvha",
+        "rippersheer-468-9az07cmspg"
+      ]
     },
     "branch": {
       "total_savings": 0.5294967295999999,
       "total_disruption": 5,
-      "compute_time_ms": 102.903,
-      "slack_entropy": 0
+      "compute_time_ms": 105.79,
+      "slack_entropy": 0,
+      "candidates": [
+        "backpuddle-448-icwjphbwuj",
+        "rabbitseason-453-zckpnjl5mt",
+        "flasherpaint-458-ktnbix6g8j",
+        "collarsharp-463-kvzdyvsvha",
+        "rippersheer-468-9az07cmspg"
+      ]
     },
     "oracle": {
       "total_savings": 0.5294967295999999,
       "total_disruption": 5,
-      "compute_time_ms": 433.497,
-      "slack_entropy": 0
+      "compute_time_ms": 433.813,
+      "slack_entropy": 0,
+      "candidates": [
+        "backpuddle-448-icwjphbwuj",
+        "rabbitseason-453-zckpnjl5mt",
+        "flasherpaint-458-ktnbix6g8j",
+        "collarsharp-463-kvzdyvsvha",
+        "rippersheer-468-9az07cmspg"
+      ]
     }
   },
   {
     "seed": 15,
     "description": "seed=15 node_count=3 allocCPU=16",
+    "sorted_candidates": [
+      "stallionvalley-476-mrn5zkplxi",
+      "mindholly-481-afbywlxsdg",
+      "scarernimble-486-wkkogenj6d"
+    ],
     "mainline": {
       "total_savings": 0.3147483648,
       "total_disruption": 3,
-      "compute_time_ms": 91.867,
-      "slack_entropy": 0
+      "compute_time_ms": 90.491,
+      "slack_entropy": 0,
+      "candidates": [
+        "stallionvalley-476-mrn5zkplxi",
+        "mindholly-481-afbywlxsdg",
+        "scarernimble-486-wkkogenj6d"
+      ]
     },
     "branch": {
       "total_savings": 0.3147483648,
       "total_disruption": 3,
-      "compute_time_ms": 80.855,
-      "slack_entropy": 0
+      "compute_time_ms": 82.181,
+      "slack_entropy": 0,
+      "candidates": [
+        "stallionvalley-476-mrn5zkplxi",
+        "mindholly-481-afbywlxsdg",
+        "scarernimble-486-wkkogenj6d"
+      ]
     },
     "oracle": {
       "total_savings": 0.3147483648,
       "total_disruption": 3,
-      "compute_time_ms": 111.494,
-      "slack_entropy": 0
+      "compute_time_ms": 109.331,
+      "slack_entropy": 0,
+      "candidates": [
+        "stallionvalley-476-mrn5zkplxi",
+        "mindholly-481-afbywlxsdg",
+        "scarernimble-486-wkkogenj6d"
+      ]
     }
   },
   {
     "seed": 16,
     "description": "seed=16 node_count=4 allocCPU=32",
+    "sorted_candidates": [
+      "fingerclever-494-4bysno0ivy",
+      "sagenoon-499-szejpqz3d9",
+      "throatrapid-504-cxuzmvzoec",
+      "stingerboom-509-mbjlhod3cn"
+    ],
     "mainline": {
       "total_savings": 0.3221225472,
       "total_disruption": 4,
-      "compute_time_ms": 89.029,
-      "slack_entropy": 0
+      "compute_time_ms": 86.608,
+      "slack_entropy": 0,
+      "candidates": [
+        "fingerclever-494-4bysno0ivy",
+        "sagenoon-499-szejpqz3d9",
+        "throatrapid-504-cxuzmvzoec",
+        "stingerboom-509-mbjlhod3cn"
+      ]
     },
     "branch": {
       "total_savings": 0.3221225472,
       "total_disruption": 4,
-      "compute_time_ms": 84.523,
-      "slack_entropy": 0
+      "compute_time_ms": 85.255,
+      "slack_entropy": 0,
+      "candidates": [
+        "fingerclever-494-4bysno0ivy",
+        "sagenoon-499-szejpqz3d9",
+        "throatrapid-504-cxuzmvzoec",
+        "stingerboom-509-mbjlhod3cn"
+      ]
     },
     "oracle": {
       "total_savings": 0.3221225472,
       "total_disruption": 4,
-      "compute_time_ms": 210.204,
-      "slack_entropy": 0
+      "compute_time_ms": 212.724,
+      "slack_entropy": 0,
+      "candidates": [
+        "fingerclever-494-4bysno0ivy",
+        "sagenoon-499-szejpqz3d9",
+        "throatrapid-504-cxuzmvzoec",
+        "stingerboom-509-mbjlhod3cn"
+      ]
     }
   },
   {
     "seed": 17,
     "description": "seed=17 node_count=8 allocCPU=16",
+    "sorted_candidates": [
+      "fishriver-517-oid9tw2jgm",
+      "samurainebula-522-xtkasvbjqh",
+      "condoroasis-527-tc06rvo6nj",
+      "lightningfrost-532-iinoiderak",
+      "wyrmcosmic-537-6yku8tm2kl",
+      "knightdour-542-njgnohhnkq",
+      "yaklake-547-ocjpmpwcke",
+      "bellmuck-552-dlvjmt3jdt"
+    ],
     "mainline": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 96.742,
-      "slack_entropy": 1.0984855610879032
+      "compute_time_ms": 97.348,
+      "slack_entropy": 1.0984855610879032,
+      "candidates": [
+        "fishriver-517-oid9tw2jgm",
+        "samurainebula-522-xtkasvbjqh",
+        "condoroasis-527-tc06rvo6nj",
+        "lightningfrost-532-iinoiderak",
+        "wyrmcosmic-537-6yku8tm2kl"
+      ]
     },
     "branch": {
-      "total_savings": 1.036870912,
-      "total_disruption": 5,
-      "compute_time_ms": 98.217,
-      "slack_entropy": 1.0984855610879032
+      "total_savings": 1.4516192767999998,
+      "total_disruption": 7,
+      "compute_time_ms": 140.273,
+      "slack_entropy": 0,
+      "candidates": [
+        "fishriver-517-oid9tw2jgm",
+        "samurainebula-522-xtkasvbjqh",
+        "condoroasis-527-tc06rvo6nj",
+        "lightningfrost-532-iinoiderak",
+        "wyrmcosmic-537-6yku8tm2kl",
+        "yaklake-547-ocjpmpwcke",
+        "bellmuck-552-dlvjmt3jdt"
+      ]
     },
     "oracle": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 3665.436,
-      "slack_entropy": 0
+      "compute_time_ms": 3682.333,
+      "slack_entropy": 0,
+      "candidates": [
+        "fishriver-517-oid9tw2jgm",
+        "samurainebula-522-xtkasvbjqh",
+        "condoroasis-527-tc06rvo6nj",
+        "lightningfrost-532-iinoiderak",
+        "wyrmcosmic-537-6yku8tm2kl",
+        "yaklake-547-ocjpmpwcke",
+        "bellmuck-552-dlvjmt3jdt"
+      ]
     }
   },
   {
     "seed": 18,
     "description": "seed=18 node_count=5 allocCPU=16",
+    "sorted_candidates": [
+      "spurcarnation-560-xql7jifxjk",
+      "bowstone-565-z8tgikkfna",
+      "mustangviolet-570-hu15075m1i",
+      "sentryfate-575-kdvkcyhljy",
+      "scourgethunder-580-xxeolyt7wh"
+    ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 31.547,
-      "slack_entropy": 1.6080872774849813
+      "compute_time_ms": 29.058,
+      "slack_entropy": 1.6080872774849813,
+      "candidates": null
     },
     "branch": {
       "total_savings": 0.8294967296,
       "total_disruption": 4,
-      "compute_time_ms": 143.558,
-      "slack_entropy": 0
+      "compute_time_ms": 140.794,
+      "slack_entropy": 0,
+      "candidates": [
+        "spurcarnation-560-xql7jifxjk",
+        "mustangviolet-570-hu15075m1i",
+        "sentryfate-575-kdvkcyhljy",
+        "scourgethunder-580-xxeolyt7wh"
+      ]
     },
     "oracle": {
       "total_savings": 0.8294967296,
       "total_disruption": 4,
-      "compute_time_ms": 422.614,
-      "slack_entropy": 0
+      "compute_time_ms": 420.584,
+      "slack_entropy": 0,
+      "candidates": [
+        "spurcarnation-560-xql7jifxjk",
+        "mustangviolet-570-hu15075m1i",
+        "sentryfate-575-kdvkcyhljy",
+        "scourgethunder-580-xxeolyt7wh"
+      ]
     }
   },
   {
     "seed": 19,
     "description": "seed=19 node_count=7 allocCPU=8",
+    "sorted_candidates": [
+      "seerberry-588-vzoojscroi",
+      "wizardtwilight-593-djglcdue6g",
+      "birdblack-598-d7jm409irv",
+      "gullviridian-603-6kq6as5dfe",
+      "keepertranslucent-608-d1dkyurltm",
+      "frightroan-613-6jg0knd3qc",
+      "deerwhite-618-0cy7snvrsu"
+    ],
     "mainline": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 113.315,
-      "slack_entropy": 0
+      "compute_time_ms": 113.527,
+      "slack_entropy": 0,
+      "candidates": [
+        "seerberry-588-vzoojscroi",
+        "wizardtwilight-593-djglcdue6g",
+        "birdblack-598-d7jm409irv",
+        "gullviridian-603-6kq6as5dfe",
+        "keepertranslucent-608-d1dkyurltm",
+        "frightroan-613-6jg0knd3qc"
+      ]
     },
     "branch": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 105.996,
-      "slack_entropy": 0
+      "compute_time_ms": 136.179,
+      "slack_entropy": 0,
+      "candidates": [
+        "seerberry-588-vzoojscroi",
+        "wizardtwilight-593-djglcdue6g",
+        "birdblack-598-d7jm409irv",
+        "gullviridian-603-6kq6as5dfe",
+        "keepertranslucent-608-d1dkyurltm",
+        "frightroan-613-6jg0knd3qc"
+      ]
     },
     "oracle": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 1811.201,
-      "slack_entropy": 0
+      "compute_time_ms": 1795.759,
+      "slack_entropy": 0,
+      "candidates": [
+        "wizardtwilight-593-djglcdue6g",
+        "birdblack-598-d7jm409irv",
+        "gullviridian-603-6kq6as5dfe",
+        "keepertranslucent-608-d1dkyurltm",
+        "frightroan-613-6jg0knd3qc",
+        "deerwhite-618-0cy7snvrsu"
+      ]
     }
   },
   {
     "seed": 20,
     "description": "seed=20 node_count=3 allocCPU=32",
+    "sorted_candidates": [
+      "burnpurple-626-kbboesxnad",
+      "horselace-631-7h39wkh0dt",
+      "mustangswift-636-ltxvkueg6o"
+    ],
     "mainline": {
       "total_savings": 0.3147483648,
       "total_disruption": 3,
-      "compute_time_ms": 96.585,
-      "slack_entropy": 0
+      "compute_time_ms": 85.989,
+      "slack_entropy": 0,
+      "candidates": [
+        "burnpurple-626-kbboesxnad",
+        "horselace-631-7h39wkh0dt",
+        "mustangswift-636-ltxvkueg6o"
+      ]
     },
     "branch": {
       "total_savings": 0.3147483648,
       "total_disruption": 3,
-      "compute_time_ms": 81.513,
-      "slack_entropy": 0
+      "compute_time_ms": 80.387,
+      "slack_entropy": 0,
+      "candidates": [
+        "burnpurple-626-kbboesxnad",
+        "horselace-631-7h39wkh0dt",
+        "mustangswift-636-ltxvkueg6o"
+      ]
     },
     "oracle": {
       "total_savings": 0.3147483648,
       "total_disruption": 3,
-      "compute_time_ms": 111.308,
-      "slack_entropy": 0
+      "compute_time_ms": 115.45,
+      "slack_entropy": 0,
+      "candidates": [
+        "burnpurple-626-kbboesxnad",
+        "horselace-631-7h39wkh0dt",
+        "mustangswift-636-ltxvkueg6o"
+      ]
     }
   },
   {
     "seed": 21,
     "description": "seed=21 node_count=4 allocCPU=8",
+    "sorted_candidates": [
+      "hoofplanet-644-m7kj97dd7e",
+      "oxbrindle-649-48dcxabil8",
+      "flamepalm-654-jdtepws2nf",
+      "nosetundra-659-z5bxfslzbx"
+    ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 29.491,
-      "slack_entropy": 1.3857739794847803
+      "compute_time_ms": 30.089,
+      "slack_entropy": 1.3857739794847803,
+      "candidates": null
     },
     "branch": {
       "total_savings": 0.6221225472,
       "total_disruption": 3,
-      "compute_time_ms": 124.492,
-      "slack_entropy": 0
+      "compute_time_ms": 127.15,
+      "slack_entropy": 0,
+      "candidates": [
+        "hoofplanet-644-m7kj97dd7e",
+        "flamepalm-654-jdtepws2nf",
+        "nosetundra-659-z5bxfslzbx"
+      ]
     },
     "oracle": {
       "total_savings": 0.6221225472,
       "total_disruption": 3,
-      "compute_time_ms": 205.846,
-      "slack_entropy": 0
+      "compute_time_ms": 206.972,
+      "slack_entropy": 0,
+      "candidates": [
+        "hoofplanet-644-m7kj97dd7e",
+        "flamepalm-654-jdtepws2nf",
+        "nosetundra-659-z5bxfslzbx"
+      ]
     }
   },
   {
     "seed": 22,
     "description": "seed=22 node_count=6 allocCPU=16",
+    "sorted_candidates": [
+      "toothregal-667-l495gikttn",
+      "lionmesquite-672-zwllojxcr8",
+      "knightancient-677-su3wm6u95g",
+      "traderspring-682-0oqdfxly8x",
+      "pawblack-687-c0oeg6k00a",
+      "chargerblue-692-yxqvvvypdb"
+    ],
     "mainline": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 108.417,
-      "slack_entropy": 0
+      "compute_time_ms": 102.343,
+      "slack_entropy": 0,
+      "candidates": [
+        "toothregal-667-l495gikttn",
+        "lionmesquite-672-zwllojxcr8",
+        "knightancient-677-su3wm6u95g",
+        "traderspring-682-0oqdfxly8x",
+        "pawblack-687-c0oeg6k00a"
+      ]
     },
     "branch": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 100.399,
-      "slack_entropy": 0
+      "compute_time_ms": 130.292,
+      "slack_entropy": 0,
+      "candidates": [
+        "toothregal-667-l495gikttn",
+        "lionmesquite-672-zwllojxcr8",
+        "knightancient-677-su3wm6u95g",
+        "traderspring-682-0oqdfxly8x",
+        "pawblack-687-c0oeg6k00a"
+      ]
     },
     "oracle": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 883.637,
-      "slack_entropy": 0
+      "compute_time_ms": 887.876,
+      "slack_entropy": 0,
+      "candidates": [
+        "lionmesquite-672-zwllojxcr8",
+        "knightancient-677-su3wm6u95g",
+        "traderspring-682-0oqdfxly8x",
+        "pawblack-687-c0oeg6k00a",
+        "chargerblue-692-yxqvvvypdb"
+      ]
     }
   },
   {
     "seed": 23,
     "description": "seed=23 node_count=7 allocCPU=32",
+    "sorted_candidates": [
+      "beetlebush-700-lphd9prrxf",
+      "biterripple-705-mi9bghpyon",
+      "shifttranslucent-710-2aqnskcazc",
+      "pegasussatin-715-ahbmrvkuku",
+      "snoutrag-720-fqaxbcfkuj",
+      "frillglass-725-t0iuws2fdj",
+      "gullgiant-730-kn5wfrrrzq"
+    ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 29.313,
-      "slack_entropy": 1.9458439841930248
+      "compute_time_ms": 29.186,
+      "slack_entropy": 1.9458439841930248,
+      "candidates": null
     },
     "branch": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 181.178,
-      "slack_entropy": 0
+      "compute_time_ms": 179.087,
+      "slack_entropy": 0,
+      "candidates": [
+        "beetlebush-700-lphd9prrxf",
+        "shifttranslucent-710-2aqnskcazc",
+        "pegasussatin-715-ahbmrvkuku",
+        "snoutrag-720-fqaxbcfkuj",
+        "frillglass-725-t0iuws2fdj",
+        "gullgiant-730-kn5wfrrrzq"
+      ]
     },
     "oracle": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 1821.13,
-      "slack_entropy": 0
+      "compute_time_ms": 1823.464,
+      "slack_entropy": 0,
+      "candidates": [
+        "beetlebush-700-lphd9prrxf",
+        "shifttranslucent-710-2aqnskcazc",
+        "pegasussatin-715-ahbmrvkuku",
+        "snoutrag-720-fqaxbcfkuj",
+        "frillglass-725-t0iuws2fdj",
+        "gullgiant-730-kn5wfrrrzq"
+      ]
     }
   },
   {
     "seed": 24,
     "description": "seed=24 node_count=3 allocCPU=16",
+    "sorted_candidates": [
+      "toothlead-738-nm8g9toyay",
+      "cathorse-743-njnt1by5wj",
+      "cloakfancy-748-wxomixsg1h"
+    ],
     "mainline": {
       "total_savings": 0.11474836480000006,
       "total_disruption": 3,
-      "compute_time_ms": 82.78,
-      "slack_entropy": 0
+      "compute_time_ms": 78.933,
+      "slack_entropy": 0,
+      "candidates": [
+        "toothlead-738-nm8g9toyay",
+        "cathorse-743-njnt1by5wj",
+        "cloakfancy-748-wxomixsg1h"
+      ]
     },
     "branch": {
       "total_savings": 0.11474836480000006,
       "total_disruption": 3,
-      "compute_time_ms": 78.836,
-      "slack_entropy": 0
+      "compute_time_ms": 78.987,
+      "slack_entropy": 0,
+      "candidates": [
+        "toothlead-738-nm8g9toyay",
+        "cathorse-743-njnt1by5wj",
+        "cloakfancy-748-wxomixsg1h"
+      ]
     },
     "oracle": {
       "total_savings": 0.11474836480000006,
       "total_disruption": 3,
-      "compute_time_ms": 109.074,
-      "slack_entropy": 0
+      "compute_time_ms": 105.77,
+      "slack_entropy": 0,
+      "candidates": [
+        "toothlead-738-nm8g9toyay",
+        "cathorse-743-njnt1by5wj",
+        "cloakfancy-748-wxomixsg1h"
+      ]
     }
   },
   {
     "seed": 25,
     "description": "seed=25 node_count=7 allocCPU=32",
+    "sorted_candidates": [
+      "ribsun-756-btb12b4hsn",
+      "stingerroad-761-8ktvn157ej",
+      "catchersun-766-m4a1ogmbn5",
+      "pegasusvanilla-771-gkvqkw2gnj",
+      "owlcedar-776-yaljqvnmoc",
+      "ferretrust-781-hwhg0byddr",
+      "slicerfancy-786-xzn8pg1ll5"
+    ],
     "mainline": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 112.742,
-      "slack_entropy": 0
+      "compute_time_ms": 108.529,
+      "slack_entropy": 0,
+      "candidates": [
+        "ribsun-756-btb12b4hsn",
+        "stingerroad-761-8ktvn157ej",
+        "catchersun-766-m4a1ogmbn5",
+        "pegasusvanilla-771-gkvqkw2gnj",
+        "owlcedar-776-yaljqvnmoc",
+        "ferretrust-781-hwhg0byddr"
+      ]
     },
     "branch": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 107.284,
-      "slack_entropy": 0
+      "compute_time_ms": 134.813,
+      "slack_entropy": 0,
+      "candidates": [
+        "ribsun-756-btb12b4hsn",
+        "stingerroad-761-8ktvn157ej",
+        "catchersun-766-m4a1ogmbn5",
+        "pegasusvanilla-771-gkvqkw2gnj",
+        "owlcedar-776-yaljqvnmoc",
+        "ferretrust-781-hwhg0byddr"
+      ]
     },
     "oracle": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 1789.609,
-      "slack_entropy": 0
+      "compute_time_ms": 1782.441,
+      "slack_entropy": 0,
+      "candidates": [
+        "stingerroad-761-8ktvn157ej",
+        "catchersun-766-m4a1ogmbn5",
+        "pegasusvanilla-771-gkvqkw2gnj",
+        "owlcedar-776-yaljqvnmoc",
+        "ferretrust-781-hwhg0byddr",
+        "slicerfancy-786-xzn8pg1ll5"
+      ]
     }
   },
   {
     "seed": 26,
     "description": "seed=26 node_count=4 allocCPU=8",
+    "sorted_candidates": [
+      "carpetcosmic-794-8vcufmrydx",
+      "birdnoble-799-blwdiszoxg",
+      "musecrack-804-rwvduv9q6f",
+      "hornetsnow-809-uj1mussmra"
+    ],
     "mainline": {
       "total_savings": 0.6221225472,
       "total_disruption": 3,
-      "compute_time_ms": 77.171,
-      "slack_entropy": 0
+      "compute_time_ms": 74.327,
+      "slack_entropy": 0,
+      "candidates": [
+        "carpetcosmic-794-8vcufmrydx",
+        "birdnoble-799-blwdiszoxg",
+        "musecrack-804-rwvduv9q6f"
+      ]
     },
     "branch": {
       "total_savings": 0.6221225472,
       "total_disruption": 3,
-      "compute_time_ms": 74.922,
-      "slack_entropy": 0
+      "compute_time_ms": 94.086,
+      "slack_entropy": 0,
+      "candidates": [
+        "carpetcosmic-794-8vcufmrydx",
+        "birdnoble-799-blwdiszoxg",
+        "musecrack-804-rwvduv9q6f"
+      ]
     },
     "oracle": {
       "total_savings": 0.6221225472,
       "total_disruption": 3,
-      "compute_time_ms": 211.181,
-      "slack_entropy": 0
+      "compute_time_ms": 202.443,
+      "slack_entropy": 0,
+      "candidates": [
+        "birdnoble-799-blwdiszoxg",
+        "musecrack-804-rwvduv9q6f",
+        "hornetsnow-809-uj1mussmra"
+      ]
     }
   },
   {
     "seed": 27,
     "description": "seed=27 node_count=8 allocCPU=32",
+    "sorted_candidates": [
+      "beemercury-817-cuatsrf3ga",
+      "toothbone-822-2iurngnyn5",
+      "snarlsnapdragon-827-roz7pdpc0g",
+      "followerbig-832-8p5k27sckd",
+      "spiderpuddle-837-qm8uwtlhsl",
+      "warriorheavy-842-e2fleckgsm",
+      "haircurse-847-ye3yjuy2no",
+      "sentrycypress-852-tezjsnybu5"
+    ],
     "mainline": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 97.921,
-      "slack_entropy": 1.0984714018581385
+      "compute_time_ms": 98.828,
+      "slack_entropy": 1.0984714018581385,
+      "candidates": [
+        "beemercury-817-cuatsrf3ga",
+        "toothbone-822-2iurngnyn5",
+        "snarlsnapdragon-827-roz7pdpc0g",
+        "followerbig-832-8p5k27sckd",
+        "spiderpuddle-837-qm8uwtlhsl"
+      ]
     },
     "branch": {
-      "total_savings": 1.036870912,
-      "total_disruption": 5,
-      "compute_time_ms": 95.946,
-      "slack_entropy": 1.0984714018581385
+      "total_savings": 1.4516192767999998,
+      "total_disruption": 7,
+      "compute_time_ms": 135.615,
+      "slack_entropy": 0,
+      "candidates": [
+        "beemercury-817-cuatsrf3ga",
+        "toothbone-822-2iurngnyn5",
+        "snarlsnapdragon-827-roz7pdpc0g",
+        "followerbig-832-8p5k27sckd",
+        "spiderpuddle-837-qm8uwtlhsl",
+        "haircurse-847-ye3yjuy2no",
+        "sentrycypress-852-tezjsnybu5"
+      ]
     },
     "oracle": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 3672.031,
-      "slack_entropy": 0
+      "compute_time_ms": 3667.565,
+      "slack_entropy": 0,
+      "candidates": [
+        "beemercury-817-cuatsrf3ga",
+        "toothbone-822-2iurngnyn5",
+        "snarlsnapdragon-827-roz7pdpc0g",
+        "followerbig-832-8p5k27sckd",
+        "spiderpuddle-837-qm8uwtlhsl",
+        "haircurse-847-ye3yjuy2no",
+        "sentrycypress-852-tezjsnybu5"
+      ]
     }
   },
   {
     "seed": 28,
     "description": "seed=28 node_count=6 allocCPU=32",
+    "sorted_candidates": [
+      "wingcandle-860-ioo3ycsuo3",
+      "beargarnet-865-7viqtnuy2m",
+      "kangaroonotch-870-ty27c7mdb0",
+      "vulturemagenta-875-mffvnqndhf",
+      "catrag-880-uwoxpxbltv",
+      "whipslash-885-wgqlajdm4f"
+    ],
     "mainline": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 152.303,
-      "slack_entropy": 0
+      "compute_time_ms": 105.616,
+      "slack_entropy": 0,
+      "candidates": [
+        "wingcandle-860-ioo3ycsuo3",
+        "beargarnet-865-7viqtnuy2m",
+        "kangaroonotch-870-ty27c7mdb0",
+        "vulturemagenta-875-mffvnqndhf",
+        "catrag-880-uwoxpxbltv"
+      ]
     },
     "branch": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 102.697,
-      "slack_entropy": 0
+      "compute_time_ms": 132.704,
+      "slack_entropy": 0,
+      "candidates": [
+        "wingcandle-860-ioo3ycsuo3",
+        "beargarnet-865-7viqtnuy2m",
+        "kangaroonotch-870-ty27c7mdb0",
+        "vulturemagenta-875-mffvnqndhf",
+        "catrag-880-uwoxpxbltv"
+      ]
     },
     "oracle": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 867.487,
-      "slack_entropy": 0
+      "compute_time_ms": 863.721,
+      "slack_entropy": 0,
+      "candidates": [
+        "beargarnet-865-7viqtnuy2m",
+        "kangaroonotch-870-ty27c7mdb0",
+        "vulturemagenta-875-mffvnqndhf",
+        "catrag-880-uwoxpxbltv",
+        "whipslash-885-wgqlajdm4f"
+      ]
     }
   },
   {
     "seed": 29,
     "description": "seed=29 node_count=3 allocCPU=8",
+    "sorted_candidates": [
+      "spritewool-893-ofmsa86wgw",
+      "weaselpeppermint-898-f0ewmsxhe2",
+      "houndnettle-903-6yrk1mmd12"
+    ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 17.635,
-      "slack_entropy": 1.096692663308951
+      "compute_time_ms": 15.355,
+      "slack_entropy": 1.096692663308951,
+      "candidates": null
     },
     "branch": {
       "total_savings": 0.4147483648,
       "total_disruption": 2,
-      "compute_time_ms": 94.615,
-      "slack_entropy": 0
+      "compute_time_ms": 88.126,
+      "slack_entropy": 0,
+      "candidates": [
+        "spritewool-893-ofmsa86wgw",
+        "houndnettle-903-6yrk1mmd12"
+      ]
     },
     "oracle": {
       "total_savings": 0.4147483648,
       "total_disruption": 2,
-      "compute_time_ms": 98.509,
-      "slack_entropy": 0
+      "compute_time_ms": 101.244,
+      "slack_entropy": 0,
+      "candidates": [
+        "spritewool-893-ofmsa86wgw",
+        "houndnettle-903-6yrk1mmd12"
+      ]
     }
   },
   {
     "seed": 30,
     "description": "seed=30 node_count=7 allocCPU=32",
+    "sorted_candidates": [
+      "wolverinecrocus-911-ulexhdktig",
+      "graspstitch-916-mhvhfhnsdt",
+      "raverluck-921-vbcjhlx3ja",
+      "crystalbig-926-whwcdivgxa",
+      "frillspice-931-axqnsskt6g",
+      "lifterfuschia-936-uxjhrndycx",
+      "slaveheather-941-yew9njszrm"
+    ],
     "mainline": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 111.086,
-      "slack_entropy": 0
+      "compute_time_ms": 118.3,
+      "slack_entropy": 0,
+      "candidates": [
+        "wolverinecrocus-911-ulexhdktig",
+        "graspstitch-916-mhvhfhnsdt",
+        "raverluck-921-vbcjhlx3ja",
+        "crystalbig-926-whwcdivgxa",
+        "frillspice-931-axqnsskt6g",
+        "lifterfuschia-936-uxjhrndycx"
+      ]
     },
     "branch": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 108.14,
-      "slack_entropy": 0
+      "compute_time_ms": 137.062,
+      "slack_entropy": 0,
+      "candidates": [
+        "wolverinecrocus-911-ulexhdktig",
+        "graspstitch-916-mhvhfhnsdt",
+        "raverluck-921-vbcjhlx3ja",
+        "crystalbig-926-whwcdivgxa",
+        "frillspice-931-axqnsskt6g",
+        "lifterfuschia-936-uxjhrndycx"
+      ]
     },
     "oracle": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 1779.244,
-      "slack_entropy": 0
+      "compute_time_ms": 1760.34,
+      "slack_entropy": 0,
+      "candidates": [
+        "graspstitch-916-mhvhfhnsdt",
+        "raverluck-921-vbcjhlx3ja",
+        "crystalbig-926-whwcdivgxa",
+        "frillspice-931-axqnsskt6g",
+        "lifterfuschia-936-uxjhrndycx",
+        "slaveheather-941-yew9njszrm"
+      ]
     }
   },
   {
     "seed": 31,
     "description": "seed=31 node_count=6 allocCPU=16",
+    "sorted_candidates": [
+      "cubclever-949-llnw6imhkp",
+      "ferrettorch-954-bchanskt0d",
+      "spritegravel-959-chayw087bj",
+      "birdapricot-964-vv5dxi3mts",
+      "takerfoul-969-6isdcgpp4w",
+      "orioleroot-974-lonuk1qnie"
+    ],
     "mainline": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 102.982,
-      "slack_entropy": 0
+      "compute_time_ms": 106.508,
+      "slack_entropy": 0,
+      "candidates": [
+        "cubclever-949-llnw6imhkp",
+        "ferrettorch-954-bchanskt0d",
+        "spritegravel-959-chayw087bj",
+        "birdapricot-964-vv5dxi3mts",
+        "takerfoul-969-6isdcgpp4w"
+      ]
     },
     "branch": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 101.288,
-      "slack_entropy": 0
+      "compute_time_ms": 136.15,
+      "slack_entropy": 0,
+      "candidates": [
+        "cubclever-949-llnw6imhkp",
+        "ferrettorch-954-bchanskt0d",
+        "spritegravel-959-chayw087bj",
+        "birdapricot-964-vv5dxi3mts",
+        "takerfoul-969-6isdcgpp4w"
+      ]
     },
     "oracle": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 869.664,
-      "slack_entropy": 0
+      "compute_time_ms": 867.931,
+      "slack_entropy": 0,
+      "candidates": [
+        "ferrettorch-954-bchanskt0d",
+        "spritegravel-959-chayw087bj",
+        "birdapricot-964-vv5dxi3mts",
+        "takerfoul-969-6isdcgpp4w",
+        "orioleroot-974-lonuk1qnie"
+      ]
     }
   },
   {
     "seed": 32,
     "description": "seed=32 node_count=4 allocCPU=16",
+    "sorted_candidates": [
+      "wizardhurricane-982-tssrpkmh65",
+      "yakforest-987-ouke23zwen",
+      "forgerflash-992-2otwmcfr5g",
+      "ninjachain-997-r3cphp5koe"
+    ],
     "mainline": {
       "total_savings": 0.3221225472,
       "total_disruption": 4,
-      "compute_time_ms": 87.352,
-      "slack_entropy": 0
+      "compute_time_ms": 86.471,
+      "slack_entropy": 0,
+      "candidates": [
+        "wizardhurricane-982-tssrpkmh65",
+        "yakforest-987-ouke23zwen",
+        "forgerflash-992-2otwmcfr5g",
+        "ninjachain-997-r3cphp5koe"
+      ]
     },
     "branch": {
       "total_savings": 0.3221225472,
       "total_disruption": 4,
-      "compute_time_ms": 82.922,
-      "slack_entropy": 0
+      "compute_time_ms": 83.991,
+      "slack_entropy": 0,
+      "candidates": [
+        "wizardhurricane-982-tssrpkmh65",
+        "yakforest-987-ouke23zwen",
+        "forgerflash-992-2otwmcfr5g",
+        "ninjachain-997-r3cphp5koe"
+      ]
     },
     "oracle": {
       "total_savings": 0.3221225472,
       "total_disruption": 4,
-      "compute_time_ms": 203.307,
-      "slack_entropy": 0
+      "compute_time_ms": 217.192,
+      "slack_entropy": 0,
+      "candidates": [
+        "wizardhurricane-982-tssrpkmh65",
+        "yakforest-987-ouke23zwen",
+        "forgerflash-992-2otwmcfr5g",
+        "ninjachain-997-r3cphp5koe"
+      ]
     }
   },
   {
     "seed": 33,
     "description": "seed=33 node_count=8 allocCPU=8",
+    "sorted_candidates": [
+      "roarvenom-1005-wy8hvdfisq",
+      "cougarcoffee-1010-qfjbpmonsn",
+      "glazerballistic-1015-mdh9fuyfbb",
+      "swordglory-1020-v7utxmaja1",
+      "chanternimble-1025-d6nvflbnbp",
+      "scarember-1030-3sdh9slutn",
+      "hidesnapdragon-1035-alcihoossp",
+      "bunnybranch-1040-khccfgc0ht"
+    ],
     "mainline": {
       "total_savings": 0.6221225472,
       "total_disruption": 3,
-      "compute_time_ms": 100.215,
-      "slack_entropy": 1.6079964653527954
+      "compute_time_ms": 101.255,
+      "slack_entropy": 1.6079964653527954,
+      "candidates": [
+        "roarvenom-1005-wy8hvdfisq",
+        "cougarcoffee-1010-qfjbpmonsn",
+        "glazerballistic-1015-mdh9fuyfbb"
+      ]
     },
     "branch": {
-      "total_savings": 0.6221225472,
-      "total_disruption": 3,
-      "compute_time_ms": 96.623,
-      "slack_entropy": 1.6079964653527954
+      "total_savings": 1.4516192767999998,
+      "total_disruption": 7,
+      "compute_time_ms": 175.876,
+      "slack_entropy": 0,
+      "candidates": [
+        "roarvenom-1005-wy8hvdfisq",
+        "cougarcoffee-1010-qfjbpmonsn",
+        "glazerballistic-1015-mdh9fuyfbb",
+        "chanternimble-1025-d6nvflbnbp",
+        "scarember-1030-3sdh9slutn",
+        "hidesnapdragon-1035-alcihoossp",
+        "bunnybranch-1040-khccfgc0ht"
+      ]
     },
     "oracle": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 3660.388,
-      "slack_entropy": 0
+      "compute_time_ms": 3648.752,
+      "slack_entropy": 0,
+      "candidates": [
+        "roarvenom-1005-wy8hvdfisq",
+        "cougarcoffee-1010-qfjbpmonsn",
+        "glazerballistic-1015-mdh9fuyfbb",
+        "chanternimble-1025-d6nvflbnbp",
+        "scarember-1030-3sdh9slutn",
+        "hidesnapdragon-1035-alcihoossp",
+        "bunnybranch-1040-khccfgc0ht"
+      ]
     }
   },
   {
     "seed": 34,
     "description": "seed=34 node_count=3 allocCPU=8",
+    "sorted_candidates": [
+      "tracksoft-1048-2yshgpypc5",
+      "hunternettle-1053-pwclpdcrmn",
+      "dutchesspitch-1058-r8xeaplswo"
+    ],
     "mainline": {
       "total_savings": 0.11474836480000006,
       "total_disruption": 3,
-      "compute_time_ms": 80.493,
-      "slack_entropy": 0
+      "compute_time_ms": 78.355,
+      "slack_entropy": 0,
+      "candidates": [
+        "tracksoft-1048-2yshgpypc5",
+        "hunternettle-1053-pwclpdcrmn",
+        "dutchesspitch-1058-r8xeaplswo"
+      ]
     },
     "branch": {
       "total_savings": 0.11474836480000006,
       "total_disruption": 3,
-      "compute_time_ms": 78.225,
-      "slack_entropy": 0
+      "compute_time_ms": 78.405,
+      "slack_entropy": 0,
+      "candidates": [
+        "tracksoft-1048-2yshgpypc5",
+        "hunternettle-1053-pwclpdcrmn",
+        "dutchesspitch-1058-r8xeaplswo"
+      ]
     },
     "oracle": {
       "total_savings": 0.11474836480000006,
       "total_disruption": 3,
-      "compute_time_ms": 104.615,
-      "slack_entropy": 0
+      "compute_time_ms": 106.681,
+      "slack_entropy": 0,
+      "candidates": [
+        "tracksoft-1048-2yshgpypc5",
+        "hunternettle-1053-pwclpdcrmn",
+        "dutchesspitch-1058-r8xeaplswo"
+      ]
     }
   },
   {
     "seed": 35,
     "description": "seed=35 node_count=5 allocCPU=8",
+    "sorted_candidates": [
+      "heronpollen-1066-gg1ce5q2gk",
+      "swordrowan-1071-abnmlbwe3p",
+      "raptorripple-1076-n9mebl5vqc",
+      "kingpetal-1081-6a1s3a0mpk",
+      "faceamber-1086-qfoafkqfzo"
+    ],
     "mainline": {
       "total_savings": 0.12949672959999992,
       "total_disruption": 5,
-      "compute_time_ms": 103.816,
-      "slack_entropy": 0
+      "compute_time_ms": 100.858,
+      "slack_entropy": 0,
+      "candidates": [
+        "heronpollen-1066-gg1ce5q2gk",
+        "swordrowan-1071-abnmlbwe3p",
+        "raptorripple-1076-n9mebl5vqc",
+        "kingpetal-1081-6a1s3a0mpk",
+        "faceamber-1086-qfoafkqfzo"
+      ]
     },
     "branch": {
       "total_savings": 0.12949672959999992,
       "total_disruption": 5,
-      "compute_time_ms": 101.223,
-      "slack_entropy": 0
+      "compute_time_ms": 102.113,
+      "slack_entropy": 0,
+      "candidates": [
+        "heronpollen-1066-gg1ce5q2gk",
+        "swordrowan-1071-abnmlbwe3p",
+        "raptorripple-1076-n9mebl5vqc",
+        "kingpetal-1081-6a1s3a0mpk",
+        "faceamber-1086-qfoafkqfzo"
+      ]
     },
     "oracle": {
       "total_savings": 0.12949672959999992,
       "total_disruption": 5,
-      "compute_time_ms": 437.665,
-      "slack_entropy": 0
+      "compute_time_ms": 428.932,
+      "slack_entropy": 0,
+      "candidates": [
+        "heronpollen-1066-gg1ce5q2gk",
+        "swordrowan-1071-abnmlbwe3p",
+        "raptorripple-1076-n9mebl5vqc",
+        "kingpetal-1081-6a1s3a0mpk",
+        "faceamber-1086-qfoafkqfzo"
+      ]
     }
   },
   {
     "seed": 36,
     "description": "seed=36 node_count=3 allocCPU=16",
+    "sorted_candidates": [
+      "devourertide-1094-nkjngwqepz",
+      "crowmercury-1099-asaxoeush1",
+      "masterabalone-1104-6spzokr1zy"
+    ],
     "mainline": {
       "total_savings": 0.11474836480000006,
       "total_disruption": 3,
-      "compute_time_ms": 82.28,
-      "slack_entropy": 0
+      "compute_time_ms": 92.818,
+      "slack_entropy": 0,
+      "candidates": [
+        "devourertide-1094-nkjngwqepz",
+        "crowmercury-1099-asaxoeush1",
+        "masterabalone-1104-6spzokr1zy"
+      ]
     },
     "branch": {
       "total_savings": 0.11474836480000006,
       "total_disruption": 3,
-      "compute_time_ms": 80.108,
-      "slack_entropy": 0
+      "compute_time_ms": 79.311,
+      "slack_entropy": 0,
+      "candidates": [
+        "devourertide-1094-nkjngwqepz",
+        "crowmercury-1099-asaxoeush1",
+        "masterabalone-1104-6spzokr1zy"
+      ]
     },
     "oracle": {
       "total_savings": 0.11474836480000006,
       "total_disruption": 3,
-      "compute_time_ms": 106.673,
-      "slack_entropy": 0
+      "compute_time_ms": 114.013,
+      "slack_entropy": 0,
+      "candidates": [
+        "devourertide-1094-nkjngwqepz",
+        "crowmercury-1099-asaxoeush1",
+        "masterabalone-1104-6spzokr1zy"
+      ]
     }
   },
   {
     "seed": 37,
     "description": "seed=37 node_count=8 allocCPU=16",
+    "sorted_candidates": [
+      "runnermidnight-1112-ebpyaa1h5w",
+      "shielddune-1117-jjrsbl4eap",
+      "collarseason-1122-xtbxtrow9f",
+      "stingerspeckle-1127-twxwkouhjm",
+      "whippurple-1132-ic0vlryiwq",
+      "crestbloom-1137-o2sdbsvo9h",
+      "bowseed-1142-31mlcb4vzw",
+      "raverfree-1147-1xvlsf8fs6"
+    ],
     "mainline": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 116.091,
-      "slack_entropy": 0
+      "compute_time_ms": 116.582,
+      "slack_entropy": 0,
+      "candidates": [
+        "runnermidnight-1112-ebpyaa1h5w",
+        "shielddune-1117-jjrsbl4eap",
+        "collarseason-1122-xtbxtrow9f",
+        "stingerspeckle-1127-twxwkouhjm",
+        "whippurple-1132-ic0vlryiwq",
+        "crestbloom-1137-o2sdbsvo9h",
+        "bowseed-1142-31mlcb4vzw"
+      ]
     },
     "branch": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 111.235,
-      "slack_entropy": 0
+      "compute_time_ms": 148.311,
+      "slack_entropy": 0,
+      "candidates": [
+        "runnermidnight-1112-ebpyaa1h5w",
+        "shielddune-1117-jjrsbl4eap",
+        "collarseason-1122-xtbxtrow9f",
+        "stingerspeckle-1127-twxwkouhjm",
+        "whippurple-1132-ic0vlryiwq",
+        "crestbloom-1137-o2sdbsvo9h",
+        "bowseed-1142-31mlcb4vzw"
+      ]
     },
     "oracle": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 3618.597,
-      "slack_entropy": 0
+      "compute_time_ms": 3752.714,
+      "slack_entropy": 0,
+      "candidates": [
+        "shielddune-1117-jjrsbl4eap",
+        "collarseason-1122-xtbxtrow9f",
+        "stingerspeckle-1127-twxwkouhjm",
+        "whippurple-1132-ic0vlryiwq",
+        "crestbloom-1137-o2sdbsvo9h",
+        "bowseed-1142-31mlcb4vzw",
+        "raverfree-1147-1xvlsf8fs6"
+      ]
     }
   },
   {
     "seed": 38,
     "description": "seed=38 node_count=8 allocCPU=32",
+    "sorted_candidates": [
+      "thorngravel-1155-vefjyqvyhd",
+      "legenddew-1160-kgbm9bptj9",
+      "lizardcarnelian-1165-hoyf9bigc7",
+      "raptorshimmer-1170-bay18imilr",
+      "lordmaze-1175-bbnygxdhmi",
+      "waspbrass-1180-zxkobtguby",
+      "weaselglimmer-1185-ig8upn6wxp",
+      "griffinglow-1190-lylgtczjej"
+    ],
     "mainline": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 99.301,
-      "slack_entropy": 0.6927683767297783
+      "compute_time_ms": 101.384,
+      "slack_entropy": 0.6927683767297783,
+      "candidates": [
+        "thorngravel-1155-vefjyqvyhd",
+        "legenddew-1160-kgbm9bptj9",
+        "lizardcarnelian-1165-hoyf9bigc7",
+        "raptorshimmer-1170-bay18imilr",
+        "lordmaze-1175-bbnygxdhmi",
+        "waspbrass-1180-zxkobtguby"
+      ]
     },
     "branch": {
-      "total_savings": 1.2442450943999999,
-      "total_disruption": 6,
-      "compute_time_ms": 96.725,
-      "slack_entropy": 0.6927683767297783
+      "total_savings": 1.4516192767999998,
+      "total_disruption": 7,
+      "compute_time_ms": 126.304,
+      "slack_entropy": 0,
+      "candidates": [
+        "thorngravel-1155-vefjyqvyhd",
+        "legenddew-1160-kgbm9bptj9",
+        "lizardcarnelian-1165-hoyf9bigc7",
+        "raptorshimmer-1170-bay18imilr",
+        "lordmaze-1175-bbnygxdhmi",
+        "waspbrass-1180-zxkobtguby",
+        "griffinglow-1190-lylgtczjej"
+      ]
     },
     "oracle": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 3639.513,
-      "slack_entropy": 0
+      "compute_time_ms": 3685.577,
+      "slack_entropy": 0,
+      "candidates": [
+        "thorngravel-1155-vefjyqvyhd",
+        "legenddew-1160-kgbm9bptj9",
+        "lizardcarnelian-1165-hoyf9bigc7",
+        "raptorshimmer-1170-bay18imilr",
+        "lordmaze-1175-bbnygxdhmi",
+        "waspbrass-1180-zxkobtguby",
+        "griffinglow-1190-lylgtczjej"
+      ]
     }
   },
   {
     "seed": 39,
     "description": "seed=39 node_count=5 allocCPU=8",
+    "sorted_candidates": [
+      "duckflicker-1198-uccw6gjvhh",
+      "kingflash-1203-hmh8nv54xl",
+      "servantquark-1208-ydnxxzksdd",
+      "pumaglen-1213-j7f3sl94vo",
+      "crusherazure-1218-zlzvczpssw"
+    ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 28.929,
-      "slack_entropy": 1.6080872774849813
+      "compute_time_ms": 29.37,
+      "slack_entropy": 1.6080872774849813,
+      "candidates": null
     },
     "branch": {
       "total_savings": 0.8294967296,
       "total_disruption": 4,
-      "compute_time_ms": 141.28,
-      "slack_entropy": 0
+      "compute_time_ms": 142.794,
+      "slack_entropy": 0,
+      "candidates": [
+        "duckflicker-1198-uccw6gjvhh",
+        "servantquark-1208-ydnxxzksdd",
+        "pumaglen-1213-j7f3sl94vo",
+        "crusherazure-1218-zlzvczpssw"
+      ]
     },
     "oracle": {
       "total_savings": 0.8294967296,
       "total_disruption": 4,
-      "compute_time_ms": 424.473,
-      "slack_entropy": 0
+      "compute_time_ms": 426.682,
+      "slack_entropy": 0,
+      "candidates": [
+        "duckflicker-1198-uccw6gjvhh",
+        "servantquark-1208-ydnxxzksdd",
+        "pumaglen-1213-j7f3sl94vo",
+        "crusherazure-1218-zlzvczpssw"
+      ]
     }
   },
   {
     "seed": 40,
     "description": "seed=40 node_count=7 allocCPU=8",
+    "sorted_candidates": [
+      "watcherthread-1226-zbp5sc6f3x",
+      "soarerjungle-1231-vj7ekvf002",
+      "backspiral-1236-tsmc15xi7t",
+      "otterfire-1241-z6ozh8wa8s",
+      "weaselash-1246-urt6ydbvdw",
+      "piperberry-1251-cbcwoy3kgd",
+      "trackyellow-1256-brzscmavzi"
+    ],
     "mainline": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 112.367,
-      "slack_entropy": 0
+      "compute_time_ms": 111.689,
+      "slack_entropy": 0,
+      "candidates": [
+        "watcherthread-1226-zbp5sc6f3x",
+        "soarerjungle-1231-vj7ekvf002",
+        "backspiral-1236-tsmc15xi7t",
+        "otterfire-1241-z6ozh8wa8s",
+        "weaselash-1246-urt6ydbvdw",
+        "piperberry-1251-cbcwoy3kgd"
+      ]
     },
     "branch": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 108.262,
-      "slack_entropy": 0
+      "compute_time_ms": 141.648,
+      "slack_entropy": 0,
+      "candidates": [
+        "watcherthread-1226-zbp5sc6f3x",
+        "soarerjungle-1231-vj7ekvf002",
+        "backspiral-1236-tsmc15xi7t",
+        "otterfire-1241-z6ozh8wa8s",
+        "weaselash-1246-urt6ydbvdw",
+        "piperberry-1251-cbcwoy3kgd"
+      ]
     },
     "oracle": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 1782.77,
-      "slack_entropy": 0
+      "compute_time_ms": 1783.889,
+      "slack_entropy": 0,
+      "candidates": [
+        "soarerjungle-1231-vj7ekvf002",
+        "backspiral-1236-tsmc15xi7t",
+        "otterfire-1241-z6ozh8wa8s",
+        "weaselash-1246-urt6ydbvdw",
+        "piperberry-1251-cbcwoy3kgd",
+        "trackyellow-1256-brzscmavzi"
+      ]
     }
   },
   {
     "seed": 41,
     "description": "seed=41 node_count=4 allocCPU=32",
+    "sorted_candidates": [
+      "swallowcrack-1264-rknhommk5i",
+      "elftide-1269-ng6pnv6fhc",
+      "koalasolar-1274-u0wve6nzzw",
+      "viperpond-1279-rrimknnjk8"
+    ],
     "mainline": {
       "total_savings": 0.6221225472,
       "total_disruption": 3,
-      "compute_time_ms": 78.239,
-      "slack_entropy": 0
+      "compute_time_ms": 76.248,
+      "slack_entropy": 0,
+      "candidates": [
+        "swallowcrack-1264-rknhommk5i",
+        "elftide-1269-ng6pnv6fhc",
+        "koalasolar-1274-u0wve6nzzw"
+      ]
     },
     "branch": {
       "total_savings": 0.6221225472,
       "total_disruption": 3,
-      "compute_time_ms": 80.184,
-      "slack_entropy": 0
+      "compute_time_ms": 99.704,
+      "slack_entropy": 0,
+      "candidates": [
+        "swallowcrack-1264-rknhommk5i",
+        "elftide-1269-ng6pnv6fhc",
+        "koalasolar-1274-u0wve6nzzw"
+      ]
     },
     "oracle": {
       "total_savings": 0.6221225472,
       "total_disruption": 3,
-      "compute_time_ms": 204.75,
-      "slack_entropy": 0
+      "compute_time_ms": 207.53,
+      "slack_entropy": 0,
+      "candidates": [
+        "elftide-1269-ng6pnv6fhc",
+        "koalasolar-1274-u0wve6nzzw",
+        "viperpond-1279-rrimknnjk8"
+      ]
     }
   },
   {
     "seed": 42,
     "description": "seed=42 node_count=8 allocCPU=32",
+    "sorted_candidates": [
+      "turnercliff-1287-wl7bshqxnl",
+      "oriolenotch-1292-44rtbuu1g6",
+      "handveil-1297-3md3jkcley",
+      "pythonorange-1302-wvj51ccmcg",
+      "salmonsteel-1307-kguiwpum5t",
+      "ogrecrocus-1312-uv57clvomg",
+      "diveorchid-1317-jvf3ehshtq",
+      "bellhoneysuckle-1322-tpjhl6tqt7"
+    ],
     "mainline": {
       "total_savings": 0.4147483648,
       "total_disruption": 2,
-      "compute_time_ms": 97.861,
-      "slack_entropy": 1.7917030797550235
+      "compute_time_ms": 106.978,
+      "slack_entropy": 1.7917030797550235,
+      "candidates": [
+        "turnercliff-1287-wl7bshqxnl",
+        "oriolenotch-1292-44rtbuu1g6"
+      ]
     },
     "branch": {
-      "total_savings": 0.4147483648,
-      "total_disruption": 2,
-      "compute_time_ms": 99.126,
-      "slack_entropy": 1.7917030797550235
+      "total_savings": 1.4516192767999998,
+      "total_disruption": 7,
+      "compute_time_ms": 188.305,
+      "slack_entropy": 0,
+      "candidates": [
+        "turnercliff-1287-wl7bshqxnl",
+        "oriolenotch-1292-44rtbuu1g6",
+        "pythonorange-1302-wvj51ccmcg",
+        "salmonsteel-1307-kguiwpum5t",
+        "ogrecrocus-1312-uv57clvomg",
+        "diveorchid-1317-jvf3ehshtq",
+        "bellhoneysuckle-1322-tpjhl6tqt7"
+      ]
     },
     "oracle": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 3706.054,
-      "slack_entropy": 0
+      "compute_time_ms": 3666.164,
+      "slack_entropy": 0,
+      "candidates": [
+        "turnercliff-1287-wl7bshqxnl",
+        "oriolenotch-1292-44rtbuu1g6",
+        "pythonorange-1302-wvj51ccmcg",
+        "salmonsteel-1307-kguiwpum5t",
+        "ogrecrocus-1312-uv57clvomg",
+        "diveorchid-1317-jvf3ehshtq",
+        "bellhoneysuckle-1322-tpjhl6tqt7"
+      ]
     }
   },
   {
     "seed": 43,
     "description": "seed=43 node_count=4 allocCPU=32",
+    "sorted_candidates": [
+      "tailsnow-1330-kpysxdmu2v",
+      "llamahill-1335-t4h3ishggt",
+      "deathatom-1340-chz7yrexxv",
+      "sageglitter-1345-gqrwdtlnil"
+    ],
     "mainline": {
       "total_savings": 0.3221225472,
       "total_disruption": 4,
-      "compute_time_ms": 86.426,
-      "slack_entropy": 0
+      "compute_time_ms": 85.156,
+      "slack_entropy": 0,
+      "candidates": [
+        "tailsnow-1330-kpysxdmu2v",
+        "llamahill-1335-t4h3ishggt",
+        "deathatom-1340-chz7yrexxv",
+        "sageglitter-1345-gqrwdtlnil"
+      ]
     },
     "branch": {
       "total_savings": 0.3221225472,
       "total_disruption": 4,
-      "compute_time_ms": 84.107,
-      "slack_entropy": 0
+      "compute_time_ms": 84.099,
+      "slack_entropy": 0,
+      "candidates": [
+        "tailsnow-1330-kpysxdmu2v",
+        "llamahill-1335-t4h3ishggt",
+        "deathatom-1340-chz7yrexxv",
+        "sageglitter-1345-gqrwdtlnil"
+      ]
     },
     "oracle": {
       "total_savings": 0.3221225472,
       "total_disruption": 4,
-      "compute_time_ms": 209.7,
-      "slack_entropy": 0
+      "compute_time_ms": 212.819,
+      "slack_entropy": 0,
+      "candidates": [
+        "tailsnow-1330-kpysxdmu2v",
+        "llamahill-1335-t4h3ishggt",
+        "deathatom-1340-chz7yrexxv",
+        "sageglitter-1345-gqrwdtlnil"
+      ]
     }
   },
   {
     "seed": 44,
     "description": "seed=44 node_count=7 allocCPU=32",
+    "sorted_candidates": [
+      "walkerboom-1353-kkdwd8ct56",
+      "pawpitch-1358-3jakk9eo6v",
+      "playerbutton-1363-lorx8grsl9",
+      "princehickory-1368-mlardpl2wb",
+      "pegasuschisel-1373-avyujmcfbj",
+      "saverplatinum-1378-35zfckvlfd",
+      "loonscythe-1383-8gkgroxqwu"
+    ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 31.51,
-      "slack_entropy": 1.9455178536915845
+      "compute_time_ms": 30.981,
+      "slack_entropy": 1.9455178536915845,
+      "candidates": null
     },
     "branch": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 182.459,
-      "slack_entropy": 0
+      "compute_time_ms": 180.059,
+      "slack_entropy": 0,
+      "candidates": [
+        "walkerboom-1353-kkdwd8ct56",
+        "playerbutton-1363-lorx8grsl9",
+        "princehickory-1368-mlardpl2wb",
+        "pegasuschisel-1373-avyujmcfbj",
+        "saverplatinum-1378-35zfckvlfd",
+        "loonscythe-1383-8gkgroxqwu"
+      ]
     },
     "oracle": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 1825.828,
-      "slack_entropy": 0
+      "compute_time_ms": 1843.19,
+      "slack_entropy": 0,
+      "candidates": [
+        "walkerboom-1353-kkdwd8ct56",
+        "playerbutton-1363-lorx8grsl9",
+        "princehickory-1368-mlardpl2wb",
+        "pegasuschisel-1373-avyujmcfbj",
+        "saverplatinum-1378-35zfckvlfd",
+        "loonscythe-1383-8gkgroxqwu"
+      ]
     }
   },
   {
     "seed": 45,
     "description": "seed=45 node_count=7 allocCPU=8",
+    "sorted_candidates": [
+      "kittenfire-1391-miixwonxnq",
+      "burnfrost-1396-ugd2waupri",
+      "whalepale-1401-2xvykmxu1z",
+      "guardiansquare-1406-a5idybyu8f",
+      "cloudnoon-1411-9qsb9rs3iu",
+      "birdpolar-1416-8rrtpaesrp",
+      "spurlake-1421-mt5tcbdxqa"
+    ],
     "mainline": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 108.929,
-      "slack_entropy": 0
+      "compute_time_ms": 115.77,
+      "slack_entropy": 0,
+      "candidates": [
+        "kittenfire-1391-miixwonxnq",
+        "burnfrost-1396-ugd2waupri",
+        "whalepale-1401-2xvykmxu1z",
+        "guardiansquare-1406-a5idybyu8f",
+        "cloudnoon-1411-9qsb9rs3iu",
+        "birdpolar-1416-8rrtpaesrp"
+      ]
     },
     "branch": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 109.657,
-      "slack_entropy": 0
+      "compute_time_ms": 137.014,
+      "slack_entropy": 0,
+      "candidates": [
+        "kittenfire-1391-miixwonxnq",
+        "burnfrost-1396-ugd2waupri",
+        "whalepale-1401-2xvykmxu1z",
+        "guardiansquare-1406-a5idybyu8f",
+        "cloudnoon-1411-9qsb9rs3iu",
+        "birdpolar-1416-8rrtpaesrp"
+      ]
     },
     "oracle": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 1798.424,
-      "slack_entropy": 0
+      "compute_time_ms": 1782.52,
+      "slack_entropy": 0,
+      "candidates": [
+        "burnfrost-1396-ugd2waupri",
+        "whalepale-1401-2xvykmxu1z",
+        "guardiansquare-1406-a5idybyu8f",
+        "cloudnoon-1411-9qsb9rs3iu",
+        "birdpolar-1416-8rrtpaesrp",
+        "spurlake-1421-mt5tcbdxqa"
+      ]
     }
   },
   {
     "seed": 46,
     "description": "seed=46 node_count=8 allocCPU=32",
+    "sorted_candidates": [
+      "snapperforest-1429-irlxz2lxvk",
+      "serpentivory-1434-3hd9zicjpj",
+      "cowlwater-1439-c8ikvszmq5",
+      "mothsprout-1444-tglkqhptph",
+      "arrowsapphire-1449-6nj4fs3yc2",
+      "beetlesand-1454-ipz08qb7nd",
+      "deersalt-1459-zjcyrps5a1",
+      "kickerbone-1464-hnh4fhidbv"
+    ],
     "mainline": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 111.45,
-      "slack_entropy": 0
+      "compute_time_ms": 114.185,
+      "slack_entropy": 0,
+      "candidates": [
+        "snapperforest-1429-irlxz2lxvk",
+        "serpentivory-1434-3hd9zicjpj",
+        "cowlwater-1439-c8ikvszmq5",
+        "mothsprout-1444-tglkqhptph",
+        "arrowsapphire-1449-6nj4fs3yc2",
+        "beetlesand-1454-ipz08qb7nd",
+        "deersalt-1459-zjcyrps5a1"
+      ]
     },
     "branch": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 127.769,
-      "slack_entropy": 0
+      "compute_time_ms": 145.054,
+      "slack_entropy": 0,
+      "candidates": [
+        "snapperforest-1429-irlxz2lxvk",
+        "serpentivory-1434-3hd9zicjpj",
+        "cowlwater-1439-c8ikvszmq5",
+        "mothsprout-1444-tglkqhptph",
+        "arrowsapphire-1449-6nj4fs3yc2",
+        "beetlesand-1454-ipz08qb7nd",
+        "deersalt-1459-zjcyrps5a1"
+      ]
     },
     "oracle": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 3643.785,
-      "slack_entropy": 0
+      "compute_time_ms": 3621.101,
+      "slack_entropy": 0,
+      "candidates": [
+        "serpentivory-1434-3hd9zicjpj",
+        "cowlwater-1439-c8ikvszmq5",
+        "mothsprout-1444-tglkqhptph",
+        "arrowsapphire-1449-6nj4fs3yc2",
+        "beetlesand-1454-ipz08qb7nd",
+        "deersalt-1459-zjcyrps5a1",
+        "kickerbone-1464-hnh4fhidbv"
+      ]
     }
   },
   {
     "seed": 47,
     "description": "seed=47 node_count=8 allocCPU=16",
+    "sorted_candidates": [
+      "killerwhite-1472-4wzegcowst",
+      "ringerhail-1477-lqv7ge3f2q",
+      "lasherforest-1482-5vx7jq3ssi",
+      "hoofflame-1487-ekufd58lnn",
+      "panthergiant-1492-7djxa6vbl5",
+      "whipcotton-1497-77tsoic4eu",
+      "jawripple-1502-6qpfy59gtq",
+      "chestspangle-1507-iyoaj5po99"
+    ],
     "mainline": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 118.113,
-      "slack_entropy": 0
+      "compute_time_ms": 114.03,
+      "slack_entropy": 0,
+      "candidates": [
+        "killerwhite-1472-4wzegcowst",
+        "ringerhail-1477-lqv7ge3f2q",
+        "lasherforest-1482-5vx7jq3ssi",
+        "hoofflame-1487-ekufd58lnn",
+        "panthergiant-1492-7djxa6vbl5",
+        "whipcotton-1497-77tsoic4eu",
+        "jawripple-1502-6qpfy59gtq"
+      ]
     },
     "branch": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 110.178,
-      "slack_entropy": 0
+      "compute_time_ms": 139.943,
+      "slack_entropy": 0,
+      "candidates": [
+        "killerwhite-1472-4wzegcowst",
+        "ringerhail-1477-lqv7ge3f2q",
+        "lasherforest-1482-5vx7jq3ssi",
+        "hoofflame-1487-ekufd58lnn",
+        "panthergiant-1492-7djxa6vbl5",
+        "whipcotton-1497-77tsoic4eu",
+        "jawripple-1502-6qpfy59gtq"
+      ]
     },
     "oracle": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 3598.79,
-      "slack_entropy": 0
+      "compute_time_ms": 3628.675,
+      "slack_entropy": 0,
+      "candidates": [
+        "ringerhail-1477-lqv7ge3f2q",
+        "lasherforest-1482-5vx7jq3ssi",
+        "hoofflame-1487-ekufd58lnn",
+        "panthergiant-1492-7djxa6vbl5",
+        "whipcotton-1497-77tsoic4eu",
+        "jawripple-1502-6qpfy59gtq",
+        "chestspangle-1507-iyoaj5po99"
+      ]
     }
   },
   {
     "seed": 48,
     "description": "seed=48 node_count=6 allocCPU=16",
+    "sorted_candidates": [
+      "ridgegravel-1515-4dy3kwyycn",
+      "wizardfrill-1520-tvknuiyaee",
+      "raccoonrampant-1525-e2pzkmwf1y",
+      "facetundra-1530-37yyeuynl6",
+      "cowltundra-1535-qpp9x0ftbe",
+      "jackalivy-1540-e75zqjz9ul"
+    ],
     "mainline": {
       "total_savings": 0.4147483648,
       "total_disruption": 2,
-      "compute_time_ms": 92.117,
-      "slack_entropy": 1.38613803200618
+      "compute_time_ms": 92.031,
+      "slack_entropy": 1.38613803200618,
+      "candidates": [
+        "ridgegravel-1515-4dy3kwyycn",
+        "wizardfrill-1520-tvknuiyaee"
+      ]
     },
     "branch": {
-      "total_savings": 0.4147483648,
-      "total_disruption": 2,
-      "compute_time_ms": 88.31,
-      "slack_entropy": 1.38613803200618
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 151.704,
+      "slack_entropy": 0,
+      "candidates": [
+        "ridgegravel-1515-4dy3kwyycn",
+        "wizardfrill-1520-tvknuiyaee",
+        "facetundra-1530-37yyeuynl6",
+        "cowltundra-1535-qpp9x0ftbe",
+        "jackalivy-1540-e75zqjz9ul"
+      ]
     },
     "oracle": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 887.21,
-      "slack_entropy": 0
+      "compute_time_ms": 868.119,
+      "slack_entropy": 0,
+      "candidates": [
+        "ridgegravel-1515-4dy3kwyycn",
+        "wizardfrill-1520-tvknuiyaee",
+        "facetundra-1530-37yyeuynl6",
+        "cowltundra-1535-qpp9x0ftbe",
+        "jackalivy-1540-e75zqjz9ul"
+      ]
     }
   },
   {
     "seed": 49,
     "description": "seed=49 node_count=3 allocCPU=8",
+    "sorted_candidates": [
+      "neckcrocus-1548-m9rkejarv1",
+      "elkcrazy-1553-ordrgs6h6r",
+      "lightningscarlet-1558-ksgk4zzkyw"
+    ],
     "mainline": {
       "total_savings": 0.11474836480000006,
       "total_disruption": 3,
-      "compute_time_ms": 81.693,
-      "slack_entropy": 0
+      "compute_time_ms": 82.068,
+      "slack_entropy": 0,
+      "candidates": [
+        "neckcrocus-1548-m9rkejarv1",
+        "elkcrazy-1553-ordrgs6h6r",
+        "lightningscarlet-1558-ksgk4zzkyw"
+      ]
     },
     "branch": {
       "total_savings": 0.11474836480000006,
       "total_disruption": 3,
-      "compute_time_ms": 79.725,
-      "slack_entropy": 0
+      "compute_time_ms": 78.21,
+      "slack_entropy": 0,
+      "candidates": [
+        "neckcrocus-1548-m9rkejarv1",
+        "elkcrazy-1553-ordrgs6h6r",
+        "lightningscarlet-1558-ksgk4zzkyw"
+      ]
     },
     "oracle": {
       "total_savings": 0.11474836480000006,
       "total_disruption": 3,
-      "compute_time_ms": 106.927,
-      "slack_entropy": 0
+      "compute_time_ms": 107.579,
+      "slack_entropy": 0,
+      "candidates": [
+        "neckcrocus-1548-m9rkejarv1",
+        "elkcrazy-1553-ordrgs6h6r",
+        "lightningscarlet-1558-ksgk4zzkyw"
+      ]
     }
   },
   {
     "seed": 50,
     "description": "seed=50 node_count=3 allocCPU=8",
+    "sorted_candidates": [
+      "dutchessplume-1566-abweucjcex",
+      "tigerprism-1571-xrjugfgfh4",
+      "donkeyvivid-1576-xu63b7sayr"
+    ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 15.513,
-      "slack_entropy": 1.0981562798333317
+      "compute_time_ms": 15.796,
+      "slack_entropy": 1.0981562798333317,
+      "candidates": null
     },
     "branch": {
       "total_savings": 0.4147483648,
       "total_disruption": 2,
-      "compute_time_ms": 97.804,
-      "slack_entropy": 0
+      "compute_time_ms": 92.356,
+      "slack_entropy": 0,
+      "candidates": [
+        "dutchessplume-1566-abweucjcex",
+        "donkeyvivid-1576-xu63b7sayr"
+      ]
     },
     "oracle": {
       "total_savings": 0.4147483648,
       "total_disruption": 2,
-      "compute_time_ms": 104.875,
-      "slack_entropy": 0
+      "compute_time_ms": 100.947,
+      "slack_entropy": 0,
+      "candidates": [
+        "dutchessplume-1566-abweucjcex",
+        "donkeyvivid-1576-xu63b7sayr"
+      ]
     }
   },
   {
     "seed": 51,
     "description": "seed=51 node_count=8 allocCPU=16",
+    "sorted_candidates": [
+      "mistressrag-1584-6rrrrvnuk3",
+      "antelopejungle-1589-xxjq4m7dtp",
+      "keepertime-1594-aewhgg8dfs",
+      "shiftcopper-1599-hp3yyhokj0",
+      "coyotequartz-1604-wlsj9iafkv",
+      "taildot-1609-h7ta3doe3t",
+      "weaselbramble-1614-ts7vrijdpx",
+      "footround-1619-ex9gnqdbwa"
+    ],
     "mainline": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 110.814,
-      "slack_entropy": 0
+      "compute_time_ms": 113.683,
+      "slack_entropy": 0,
+      "candidates": [
+        "mistressrag-1584-6rrrrvnuk3",
+        "antelopejungle-1589-xxjq4m7dtp",
+        "keepertime-1594-aewhgg8dfs",
+        "shiftcopper-1599-hp3yyhokj0",
+        "coyotequartz-1604-wlsj9iafkv",
+        "taildot-1609-h7ta3doe3t",
+        "weaselbramble-1614-ts7vrijdpx"
+      ]
     },
     "branch": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 108.966,
-      "slack_entropy": 0
+      "compute_time_ms": 135.07,
+      "slack_entropy": 0,
+      "candidates": [
+        "mistressrag-1584-6rrrrvnuk3",
+        "antelopejungle-1589-xxjq4m7dtp",
+        "keepertime-1594-aewhgg8dfs",
+        "shiftcopper-1599-hp3yyhokj0",
+        "coyotequartz-1604-wlsj9iafkv",
+        "taildot-1609-h7ta3doe3t",
+        "weaselbramble-1614-ts7vrijdpx"
+      ]
     },
     "oracle": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 3634.035,
-      "slack_entropy": 0
+      "compute_time_ms": 3614.937,
+      "slack_entropy": 0,
+      "candidates": [
+        "antelopejungle-1589-xxjq4m7dtp",
+        "keepertime-1594-aewhgg8dfs",
+        "shiftcopper-1599-hp3yyhokj0",
+        "coyotequartz-1604-wlsj9iafkv",
+        "taildot-1609-h7ta3doe3t",
+        "weaselbramble-1614-ts7vrijdpx",
+        "footround-1619-ex9gnqdbwa"
+      ]
     }
   },
   {
     "seed": 52,
     "description": "seed=52 node_count=8 allocCPU=8",
+    "sorted_candidates": [
+      "queenmud-1627-efl0i3pdar",
+      "sharklake-1632-hdszvgzu1c",
+      "hissregal-1637-0lbwayygwo",
+      "foxdent-1642-rdeemv6cjn",
+      "scaleblue-1647-tdodbcwjy2",
+      "shriekvivid-1652-k6slfhiutg",
+      "dutchessthunder-1657-m1qrtyaeaq",
+      "flycoral-1662-rdmsry70dy"
+    ],
     "mainline": {
       "total_savings": 0.9442450943999998,
       "total_disruption": 7,
-      "compute_time_ms": 134.058,
-      "slack_entropy": 0.6739714617926044
+      "compute_time_ms": 128.195,
+      "slack_entropy": 0.6739714617926044,
+      "candidates": [
+        "queenmud-1627-efl0i3pdar",
+        "sharklake-1632-hdszvgzu1c",
+        "hissregal-1637-0lbwayygwo",
+        "foxdent-1642-rdeemv6cjn",
+        "scaleblue-1647-tdodbcwjy2",
+        "shriekvivid-1652-k6slfhiutg",
+        "dutchessthunder-1657-m1qrtyaeaq"
+      ]
     },
     "branch": {
       "total_savings": 0.9442450943999998,
       "total_disruption": 7,
-      "compute_time_ms": 132.971,
-      "slack_entropy": 0.6739714617926044
+      "compute_time_ms": 155.023,
+      "slack_entropy": 0.6739714617926044,
+      "candidates": [
+        "queenmud-1627-efl0i3pdar",
+        "sharklake-1632-hdszvgzu1c",
+        "hissregal-1637-0lbwayygwo",
+        "foxdent-1642-rdeemv6cjn",
+        "scaleblue-1647-tdodbcwjy2",
+        "shriekvivid-1652-k6slfhiutg",
+        "dutchessthunder-1657-m1qrtyaeaq"
+      ]
     },
     "oracle": {
       "total_savings": 0.9442450943999998,
       "total_disruption": 7,
-      "compute_time_ms": 3712.926,
-      "slack_entropy": 0.6001288998048792
+      "compute_time_ms": 3747.31,
+      "slack_entropy": 0.6001288998048792,
+      "candidates": [
+        "sharklake-1632-hdszvgzu1c",
+        "hissregal-1637-0lbwayygwo",
+        "foxdent-1642-rdeemv6cjn",
+        "scaleblue-1647-tdodbcwjy2",
+        "shriekvivid-1652-k6slfhiutg",
+        "dutchessthunder-1657-m1qrtyaeaq",
+        "flycoral-1662-rdmsry70dy"
+      ]
     }
   },
   {
     "seed": 53,
     "description": "seed=53 node_count=7 allocCPU=8",
+    "sorted_candidates": [
+      "gemebony-1670-pjuusdzekm",
+      "cockatoopink-1675-xkhugmg6lv",
+      "saverrazor-1680-cj0xqwxyga",
+      "lanternfringe-1685-sljfr6n4lo",
+      "hidemeadow-1690-xsoc0g642f",
+      "owlchestnut-1695-tgllccirmj",
+      "ripperink-1700-t513bav5vb"
+    ],
     "mainline": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 108.485,
-      "slack_entropy": 0
+      "compute_time_ms": 107.038,
+      "slack_entropy": 0,
+      "candidates": [
+        "gemebony-1670-pjuusdzekm",
+        "cockatoopink-1675-xkhugmg6lv",
+        "saverrazor-1680-cj0xqwxyga",
+        "lanternfringe-1685-sljfr6n4lo",
+        "hidemeadow-1690-xsoc0g642f",
+        "owlchestnut-1695-tgllccirmj"
+      ]
     },
     "branch": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 107.101,
-      "slack_entropy": 0
+      "compute_time_ms": 133.438,
+      "slack_entropy": 0,
+      "candidates": [
+        "gemebony-1670-pjuusdzekm",
+        "cockatoopink-1675-xkhugmg6lv",
+        "saverrazor-1680-cj0xqwxyga",
+        "lanternfringe-1685-sljfr6n4lo",
+        "hidemeadow-1690-xsoc0g642f",
+        "owlchestnut-1695-tgllccirmj"
+      ]
     },
     "oracle": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 1812.46,
-      "slack_entropy": 0
+      "compute_time_ms": 1790.294,
+      "slack_entropy": 0,
+      "candidates": [
+        "cockatoopink-1675-xkhugmg6lv",
+        "saverrazor-1680-cj0xqwxyga",
+        "lanternfringe-1685-sljfr6n4lo",
+        "hidemeadow-1690-xsoc0g642f",
+        "owlchestnut-1695-tgllccirmj",
+        "ripperink-1700-t513bav5vb"
+      ]
     }
   },
   {
     "seed": 54,
     "description": "seed=54 node_count=3 allocCPU=8",
+    "sorted_candidates": [
+      "ninjasilver-1708-kxmu3n1le1",
+      "swallownotch-1713-w4wmrmls7z",
+      "ringertreasure-1718-hnc6xw7bk0"
+    ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 17.654,
-      "slack_entropy": 1.0981562798333317
+      "compute_time_ms": 17.379,
+      "slack_entropy": 1.0981562798333317,
+      "candidates": null
     },
     "branch": {
       "total_savings": 0.4147483648,
       "total_disruption": 2,
-      "compute_time_ms": 95.491,
-      "slack_entropy": 0
+      "compute_time_ms": 92.257,
+      "slack_entropy": 0,
+      "candidates": [
+        "ninjasilver-1708-kxmu3n1le1",
+        "ringertreasure-1718-hnc6xw7bk0"
+      ]
     },
     "oracle": {
       "total_savings": 0.4147483648,
       "total_disruption": 2,
-      "compute_time_ms": 97.949,
-      "slack_entropy": 0
+      "compute_time_ms": 109.479,
+      "slack_entropy": 0,
+      "candidates": [
+        "ninjasilver-1708-kxmu3n1le1",
+        "ringertreasure-1718-hnc6xw7bk0"
+      ]
     }
   },
   {
     "seed": 55,
     "description": "seed=55 node_count=5 allocCPU=8",
+    "sorted_candidates": [
+      "ribberry-1726-mwc7aiidv1",
+      "samuraijasper-1731-ognjn7uxws",
+      "gemshade-1736-2lszpddpve",
+      "armindigo-1741-sthlrmb0mi",
+      "seerpepper-1746-gxnt3qkrr7"
+    ],
     "mainline": {
       "total_savings": 0.5294967295999999,
       "total_disruption": 5,
-      "compute_time_ms": 115.18,
-      "slack_entropy": 0
+      "compute_time_ms": 107.89,
+      "slack_entropy": 0,
+      "candidates": [
+        "ribberry-1726-mwc7aiidv1",
+        "samuraijasper-1731-ognjn7uxws",
+        "gemshade-1736-2lszpddpve",
+        "armindigo-1741-sthlrmb0mi",
+        "seerpepper-1746-gxnt3qkrr7"
+      ]
     },
     "branch": {
       "total_savings": 0.5294967295999999,
       "total_disruption": 5,
-      "compute_time_ms": 114.711,
-      "slack_entropy": 0
+      "compute_time_ms": 102.938,
+      "slack_entropy": 0,
+      "candidates": [
+        "ribberry-1726-mwc7aiidv1",
+        "samuraijasper-1731-ognjn7uxws",
+        "gemshade-1736-2lszpddpve",
+        "armindigo-1741-sthlrmb0mi",
+        "seerpepper-1746-gxnt3qkrr7"
+      ]
     },
     "oracle": {
       "total_savings": 0.5294967295999999,
       "total_disruption": 5,
-      "compute_time_ms": 430.001,
-      "slack_entropy": 0
+      "compute_time_ms": 437.468,
+      "slack_entropy": 0,
+      "candidates": [
+        "ribberry-1726-mwc7aiidv1",
+        "samuraijasper-1731-ognjn7uxws",
+        "gemshade-1736-2lszpddpve",
+        "armindigo-1741-sthlrmb0mi",
+        "seerpepper-1746-gxnt3qkrr7"
+      ]
     }
   },
   {
     "seed": 56,
     "description": "seed=56 node_count=3 allocCPU=32",
+    "sorted_candidates": [
+      "trackspice-1754-12mgkj0vmh",
+      "huggertranslucent-1759-g1jlfqanui",
+      "seedsky-1764-5pemre9pke"
+    ],
     "mainline": {
       "total_savings": 0.3147483648,
       "total_disruption": 3,
-      "compute_time_ms": 89.599,
-      "slack_entropy": 0
+      "compute_time_ms": 84.331,
+      "slack_entropy": 0,
+      "candidates": [
+        "trackspice-1754-12mgkj0vmh",
+        "huggertranslucent-1759-g1jlfqanui",
+        "seedsky-1764-5pemre9pke"
+      ]
     },
     "branch": {
       "total_savings": 0.3147483648,
       "total_disruption": 3,
-      "compute_time_ms": 89.745,
-      "slack_entropy": 0
+      "compute_time_ms": 81.65,
+      "slack_entropy": 0,
+      "candidates": [
+        "trackspice-1754-12mgkj0vmh",
+        "huggertranslucent-1759-g1jlfqanui",
+        "seedsky-1764-5pemre9pke"
+      ]
     },
     "oracle": {
       "total_savings": 0.3147483648,
       "total_disruption": 3,
-      "compute_time_ms": 113.089,
-      "slack_entropy": 0
+      "compute_time_ms": 110.658,
+      "slack_entropy": 0,
+      "candidates": [
+        "trackspice-1754-12mgkj0vmh",
+        "huggertranslucent-1759-g1jlfqanui",
+        "seedsky-1764-5pemre9pke"
+      ]
     }
   },
   {
     "seed": 57,
     "description": "seed=57 node_count=8 allocCPU=16",
+    "sorted_candidates": [
+      "scarerpond-1772-xrgdzzdmyr",
+      "muselunar-1777-mvrfz9rtpq",
+      "seekersharp-1782-8w5suwwnge",
+      "rabbitvine-1787-fghrujdfnk",
+      "fanciersprout-1792-of6ycii5f3",
+      "griffinnimble-1797-6ru5g8c3il",
+      "eyetreasure-1802-mceocncs8l",
+      "llamaboulder-1807-yedooq9mzr"
+    ],
     "mainline": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 112.305,
-      "slack_entropy": 0
+      "compute_time_ms": 110.769,
+      "slack_entropy": 0,
+      "candidates": [
+        "scarerpond-1772-xrgdzzdmyr",
+        "muselunar-1777-mvrfz9rtpq",
+        "seekersharp-1782-8w5suwwnge",
+        "rabbitvine-1787-fghrujdfnk",
+        "fanciersprout-1792-of6ycii5f3",
+        "griffinnimble-1797-6ru5g8c3il",
+        "eyetreasure-1802-mceocncs8l"
+      ]
     },
     "branch": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 110.95,
-      "slack_entropy": 0
+      "compute_time_ms": 136.267,
+      "slack_entropy": 0,
+      "candidates": [
+        "scarerpond-1772-xrgdzzdmyr",
+        "muselunar-1777-mvrfz9rtpq",
+        "seekersharp-1782-8w5suwwnge",
+        "rabbitvine-1787-fghrujdfnk",
+        "fanciersprout-1792-of6ycii5f3",
+        "griffinnimble-1797-6ru5g8c3il",
+        "eyetreasure-1802-mceocncs8l"
+      ]
     },
     "oracle": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 3626.189,
-      "slack_entropy": 0
+      "compute_time_ms": 3640.325,
+      "slack_entropy": 0,
+      "candidates": [
+        "muselunar-1777-mvrfz9rtpq",
+        "seekersharp-1782-8w5suwwnge",
+        "rabbitvine-1787-fghrujdfnk",
+        "fanciersprout-1792-of6ycii5f3",
+        "griffinnimble-1797-6ru5g8c3il",
+        "eyetreasure-1802-mceocncs8l",
+        "llamaboulder-1807-yedooq9mzr"
+      ]
     }
   },
   {
     "seed": 58,
     "description": "seed=58 node_count=8 allocCPU=16",
+    "sorted_candidates": [
+      "ravenrattle-1815-jkqmx4ptsf",
+      "raysoft-1820-jtlv9jvqbn",
+      "pythonblaze-1825-yk0exmruyq",
+      "slavetwilight-1830-mynj4en8yd",
+      "queenspring-1835-syk8u6irbz",
+      "leaderhelix-1840-yr1gjb4rke",
+      "chanteratom-1845-nelam6yprh",
+      "hornetslow-1850-rzd1out7qs"
+    ],
     "mainline": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 111.849,
-      "slack_entropy": 0
+      "compute_time_ms": 110.301,
+      "slack_entropy": 0,
+      "candidates": [
+        "ravenrattle-1815-jkqmx4ptsf",
+        "raysoft-1820-jtlv9jvqbn",
+        "pythonblaze-1825-yk0exmruyq",
+        "slavetwilight-1830-mynj4en8yd",
+        "queenspring-1835-syk8u6irbz",
+        "leaderhelix-1840-yr1gjb4rke",
+        "chanteratom-1845-nelam6yprh"
+      ]
     },
     "branch": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 108.647,
-      "slack_entropy": 0
+      "compute_time_ms": 138.784,
+      "slack_entropy": 0,
+      "candidates": [
+        "ravenrattle-1815-jkqmx4ptsf",
+        "raysoft-1820-jtlv9jvqbn",
+        "pythonblaze-1825-yk0exmruyq",
+        "slavetwilight-1830-mynj4en8yd",
+        "queenspring-1835-syk8u6irbz",
+        "leaderhelix-1840-yr1gjb4rke",
+        "chanteratom-1845-nelam6yprh"
+      ]
     },
     "oracle": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 3605.061,
-      "slack_entropy": 0
+      "compute_time_ms": 3628.22,
+      "slack_entropy": 0,
+      "candidates": [
+        "raysoft-1820-jtlv9jvqbn",
+        "pythonblaze-1825-yk0exmruyq",
+        "slavetwilight-1830-mynj4en8yd",
+        "queenspring-1835-syk8u6irbz",
+        "leaderhelix-1840-yr1gjb4rke",
+        "chanteratom-1845-nelam6yprh",
+        "hornetslow-1850-rzd1out7qs"
+      ]
     }
   },
   {
     "seed": 59,
     "description": "seed=59 node_count=5 allocCPU=8",
+    "sorted_candidates": [
+      "ribtopaz-1858-ihdeeduevz",
+      "chargershade-1863-qbkkrsf9bm",
+      "flashersolar-1868-5autfhyyb4",
+      "mindpineapple-1873-plkmwojpl2",
+      "saverpink-1878-moa5f5xgae"
+    ],
     "mainline": {
       "total_savings": 0.6221225472,
       "total_disruption": 3,
-      "compute_time_ms": 73.691,
-      "slack_entropy": 0.6929818821956966
+      "compute_time_ms": 71.387,
+      "slack_entropy": 0.6929818821956966,
+      "candidates": [
+        "ribtopaz-1858-ihdeeduevz",
+        "chargershade-1863-qbkkrsf9bm",
+        "flashersolar-1868-5autfhyyb4"
+      ]
     },
     "branch": {
-      "total_savings": 0.6221225472,
-      "total_disruption": 3,
-      "compute_time_ms": 72.626,
-      "slack_entropy": 0.6929818821956966
+      "total_savings": 0.8294967296,
+      "total_disruption": 4,
+      "compute_time_ms": 99.373,
+      "slack_entropy": 0,
+      "candidates": [
+        "ribtopaz-1858-ihdeeduevz",
+        "chargershade-1863-qbkkrsf9bm",
+        "flashersolar-1868-5autfhyyb4",
+        "saverpink-1878-moa5f5xgae"
+      ]
     },
     "oracle": {
       "total_savings": 0.8294967296,
       "total_disruption": 4,
-      "compute_time_ms": 421.441,
-      "slack_entropy": 0
+      "compute_time_ms": 428.84,
+      "slack_entropy": 0,
+      "candidates": [
+        "ribtopaz-1858-ihdeeduevz",
+        "chargershade-1863-qbkkrsf9bm",
+        "flashersolar-1868-5autfhyyb4",
+        "saverpink-1878-moa5f5xgae"
+      ]
     }
   },
   {
     "seed": 60,
     "description": "seed=60 node_count=5 allocCPU=16",
+    "sorted_candidates": [
+      "snaketrail-1886-7szfqehd4q",
+      "flasherperidot-1891-0yxwng2d3q",
+      "gullscarlet-1896-tugh88wvb7",
+      "vulturesilver-1901-gahkklfkkk",
+      "finflower-1906-3cyorclpng"
+    ],
     "mainline": {
       "total_savings": 0.6221225472,
       "total_disruption": 3,
-      "compute_time_ms": 73.217,
-      "slack_entropy": 0.6929932791588755
+      "compute_time_ms": 71.719,
+      "slack_entropy": 0.6929932791588755,
+      "candidates": [
+        "snaketrail-1886-7szfqehd4q",
+        "flasherperidot-1891-0yxwng2d3q",
+        "gullscarlet-1896-tugh88wvb7"
+      ]
     },
     "branch": {
-      "total_savings": 0.6221225472,
-      "total_disruption": 3,
-      "compute_time_ms": 71.437,
-      "slack_entropy": 0.6929932791588755
+      "total_savings": 0.8294967296,
+      "total_disruption": 4,
+      "compute_time_ms": 103.849,
+      "slack_entropy": 0,
+      "candidates": [
+        "snaketrail-1886-7szfqehd4q",
+        "flasherperidot-1891-0yxwng2d3q",
+        "gullscarlet-1896-tugh88wvb7",
+        "finflower-1906-3cyorclpng"
+      ]
     },
     "oracle": {
       "total_savings": 0.8294967296,
       "total_disruption": 4,
-      "compute_time_ms": 416.593,
-      "slack_entropy": 0
+      "compute_time_ms": 424.994,
+      "slack_entropy": 0,
+      "candidates": [
+        "snaketrail-1886-7szfqehd4q",
+        "flasherperidot-1891-0yxwng2d3q",
+        "gullscarlet-1896-tugh88wvb7",
+        "finflower-1906-3cyorclpng"
+      ]
     }
   },
   {
     "seed": 61,
     "description": "seed=61 node_count=7 allocCPU=8",
+    "sorted_candidates": [
+      "banerose-1914-h0ztfimqzc",
+      "razormidnight-1919-jyxu54audw",
+      "thunderbrick-1924-v8kjj4yt9k",
+      "staggeode-1929-xtjtlzonb7",
+      "maskblaze-1934-gpoyjgokac",
+      "donkeyplume-1939-6qdfgjtylu",
+      "lancerhurricane-1944-i6jdv8req8"
+    ],
     "mainline": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 113.772,
-      "slack_entropy": 0
+      "compute_time_ms": 111.053,
+      "slack_entropy": 0,
+      "candidates": [
+        "banerose-1914-h0ztfimqzc",
+        "razormidnight-1919-jyxu54audw",
+        "thunderbrick-1924-v8kjj4yt9k",
+        "staggeode-1929-xtjtlzonb7",
+        "maskblaze-1934-gpoyjgokac",
+        "donkeyplume-1939-6qdfgjtylu"
+      ]
     },
     "branch": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 109.159,
-      "slack_entropy": 0
+      "compute_time_ms": 139.911,
+      "slack_entropy": 0,
+      "candidates": [
+        "banerose-1914-h0ztfimqzc",
+        "razormidnight-1919-jyxu54audw",
+        "thunderbrick-1924-v8kjj4yt9k",
+        "staggeode-1929-xtjtlzonb7",
+        "maskblaze-1934-gpoyjgokac",
+        "donkeyplume-1939-6qdfgjtylu"
+      ]
     },
     "oracle": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 1795.793,
-      "slack_entropy": 0
+      "compute_time_ms": 1806.07,
+      "slack_entropy": 0,
+      "candidates": [
+        "razormidnight-1919-jyxu54audw",
+        "thunderbrick-1924-v8kjj4yt9k",
+        "staggeode-1929-xtjtlzonb7",
+        "maskblaze-1934-gpoyjgokac",
+        "donkeyplume-1939-6qdfgjtylu",
+        "lancerhurricane-1944-i6jdv8req8"
+      ]
     }
   },
   {
     "seed": 62,
     "description": "seed=62 node_count=4 allocCPU=8",
+    "sorted_candidates": [
+      "princesssilver-1952-9uis8ml0sl",
+      "fangwhip-1957-dvmjbeuzdt",
+      "goosegrass-1962-eh2wsdfaby",
+      "seekercarnation-1967-rmhd7b8hhn"
+    ],
     "mainline": {
       "total_savings": 0.5221225472,
       "total_disruption": 4,
-      "compute_time_ms": 92.337,
-      "slack_entropy": 0
+      "compute_time_ms": 89.942,
+      "slack_entropy": 0,
+      "candidates": [
+        "princesssilver-1952-9uis8ml0sl",
+        "fangwhip-1957-dvmjbeuzdt",
+        "goosegrass-1962-eh2wsdfaby",
+        "seekercarnation-1967-rmhd7b8hhn"
+      ]
     },
     "branch": {
       "total_savings": 0.5221225472,
       "total_disruption": 4,
-      "compute_time_ms": 91.595,
-      "slack_entropy": 0
+      "compute_time_ms": 90.379,
+      "slack_entropy": 0,
+      "candidates": [
+        "princesssilver-1952-9uis8ml0sl",
+        "fangwhip-1957-dvmjbeuzdt",
+        "goosegrass-1962-eh2wsdfaby",
+        "seekercarnation-1967-rmhd7b8hhn"
+      ]
     },
     "oracle": {
       "total_savings": 0.5221225472,
       "total_disruption": 4,
-      "compute_time_ms": 217.872,
-      "slack_entropy": 0
+      "compute_time_ms": 220.16,
+      "slack_entropy": 0,
+      "candidates": [
+        "princesssilver-1952-9uis8ml0sl",
+        "fangwhip-1957-dvmjbeuzdt",
+        "goosegrass-1962-eh2wsdfaby",
+        "seekercarnation-1967-rmhd7b8hhn"
+      ]
     }
   },
   {
     "seed": 63,
     "description": "seed=63 node_count=5 allocCPU=8",
+    "sorted_candidates": [
+      "birdcute-1975-bygmleub1f",
+      "bellynight-1980-wqxabvy5s9",
+      "seerspring-1985-2jt2ryu0wl",
+      "antindigo-1990-ra8bpqt7p4",
+      "iguanastitch-1995-lz0btkiagj"
+    ],
     "mainline": {
       "total_savings": 0.6221225472,
       "total_disruption": 3,
-      "compute_time_ms": 75.349,
-      "slack_entropy": 0.6925092898114951
+      "compute_time_ms": 71.107,
+      "slack_entropy": 0.6925092898114951,
+      "candidates": [
+        "birdcute-1975-bygmleub1f",
+        "bellynight-1980-wqxabvy5s9",
+        "seerspring-1985-2jt2ryu0wl"
+      ]
     },
     "branch": {
-      "total_savings": 0.6221225472,
-      "total_disruption": 3,
-      "compute_time_ms": 70.202,
-      "slack_entropy": 0.6925092898114951
+      "total_savings": 0.8294967296,
+      "total_disruption": 4,
+      "compute_time_ms": 99.006,
+      "slack_entropy": 0,
+      "candidates": [
+        "birdcute-1975-bygmleub1f",
+        "bellynight-1980-wqxabvy5s9",
+        "seerspring-1985-2jt2ryu0wl",
+        "iguanastitch-1995-lz0btkiagj"
+      ]
     },
     "oracle": {
       "total_savings": 0.8294967296,
       "total_disruption": 4,
-      "compute_time_ms": 427.467,
-      "slack_entropy": 0
+      "compute_time_ms": 428.018,
+      "slack_entropy": 0,
+      "candidates": [
+        "birdcute-1975-bygmleub1f",
+        "bellynight-1980-wqxabvy5s9",
+        "seerspring-1985-2jt2ryu0wl",
+        "iguanastitch-1995-lz0btkiagj"
+      ]
     }
   },
   {
     "seed": 64,
     "description": "seed=64 node_count=7 allocCPU=32",
+    "sorted_candidates": [
+      "slaveflannel-2003-gcrbioc5wa",
+      "hawkstellar-2008-cjpkujxidb",
+      "chopperstellar-2013-nmeknrxqvw",
+      "ringerripple-2018-jzuxgdkv2a",
+      "servantwild-2023-urylqqpyax",
+      "bowtyphoon-2028-daeofbin1r",
+      "condorrag-2033-plkjgu7he8"
+    ],
     "mainline": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 107.737,
-      "slack_entropy": 0
+      "compute_time_ms": 114.443,
+      "slack_entropy": 0,
+      "candidates": [
+        "slaveflannel-2003-gcrbioc5wa",
+        "hawkstellar-2008-cjpkujxidb",
+        "chopperstellar-2013-nmeknrxqvw",
+        "ringerripple-2018-jzuxgdkv2a",
+        "servantwild-2023-urylqqpyax",
+        "bowtyphoon-2028-daeofbin1r"
+      ]
     },
     "branch": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 109.902,
-      "slack_entropy": 0
+      "compute_time_ms": 138.113,
+      "slack_entropy": 0,
+      "candidates": [
+        "slaveflannel-2003-gcrbioc5wa",
+        "hawkstellar-2008-cjpkujxidb",
+        "chopperstellar-2013-nmeknrxqvw",
+        "ringerripple-2018-jzuxgdkv2a",
+        "servantwild-2023-urylqqpyax",
+        "bowtyphoon-2028-daeofbin1r"
+      ]
     },
     "oracle": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 1797.12,
-      "slack_entropy": 0
+      "compute_time_ms": 1794.89,
+      "slack_entropy": 0,
+      "candidates": [
+        "hawkstellar-2008-cjpkujxidb",
+        "chopperstellar-2013-nmeknrxqvw",
+        "ringerripple-2018-jzuxgdkv2a",
+        "servantwild-2023-urylqqpyax",
+        "bowtyphoon-2028-daeofbin1r",
+        "condorrag-2033-plkjgu7he8"
+      ]
     }
   },
   {
     "seed": 65,
     "description": "seed=65 node_count=7 allocCPU=16",
+    "sorted_candidates": [
+      "riderbig-2041-ame7kxrn1n",
+      "swoopalabaster-2046-gtuaapgq3w",
+      "tailfluff-2051-8wykyn5n1x",
+      "saverspectrum-2056-gjazqqxtxz",
+      "hissnickel-2061-ah67helrgu",
+      "stormbrave-2066-kgkeaomyb1",
+      "faceheather-2071-knnsv260b9"
+    ],
     "mainline": {
       "total_savings": 0.4147483648,
       "total_disruption": 2,
-      "compute_time_ms": 93.06,
-      "slack_entropy": 1.6074822715323354
+      "compute_time_ms": 95.5,
+      "slack_entropy": 1.6074822715323354,
+      "candidates": [
+        "riderbig-2041-ame7kxrn1n",
+        "swoopalabaster-2046-gtuaapgq3w"
+      ]
     },
     "branch": {
-      "total_savings": 0.4147483648,
-      "total_disruption": 2,
-      "compute_time_ms": 101.396,
-      "slack_entropy": 1.6074822715323354
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 168.554,
+      "slack_entropy": 0,
+      "candidates": [
+        "riderbig-2041-ame7kxrn1n",
+        "swoopalabaster-2046-gtuaapgq3w",
+        "saverspectrum-2056-gjazqqxtxz",
+        "hissnickel-2061-ah67helrgu",
+        "stormbrave-2066-kgkeaomyb1",
+        "faceheather-2071-knnsv260b9"
+      ]
     },
     "oracle": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 1808.602,
-      "slack_entropy": 0
+      "compute_time_ms": 1823.123,
+      "slack_entropy": 0,
+      "candidates": [
+        "riderbig-2041-ame7kxrn1n",
+        "swoopalabaster-2046-gtuaapgq3w",
+        "saverspectrum-2056-gjazqqxtxz",
+        "hissnickel-2061-ah67helrgu",
+        "stormbrave-2066-kgkeaomyb1",
+        "faceheather-2071-knnsv260b9"
+      ]
     }
   },
   {
     "seed": 66,
     "description": "seed=66 node_count=6 allocCPU=16",
+    "sorted_candidates": [
+      "crownblue-2079-qxhvdgustq",
+      "pumawinter-2084-evkffz3dlk",
+      "trackertulip-2089-osm5geedik",
+      "bellsplash-2094-tvw2n3nyl3",
+      "wingtreasure-2099-fpezaaj974",
+      "pixievolcano-2104-7kvkrk0ucx"
+    ],
     "mainline": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 110.794,
-      "slack_entropy": 0
+      "compute_time_ms": 104.71,
+      "slack_entropy": 0,
+      "candidates": [
+        "crownblue-2079-qxhvdgustq",
+        "pumawinter-2084-evkffz3dlk",
+        "trackertulip-2089-osm5geedik",
+        "bellsplash-2094-tvw2n3nyl3",
+        "wingtreasure-2099-fpezaaj974"
+      ]
     },
     "branch": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 103.613,
-      "slack_entropy": 0
+      "compute_time_ms": 132.199,
+      "slack_entropy": 0,
+      "candidates": [
+        "crownblue-2079-qxhvdgustq",
+        "pumawinter-2084-evkffz3dlk",
+        "trackertulip-2089-osm5geedik",
+        "bellsplash-2094-tvw2n3nyl3",
+        "wingtreasure-2099-fpezaaj974"
+      ]
     },
     "oracle": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 872.337,
-      "slack_entropy": 0
+      "compute_time_ms": 881.561,
+      "slack_entropy": 0,
+      "candidates": [
+        "pumawinter-2084-evkffz3dlk",
+        "trackertulip-2089-osm5geedik",
+        "bellsplash-2094-tvw2n3nyl3",
+        "wingtreasure-2099-fpezaaj974",
+        "pixievolcano-2104-7kvkrk0ucx"
+      ]
     }
   },
   {
     "seed": 67,
     "description": "seed=67 node_count=8 allocCPU=16",
+    "sorted_candidates": [
+      "herontyphoon-2112-im65v1x5dv",
+      "braidspark-2117-e11e1yzyrq",
+      "backtiny-2122-ps3izvp9tb",
+      "catchain-2127-qdio0ireex",
+      "drifterdew-2132-o2ksnstcwr",
+      "rabbitmidnight-2137-9bd7ex7n3w",
+      "unicorntyphoon-2142-yxcrng96ow",
+      "reaperzenith-2147-9vuhybuvfc"
+    ],
     "mainline": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 117.887,
-      "slack_entropy": 0
+      "compute_time_ms": 114.824,
+      "slack_entropy": 0,
+      "candidates": [
+        "herontyphoon-2112-im65v1x5dv",
+        "braidspark-2117-e11e1yzyrq",
+        "backtiny-2122-ps3izvp9tb",
+        "catchain-2127-qdio0ireex",
+        "drifterdew-2132-o2ksnstcwr",
+        "rabbitmidnight-2137-9bd7ex7n3w",
+        "unicorntyphoon-2142-yxcrng96ow"
+      ]
     },
     "branch": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 114.976,
-      "slack_entropy": 0
+      "compute_time_ms": 145.731,
+      "slack_entropy": 0,
+      "candidates": [
+        "herontyphoon-2112-im65v1x5dv",
+        "braidspark-2117-e11e1yzyrq",
+        "backtiny-2122-ps3izvp9tb",
+        "catchain-2127-qdio0ireex",
+        "drifterdew-2132-o2ksnstcwr",
+        "rabbitmidnight-2137-9bd7ex7n3w",
+        "unicorntyphoon-2142-yxcrng96ow"
+      ]
     },
     "oracle": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 3643.817,
-      "slack_entropy": 0
+      "compute_time_ms": 3572.038,
+      "slack_entropy": 0,
+      "candidates": [
+        "braidspark-2117-e11e1yzyrq",
+        "backtiny-2122-ps3izvp9tb",
+        "catchain-2127-qdio0ireex",
+        "drifterdew-2132-o2ksnstcwr",
+        "rabbitmidnight-2137-9bd7ex7n3w",
+        "unicorntyphoon-2142-yxcrng96ow",
+        "reaperzenith-2147-9vuhybuvfc"
+      ]
     }
   },
   {
     "seed": 68,
     "description": "seed=68 node_count=4 allocCPU=8",
+    "sorted_candidates": [
+      "lizarddeep-2155-dsvo6zqixh",
+      "crusherjust-2160-kiv8wtuqnt",
+      "sightsponge-2165-fm09r05rzj",
+      "divenotch-2170-i6tv7qoz4x"
+    ],
     "mainline": {
       "total_savings": 0.3221225472,
       "total_disruption": 4,
-      "compute_time_ms": 91.662,
-      "slack_entropy": 0
+      "compute_time_ms": 88.668,
+      "slack_entropy": 0,
+      "candidates": [
+        "lizarddeep-2155-dsvo6zqixh",
+        "crusherjust-2160-kiv8wtuqnt",
+        "sightsponge-2165-fm09r05rzj",
+        "divenotch-2170-i6tv7qoz4x"
+      ]
     },
     "branch": {
       "total_savings": 0.3221225472,
       "total_disruption": 4,
-      "compute_time_ms": 84.983,
-      "slack_entropy": 0
+      "compute_time_ms": 87.244,
+      "slack_entropy": 0,
+      "candidates": [
+        "lizarddeep-2155-dsvo6zqixh",
+        "crusherjust-2160-kiv8wtuqnt",
+        "sightsponge-2165-fm09r05rzj",
+        "divenotch-2170-i6tv7qoz4x"
+      ]
     },
     "oracle": {
       "total_savings": 0.3221225472,
       "total_disruption": 4,
-      "compute_time_ms": 217.349,
-      "slack_entropy": 0
+      "compute_time_ms": 214.054,
+      "slack_entropy": 0,
+      "candidates": [
+        "lizarddeep-2155-dsvo6zqixh",
+        "crusherjust-2160-kiv8wtuqnt",
+        "sightsponge-2165-fm09r05rzj",
+        "divenotch-2170-i6tv7qoz4x"
+      ]
     }
   },
   {
     "seed": 69,
     "description": "seed=69 node_count=5 allocCPU=16",
+    "sorted_candidates": [
+      "crusherchocolate-2178-utldptb5da",
+      "scribeplum-2183-3hjvd6fdvg",
+      "elfginger-2188-wdt2sffnkz",
+      "bowseason-2193-oak7bq2j5n",
+      "chargerplump-2198-un3l2oah3p"
+    ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 31.88,
-      "slack_entropy": 1.6094181965066547
+      "compute_time_ms": 30.187,
+      "slack_entropy": 1.6094181965066547,
+      "candidates": null
     },
     "branch": {
       "total_savings": 0.8294967296,
       "total_disruption": 4,
-      "compute_time_ms": 144.503,
-      "slack_entropy": 0
+      "compute_time_ms": 146.35,
+      "slack_entropy": 0,
+      "candidates": [
+        "crusherchocolate-2178-utldptb5da",
+        "elfginger-2188-wdt2sffnkz",
+        "bowseason-2193-oak7bq2j5n",
+        "chargerplump-2198-un3l2oah3p"
+      ]
     },
     "oracle": {
       "total_savings": 0.8294967296,
       "total_disruption": 4,
-      "compute_time_ms": 431.303,
-      "slack_entropy": 0
+      "compute_time_ms": 433.61,
+      "slack_entropy": 0,
+      "candidates": [
+        "crusherchocolate-2178-utldptb5da",
+        "elfginger-2188-wdt2sffnkz",
+        "bowseason-2193-oak7bq2j5n",
+        "chargerplump-2198-un3l2oah3p"
+      ]
     }
   },
   {
     "seed": 70,
     "description": "seed=70 node_count=5 allocCPU=16",
+    "sorted_candidates": [
+      "zebrarag-2206-omgancsfns",
+      "shieldtabby-2211-gpqdxatkmc",
+      "scribezircon-2216-3nwu5g3brh",
+      "marknova-2221-yru9fo68wa",
+      "watcherjungle-2226-j5mnwt6tt0"
+    ],
     "mainline": {
       "total_savings": 0.12949672959999992,
       "total_disruption": 5,
-      "compute_time_ms": 103.163,
-      "slack_entropy": 0
+      "compute_time_ms": 103.061,
+      "slack_entropy": 0,
+      "candidates": [
+        "zebrarag-2206-omgancsfns",
+        "shieldtabby-2211-gpqdxatkmc",
+        "scribezircon-2216-3nwu5g3brh",
+        "marknova-2221-yru9fo68wa",
+        "watcherjungle-2226-j5mnwt6tt0"
+      ]
     },
     "branch": {
       "total_savings": 0.12949672959999992,
       "total_disruption": 5,
-      "compute_time_ms": 102.843,
-      "slack_entropy": 0
+      "compute_time_ms": 101.174,
+      "slack_entropy": 0,
+      "candidates": [
+        "zebrarag-2206-omgancsfns",
+        "shieldtabby-2211-gpqdxatkmc",
+        "scribezircon-2216-3nwu5g3brh",
+        "marknova-2221-yru9fo68wa",
+        "watcherjungle-2226-j5mnwt6tt0"
+      ]
     },
     "oracle": {
       "total_savings": 0.12949672959999992,
       "total_disruption": 5,
-      "compute_time_ms": 441.797,
-      "slack_entropy": 0
+      "compute_time_ms": 441.426,
+      "slack_entropy": 0,
+      "candidates": [
+        "zebrarag-2206-omgancsfns",
+        "shieldtabby-2211-gpqdxatkmc",
+        "scribezircon-2216-3nwu5g3brh",
+        "marknova-2221-yru9fo68wa",
+        "watcherjungle-2226-j5mnwt6tt0"
+      ]
     }
   },
   {
     "seed": 71,
     "description": "seed=71 node_count=5 allocCPU=32",
+    "sorted_candidates": [
+      "sharkjewel-2234-k3b8uqene0",
+      "servantheavy-2239-rosg453lgb",
+      "neckhail-2244-uykolf4qdw",
+      "thunderchrome-2249-xbf3unll0p",
+      "samuraiwest-2254-xp4fqfs46j"
+    ],
     "mainline": {
       "total_savings": 0.12949672959999992,
       "total_disruption": 5,
-      "compute_time_ms": 99.8,
-      "slack_entropy": 0
+      "compute_time_ms": 101.026,
+      "slack_entropy": 0,
+      "candidates": [
+        "sharkjewel-2234-k3b8uqene0",
+        "servantheavy-2239-rosg453lgb",
+        "neckhail-2244-uykolf4qdw",
+        "thunderchrome-2249-xbf3unll0p",
+        "samuraiwest-2254-xp4fqfs46j"
+      ]
     },
     "branch": {
       "total_savings": 0.12949672959999992,
       "total_disruption": 5,
-      "compute_time_ms": 98.217,
-      "slack_entropy": 0
+      "compute_time_ms": 98.201,
+      "slack_entropy": 0,
+      "candidates": [
+        "sharkjewel-2234-k3b8uqene0",
+        "servantheavy-2239-rosg453lgb",
+        "neckhail-2244-uykolf4qdw",
+        "thunderchrome-2249-xbf3unll0p",
+        "samuraiwest-2254-xp4fqfs46j"
+      ]
     },
     "oracle": {
       "total_savings": 0.12949672959999992,
       "total_disruption": 5,
-      "compute_time_ms": 438.702,
-      "slack_entropy": 0
+      "compute_time_ms": 427.155,
+      "slack_entropy": 0,
+      "candidates": [
+        "sharkjewel-2234-k3b8uqene0",
+        "servantheavy-2239-rosg453lgb",
+        "neckhail-2244-uykolf4qdw",
+        "thunderchrome-2249-xbf3unll0p",
+        "samuraiwest-2254-xp4fqfs46j"
+      ]
     }
   },
   {
     "seed": 72,
     "description": "seed=72 node_count=3 allocCPU=8",
+    "sorted_candidates": [
+      "flamemeteor-2262-yqednlzgoh",
+      "weedcyan-2267-3riawfeicc",
+      "deerrain-2272-stvygnfdll"
+    ],
     "mainline": {
       "total_savings": 0.3147483648,
       "total_disruption": 3,
-      "compute_time_ms": 86.77,
-      "slack_entropy": 0
+      "compute_time_ms": 82.692,
+      "slack_entropy": 0,
+      "candidates": [
+        "flamemeteor-2262-yqednlzgoh",
+        "weedcyan-2267-3riawfeicc",
+        "deerrain-2272-stvygnfdll"
+      ]
     },
     "branch": {
       "total_savings": 0.3147483648,
       "total_disruption": 3,
-      "compute_time_ms": 83.796,
-      "slack_entropy": 0
+      "compute_time_ms": 84.093,
+      "slack_entropy": 0,
+      "candidates": [
+        "flamemeteor-2262-yqednlzgoh",
+        "weedcyan-2267-3riawfeicc",
+        "deerrain-2272-stvygnfdll"
+      ]
     },
     "oracle": {
       "total_savings": 0.3147483648,
       "total_disruption": 3,
-      "compute_time_ms": 113.015,
-      "slack_entropy": 0
+      "compute_time_ms": 111.154,
+      "slack_entropy": 0,
+      "candidates": [
+        "flamemeteor-2262-yqednlzgoh",
+        "weedcyan-2267-3riawfeicc",
+        "deerrain-2272-stvygnfdll"
+      ]
     }
   },
   {
     "seed": 73,
     "description": "seed=73 node_count=3 allocCPU=8",
+    "sorted_candidates": [
+      "slayersaber-2280-jmt0alnxmc",
+      "painterballistic-2285-74549jddqc",
+      "crestclever-2290-sn7ra0hxpy"
+    ],
     "mainline": {
       "total_savings": 0.3147483648,
       "total_disruption": 3,
-      "compute_time_ms": 83.084,
-      "slack_entropy": 0
+      "compute_time_ms": 84.064,
+      "slack_entropy": 0,
+      "candidates": [
+        "slayersaber-2280-jmt0alnxmc",
+        "painterballistic-2285-74549jddqc",
+        "crestclever-2290-sn7ra0hxpy"
+      ]
     },
     "branch": {
       "total_savings": 0.3147483648,
       "total_disruption": 3,
-      "compute_time_ms": 79.815,
-      "slack_entropy": 0
+      "compute_time_ms": 80.797,
+      "slack_entropy": 0,
+      "candidates": [
+        "slayersaber-2280-jmt0alnxmc",
+        "painterballistic-2285-74549jddqc",
+        "crestclever-2290-sn7ra0hxpy"
+      ]
     },
     "oracle": {
       "total_savings": 0.3147483648,
       "total_disruption": 3,
-      "compute_time_ms": 120.602,
-      "slack_entropy": 0
+      "compute_time_ms": 106.117,
+      "slack_entropy": 0,
+      "candidates": [
+        "slayersaber-2280-jmt0alnxmc",
+        "painterballistic-2285-74549jddqc",
+        "crestclever-2290-sn7ra0hxpy"
+      ]
     }
   },
   {
     "seed": 74,
     "description": "seed=74 node_count=3 allocCPU=16",
+    "sorted_candidates": [
+      "antelopebush-2298-kkaffbwo58",
+      "dancerazure-2303-dzw6nqost1",
+      "snapazure-2308-bzdnr4wnu6"
+    ],
     "mainline": {
       "total_savings": 0.3147483648,
       "total_disruption": 3,
-      "compute_time_ms": 86.58,
-      "slack_entropy": 0
+      "compute_time_ms": 84.804,
+      "slack_entropy": 0,
+      "candidates": [
+        "antelopebush-2298-kkaffbwo58",
+        "dancerazure-2303-dzw6nqost1",
+        "snapazure-2308-bzdnr4wnu6"
+      ]
     },
     "branch": {
       "total_savings": 0.3147483648,
       "total_disruption": 3,
-      "compute_time_ms": 84.566,
-      "slack_entropy": 0
+      "compute_time_ms": 82.586,
+      "slack_entropy": 0,
+      "candidates": [
+        "antelopebush-2298-kkaffbwo58",
+        "dancerazure-2303-dzw6nqost1",
+        "snapazure-2308-bzdnr4wnu6"
+      ]
     },
     "oracle": {
       "total_savings": 0.3147483648,
       "total_disruption": 3,
-      "compute_time_ms": 112.691,
-      "slack_entropy": 0
+      "compute_time_ms": 111.42,
+      "slack_entropy": 0,
+      "candidates": [
+        "antelopebush-2298-kkaffbwo58",
+        "dancerazure-2303-dzw6nqost1",
+        "snapazure-2308-bzdnr4wnu6"
+      ]
     }
   },
   {
     "seed": 75,
     "description": "seed=75 node_count=7 allocCPU=8",
+    "sorted_candidates": [
+      "lordebony-2316-ruiblize6d",
+      "spearviolet-2321-n2dhm9ilig",
+      "huggermercury-2326-wrpgyq6g63",
+      "gullcherry-2331-rthbfvtjun",
+      "mustangwest-2336-q6lenwdgzf",
+      "swordbird-2341-rd51bisfyi",
+      "diveshade-2346-wdg6uly7pf"
+    ],
     "mainline": {
       "total_savings": 0.4147483648,
       "total_disruption": 2,
-      "compute_time_ms": 93.327,
-      "slack_entropy": 1.6082264909807202
+      "compute_time_ms": 102.829,
+      "slack_entropy": 1.6082264909807202,
+      "candidates": [
+        "lordebony-2316-ruiblize6d",
+        "spearviolet-2321-n2dhm9ilig"
+      ]
     },
     "branch": {
-      "total_savings": 0.4147483648,
-      "total_disruption": 2,
-      "compute_time_ms": 92.742,
-      "slack_entropy": 1.6082264909807202
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 165.736,
+      "slack_entropy": 0,
+      "candidates": [
+        "lordebony-2316-ruiblize6d",
+        "spearviolet-2321-n2dhm9ilig",
+        "gullcherry-2331-rthbfvtjun",
+        "mustangwest-2336-q6lenwdgzf",
+        "swordbird-2341-rd51bisfyi",
+        "diveshade-2346-wdg6uly7pf"
+      ]
     },
     "oracle": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 1817.188,
-      "slack_entropy": 0
+      "compute_time_ms": 1789.515,
+      "slack_entropy": 0,
+      "candidates": [
+        "lordebony-2316-ruiblize6d",
+        "spearviolet-2321-n2dhm9ilig",
+        "gullcherry-2331-rthbfvtjun",
+        "mustangwest-2336-q6lenwdgzf",
+        "swordbird-2341-rd51bisfyi",
+        "diveshade-2346-wdg6uly7pf"
+      ]
     }
   },
   {
     "seed": 76,
     "description": "seed=76 node_count=4 allocCPU=16",
+    "sorted_candidates": [
+      "daggermagenta-2354-wvucqxgkj5",
+      "jayebony-2359-5nbflk6tmt",
+      "singerfrill-2364-8lnisyo06a",
+      "robinalpine-2369-0kw4cgs6ak"
+    ],
     "mainline": {
       "total_savings": 0.3221225472,
       "total_disruption": 4,
-      "compute_time_ms": 85.185,
-      "slack_entropy": 0
+      "compute_time_ms": 86.546,
+      "slack_entropy": 0,
+      "candidates": [
+        "daggermagenta-2354-wvucqxgkj5",
+        "jayebony-2359-5nbflk6tmt",
+        "singerfrill-2364-8lnisyo06a",
+        "robinalpine-2369-0kw4cgs6ak"
+      ]
     },
     "branch": {
       "total_savings": 0.3221225472,
       "total_disruption": 4,
-      "compute_time_ms": 84.478,
-      "slack_entropy": 0
+      "compute_time_ms": 83.205,
+      "slack_entropy": 0,
+      "candidates": [
+        "daggermagenta-2354-wvucqxgkj5",
+        "jayebony-2359-5nbflk6tmt",
+        "singerfrill-2364-8lnisyo06a",
+        "robinalpine-2369-0kw4cgs6ak"
+      ]
     },
     "oracle": {
       "total_savings": 0.3221225472,
       "total_disruption": 4,
-      "compute_time_ms": 217.661,
-      "slack_entropy": 0
+      "compute_time_ms": 211.321,
+      "slack_entropy": 0,
+      "candidates": [
+        "daggermagenta-2354-wvucqxgkj5",
+        "jayebony-2359-5nbflk6tmt",
+        "singerfrill-2364-8lnisyo06a",
+        "robinalpine-2369-0kw4cgs6ak"
+      ]
     }
   },
   {
     "seed": 77,
     "description": "seed=77 node_count=3 allocCPU=16",
+    "sorted_candidates": [
+      "bonevivid-2377-ozaah9gtob",
+      "rabbitpine-2382-hrytww9sl8",
+      "shiftmagenta-2387-sow5sqwxzp"
+    ],
     "mainline": {
       "total_savings": 0.11474836480000006,
       "total_disruption": 3,
-      "compute_time_ms": 83.14,
-      "slack_entropy": 0
+      "compute_time_ms": 83.444,
+      "slack_entropy": 0,
+      "candidates": [
+        "bonevivid-2377-ozaah9gtob",
+        "rabbitpine-2382-hrytww9sl8",
+        "shiftmagenta-2387-sow5sqwxzp"
+      ]
     },
     "branch": {
       "total_savings": 0.11474836480000006,
       "total_disruption": 3,
-      "compute_time_ms": 78.204,
-      "slack_entropy": 0
+      "compute_time_ms": 81.955,
+      "slack_entropy": 0,
+      "candidates": [
+        "bonevivid-2377-ozaah9gtob",
+        "rabbitpine-2382-hrytww9sl8",
+        "shiftmagenta-2387-sow5sqwxzp"
+      ]
     },
     "oracle": {
       "total_savings": 0.11474836480000006,
       "total_disruption": 3,
-      "compute_time_ms": 108.975,
-      "slack_entropy": 0
+      "compute_time_ms": 110.66,
+      "slack_entropy": 0,
+      "candidates": [
+        "bonevivid-2377-ozaah9gtob",
+        "rabbitpine-2382-hrytww9sl8",
+        "shiftmagenta-2387-sow5sqwxzp"
+      ]
     }
   },
   {
     "seed": 78,
     "description": "seed=78 node_count=8 allocCPU=16",
+    "sorted_candidates": [
+      "gazellecharm-2395-euf1vts8il",
+      "traderfork-2400-o2p5bot9v2",
+      "dogmeadow-2405-qq0li4v53p",
+      "giverroad-2410-zyzyp6guur",
+      "keeperflax-2415-3uyci7bafq",
+      "eyebuttercup-2420-tyg9y3nbog",
+      "songwind-2425-a5hu42zxmc",
+      "legdisco-2430-esnbushsx5"
+    ],
     "mainline": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 114.142,
-      "slack_entropy": 0
+      "compute_time_ms": 114.814,
+      "slack_entropy": 0,
+      "candidates": [
+        "gazellecharm-2395-euf1vts8il",
+        "traderfork-2400-o2p5bot9v2",
+        "dogmeadow-2405-qq0li4v53p",
+        "giverroad-2410-zyzyp6guur",
+        "keeperflax-2415-3uyci7bafq",
+        "eyebuttercup-2420-tyg9y3nbog",
+        "songwind-2425-a5hu42zxmc"
+      ]
     },
     "branch": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 116.461,
-      "slack_entropy": 0
+      "compute_time_ms": 140.109,
+      "slack_entropy": 0,
+      "candidates": [
+        "gazellecharm-2395-euf1vts8il",
+        "traderfork-2400-o2p5bot9v2",
+        "dogmeadow-2405-qq0li4v53p",
+        "giverroad-2410-zyzyp6guur",
+        "keeperflax-2415-3uyci7bafq",
+        "eyebuttercup-2420-tyg9y3nbog",
+        "songwind-2425-a5hu42zxmc"
+      ]
     },
     "oracle": {
       "total_savings": 1.4516192767999998,
       "total_disruption": 7,
-      "compute_time_ms": 3645.056,
-      "slack_entropy": 0
+      "compute_time_ms": 3638.165,
+      "slack_entropy": 0,
+      "candidates": [
+        "traderfork-2400-o2p5bot9v2",
+        "dogmeadow-2405-qq0li4v53p",
+        "giverroad-2410-zyzyp6guur",
+        "keeperflax-2415-3uyci7bafq",
+        "eyebuttercup-2420-tyg9y3nbog",
+        "songwind-2425-a5hu42zxmc",
+        "legdisco-2430-esnbushsx5"
+      ]
     }
   },
   {
     "seed": 79,
     "description": "seed=79 node_count=7 allocCPU=16",
+    "sorted_candidates": [
+      "sightgrove-2438-iyf9yhx0lm",
+      "chargertopaz-2443-8rlur19owx",
+      "fingertime-2448-xviwqjzu5c",
+      "questerchip-2453-n2bun92oz0",
+      "cougarbrick-2458-5malsx9zop",
+      "roarerpeppermint-2463-mfdstkic4y",
+      "ringerpine-2468-2mpgvqp8gs"
+    ],
     "mainline": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 107.655,
-      "slack_entropy": 0
+      "compute_time_ms": 109.61,
+      "slack_entropy": 0,
+      "candidates": [
+        "sightgrove-2438-iyf9yhx0lm",
+        "chargertopaz-2443-8rlur19owx",
+        "fingertime-2448-xviwqjzu5c",
+        "questerchip-2453-n2bun92oz0",
+        "cougarbrick-2458-5malsx9zop",
+        "roarerpeppermint-2463-mfdstkic4y"
+      ]
     },
     "branch": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 102.646,
-      "slack_entropy": 0
+      "compute_time_ms": 133.044,
+      "slack_entropy": 0,
+      "candidates": [
+        "sightgrove-2438-iyf9yhx0lm",
+        "chargertopaz-2443-8rlur19owx",
+        "fingertime-2448-xviwqjzu5c",
+        "questerchip-2453-n2bun92oz0",
+        "cougarbrick-2458-5malsx9zop",
+        "roarerpeppermint-2463-mfdstkic4y"
+      ]
     },
     "oracle": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 1806.442,
-      "slack_entropy": 0
+      "compute_time_ms": 1766.087,
+      "slack_entropy": 0,
+      "candidates": [
+        "chargertopaz-2443-8rlur19owx",
+        "fingertime-2448-xviwqjzu5c",
+        "questerchip-2453-n2bun92oz0",
+        "cougarbrick-2458-5malsx9zop",
+        "roarerpeppermint-2463-mfdstkic4y",
+        "ringerpine-2468-2mpgvqp8gs"
+      ]
     }
   },
   {
     "seed": 80,
     "description": "seed=80 node_count=3 allocCPU=8",
+    "sorted_candidates": [
+      "sightwest-2476-dwhi21o0hr",
+      "jestertyphoon-2481-ojn7qv1g0x",
+      "griffinapple-2486-cchjwhsh8j"
+    ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 15.915,
-      "slack_entropy": 1.0900596587107838
+      "compute_time_ms": 15.391,
+      "slack_entropy": 1.0900596587107838,
+      "candidates": null
     },
     "branch": {
       "total_savings": 0.4147483648,
       "total_disruption": 2,
-      "compute_time_ms": 91.094,
-      "slack_entropy": 0
+      "compute_time_ms": 93.879,
+      "slack_entropy": 0,
+      "candidates": [
+        "sightwest-2476-dwhi21o0hr",
+        "griffinapple-2486-cchjwhsh8j"
+      ]
     },
     "oracle": {
       "total_savings": 0.4147483648,
       "total_disruption": 2,
-      "compute_time_ms": 97.317,
-      "slack_entropy": 0
+      "compute_time_ms": 101.213,
+      "slack_entropy": 0,
+      "candidates": [
+        "sightwest-2476-dwhi21o0hr",
+        "griffinapple-2486-cchjwhsh8j"
+      ]
     }
   },
   {
     "seed": 81,
     "description": "seed=81 node_count=4 allocCPU=16",
+    "sorted_candidates": [
+      "pegasusdenim-2494-9g8kxxqklt",
+      "devourergreen-2499-ytx1gpllqf",
+      "bugalder-2504-ze7fndywko",
+      "riderbronze-2509-e2iticfsmy"
+    ],
     "mainline": {
       "total_savings": 0.6221225472,
       "total_disruption": 3,
-      "compute_time_ms": 74.44,
-      "slack_entropy": 0
+      "compute_time_ms": 77.831,
+      "slack_entropy": 0,
+      "candidates": [
+        "pegasusdenim-2494-9g8kxxqklt",
+        "devourergreen-2499-ytx1gpllqf",
+        "bugalder-2504-ze7fndywko"
+      ]
     },
     "branch": {
       "total_savings": 0.6221225472,
       "total_disruption": 3,
-      "compute_time_ms": 72.92,
-      "slack_entropy": 0
+      "compute_time_ms": 96.09,
+      "slack_entropy": 0,
+      "candidates": [
+        "pegasusdenim-2494-9g8kxxqklt",
+        "devourergreen-2499-ytx1gpllqf",
+        "bugalder-2504-ze7fndywko"
+      ]
     },
     "oracle": {
       "total_savings": 0.6221225472,
       "total_disruption": 3,
-      "compute_time_ms": 199.817,
-      "slack_entropy": 0
+      "compute_time_ms": 203.221,
+      "slack_entropy": 0,
+      "candidates": [
+        "devourergreen-2499-ytx1gpllqf",
+        "bugalder-2504-ze7fndywko",
+        "riderbronze-2509-e2iticfsmy"
+      ]
     }
   },
   {
     "seed": 82,
     "description": "seed=82 node_count=6 allocCPU=16",
+    "sorted_candidates": [
+      "dropnebula-2517-e8nxq1sx4n",
+      "mythapple-2522-svahn1miof",
+      "piglava-2527-ndbvzbhto4",
+      "thiefcoconut-2532-uvzwpvcinv",
+      "dukebald-2537-aflvbsit8v",
+      "minnowcrystal-2542-xo9tdkgd7i"
+    ],
     "mainline": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 101.711,
-      "slack_entropy": 0
+      "compute_time_ms": 104.959,
+      "slack_entropy": 0,
+      "candidates": [
+        "dropnebula-2517-e8nxq1sx4n",
+        "mythapple-2522-svahn1miof",
+        "piglava-2527-ndbvzbhto4",
+        "thiefcoconut-2532-uvzwpvcinv",
+        "dukebald-2537-aflvbsit8v"
+      ]
     },
     "branch": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 103.365,
-      "slack_entropy": 0
+      "compute_time_ms": 130.834,
+      "slack_entropy": 0,
+      "candidates": [
+        "dropnebula-2517-e8nxq1sx4n",
+        "mythapple-2522-svahn1miof",
+        "piglava-2527-ndbvzbhto4",
+        "thiefcoconut-2532-uvzwpvcinv",
+        "dukebald-2537-aflvbsit8v"
+      ]
     },
     "oracle": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 874.71,
-      "slack_entropy": 0
+      "compute_time_ms": 860.696,
+      "slack_entropy": 0,
+      "candidates": [
+        "mythapple-2522-svahn1miof",
+        "piglava-2527-ndbvzbhto4",
+        "thiefcoconut-2532-uvzwpvcinv",
+        "dukebald-2537-aflvbsit8v",
+        "minnowcrystal-2542-xo9tdkgd7i"
+      ]
     }
   },
   {
     "seed": 83,
     "description": "seed=83 node_count=6 allocCPU=8",
+    "sorted_candidates": [
+      "weaselpond-2550-hntr7mooke",
+      "kangarookeen-2555-vfygzvacyr",
+      "legendspiral-2560-pebn1wvrcn",
+      "eyering-2565-6orw46w7rq",
+      "noselightning-2570-clkxzufudx",
+      "oxspot-2575-q4clipaziq"
+    ],
     "mainline": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 105.095,
-      "slack_entropy": 0
+      "compute_time_ms": 105.369,
+      "slack_entropy": 0,
+      "candidates": [
+        "weaselpond-2550-hntr7mooke",
+        "kangarookeen-2555-vfygzvacyr",
+        "legendspiral-2560-pebn1wvrcn",
+        "eyering-2565-6orw46w7rq",
+        "noselightning-2570-clkxzufudx"
+      ]
     },
     "branch": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 103.958,
-      "slack_entropy": 0
+      "compute_time_ms": 128.01,
+      "slack_entropy": 0,
+      "candidates": [
+        "weaselpond-2550-hntr7mooke",
+        "kangarookeen-2555-vfygzvacyr",
+        "legendspiral-2560-pebn1wvrcn",
+        "eyering-2565-6orw46w7rq",
+        "noselightning-2570-clkxzufudx"
+      ]
     },
     "oracle": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 877.553,
-      "slack_entropy": 0
+      "compute_time_ms": 884.891,
+      "slack_entropy": 0,
+      "candidates": [
+        "kangarookeen-2555-vfygzvacyr",
+        "legendspiral-2560-pebn1wvrcn",
+        "eyering-2565-6orw46w7rq",
+        "noselightning-2570-clkxzufudx",
+        "oxspot-2575-q4clipaziq"
+      ]
     }
   },
   {
     "seed": 84,
     "description": "seed=84 node_count=6 allocCPU=16",
+    "sorted_candidates": [
+      "goatnettle-2583-euoany1cwa",
+      "liftertree-2588-mji8k8uyte",
+      "spiritquartz-2593-mznbxnvmbr",
+      "venomspectrum-2598-cxvxy9x0tg",
+      "followerquartz-2603-d7hualmiao",
+      "singerhail-2608-gqye9pyu1u"
+    ],
     "mainline": {
       "total_savings": 0.6221225472,
       "total_disruption": 3,
-      "compute_time_ms": 90.996,
-      "slack_entropy": 1.0983062550244482
+      "compute_time_ms": 91.72,
+      "slack_entropy": 1.0983062550244482,
+      "candidates": [
+        "goatnettle-2583-euoany1cwa",
+        "liftertree-2588-mji8k8uyte",
+        "spiritquartz-2593-mznbxnvmbr"
+      ]
     },
     "branch": {
-      "total_savings": 0.6221225472,
-      "total_disruption": 3,
-      "compute_time_ms": 90.827,
-      "slack_entropy": 1.0983062550244482
+      "total_savings": 1.036870912,
+      "total_disruption": 5,
+      "compute_time_ms": 133.228,
+      "slack_entropy": 0,
+      "candidates": [
+        "goatnettle-2583-euoany1cwa",
+        "liftertree-2588-mji8k8uyte",
+        "spiritquartz-2593-mznbxnvmbr",
+        "followerquartz-2603-d7hualmiao",
+        "singerhail-2608-gqye9pyu1u"
+      ]
     },
     "oracle": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 891.444,
-      "slack_entropy": 0
+      "compute_time_ms": 898.084,
+      "slack_entropy": 0,
+      "candidates": [
+        "goatnettle-2583-euoany1cwa",
+        "liftertree-2588-mji8k8uyte",
+        "spiritquartz-2593-mznbxnvmbr",
+        "followerquartz-2603-d7hualmiao",
+        "singerhail-2608-gqye9pyu1u"
+      ]
     }
   },
   {
     "seed": 85,
     "description": "seed=85 node_count=5 allocCPU=16",
+    "sorted_candidates": [
+      "pirateivy-2616-sq8eiciyge",
+      "shakersummer-2621-vmvdxqq0sn",
+      "crafterzinc-2626-wp4ilm3lz4",
+      "jayaquamarine-2631-lxphrlznnv",
+      "cranestone-2636-p1dirllsnv"
+    ],
     "mainline": {
       "total_savings": 0.5294967295999999,
       "total_disruption": 5,
-      "compute_time_ms": 106.81,
-      "slack_entropy": 0
+      "compute_time_ms": 103.79,
+      "slack_entropy": 0,
+      "candidates": [
+        "pirateivy-2616-sq8eiciyge",
+        "shakersummer-2621-vmvdxqq0sn",
+        "crafterzinc-2626-wp4ilm3lz4",
+        "jayaquamarine-2631-lxphrlznnv",
+        "cranestone-2636-p1dirllsnv"
+      ]
     },
     "branch": {
       "total_savings": 0.5294967295999999,
       "total_disruption": 5,
-      "compute_time_ms": 105.208,
-      "slack_entropy": 0
+      "compute_time_ms": 103.62,
+      "slack_entropy": 0,
+      "candidates": [
+        "pirateivy-2616-sq8eiciyge",
+        "shakersummer-2621-vmvdxqq0sn",
+        "crafterzinc-2626-wp4ilm3lz4",
+        "jayaquamarine-2631-lxphrlznnv",
+        "cranestone-2636-p1dirllsnv"
+      ]
     },
     "oracle": {
       "total_savings": 0.5294967295999999,
       "total_disruption": 5,
-      "compute_time_ms": 438.269,
-      "slack_entropy": 0
+      "compute_time_ms": 429.22,
+      "slack_entropy": 0,
+      "candidates": [
+        "pirateivy-2616-sq8eiciyge",
+        "shakersummer-2621-vmvdxqq0sn",
+        "crafterzinc-2626-wp4ilm3lz4",
+        "jayaquamarine-2631-lxphrlznnv",
+        "cranestone-2636-p1dirllsnv"
+      ]
     }
   },
   {
     "seed": 86,
     "description": "seed=86 node_count=5 allocCPU=8",
+    "sorted_candidates": [
+      "lighterflicker-2644-qq3fl8wtgb",
+      "pumadew-2649-cofkio15xp",
+      "legsorchid-2654-umf1gx70sf",
+      "stormshimmer-2659-tnlb3albwx",
+      "stonemad-2664-fvsonqpobl"
+    ],
     "mainline": {
       "total_savings": 0.4147483648,
       "total_disruption": 2,
-      "compute_time_ms": 75.398,
-      "slack_entropy": 1.0928305535284886
+      "compute_time_ms": 71.866,
+      "slack_entropy": 1.0928305535284886,
+      "candidates": [
+        "lighterflicker-2644-qq3fl8wtgb",
+        "pumadew-2649-cofkio15xp"
+      ]
     },
     "branch": {
-      "total_savings": 0.4147483648,
-      "total_disruption": 2,
-      "compute_time_ms": 73.56,
-      "slack_entropy": 1.0928305535284886
+      "total_savings": 0.8294967296,
+      "total_disruption": 4,
+      "compute_time_ms": 120.635,
+      "slack_entropy": 0,
+      "candidates": [
+        "lighterflicker-2644-qq3fl8wtgb",
+        "pumadew-2649-cofkio15xp",
+        "stormshimmer-2659-tnlb3albwx",
+        "stonemad-2664-fvsonqpobl"
+      ]
     },
     "oracle": {
       "total_savings": 0.8294967296,
       "total_disruption": 4,
-      "compute_time_ms": 430.845,
-      "slack_entropy": 0
+      "compute_time_ms": 432.527,
+      "slack_entropy": 0,
+      "candidates": [
+        "lighterflicker-2644-qq3fl8wtgb",
+        "pumadew-2649-cofkio15xp",
+        "stormshimmer-2659-tnlb3albwx",
+        "stonemad-2664-fvsonqpobl"
+      ]
     }
   },
   {
     "seed": 87,
     "description": "seed=87 node_count=3 allocCPU=8",
+    "sorted_candidates": [
+      "seedcarnation-2672-yfjm114rn1",
+      "queenpepper-2677-ijpwhbsfd3",
+      "whalestump-2682-5jpqcevlwf"
+    ],
     "mainline": {
       "total_savings": 0.11474836480000006,
       "total_disruption": 3,
-      "compute_time_ms": 81.141,
-      "slack_entropy": 0
+      "compute_time_ms": 83.03,
+      "slack_entropy": 0,
+      "candidates": [
+        "seedcarnation-2672-yfjm114rn1",
+        "queenpepper-2677-ijpwhbsfd3",
+        "whalestump-2682-5jpqcevlwf"
+      ]
     },
     "branch": {
       "total_savings": 0.11474836480000006,
       "total_disruption": 3,
-      "compute_time_ms": 80.423,
-      "slack_entropy": 0
+      "compute_time_ms": 81.368,
+      "slack_entropy": 0,
+      "candidates": [
+        "seedcarnation-2672-yfjm114rn1",
+        "queenpepper-2677-ijpwhbsfd3",
+        "whalestump-2682-5jpqcevlwf"
+      ]
     },
     "oracle": {
       "total_savings": 0.11474836480000006,
       "total_disruption": 3,
-      "compute_time_ms": 108.79,
-      "slack_entropy": 0
+      "compute_time_ms": 106.607,
+      "slack_entropy": 0,
+      "candidates": [
+        "seedcarnation-2672-yfjm114rn1",
+        "queenpepper-2677-ijpwhbsfd3",
+        "whalestump-2682-5jpqcevlwf"
+      ]
     }
   },
   {
     "seed": 88,
     "description": "seed=88 node_count=5 allocCPU=32",
+    "sorted_candidates": [
+      "gemwarp-2690-amzx7lhvxk",
+      "antdew-2695-6ntcdtgozw",
+      "spursoft-2700-fehbg1ubhs",
+      "slayerdisco-2705-1yehgwaolv",
+      "llamadeep-2710-e6qutlzi7j"
+    ],
     "mainline": {
       "total_savings": 0.5294967295999999,
       "total_disruption": 5,
-      "compute_time_ms": 106.776,
-      "slack_entropy": 0
+      "compute_time_ms": 107.233,
+      "slack_entropy": 0,
+      "candidates": [
+        "gemwarp-2690-amzx7lhvxk",
+        "antdew-2695-6ntcdtgozw",
+        "spursoft-2700-fehbg1ubhs",
+        "slayerdisco-2705-1yehgwaolv",
+        "llamadeep-2710-e6qutlzi7j"
+      ]
     },
     "branch": {
       "total_savings": 0.5294967295999999,
       "total_disruption": 5,
-      "compute_time_ms": 103.25,
-      "slack_entropy": 0
+      "compute_time_ms": 105.61,
+      "slack_entropy": 0,
+      "candidates": [
+        "gemwarp-2690-amzx7lhvxk",
+        "antdew-2695-6ntcdtgozw",
+        "spursoft-2700-fehbg1ubhs",
+        "slayerdisco-2705-1yehgwaolv",
+        "llamadeep-2710-e6qutlzi7j"
+      ]
     },
     "oracle": {
       "total_savings": 0.5294967295999999,
       "total_disruption": 5,
-      "compute_time_ms": 438.375,
-      "slack_entropy": 0
+      "compute_time_ms": 429.907,
+      "slack_entropy": 0,
+      "candidates": [
+        "gemwarp-2690-amzx7lhvxk",
+        "antdew-2695-6ntcdtgozw",
+        "spursoft-2700-fehbg1ubhs",
+        "slayerdisco-2705-1yehgwaolv",
+        "llamadeep-2710-e6qutlzi7j"
+      ]
     }
   },
   {
     "seed": 89,
     "description": "seed=89 node_count=3 allocCPU=8",
+    "sorted_candidates": [
+      "snapperlead-2718-vcynwr00gt",
+      "leaderbuttercup-2723-0upljiwp6c",
+      "salmonbird-2728-ylwxkf3pxf"
+    ],
     "mainline": {
       "total_savings": 0.11474836480000006,
       "total_disruption": 3,
-      "compute_time_ms": 84.977,
-      "slack_entropy": 0
+      "compute_time_ms": 81.189,
+      "slack_entropy": 0,
+      "candidates": [
+        "snapperlead-2718-vcynwr00gt",
+        "leaderbuttercup-2723-0upljiwp6c",
+        "salmonbird-2728-ylwxkf3pxf"
+      ]
     },
     "branch": {
       "total_savings": 0.11474836480000006,
       "total_disruption": 3,
-      "compute_time_ms": 79.361,
-      "slack_entropy": 0
+      "compute_time_ms": 77.422,
+      "slack_entropy": 0,
+      "candidates": [
+        "snapperlead-2718-vcynwr00gt",
+        "leaderbuttercup-2723-0upljiwp6c",
+        "salmonbird-2728-ylwxkf3pxf"
+      ]
     },
     "oracle": {
       "total_savings": 0.11474836480000006,
       "total_disruption": 3,
-      "compute_time_ms": 112.009,
-      "slack_entropy": 0
+      "compute_time_ms": 111.803,
+      "slack_entropy": 0,
+      "candidates": [
+        "snapperlead-2718-vcynwr00gt",
+        "leaderbuttercup-2723-0upljiwp6c",
+        "salmonbird-2728-ylwxkf3pxf"
+      ]
     }
   },
   {
     "seed": 90,
     "description": "seed=90 node_count=7 allocCPU=16",
+    "sorted_candidates": [
+      "chestspot-2736-ffxq0q5ofs",
+      "volefortune-2741-0nmuokj6bb",
+      "facesprinkle-2746-f9uokcdvwx",
+      "piratesugar-2751-s3uackiaod",
+      "sightforest-2756-rqth1sj3ii",
+      "seerglitter-2761-nwiiegpvuq",
+      "watcherpaint-2766-br4clcfebk"
+    ],
     "mainline": {
       "total_savings": 0.4147483648,
       "total_disruption": 2,
-      "compute_time_ms": 95.489,
-      "slack_entropy": 1.6076588154371987
+      "compute_time_ms": 96.18,
+      "slack_entropy": 1.6076588154371987,
+      "candidates": [
+        "chestspot-2736-ffxq0q5ofs",
+        "volefortune-2741-0nmuokj6bb"
+      ]
     },
     "branch": {
-      "total_savings": 0.4147483648,
-      "total_disruption": 2,
-      "compute_time_ms": 94.679,
-      "slack_entropy": 1.6076588154371987
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 163.345,
+      "slack_entropy": 0,
+      "candidates": [
+        "chestspot-2736-ffxq0q5ofs",
+        "volefortune-2741-0nmuokj6bb",
+        "piratesugar-2751-s3uackiaod",
+        "sightforest-2756-rqth1sj3ii",
+        "seerglitter-2761-nwiiegpvuq",
+        "watcherpaint-2766-br4clcfebk"
+      ]
     },
     "oracle": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 1822.795,
-      "slack_entropy": 0
+      "compute_time_ms": 1813.668,
+      "slack_entropy": 0,
+      "candidates": [
+        "chestspot-2736-ffxq0q5ofs",
+        "volefortune-2741-0nmuokj6bb",
+        "piratesugar-2751-s3uackiaod",
+        "sightforest-2756-rqth1sj3ii",
+        "seerglitter-2761-nwiiegpvuq",
+        "watcherpaint-2766-br4clcfebk"
+      ]
     }
   },
   {
     "seed": 91,
     "description": "seed=91 node_count=6 allocCPU=16",
+    "sorted_candidates": [
+      "cubdaffodil-2774-rdoc0ep8zv",
+      "scowlflax-2779-nmejsermpy",
+      "cowlsprout-2784-eiuh9fg2la",
+      "fairyplain-2789-n78ezodgcn",
+      "zebrahollow-2794-4t3jgu7heq",
+      "witchalpine-2799-xopf0mezsl"
+    ],
     "mainline": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 106.829,
-      "slack_entropy": 0
+      "compute_time_ms": 103.982,
+      "slack_entropy": 0,
+      "candidates": [
+        "cubdaffodil-2774-rdoc0ep8zv",
+        "scowlflax-2779-nmejsermpy",
+        "cowlsprout-2784-eiuh9fg2la",
+        "fairyplain-2789-n78ezodgcn",
+        "zebrahollow-2794-4t3jgu7heq"
+      ]
     },
     "branch": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 104.654,
-      "slack_entropy": 0
+      "compute_time_ms": 131.798,
+      "slack_entropy": 0,
+      "candidates": [
+        "cubdaffodil-2774-rdoc0ep8zv",
+        "scowlflax-2779-nmejsermpy",
+        "cowlsprout-2784-eiuh9fg2la",
+        "fairyplain-2789-n78ezodgcn",
+        "zebrahollow-2794-4t3jgu7heq"
+      ]
     },
     "oracle": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 877.061,
-      "slack_entropy": 0
+      "compute_time_ms": 891.55,
+      "slack_entropy": 0,
+      "candidates": [
+        "scowlflax-2779-nmejsermpy",
+        "cowlsprout-2784-eiuh9fg2la",
+        "fairyplain-2789-n78ezodgcn",
+        "zebrahollow-2794-4t3jgu7heq",
+        "witchalpine-2799-xopf0mezsl"
+      ]
     }
   },
   {
     "seed": 92,
     "description": "seed=92 node_count=4 allocCPU=32",
+    "sorted_candidates": [
+      "palmbloom-2807-lmtaa7psl4",
+      "stonebow-2812-rs8audoocz",
+      "ridgemetal-2817-akmqhyrixe",
+      "lynxspring-2822-rrjkoblj2o"
+    ],
     "mainline": {
       "total_savings": 0.4147483648,
       "total_disruption": 2,
-      "compute_time_ms": 71.724,
-      "slack_entropy": 0.6929354770224556
+      "compute_time_ms": 68.74,
+      "slack_entropy": 0.6929354770224556,
+      "candidates": [
+        "palmbloom-2807-lmtaa7psl4",
+        "stonebow-2812-rs8audoocz"
+      ]
     },
     "branch": {
-      "total_savings": 0.4147483648,
-      "total_disruption": 2,
-      "compute_time_ms": 65.392,
-      "slack_entropy": 0.6929354770224556
+      "total_savings": 0.6221225472,
+      "total_disruption": 3,
+      "compute_time_ms": 95.741,
+      "slack_entropy": 0,
+      "candidates": [
+        "palmbloom-2807-lmtaa7psl4",
+        "stonebow-2812-rs8audoocz",
+        "lynxspring-2822-rrjkoblj2o"
+      ]
     },
     "oracle": {
       "total_savings": 0.6221225472,
       "total_disruption": 3,
-      "compute_time_ms": 208.083,
-      "slack_entropy": 0
+      "compute_time_ms": 203.285,
+      "slack_entropy": 0,
+      "candidates": [
+        "palmbloom-2807-lmtaa7psl4",
+        "stonebow-2812-rs8audoocz",
+        "lynxspring-2822-rrjkoblj2o"
+      ]
     }
   },
   {
     "seed": 93,
     "description": "seed=93 node_count=7 allocCPU=8",
+    "sorted_candidates": [
+      "jestermango-2830-sukjdbofah",
+      "scourgevenom-2835-o5egcg18rs",
+      "musenoon-2840-frxqlskozo",
+      "knightsaber-2845-afsgf9ubbc",
+      "houndblaze-2850-nlqtzcjlhz",
+      "sargentwind-2855-m4jgx1bfb2",
+      "carvercoal-2860-mpyb3dlgtj"
+    ],
     "mainline": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 109.331,
-      "slack_entropy": 0
+      "compute_time_ms": 111.064,
+      "slack_entropy": 0,
+      "candidates": [
+        "jestermango-2830-sukjdbofah",
+        "scourgevenom-2835-o5egcg18rs",
+        "musenoon-2840-frxqlskozo",
+        "knightsaber-2845-afsgf9ubbc",
+        "houndblaze-2850-nlqtzcjlhz",
+        "sargentwind-2855-m4jgx1bfb2"
+      ]
     },
     "branch": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 106.518,
-      "slack_entropy": 0
+      "compute_time_ms": 135.068,
+      "slack_entropy": 0,
+      "candidates": [
+        "jestermango-2830-sukjdbofah",
+        "scourgevenom-2835-o5egcg18rs",
+        "musenoon-2840-frxqlskozo",
+        "knightsaber-2845-afsgf9ubbc",
+        "houndblaze-2850-nlqtzcjlhz",
+        "sargentwind-2855-m4jgx1bfb2"
+      ]
     },
     "oracle": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 1799.611,
-      "slack_entropy": 0
+      "compute_time_ms": 1773.996,
+      "slack_entropy": 0,
+      "candidates": [
+        "scourgevenom-2835-o5egcg18rs",
+        "musenoon-2840-frxqlskozo",
+        "knightsaber-2845-afsgf9ubbc",
+        "houndblaze-2850-nlqtzcjlhz",
+        "sargentwind-2855-m4jgx1bfb2",
+        "carvercoal-2860-mpyb3dlgtj"
+      ]
     }
   },
   {
     "seed": 94,
     "description": "seed=94 node_count=8 allocCPU=8",
+    "sorted_candidates": [
+      "edgetar-2868-a7dhpxgjel",
+      "razortrail-2873-it0eh1fria",
+      "musepollen-2878-5xncxxtrxq",
+      "lightertreasure-2883-xzmnnlc4af",
+      "crusherzinc-2888-qvizmii9og",
+      "venomstar-2893-oycv0fvunl",
+      "fishpineapple-2898-x64295ymkn",
+      "slicersequoia-2903-bydtqs5su1"
+    ],
     "mainline": {
       "total_savings": 1.1442450943999998,
       "total_disruption": 7,
-      "compute_time_ms": 133.76,
-      "slack_entropy": 0.6931416331621223
+      "compute_time_ms": 136.139,
+      "slack_entropy": 0.6931416331621223,
+      "candidates": [
+        "edgetar-2868-a7dhpxgjel",
+        "razortrail-2873-it0eh1fria",
+        "musepollen-2878-5xncxxtrxq",
+        "lightertreasure-2883-xzmnnlc4af",
+        "crusherzinc-2888-qvizmii9og",
+        "venomstar-2893-oycv0fvunl",
+        "fishpineapple-2898-x64295ymkn"
+      ]
     },
     "branch": {
       "total_savings": 1.1442450943999998,
       "total_disruption": 7,
-      "compute_time_ms": 130.261,
-      "slack_entropy": 0.6931416331621223
+      "compute_time_ms": 163.014,
+      "slack_entropy": 0.6931416331621223,
+      "candidates": [
+        "edgetar-2868-a7dhpxgjel",
+        "razortrail-2873-it0eh1fria",
+        "musepollen-2878-5xncxxtrxq",
+        "lightertreasure-2883-xzmnnlc4af",
+        "crusherzinc-2888-qvizmii9og",
+        "venomstar-2893-oycv0fvunl",
+        "fishpineapple-2898-x64295ymkn"
+      ]
     },
     "oracle": {
       "total_savings": 1.1442450943999998,
       "total_disruption": 7,
-      "compute_time_ms": 3724.912,
+      "compute_time_ms": 3694.791,
       "slack_entropy": 0,
+      "candidates": [
+        "razortrail-2873-it0eh1fria",
+        "musepollen-2878-5xncxxtrxq",
+        "lightertreasure-2883-xzmnnlc4af",
+        "crusherzinc-2888-qvizmii9og",
+        "venomstar-2893-oycv0fvunl",
+        "fishpineapple-2898-x64295ymkn",
+        "slicersequoia-2903-bydtqs5su1"
+      ],
       "error": "post-state repack: pod \"pod-7\" does not fit any survivor"
     }
   },
   {
     "seed": 95,
     "description": "seed=95 node_count=5 allocCPU=8",
+    "sorted_candidates": [
+      "servantmidnight-2911-vrzw2kapic",
+      "grabbersapphire-2916-rceyntwt56",
+      "chestdiamond-2921-s9yswfezj7",
+      "spritenova-2926-n9vqeyws1a",
+      "snakehollow-2931-8k9ygsg5fm"
+    ],
     "mainline": {
       "total_savings": 0.12949672959999992,
       "total_disruption": 5,
-      "compute_time_ms": 102.402,
-      "slack_entropy": 0
+      "compute_time_ms": 103.42,
+      "slack_entropy": 0,
+      "candidates": [
+        "servantmidnight-2911-vrzw2kapic",
+        "grabbersapphire-2916-rceyntwt56",
+        "chestdiamond-2921-s9yswfezj7",
+        "spritenova-2926-n9vqeyws1a",
+        "snakehollow-2931-8k9ygsg5fm"
+      ]
     },
     "branch": {
       "total_savings": 0.12949672959999992,
       "total_disruption": 5,
-      "compute_time_ms": 100.736,
-      "slack_entropy": 0
+      "compute_time_ms": 103.347,
+      "slack_entropy": 0,
+      "candidates": [
+        "servantmidnight-2911-vrzw2kapic",
+        "grabbersapphire-2916-rceyntwt56",
+        "chestdiamond-2921-s9yswfezj7",
+        "spritenova-2926-n9vqeyws1a",
+        "snakehollow-2931-8k9ygsg5fm"
+      ]
     },
     "oracle": {
       "total_savings": 0.12949672959999992,
       "total_disruption": 5,
-      "compute_time_ms": 430.462,
-      "slack_entropy": 0
+      "compute_time_ms": 446.505,
+      "slack_entropy": 0,
+      "candidates": [
+        "servantmidnight-2911-vrzw2kapic",
+        "grabbersapphire-2916-rceyntwt56",
+        "chestdiamond-2921-s9yswfezj7",
+        "spritenova-2926-n9vqeyws1a",
+        "snakehollow-2931-8k9ygsg5fm"
+      ]
     }
   },
   {
     "seed": 96,
     "description": "seed=96 node_count=7 allocCPU=32",
+    "sorted_candidates": [
+      "apespice-2939-kevb2g9l2m",
+      "vulturetyphoon-2944-xfrtw6anak",
+      "stalkerrift-2949-af2dlor7qm",
+      "kangarootree-2954-enxbbk8mmj",
+      "skinnerplum-2959-bleevkcrep",
+      "seerlie-2964-vnm5gdg1wc",
+      "ribmica-2969-mfsmgggdgo"
+    ],
     "mainline": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 144.511,
-      "slack_entropy": 0.6930598485526611
+      "compute_time_ms": 96.341,
+      "slack_entropy": 0.6930598485526611,
+      "candidates": [
+        "apespice-2939-kevb2g9l2m",
+        "vulturetyphoon-2944-xfrtw6anak",
+        "stalkerrift-2949-af2dlor7qm",
+        "kangarootree-2954-enxbbk8mmj",
+        "skinnerplum-2959-bleevkcrep"
+      ]
     },
     "branch": {
-      "total_savings": 1.036870912,
-      "total_disruption": 5,
-      "compute_time_ms": 92.102,
-      "slack_entropy": 0.6930598485526611
+      "total_savings": 1.2442450943999999,
+      "total_disruption": 6,
+      "compute_time_ms": 122.707,
+      "slack_entropy": 0,
+      "candidates": [
+        "apespice-2939-kevb2g9l2m",
+        "vulturetyphoon-2944-xfrtw6anak",
+        "stalkerrift-2949-af2dlor7qm",
+        "kangarootree-2954-enxbbk8mmj",
+        "skinnerplum-2959-bleevkcrep",
+        "ribmica-2969-mfsmgggdgo"
+      ]
     },
     "oracle": {
       "total_savings": 1.2442450943999999,
       "total_disruption": 6,
-      "compute_time_ms": 1827.858,
-      "slack_entropy": 0
+      "compute_time_ms": 1842.58,
+      "slack_entropy": 0,
+      "candidates": [
+        "apespice-2939-kevb2g9l2m",
+        "vulturetyphoon-2944-xfrtw6anak",
+        "stalkerrift-2949-af2dlor7qm",
+        "kangarootree-2954-enxbbk8mmj",
+        "skinnerplum-2959-bleevkcrep",
+        "ribmica-2969-mfsmgggdgo"
+      ]
     }
   },
   {
     "seed": 97,
     "description": "seed=97 node_count=6 allocCPU=32",
+    "sorted_candidates": [
+      "mindspark-2977-da13ea6bf2",
+      "tonguecyber-2982-9sxbvroqqr",
+      "rabbitbow-2987-7vfhdzu29l",
+      "wolverinequilt-2992-fdktru1fpy",
+      "sightfluff-2997-aycbbmvnap",
+      "friendbubble-3002-gvn0qkygi0"
+    ],
     "mainline": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 109.552,
-      "slack_entropy": 0
+      "compute_time_ms": 108.689,
+      "slack_entropy": 0,
+      "candidates": [
+        "mindspark-2977-da13ea6bf2",
+        "tonguecyber-2982-9sxbvroqqr",
+        "rabbitbow-2987-7vfhdzu29l",
+        "wolverinequilt-2992-fdktru1fpy",
+        "sightfluff-2997-aycbbmvnap"
+      ]
     },
     "branch": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 103.983,
-      "slack_entropy": 0
+      "compute_time_ms": 133.755,
+      "slack_entropy": 0,
+      "candidates": [
+        "mindspark-2977-da13ea6bf2",
+        "tonguecyber-2982-9sxbvroqqr",
+        "rabbitbow-2987-7vfhdzu29l",
+        "wolverinequilt-2992-fdktru1fpy",
+        "sightfluff-2997-aycbbmvnap"
+      ]
     },
     "oracle": {
       "total_savings": 1.036870912,
       "total_disruption": 5,
-      "compute_time_ms": 868.919,
-      "slack_entropy": 0
+      "compute_time_ms": 866.98,
+      "slack_entropy": 0,
+      "candidates": [
+        "tonguecyber-2982-9sxbvroqqr",
+        "rabbitbow-2987-7vfhdzu29l",
+        "wolverinequilt-2992-fdktru1fpy",
+        "sightfluff-2997-aycbbmvnap",
+        "friendbubble-3002-gvn0qkygi0"
+      ]
     }
   },
   {
     "seed": 98,
     "description": "seed=98 node_count=4 allocCPU=16",
+    "sorted_candidates": [
+      "bunnyquick-3010-jqqxvxnwuo",
+      "minnowazure-3015-1dtznm0kwt",
+      "bolttundra-3020-r3l2l6pbjk",
+      "watchershard-3025-fdcujjt8un"
+    ],
     "mainline": {
       "total_savings": 0.3221225472,
       "total_disruption": 4,
-      "compute_time_ms": 86.919,
-      "slack_entropy": 0
+      "compute_time_ms": 86.832,
+      "slack_entropy": 0,
+      "candidates": [
+        "bunnyquick-3010-jqqxvxnwuo",
+        "minnowazure-3015-1dtznm0kwt",
+        "bolttundra-3020-r3l2l6pbjk",
+        "watchershard-3025-fdcujjt8un"
+      ]
     },
     "branch": {
       "total_savings": 0.3221225472,
       "total_disruption": 4,
-      "compute_time_ms": 84.178,
-      "slack_entropy": 0
+      "compute_time_ms": 87.088,
+      "slack_entropy": 0,
+      "candidates": [
+        "bunnyquick-3010-jqqxvxnwuo",
+        "minnowazure-3015-1dtznm0kwt",
+        "bolttundra-3020-r3l2l6pbjk",
+        "watchershard-3025-fdcujjt8un"
+      ]
     },
     "oracle": {
       "total_savings": 0.3221225472,
       "total_disruption": 4,
-      "compute_time_ms": 219.027,
-      "slack_entropy": 0
+      "compute_time_ms": 212.93,
+      "slack_entropy": 0,
+      "candidates": [
+        "bunnyquick-3010-jqqxvxnwuo",
+        "minnowazure-3015-1dtznm0kwt",
+        "bolttundra-3020-r3l2l6pbjk",
+        "watchershard-3025-fdcujjt8un"
+      ]
     }
   },
   {
     "seed": 99,
     "description": "seed=99 node_count=4 allocCPU=8",
+    "sorted_candidates": [
+      "wizardwave-3033-zh4hlv1sg0",
+      "scowljewel-3038-wnvgoda8ka",
+      "winggranite-3043-swlxfkdjkt",
+      "bisoncandle-3048-y6zre9vzg7"
+    ],
     "mainline": {
       "total_savings": 0.3221225472,
       "total_disruption": 4,
-      "compute_time_ms": 87.013,
-      "slack_entropy": 0
+      "compute_time_ms": 89.492,
+      "slack_entropy": 0,
+      "candidates": [
+        "wizardwave-3033-zh4hlv1sg0",
+        "scowljewel-3038-wnvgoda8ka",
+        "winggranite-3043-swlxfkdjkt",
+        "bisoncandle-3048-y6zre9vzg7"
+      ]
     },
     "branch": {
       "total_savings": 0.3221225472,
       "total_disruption": 4,
-      "compute_time_ms": 84.411,
-      "slack_entropy": 0
+      "compute_time_ms": 85.658,
+      "slack_entropy": 0,
+      "candidates": [
+        "wizardwave-3033-zh4hlv1sg0",
+        "scowljewel-3038-wnvgoda8ka",
+        "winggranite-3043-swlxfkdjkt",
+        "bisoncandle-3048-y6zre9vzg7"
+      ]
     },
     "oracle": {
       "total_savings": 0.3221225472,
       "total_disruption": 4,
-      "compute_time_ms": 219.774,
-      "slack_entropy": 0
+      "compute_time_ms": 219.216,
+      "slack_entropy": 0,
+      "candidates": [
+        "wizardwave-3033-zh4hlv1sg0",
+        "scowljewel-3038-wnvgoda8ka",
+        "winggranite-3043-swlxfkdjkt",
+        "bisoncandle-3048-y6zre9vzg7"
+      ]
     }
   }
 ]

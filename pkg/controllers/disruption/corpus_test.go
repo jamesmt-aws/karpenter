@@ -41,6 +41,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
 	"time"
 
 	"github.com/awslabs/operatorpkg/option"
@@ -60,11 +61,12 @@ const corpusOutputDir = "testdata"
 const corpusOutputFile = "corpus_results.json"
 
 type corpusEntry struct {
-	Seed        int64             `json:"seed"`
-	Description string            `json:"description"`
-	Mainline    corpusRun         `json:"mainline"`
-	Branch      corpusRun         `json:"branch"`
-	Oracle      corpusRun         `json:"oracle,omitempty"`
+	Seed              int64     `json:"seed"`
+	Description       string    `json:"description"`
+	SortedCandidates  []string  `json:"sorted_candidates"`
+	Mainline          corpusRun `json:"mainline"`
+	Branch            corpusRun `json:"branch"`
+	Oracle            corpusRun `json:"oracle,omitempty"`
 }
 
 type corpusRun struct {
@@ -72,15 +74,17 @@ type corpusRun struct {
 	TotalDisruption int           `json:"total_disruption"`
 	ComputeTimeMs   float64       `json:"compute_time_ms"`
 	SlackEntropy    float64       `json:"slack_entropy"`
+	Candidates      []string      `json:"candidates"`
 	Error           string        `json:"error,omitempty"`
 }
 
-func metricsToRun(m scenarios.Metrics, err error) corpusRun {
+func metricsToRun(m scenarios.Metrics, candidates []string, err error) corpusRun {
 	r := corpusRun{
 		TotalSavings:    m.TotalSavings,
 		TotalDisruption: m.TotalDisruption,
 		ComputeTimeMs:   float64(m.ComputeTime.Microseconds()) / 1000.0,
 		SlackEntropy:    m.SlackEntropy,
+		Candidates:      candidates,
 	}
 	if err != nil {
 		r.Error = err.Error()
@@ -125,25 +129,48 @@ func runCorpusScenario(seed int64) corpusEntry {
 	nodePool := built.NodePools[0]
 	priceFor := makeCorpusPriceFunc(cloudProvider.InstanceTypes)
 
-	mainlineMoves, mainlineDur := computeMoves(nodePool, "mainline")
+	mainlineMoves, mainlineCands, mainlineDur := computeMoves(nodePool, "mainline")
 	mainlineMetrics, mainlineErr := scenarios.Evaluate(built, mainlineMoves, priceFor, scenarios.DefaultEntropyWeights, mainlineDur)
 
-	branchMoves, branchDur := computeMoves(nodePool, "branch")
+	branchMoves, branchCands, branchDur := computeMoves(nodePool, "branch")
 	branchMetrics, branchErr := scenarios.Evaluate(built, branchMoves, priceFor, scenarios.DefaultEntropyWeights, branchDur)
 
-	oracleMoves, oracleDur := computeMoves(nodePool, "oracle")
+	oracleMoves, oracleCands, oracleDur := computeMoves(nodePool, "oracle")
 	oracleMetrics, oracleErr := scenarios.Evaluate(built, oracleMoves, priceFor, scenarios.DefaultEntropyWeights, oracleDur)
 
+	sortedCands := sortedCandidateNames(nodePool)
+
 	return corpusEntry{
-		Seed:        seed,
-		Description: s.Description,
-		Mainline:    metricsToRun(mainlineMetrics, mainlineErr),
-		Branch:      metricsToRun(branchMetrics, branchErr),
-		Oracle:      metricsToRun(oracleMetrics, oracleErr),
+		Seed:             seed,
+		Description:      s.Description,
+		SortedCandidates: sortedCands,
+		Mainline:         metricsToRun(mainlineMetrics, mainlineCands, mainlineErr),
+		Branch:           metricsToRun(branchMetrics, branchCands, branchErr),
+		Oracle:           metricsToRun(oracleMetrics, oracleCands, oracleErr),
 	}
 }
 
-func computeMoves(nodePool *v1.NodePool, algo string) ([]scenarios.Move, time.Duration) {
+// sortedCandidateNames returns the full candidate list sorted by
+// DisruptionCost ascending (matching consolidation.sortCandidates).
+func sortedCandidateNames(nodePool *v1.NodePool) []string {
+	c := disruption.MakeConsolidation(fakeClock, cluster, env.Client, prov, cloudProvider, recorder, queue)
+	multi := disruption.NewMultiNodeConsolidation(c,
+		disruption.WithValidator(NewTestMultiConsolidationValidator(nodePool)),
+	)
+	candidates, err := disruption.GetCandidates(ctx, cluster, env.Client, recorder, fakeClock, cloudProvider,
+		multi.ShouldDisrupt, multi.Class(), queue)
+	Expect(err).To(Succeed())
+	sort.SliceStable(candidates, func(i, j int) bool {
+		return candidates[i].DisruptionCost < candidates[j].DisruptionCost
+	})
+	names := make([]string, 0, len(candidates))
+	for _, cand := range candidates {
+		names = append(names, cand.Node.Name)
+	}
+	return names
+}
+
+func computeMoves(nodePool *v1.NodePool, algo string) ([]scenarios.Move, []string, time.Duration) {
 	c := disruption.MakeConsolidation(fakeClock, cluster, env.Client, prov, cloudProvider, recorder, queue)
 	opts := []option.Function[disruption.MethodOptions]{
 		disruption.WithValidator(NewTestMultiConsolidationValidator(nodePool)),
@@ -172,11 +199,13 @@ func computeMoves(nodePool *v1.NodePool, algo string) ([]scenarios.Move, time.Du
 	Expect(err).To(Succeed())
 
 	var moves []scenarios.Move
+	var allCandidates []string
 	for _, cmd := range cmds {
 		var names []string
 		for _, cand := range cmd.Candidates {
 			names = append(names, cand.Node.Name)
 		}
+		allCandidates = append(allCandidates, names...)
 		mv := scenarios.Move{DeletedNodeNames: names}
 		// Replace: Karpenter sorts InstanceTypeOptions by price after
 		// filterInstanceTypesByRequirements, so index 0 is the type
@@ -195,7 +224,7 @@ func computeMoves(nodePool *v1.NodePool, algo string) ([]scenarios.Move, time.Du
 		}
 		moves = append(moves, mv)
 	}
-	return moves, dur
+	return moves, allCandidates, dur
 }
 
 func pickCorpusInstances(its []*cloudprovider.InstanceType) []scenarios.InstanceMeta {
