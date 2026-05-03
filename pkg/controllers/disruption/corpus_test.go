@@ -308,13 +308,27 @@ func computeMoves(nodePool *v1.NodePool, algo string) ([]scenarios.Move, []strin
 }
 
 func pickCorpusInstances(its []*cloudprovider.InstanceType) []scenarios.InstanceMeta {
-	// Sample a small set of on-demand, Linux, amd64 instance types that
-	// covers a CPU/memory range. Stride through the available list.
+	// Sample a price-spread set of on-demand instance types. The
+	// fake provider's PriceFromResources is 0.1 per CPU plus 0.1
+	// per GiB memory, so picking types with varying CPU+mem gives
+	// real price variation. Without price variation the savings-
+	// ratio sort and the Balanced score gate are both effectively
+	// no-ops on the corpus. Strategy: deduplicate by (cpu, mem)
+	// pair, picking one (zone, arch, os) variant per pair, until
+	// 8 distinct (cpu, mem) shapes are collected.
 	var metas []scenarios.InstanceMeta
-	seen := map[string]bool{}
+	seenShapes := map[string]bool{}
 	for _, it := range its {
-		key := fmt.Sprintf("%s-%s", it.Name, "")
-		if seen[key] {
+		cpuQty, ok := it.Capacity[corev1.ResourceCPU]
+		if !ok {
+			continue
+		}
+		memQty, ok := it.Capacity[corev1.ResourceMemory]
+		if !ok {
+			continue
+		}
+		shapeKey := fmt.Sprintf("%s/%s", cpuQty.String(), memQty.String())
+		if seenShapes[shapeKey] {
 			continue
 		}
 		var meta scenarios.InstanceMeta
@@ -334,7 +348,7 @@ func pickCorpusInstances(its []*cloudprovider.InstanceType) []scenarios.Instance
 		if meta.InstanceType == "" {
 			continue
 		}
-		seen[key] = true
+		seenShapes[shapeKey] = true
 		metas = append(metas, meta)
 		if len(metas) >= 8 {
 			break
