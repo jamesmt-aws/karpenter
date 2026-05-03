@@ -77,7 +77,7 @@ on this input."
 
 ## What the oracle has surfaced
 
-Three bug shapes have come out of running the oracle against the
+Four bug shapes have come out of running the oracle against the
 production multi-node consolidation algorithm:
 
 - **Shape A**: binary search returns no plan because every prefix
@@ -108,9 +108,32 @@ production multi-node consolidation algorithm:
   direction; would need bounded brute-force at small N or a
   swap-walk that ejects accepted candidates.
 
-The pattern across all three: prefix-based binary search is sound
-but not always maximal, and the search structure must reach
-non-prefix subsets to recover maximality.
+- **Marginal-cost regime under the Balanced score gate**: the
+  algorithm's chosen plan is feasible per the simulator but
+  fails the score gate because savings_fraction is far below
+  disruption_fraction. Surfaced by the marginal corpus
+  generator, which engineers a high-price non-removable
+  candidate alongside cheap removable candidates so the
+  algorithm picks predominantly cheap candidates: 33 of 50
+  marginal seeds produce plans the gate rejects at k=2. This
+  is the gate doing its intended job (declining marginal
+  consolidations) rather than a search bug, but it is the regime
+  to probe when reasoning about Balanced-policy behavior.
+
+The first three shapes share a pattern: prefix-based binary search
+is sound but not always maximal, and the search structure must
+reach non-prefix subsets to recover maximality. The fourth sits
+orthogonal: it is not about whether the search is complete, but
+about whether the resulting plan is worth applying.
+
+An earlier draft of this guide claimed the Balanced score gate
+was approximately a no-op on the corpus. That was a mistake of
+attribution: the gate did not fire because the corpus did not
+exercise it (all candidates within a scenario shared a price, so
+score collapsed to K/N over K/N), not because it is meaningless.
+The marginal corpus and a fix to `pickCorpusInstances` (dedupe by
+`(cpu, mem)` shape so the eight-instance pool actually spans
+prices) corrected the picture.
 
 ## How to use the framework
 
@@ -155,6 +178,25 @@ KUBEBUILDER_ASSETS=... go test -tags=corpus -count=1 -timeout=20m \
 
 Writes `testdata/corpus_adversarial_results.json`.
 
+### Generate marginal-cost scenarios
+
+`scenarios.GenerateMarginal` engineers scenarios where a high-
+price candidate is in the candidate set (so its price contributes
+to the NodePool denominator in score-gate evaluation) but cannot
+be removed (its pod has a NodeSelector for a unique label only
+that node carries). The algorithm picks predominantly cheap
+candidates, so savings_fraction stays small and the score gate
+rejects.
+
+```
+KUBEBUILDER_ASSETS=... go test -tags=corpus -count=1 -timeout=20m \
+  ./pkg/controllers/disruption/ \
+  -run TestAPIs --ginkgo.focus 'Consolidation Marginal Corpus'
+```
+
+Writes `testdata/corpus_marginal_results.json`. 33 of 50 marginal
+seeds produce plans the score gate would reject at k=2.
+
 ### Add a scenario
 
 Manual scenarios live alongside the auto-generated corpus. The
@@ -197,16 +239,111 @@ Properties that would be useful but are not yet encoded:
 - "Empty-node candidates do not appear in multi-node commands."
 - "Replace decisions strictly reduce cost on overlapping types."
 
-## Limitations to be aware of
+## What the corpus covers and what it does not
+
+### Strong coverage
+
+- **Shape A (binary search returns empty when feasible non-prefix
+  exists).** The default generator includes a 30 percent chance
+  per scenario of injecting a NodeSelector-blocked candidate at
+  a middle sort position. 14 of 100 corpus seeds fire the shape.
+- **Shape B (binary search returns short prefix; longer extension
+  exists).** Surfaced as 17 of 100 corpus seeds where mainline =
+  branch (binary search succeeded, pairwise fallback never ran)
+  but oracle finds more. Diagnosed by `analyze_incomplete.py`.
+- **Sort-key divergence.** The adversarial generator gives
+  candidates per-node InstanceMeta override (different prices)
+  with engineered blocker placement. 14 of 50 adversarial seeds
+  produce different orderings between disruption-cost and
+  savings-ratio sorts.
+- **Score gate's marginal-rejection regime.** The marginal
+  generator engineers scenarios where a high-price candidate
+  stays (its pod is NodeSelector-blocked) and the algorithm
+  picks predominantly cheap candidates: savings_fraction far
+  below disruption_fraction, score below k=2 threshold. 33 of
+  50 marginal seeds produce plans the score gate would reject.
+
+### Thin coverage
+
+- **Replace decisions.** Default generator's scenarios fit pods
+  on remaining nodes via free CPU, so the simulator returns
+  Delete decisions in nearly every case. Replace shapes (where
+  the simulator launches a single replacement node and the
+  same-instance-type filter is a real constraint) are barely
+  exercised.
+- **Capacity-pressure boundaries.** Generators set per-node
+  allocatable to comfortable values (8 to 32 CPU). Marginal
+  cases at the boundary of "pods barely fit" or "pods barely
+  do not fit" are not deliberately produced.
+- **Capacity-type variation.** Spot vs on-demand interactions are
+  not exercised. All corpus scenarios use on-demand.
+
+### No coverage
+
+- **Multiple NodePools.** All corpus scenarios create one pool.
+  Cross-pool budget interactions, replace decisions across
+  pools, and cross-pool sort considerations are not tested.
+- **PDB-blocked candidates.** `NewCandidate` filters PDB-blocked
+  nodes out via `ValidatePodsDisruptable` before they reach the
+  multi-node search, so the corpus has no path to test their
+  interaction. Eventual-class disruption (TerminationGracePeriod
+  + EventualDisruptionClass) would route PDB-blocked nodes
+  through differently, but the generator does not produce that
+  shape.
+- **Pod priority variation.** All pods have the same priority.
+  `EvictionCost` adds priority/2^25 to its result, so non-uniform
+  priorities would create per-pod disruption-cost variance that
+  the score gate could meaningfully respond to.
+- **DoNotDisrupt annotations** and other `ShouldDisrupt` filters.
+- **TopologySpread constraints**, hostport contention, and
+  affinity-driven multi-blocker patterns beyond the simple
+  NodeSelector approach the generators use.
+- **Different consolidation policies in effect during search.**
+  All scenarios use `WhenEmptyOrUnderutilized`. Balanced policy
+  is evaluated post-hoc (score computed on the algorithm's
+  output) rather than as a production policy active during
+  search.
+- **Score gate at multiple k values.** Only k=2 evaluated.
+- **N greater than 8.** The brute-force oracle's powerset cap
+  is the practical ceiling. Production clusters with hundreds
+  of candidates per cycle are out of reach.
+
+### Roughly speaking
+
+The corpus reaches the search-shape questions for delete-only
+multi-node consolidation at small N, single pool, uniform pods,
+under either of the production sort keys, with or without the
+Balanced score gate evaluated post-hoc. That is enough to find
+the four bug shapes documented above. It is not enough to find
+shapes that depend on Replace dynamics, multi-pool budgets,
+priority variation, PDB-Eventual interaction, or scale.
+
+A rough way to think about the structural space: there are
+roughly six independent axes of consolidation behavior (search
+shape, sort key, score gate, Replace dynamics, pool topology,
+candidate filtering). The corpus exercises three of them
+non-trivially (search shape, sort key, score gate marginal
+regime). Coverage is meaningful within those axes; a fourth or
+fifth axis would need new generator work.
+
+## Other limitations
 
 The corpus generator is small in shape. Single NodePool per
-scenario in `Generate`, a few instance types in `GenerateAdversarial`.
-Up to 8 candidates per scenario (the brute-force oracle's
-practical cap). Pods are simple (1 per candidate, basic
-constraints). To find shapes that need richer state, the generator
-needs corresponding axes added.
+scenario in `Generate`, a few instance types in
+`GenerateAdversarial` and `GenerateMarginal`. Up to 8 candidates
+per scenario (the brute-force oracle's practical cap). Pods are
+simple (1 per candidate, basic constraints). To find shapes that
+need richer state, the generator needs corresponding axes added.
 
-The Balanced score gate is approximately a no-op on this corpus.
+The candidate sample pool from the cloud provider matters. The
+default `pickCorpusInstances` deduplicates by `(cpu, mem)` shape
+to ensure price variation across the eight-instance pool; an
+earlier version deduplicated by full type name and ended up
+picking 8 same-price 1-CPU-1-mem variants. Without price
+variation the savings-ratio sort and the score gate are both
+effectively no-ops, which is not a property of the algorithm but
+a property of the input distribution.
+
 The score formula `savings_fraction / disruption_fraction`
 collapses to roughly 1.0 when per-pod EvictionCost is uniform,
 which it is here because `EvictionCost(p)` defaults to 1.0 and
