@@ -54,7 +54,7 @@ import (
 )
 
 const (
-	provCorpusSize       = 20
+	provCorpusSize       = 100
 	provCorpusOutputDir  = "testdata"
 	provCorpusOutputFile = "corpus_results.json"
 )
