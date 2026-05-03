@@ -74,8 +74,21 @@ type provCorpusRun struct {
 	ScheduledCount int      `json:"scheduled_count"`
 	UnschedCount   int      `json:"unsched_count"`
 	InstanceTypes  []string `json:"instance_types"`
-	ComputeTimeMs  float64  `json:"compute_time_ms"`
-	Error          string   `json:"error,omitempty"`
+	// OptionTops captures, for each new NodeClaim, the top 5 cheapest
+	// InstanceTypeOptions the scheduler kept after filtering by
+	// requirements and resource fit. Used to distinguish "the
+	// scheduler picked the wrong type from a list that contained the
+	// cheaper one" from "the cheaper type was filtered out before
+	// sort." Index 0 of each inner slice is what the cloud provider
+	// would actually launch.
+	OptionTops    [][]optionTop `json:"option_tops,omitempty"`
+	ComputeTimeMs float64       `json:"compute_time_ms"`
+	Error         string        `json:"error,omitempty"`
+}
+
+type optionTop struct {
+	Name  string  `json:"name"`
+	Price float64 `json:"price"`
 }
 
 type provOracleRun struct {
@@ -150,12 +163,14 @@ func runProductionScheduler(pendingPods []*corev1.Pod) provCorpusRun {
 		totalCost      float64
 		instanceTypes  []string
 		scheduledCount int
+		optionTops     [][]optionTop
 	)
 	for _, nc := range results.NewNodeClaims {
 		scheduledCount += len(nc.Pods)
 		instanceType, price := cheapestOption(nc.InstanceTypeOptions)
 		totalCost += price
 		instanceTypes = append(instanceTypes, instanceType)
+		optionTops = append(optionTops, topOptions(nc.InstanceTypeOptions, 5))
 	}
 
 	return provCorpusRun{
@@ -164,8 +179,22 @@ func runProductionScheduler(pendingPods []*corev1.Pod) provCorpusRun {
 		ScheduledCount: scheduledCount,
 		UnschedCount:   len(results.PodErrors),
 		InstanceTypes:  instanceTypes,
+		OptionTops:     optionTops,
 		ComputeTimeMs:  float64(dur.Microseconds()) / 1000.0,
 	}
+}
+
+func topOptions(options cloudprovider.InstanceTypes, n int) []optionTop {
+	limit := n
+	if len(options) < limit {
+		limit = len(options)
+	}
+	out := make([]optionTop, 0, limit)
+	for i := 0; i < limit; i++ {
+		_, price := cheapestOption(options[i : i+1])
+		out = append(out, optionTop{Name: options[i].Name, Price: price})
+	}
+	return out
 }
 
 func runOraclePlacement(pendingPods []*corev1.Pod, types []*cloudprovider.InstanceType) provOracleRun {
@@ -186,25 +215,30 @@ func runOraclePlacement(pendingPods []*corev1.Pod, types []*cloudprovider.Instan
 }
 
 // cheapestOption returns the name and cheapest available offering
-// price of the first instance type in the option list. The scheduler
-// pre-sorts InstanceTypeOptions by price after filtering by
-// requirements, so options[0] is the type cloudprovider.Create would
-// actually launch.
+// price across all instance types in the option list. The scheduler's
+// in-memory NewNodeClaims hold InstanceTypeOptions in unsorted order;
+// production sorts by price at NodeClaim conversion time
+// (OrderByPrice in nodeclaimtemplate.go) and the cloudprovider
+// launches the cheapest available offering. This function mirrors
+// that "what would actually launch" cost: scan all options, pick the
+// minimum.
 func cheapestOption(options cloudprovider.InstanceTypes) (string, float64) {
-	if len(options) == 0 {
-		return "", 0
-	}
-	first := options[0]
-	var min float64
-	found := false
-	for _, off := range first.Offerings {
-		if !off.Available {
-			continue
+	var (
+		bestName  string
+		bestPrice float64
+		found     bool
+	)
+	for _, it := range options {
+		for _, off := range it.Offerings {
+			if !off.Available {
+				continue
+			}
+			if !found || off.Price < bestPrice {
+				bestPrice = off.Price
+				bestName = it.Name
+				found = true
+			}
 		}
-		if !found || off.Price < min {
-			min = off.Price
-			found = true
-		}
 	}
-	return first.Name, min
+	return bestName, bestPrice
 }
