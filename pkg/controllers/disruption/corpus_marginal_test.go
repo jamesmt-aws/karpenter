@@ -68,7 +68,8 @@ var _ = Describe("Consolidation Marginal Corpus", Ordered, Label("corpus"), func
 })
 
 func runMarginalCorpusScenario(seed int64) corpusEntry {
-	instances := pickCorpusInstances(cloudProvider.InstanceTypes)
+	useAWSInstanceTypes()
+	instances := pickAWSInstances()
 	s := scenarios.GenerateMarginal(scenarios.GenerateParams{Seed: seed, Instances: instances})
 	built := s.Build()
 

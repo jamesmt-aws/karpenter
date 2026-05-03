@@ -123,7 +123,8 @@ var _ = Describe("Consolidation A/B Corpus", Ordered, Label("corpus"), func() {
 })
 
 func runCorpusScenario(seed int64) corpusEntry {
-	instances := pickCorpusInstances(cloudProvider.InstanceTypes)
+	useAWSInstanceTypes()
+	instances := pickAWSInstances()
 	s := scenarios.Generate(scenarios.GenerateParams{Seed: seed, Instances: instances})
 	built := s.Build()
 

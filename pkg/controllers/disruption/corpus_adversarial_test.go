@@ -68,7 +68,8 @@ var _ = Describe("Consolidation Adversarial Corpus", Ordered, Label("corpus"), f
 })
 
 func runAdversarialCorpusScenario(seed int64) corpusEntry {
-	instances := pickCorpusInstances(cloudProvider.InstanceTypes)
+	useAWSInstanceTypes()
+	instances := pickAWSInstances()
 	s := scenarios.GenerateAdversarial(scenarios.GenerateParams{Seed: seed, Instances: instances})
 	built := s.Build()
 
