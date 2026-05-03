@@ -1,0 +1,182 @@
+//go:build corpus
+
+/*
+Copyright The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+// Brute-force placement oracle for the provisioning corpus.
+//
+// Enumerates every set partition of the pending pods, treating each
+// group as one new node. For each group it picks the cheapest
+// instance type whose Allocatable() satisfies the group's summed
+// CPU/Memory requests. Returns the partition with the minimum total
+// price.
+//
+// First-pass scope: greenfield only (no existing nodes), no daemon
+// overhead, no NodeAffinity / Taint / TopologySpread / capacity-type
+// considerations. Expanded together with the corresponding generator
+// axes; each new feasibility predicate must mirror what the
+// production scheduler enforces (per the consolidation guide's
+// "lenient oracles produce ghost shapes" lesson).
+//
+// Partition-count cap: Bell numbers grow B(6)=203, B(7)=877,
+// B(8)=4140. The generator caps pod count at 6.
+
+package provisioning_test
+
+import (
+	"math"
+
+	corev1 "k8s.io/api/core/v1"
+
+	"sigs.k8s.io/karpenter/pkg/cloudprovider"
+)
+
+// oraclePlan describes the optimal placement: each group is a new
+// node, with the chosen instance type and the pods assigned to it.
+type oraclePlan struct {
+	Groups        [][]int
+	InstanceTypes []*cloudprovider.InstanceType
+	TotalPrice    float64
+}
+
+// bruteForcePlacement enumerates every partition of pods into groups,
+// finds the cheapest instance type that fits each group, and returns
+// the minimum-cost feasible plan. Returns nil if no partition is
+// feasible (e.g. some pod's requests exceed every instance type's
+// allocatable).
+func bruteForcePlacement(pods []*corev1.Pod, types []*cloudprovider.InstanceType) *oraclePlan {
+	if len(pods) == 0 {
+		return &oraclePlan{}
+	}
+	var best *oraclePlan
+	walkPartitions(len(pods), func(groups [][]int) {
+		var (
+			chosen     []*cloudprovider.InstanceType
+			totalPrice float64
+			feasible   = true
+		)
+		for _, g := range groups {
+			it := cheapestFit(g, pods, types)
+			if it == nil {
+				feasible = false
+				break
+			}
+			chosen = append(chosen, it)
+			totalPrice += offeringPrice(it)
+		}
+		if !feasible {
+			return
+		}
+		if best == nil || totalPrice < best.TotalPrice {
+			best = &oraclePlan{
+				Groups:        copyGroups(groups),
+				InstanceTypes: chosen,
+				TotalPrice:    totalPrice,
+			}
+		}
+	})
+	return best
+}
+
+// walkPartitions invokes visit for every set partition of {0..n-1},
+// representing each partition as a slice of groups, each group a
+// slice of pod indices. The same backing slices are reused across
+// invocations; visit must copy if it needs to retain.
+func walkPartitions(n int, visit func(groups [][]int)) {
+	if n == 0 {
+		visit(nil)
+		return
+	}
+	assignment := make([]int, n)
+	groups := make([][]int, 0, n)
+	var recurse func(i, maxGroup int)
+	recurse = func(i, maxGroup int) {
+		if i == n {
+			groups = groups[:0]
+			for j := 0; j < maxGroup; j++ {
+				groups = append(groups, nil)
+			}
+			for j := 0; j < n; j++ {
+				groups[assignment[j]] = append(groups[assignment[j]], j)
+			}
+			visit(groups)
+			for j := range groups {
+				groups[j] = groups[j][:0]
+			}
+			return
+		}
+		for g := 0; g < maxGroup; g++ {
+			assignment[i] = g
+			recurse(i+1, maxGroup)
+		}
+		assignment[i] = maxGroup
+		recurse(i+1, maxGroup+1)
+	}
+	recurse(0, 0)
+}
+
+func copyGroups(groups [][]int) [][]int {
+	out := make([][]int, len(groups))
+	for i, g := range groups {
+		out[i] = append([]int(nil), g...)
+	}
+	return out
+}
+
+// cheapestFit returns the cheapest instance type whose Allocatable()
+// satisfies the summed CPU and Memory requests of the pods in group.
+// Returns nil if no instance type fits.
+func cheapestFit(group []int, pods []*corev1.Pod, types []*cloudprovider.InstanceType) *cloudprovider.InstanceType {
+	var sumCPU, sumMem int64
+	for _, idx := range group {
+		req := pods[idx].Spec.Containers[0].Resources.Requests
+		sumCPU += req.Cpu().MilliValue()
+		sumMem += req.Memory().Value()
+	}
+	var best *cloudprovider.InstanceType
+	bestPrice := math.Inf(1)
+	for _, it := range types {
+		alloc := it.Allocatable()
+		if sumCPU > alloc.Cpu().MilliValue() {
+			continue
+		}
+		if sumMem > alloc.Memory().Value() {
+			continue
+		}
+		price := offeringPrice(it)
+		if price < bestPrice {
+			bestPrice = price
+			best = it
+		}
+	}
+	return best
+}
+
+// offeringPrice returns the cheapest available offering price for the
+// instance type. The brute-force oracle does not yet model capacity-
+// type or zone constraints, so any available offering is admissible.
+func offeringPrice(it *cloudprovider.InstanceType) float64 {
+	min := math.Inf(1)
+	for _, off := range it.Offerings {
+		if !off.Available {
+			continue
+		}
+		if off.Price < min {
+			min = off.Price
+		}
+	}
+	return min
+}

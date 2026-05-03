@@ -95,3 +95,36 @@ func (t Toleration) apply(opts *test.PodOptions, _ map[string]string) {
 		Effect:   t.Effect,
 	})
 }
+
+// TopologySpread adds a TopologySpreadConstraint over the pod's own
+// labels. MaxSkew defaults to 1 and WhenUnsatisfiable defaults to
+// DoNotSchedule, which is the regime that turns spread into a hard
+// scheduling constraint (the case worth probing for shapes).
+type TopologySpread struct {
+	TopologyKey       string
+	MaxSkew           int32
+	WhenUnsatisfiable corev1.UnsatisfiableConstraintAction
+	MatchLabelKeys    []string
+}
+
+func (t TopologySpread) apply(opts *test.PodOptions, podLabels map[string]string) {
+	key := t.TopologyKey
+	if key == "" {
+		key = corev1.LabelTopologyZone
+	}
+	skew := t.MaxSkew
+	if skew == 0 {
+		skew = 1
+	}
+	when := t.WhenUnsatisfiable
+	if when == "" {
+		when = corev1.DoNotSchedule
+	}
+	opts.TopologySpreadConstraints = append(opts.TopologySpreadConstraints, corev1.TopologySpreadConstraint{
+		MaxSkew:           skew,
+		TopologyKey:       key,
+		WhenUnsatisfiable: when,
+		LabelSelector:     &metav1.LabelSelector{MatchLabels: podLabels},
+		MatchLabelKeys:    t.MatchLabelKeys,
+	})
+}

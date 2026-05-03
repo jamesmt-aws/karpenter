@@ -1,0 +1,484 @@
+[
+  {
+    "seed": 0,
+    "description": "seed=0 pending_pods=5 instance_types=15",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "compute_time_ms": 4.489
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 1,
+    "description": "seed=1 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.68,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.4xlarge"
+      ],
+      "compute_time_ms": 45.952
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.4xlarge"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 2,
+    "description": "seed=2 pending_pods=5 instance_types=15",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "compute_time_ms": 23.213
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 3,
+    "description": "seed=3 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "compute_time_ms": 39.243
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 4,
+    "description": "seed=4 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "compute_time_ms": 8.5
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 5,
+    "description": "seed=5 pending_pods=5 instance_types=15",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "compute_time_ms": 4.765
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 6,
+    "description": "seed=6 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.68,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.4xlarge"
+      ],
+      "compute_time_ms": 4.296
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.4xlarge"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 7,
+    "description": "seed=7 pending_pods=5 instance_types=15",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.68,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.4xlarge"
+      ],
+      "compute_time_ms": 4.148
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.xlarge"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.3333333333333335
+  },
+  {
+    "seed": 8,
+    "description": "seed=8 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.17,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge"
+      ],
+      "compute_time_ms": 4.079
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.17,
+      "instance_types": [
+        "c7i.xlarge"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 9,
+    "description": "seed=9 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "compute_time_ms": 5.406
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 10,
+    "description": "seed=10 pending_pods=5 instance_types=15",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.68,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.4xlarge"
+      ],
+      "compute_time_ms": 4.238
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.4xlarge"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 11,
+    "description": "seed=11 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "compute_time_ms": 30.536
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 12,
+    "description": "seed=12 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.68,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.4xlarge"
+      ],
+      "compute_time_ms": 21.405
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.4xlarge"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 13,
+    "description": "seed=13 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.68,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.4xlarge"
+      ],
+      "compute_time_ms": 4.117
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.4xlarge"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 14,
+    "description": "seed=14 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "compute_time_ms": 4.419
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.2016,
+      "instance_types": [
+        "m7i.xlarge"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.6865079365079365
+  },
+  {
+    "seed": 15,
+    "description": "seed=15 pending_pods=6 instance_types=15",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.68,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.4xlarge"
+      ],
+      "compute_time_ms": 4.99
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.xlarge"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.3333333333333335
+  },
+  {
+    "seed": 16,
+    "description": "seed=16 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.68,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.4xlarge"
+      ],
+      "compute_time_ms": 44.051
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.4xlarge"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 17,
+    "description": "seed=17 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "compute_time_ms": 5.061
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 18,
+    "description": "seed=18 pending_pods=6 instance_types=15",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "compute_time_ms": 4.835
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 19,
+    "description": "seed=19 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "compute_time_ms": 36.207
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  }
+]

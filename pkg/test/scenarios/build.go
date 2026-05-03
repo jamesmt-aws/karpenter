@@ -21,6 +21,7 @@ import (
 	"strconv"
 
 	"github.com/samber/lo"
+	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	policyv1 "k8s.io/api/policy/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
@@ -71,6 +72,25 @@ func (s *Scenario) Build() *Built {
 		built.PDBs = append(built.PDBs, s.buildPDB(p))
 	}
 
+	for _, d := range s.daemonSets {
+		ds, dpod := s.buildDaemonSet(d)
+		built.DaemonSets = append(built.DaemonSets, ds)
+		built.DaemonSetPods = append(built.DaemonSetPods, dpod)
+	}
+
+	pendingIdx := 0
+	for _, pp := range s.pendingPods {
+		replicas := pp.Replicas
+		if replicas <= 0 {
+			replicas = 1
+		}
+		for r := 0; r < replicas; r++ {
+			pod := s.buildPendingPod(pp, pendingIdx, r, replicas, ownerRef)
+			built.PendingPods = append(built.PendingPods, pod)
+		}
+		pendingIdx++
+	}
+
 	return built
 }
 
@@ -113,6 +133,16 @@ func (s *Scenario) validate() {
 			}
 		}
 	}
+	dsNames := map[string]struct{}{}
+	for i, d := range s.daemonSets {
+		if d.Name == "" {
+			panic(fmt.Sprintf("scenarios: daemonSet[%d] requires Name", i))
+		}
+		if _, dup := dsNames[d.Name]; dup {
+			panic(fmt.Sprintf("scenarios: duplicate DaemonSet name %q", d.Name))
+		}
+		dsNames[d.Name] = struct{}{}
+	}
 }
 
 func (s *Scenario) buildNodePool(np NodePool) *v1.NodePool {
@@ -124,12 +154,26 @@ func (s *Scenario) buildNodePool(np NodePool) *v1.NodePool {
 	if budgetsPct == 0 {
 		budgetsPct = 100
 	}
-	return test.NodePool(v1.NodePool{
+	requirements := append([]v1.NodeSelectorRequirementWithMinValues(nil), np.Requirements...)
+	if len(np.InstanceTypes) > 0 {
+		requirements = append(requirements, v1.NodeSelectorRequirementWithMinValues{
+			Key:      corev1.LabelInstanceTypeStable,
+			Operator: corev1.NodeSelectorOpIn,
+			Values:   np.InstanceTypes,
+		})
+	}
+	pool := test.NodePool(v1.NodePool{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:   np.Name,
 			Labels: np.ExtraLabels,
 		},
 		Spec: v1.NodePoolSpec{
+			Template: v1.NodeClaimTemplate{
+				Spec: v1.NodeClaimTemplateSpec{
+					Requirements: requirements,
+					Taints:       np.Taints,
+				},
+			},
 			Disruption: v1.Disruption{
 				ConsolidationPolicy: v1.ConsolidationPolicyWhenEmptyOrUnderutilized,
 				ConsolidateAfter:    v1.MustParseNillableDuration(consolidateAfter),
@@ -137,6 +181,7 @@ func (s *Scenario) buildNodePool(np NodePool) *v1.NodePool {
 			},
 		},
 	})
+	return pool
 }
 
 func (s *Scenario) buildNodeClaimAndNode(n Node, idx int) (*v1.NodeClaim, *corev1.Node) {
@@ -231,6 +276,89 @@ func (s *Scenario) buildPod(p Pod, nodeIdx, podIdx int, ownerRef metav1.OwnerRef
 		c.apply(&opts, labels)
 	}
 	return test.Pod(opts)
+}
+
+func (s *Scenario) buildPendingPod(p PendingPod, idx, replica, replicas int, ownerRef metav1.OwnerReference) *corev1.Pod {
+	annotations := map[string]string{}
+	for k, v := range p.Annotations {
+		annotations[k] = v
+	}
+
+	labels := map[string]string{}
+	for k, v := range p.Labels {
+		labels[k] = v
+	}
+
+	requests := corev1.ResourceList{}
+	if p.CPU != "" {
+		requests[corev1.ResourceCPU] = resource.MustParse(p.CPU)
+	}
+	if p.Memory != "" {
+		requests[corev1.ResourceMemory] = resource.MustParse(p.Memory)
+	}
+
+	name := p.Name
+	if name == "" {
+		name = fmt.Sprintf("%s-pending-%d", s.ID, idx)
+	}
+	if replicas > 1 {
+		name = fmt.Sprintf("%s-r%d", name, replica)
+	}
+
+	opts := test.PodOptions{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:            name,
+			Labels:          labels,
+			Annotations:     annotations,
+			OwnerReferences: []metav1.OwnerReference{ownerRef},
+		},
+		NodeSelector: p.NodeSelector,
+		ResourceRequirements: corev1.ResourceRequirements{
+			Requests: requests,
+		},
+	}
+	for _, c := range p.Constraints {
+		c.apply(&opts, labels)
+	}
+	return test.Pod(opts)
+}
+
+func (s *Scenario) buildDaemonSet(d DaemonSet) (*appsv1.DaemonSet, *corev1.Pod) {
+	requests := corev1.ResourceList{}
+	if d.CPU != "" {
+		requests[corev1.ResourceCPU] = resource.MustParse(d.CPU)
+	}
+	if d.Memory != "" {
+		requests[corev1.ResourceMemory] = resource.MustParse(d.Memory)
+	}
+	podOpts := test.PodOptions{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:   fmt.Sprintf("%s-pod", d.Name),
+			Labels: map[string]string{"app": d.Name},
+		},
+		NodeSelector: d.NodeSelector,
+		Tolerations:  d.Tolerations,
+		ResourceRequirements: corev1.ResourceRequirements{
+			Requests: requests,
+		},
+	}
+	ds := test.DaemonSet(test.DaemonSetOptions{
+		ObjectMeta: metav1.ObjectMeta{Name: d.Name},
+		PodOptions: podOpts,
+	})
+	// The runner passes the daemon's pod template into NewScheduler as a
+	// pod object. Stamp the DaemonSet owner reference so production code
+	// that filters by owner kind treats it as daemon overhead.
+	dpod := test.Pod(podOpts)
+	dpod.OwnerReferences = []metav1.OwnerReference{{
+		APIVersion:         "apps/v1",
+		Kind:               "DaemonSet",
+		Name:               ds.Name,
+		UID:                ds.UID,
+		Controller:         lo.ToPtr(true),
+		BlockOwnerDeletion: lo.ToPtr(true),
+	}}
+	return ds, dpod
 }
 
 func (s *Scenario) buildPDB(p PDB) *policyv1.PodDisruptionBudget {
