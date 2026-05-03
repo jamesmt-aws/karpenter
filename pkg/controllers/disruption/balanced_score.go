@@ -94,6 +94,31 @@ func ComputeMoveDisruptionCostForCorpus(ctx context.Context, candidates []*Candi
 	return cost
 }
 
+// ProbeFeasibilityForCorpus calls computeConsolidation once on the
+// given candidate set and reports whether the result is one the
+// production algorithm would treat as feasible. Mirrors the validity
+// check in binarySearchPrefix: Delete is always feasible, Replace
+// is feasible only when filterOutSameInstanceType leaves a non-empty
+// replacement option list. Used by the corpus harness to verify
+// algorithm decisions against a direct probe.
+func ProbeFeasibilityForCorpus(ctx context.Context, c consolidation, candidates ...*Candidate) (bool, error) {
+	cmd, err := c.computeConsolidation(ctx, candidates...)
+	if err != nil {
+		return false, err
+	}
+	if cmd.Decision() == DeleteDecision {
+		return true, nil
+	}
+	if cmd.Decision() == ReplaceDecision {
+		filtered, err := filterOutSameInstanceType(cmd.Replacements[0], candidates)
+		if err != nil {
+			return false, nil
+		}
+		return len(filtered.InstanceTypeOptions) > 0, nil
+	}
+	return false, nil
+}
+
 // ScoreMoveK scores a consolidation move at threshold k. A move is
 // approved when score >= 1/k.
 func ScoreMoveK(savings float64, disruptionCost float64, totals NodePoolTotals, k int32) BalancedScoreResult {

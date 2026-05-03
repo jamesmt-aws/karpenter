@@ -3,25 +3,25 @@
     "seed": 0,
     "description": "adversarial seed=0 node_count=6 allocCPU=32",
     "sorted_candidates": [
-      "giverfluff-3056-gp1ai7ijjh",
-      "bitermisty-3061-x2pnbgzxgo",
-      "gamblermesquite-3066-jqq3texrjp",
-      "legendslash-3071-xe1nf5bnvx",
-      "kittendestiny-3076-pa3gotqh7n",
-      "braidleaf-3081-yrdiukjoli"
+      "carverdust-1571-jxrqis1nfl",
+      "spiderlunar-1576-3pfod15bg1",
+      "gorillaspring-1581-5tprz5piaa",
+      "fisherbramble-1586-rjv83fez9n",
+      "mothvolcano-1591-9ktwmjitdw",
+      "servantbranch-1596-vzylagsved"
     ],
     "sorted_candidates_savings_ratio": [
-      "braidleaf-3081-yrdiukjoli",
-      "gamblermesquite-3066-jqq3texrjp",
-      "kittendestiny-3076-pa3gotqh7n",
-      "giverfluff-3056-gp1ai7ijjh",
-      "bitermisty-3061-x2pnbgzxgo",
-      "legendslash-3071-xe1nf5bnvx"
+      "servantbranch-1596-vzylagsved",
+      "gorillaspring-1581-5tprz5piaa",
+      "mothvolcano-1591-9ktwmjitdw",
+      "carverdust-1571-jxrqis1nfl",
+      "spiderlunar-1576-3pfod15bg1",
+      "fisherbramble-1586-rjv83fez9n"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 13.709,
+      "compute_time_ms": 14.177,
       "slack_entropy": 1.791741486920691,
       "candidates": null,
       "score_k2_approved": false,
@@ -30,14 +30,14 @@
     "branch": {
       "total_savings": 2.8464,
       "total_disruption": 5,
-      "compute_time_ms": 93.711,
+      "compute_time_ms": 90.568,
       "slack_entropy": 0,
       "candidates": [
-        "bitermisty-3061-x2pnbgzxgo",
-        "gamblermesquite-3066-jqq3texrjp",
-        "legendslash-3071-xe1nf5bnvx",
-        "kittendestiny-3076-pa3gotqh7n",
-        "braidleaf-3081-yrdiukjoli"
+        "spiderlunar-1576-3pfod15bg1",
+        "gorillaspring-1581-5tprz5piaa",
+        "fisherbramble-1586-rjv83fez9n",
+        "mothvolcano-1591-9ktwmjitdw",
+        "servantbranch-1596-vzylagsved"
       ],
       "score_k2_approved": true,
       "score_k2": 1.0711591794814301
@@ -45,14 +45,14 @@
     "branch_savings_sort": {
       "total_savings": 2.8464,
       "total_disruption": 5,
-      "compute_time_ms": 82.672,
+      "compute_time_ms": 76.444,
       "slack_entropy": 0,
       "candidates": [
-        "braidleaf-3081-yrdiukjoli",
-        "gamblermesquite-3066-jqq3texrjp",
-        "kittendestiny-3076-pa3gotqh7n",
-        "bitermisty-3061-x2pnbgzxgo",
-        "legendslash-3071-xe1nf5bnvx"
+        "servantbranch-1596-vzylagsved",
+        "gorillaspring-1581-5tprz5piaa",
+        "mothvolcano-1591-9ktwmjitdw",
+        "spiderlunar-1576-3pfod15bg1",
+        "fisherbramble-1586-rjv83fez9n"
       ],
       "score_k2_approved": true,
       "score_k2": 1.0711591794814304
@@ -60,42 +60,42 @@
     "oracle": {
       "total_savings": 2.8464,
       "total_disruption": 5,
-      "compute_time_ms": 440.193,
+      "compute_time_ms": 434.944,
       "slack_entropy": 0,
       "candidates": [
-        "bitermisty-3061-x2pnbgzxgo",
-        "gamblermesquite-3066-jqq3texrjp",
-        "legendslash-3071-xe1nf5bnvx",
-        "kittendestiny-3076-pa3gotqh7n",
-        "braidleaf-3081-yrdiukjoli"
+        "spiderlunar-1576-3pfod15bg1",
+        "gorillaspring-1581-5tprz5piaa",
+        "fisherbramble-1586-rjv83fez9n",
+        "mothvolcano-1591-9ktwmjitdw",
+        "servantbranch-1596-vzylagsved"
       ],
       "score_k2_approved": true,
-      "score_k2": 1.0711591794814304
+      "score_k2": 1.0711591794814301
     }
   },
   {
     "seed": 1,
     "description": "adversarial seed=1 node_count=6 allocCPU=8",
     "sorted_candidates": [
-      "piratecoral-3089-hi2s4tnh6b",
-      "roarforest-3094-23q5hzlkku",
-      "lynxnimble-3099-jdfr22nmjp",
-      "thiefancient-3104-juzhpt1xca",
-      "servantobsidian-3109-csrptlbzm1",
-      "ferretjelly-3114-guur1ylzxy"
+      "ridgepetal-1604-vcqcxqacwi",
+      "hissweed-1609-c2lxsu748l",
+      "racerdandelion-1614-h6knitq1b0",
+      "carpash-1619-tp0uydf3k4",
+      "deathwhip-1624-jdyj3uf0vs",
+      "tailshell-1629-n0wcvpikiy"
     ],
     "sorted_candidates_savings_ratio": [
-      "lynxnimble-3099-jdfr22nmjp",
-      "servantobsidian-3109-csrptlbzm1",
-      "ferretjelly-3114-guur1ylzxy",
-      "piratecoral-3089-hi2s4tnh6b",
-      "roarforest-3094-23q5hzlkku",
-      "thiefancient-3104-juzhpt1xca"
+      "racerdandelion-1614-h6knitq1b0",
+      "deathwhip-1624-jdyj3uf0vs",
+      "tailshell-1629-n0wcvpikiy",
+      "ridgepetal-1604-vcqcxqacwi",
+      "hissweed-1609-c2lxsu748l",
+      "carpash-1619-tp0uydf3k4"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 13.74,
+      "compute_time_ms": 13.718,
       "slack_entropy": 1.786845099513167,
       "candidates": null,
       "score_k2_approved": false,
@@ -104,14 +104,14 @@
     "branch": {
       "total_savings": 3.9292000000000002,
       "total_disruption": 5,
-      "compute_time_ms": 91.864,
+      "compute_time_ms": 91.189,
       "slack_entropy": 0,
       "candidates": [
-        "roarforest-3094-23q5hzlkku",
-        "lynxnimble-3099-jdfr22nmjp",
-        "thiefancient-3104-juzhpt1xca",
-        "servantobsidian-3109-csrptlbzm1",
-        "ferretjelly-3114-guur1ylzxy"
+        "hissweed-1609-c2lxsu748l",
+        "racerdandelion-1614-h6knitq1b0",
+        "carpash-1619-tp0uydf3k4",
+        "deathwhip-1624-jdyj3uf0vs",
+        "tailshell-1629-n0wcvpikiy"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1033451991940777
@@ -119,14 +119,14 @@
     "branch_savings_sort": {
       "total_savings": 3.9292,
       "total_disruption": 5,
-      "compute_time_ms": 80.008,
+      "compute_time_ms": 80.612,
       "slack_entropy": 0,
       "candidates": [
-        "lynxnimble-3099-jdfr22nmjp",
-        "servantobsidian-3109-csrptlbzm1",
-        "ferretjelly-3114-guur1ylzxy",
-        "roarforest-3094-23q5hzlkku",
-        "thiefancient-3104-juzhpt1xca"
+        "racerdandelion-1614-h6knitq1b0",
+        "deathwhip-1624-jdyj3uf0vs",
+        "tailshell-1629-n0wcvpikiy",
+        "hissweed-1609-c2lxsu748l",
+        "carpash-1619-tp0uydf3k4"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1033451991940777
@@ -134,14 +134,14 @@
     "oracle": {
       "total_savings": 3.9292000000000002,
       "total_disruption": 5,
-      "compute_time_ms": 422.981,
+      "compute_time_ms": 420.167,
       "slack_entropy": 0,
       "candidates": [
-        "roarforest-3094-23q5hzlkku",
-        "lynxnimble-3099-jdfr22nmjp",
-        "thiefancient-3104-juzhpt1xca",
-        "servantobsidian-3109-csrptlbzm1",
-        "ferretjelly-3114-guur1ylzxy"
+        "hissweed-1609-c2lxsu748l",
+        "racerdandelion-1614-h6knitq1b0",
+        "carpash-1619-tp0uydf3k4",
+        "deathwhip-1624-jdyj3uf0vs",
+        "tailshell-1629-n0wcvpikiy"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1033451991940781
@@ -151,27 +151,27 @@
     "seed": 2,
     "description": "adversarial seed=2 node_count=7 allocCPU=16",
     "sorted_candidates": [
-      "wyrmbald-3122-7lrwfj0rok",
-      "bowclever-3127-jfyvvqh5xb",
-      "puppybrook-3132-kzm8m1h3em",
-      "runnercrystal-3137-e4m149a4hv",
-      "lizardspiral-3142-ypnzn2balz",
-      "cloudlight-3147-qt8ttimn2s",
-      "stonecoffee-3152-af31kdulxf"
+      "gemblaze-1637-mcywhrpbt5",
+      "elkrogue-1642-bc8gzmkg7a",
+      "markshy-1647-w4fle44f7r",
+      "capjuniper-1652-ltqlvbkidh",
+      "eaglesun-1657-7vbi0mqfl7",
+      "lifterpaper-1662-winiwr0uhm",
+      "roarstump-1667-d117kfocka"
     ],
     "sorted_candidates_savings_ratio": [
-      "puppybrook-3132-kzm8m1h3em",
-      "lizardspiral-3142-ypnzn2balz",
-      "stonecoffee-3152-af31kdulxf",
-      "wyrmbald-3122-7lrwfj0rok",
-      "bowclever-3127-jfyvvqh5xb",
-      "runnercrystal-3137-e4m149a4hv",
-      "cloudlight-3147-qt8ttimn2s"
+      "markshy-1647-w4fle44f7r",
+      "eaglesun-1657-7vbi0mqfl7",
+      "roarstump-1667-d117kfocka",
+      "gemblaze-1637-mcywhrpbt5",
+      "elkrogue-1642-bc8gzmkg7a",
+      "capjuniper-1652-ltqlvbkidh",
+      "lifterpaper-1662-winiwr0uhm"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 13.994,
+      "compute_time_ms": 13.775,
       "slack_entropy": 1.9448358574858404,
       "candidates": null,
       "score_k2_approved": false,
@@ -180,15 +180,15 @@
     "branch": {
       "total_savings": 1.8166,
       "total_disruption": 6,
-      "compute_time_ms": 101.38,
+      "compute_time_ms": 101.064,
       "slack_entropy": 0,
       "candidates": [
-        "bowclever-3127-jfyvvqh5xb",
-        "puppybrook-3132-kzm8m1h3em",
-        "runnercrystal-3137-e4m149a4hv",
-        "lizardspiral-3142-ypnzn2balz",
-        "cloudlight-3147-qt8ttimn2s",
-        "stonecoffee-3152-af31kdulxf"
+        "elkrogue-1642-bc8gzmkg7a",
+        "markshy-1647-w4fle44f7r",
+        "capjuniper-1652-ltqlvbkidh",
+        "eaglesun-1657-7vbi0mqfl7",
+        "lifterpaper-1662-winiwr0uhm",
+        "roarstump-1667-d117kfocka"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1135280783073045
@@ -196,15 +196,15 @@
     "branch_savings_sort": {
       "total_savings": 1.8166,
       "total_disruption": 6,
-      "compute_time_ms": 89.658,
+      "compute_time_ms": 83.199,
       "slack_entropy": 0,
       "candidates": [
-        "puppybrook-3132-kzm8m1h3em",
-        "lizardspiral-3142-ypnzn2balz",
-        "stonecoffee-3152-af31kdulxf",
-        "bowclever-3127-jfyvvqh5xb",
-        "runnercrystal-3137-e4m149a4hv",
-        "cloudlight-3147-qt8ttimn2s"
+        "markshy-1647-w4fle44f7r",
+        "eaglesun-1657-7vbi0mqfl7",
+        "roarstump-1667-d117kfocka",
+        "elkrogue-1642-bc8gzmkg7a",
+        "capjuniper-1652-ltqlvbkidh",
+        "lifterpaper-1662-winiwr0uhm"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1135280783073045
@@ -212,15 +212,15 @@
     "oracle": {
       "total_savings": 1.8166,
       "total_disruption": 6,
-      "compute_time_ms": 865.086,
+      "compute_time_ms": 872.959,
       "slack_entropy": 0,
       "candidates": [
-        "bowclever-3127-jfyvvqh5xb",
-        "puppybrook-3132-kzm8m1h3em",
-        "runnercrystal-3137-e4m149a4hv",
-        "lizardspiral-3142-ypnzn2balz",
-        "cloudlight-3147-qt8ttimn2s",
-        "stonecoffee-3152-af31kdulxf"
+        "elkrogue-1642-bc8gzmkg7a",
+        "markshy-1647-w4fle44f7r",
+        "capjuniper-1652-ltqlvbkidh",
+        "eaglesun-1657-7vbi0mqfl7",
+        "lifterpaper-1662-winiwr0uhm",
+        "roarstump-1667-d117kfocka"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1135280783073045
@@ -230,29 +230,29 @@
     "seed": 3,
     "description": "adversarial seed=3 node_count=5 allocCPU=8",
     "sorted_candidates": [
-      "chillpatch-3160-bqitzgnbig",
-      "sharkfrill-3165-t89oumoptw",
-      "sharkalmond-3170-swqaxgzi8f",
-      "caprapid-3175-tkpywvtsqm",
-      "rayplaid-3180-gcr6g0crnr"
+      "swallowshade-1675-3mil86hlrj",
+      "catfuschia-1680-esmzlh5a4j",
+      "owltar-1685-vavslkjzsf",
+      "hyenagold-1690-yyazccng8i",
+      "voledawn-1695-ptycdiiwmy"
     ],
     "sorted_candidates_savings_ratio": [
-      "sharkfrill-3165-t89oumoptw",
-      "caprapid-3175-tkpywvtsqm",
-      "rayplaid-3180-gcr6g0crnr",
-      "chillpatch-3160-bqitzgnbig",
-      "sharkalmond-3170-swqaxgzi8f"
+      "catfuschia-1680-esmzlh5a4j",
+      "hyenagold-1690-yyazccng8i",
+      "voledawn-1695-ptycdiiwmy",
+      "swallowshade-1675-3mil86hlrj",
+      "owltar-1685-vavslkjzsf"
     ],
     "mainline": {
       "total_savings": 3.1232,
       "total_disruption": 4,
-      "compute_time_ms": 54.987,
+      "compute_time_ms": 54.239,
       "slack_entropy": 0,
       "candidates": [
-        "chillpatch-3160-bqitzgnbig",
-        "sharkfrill-3165-t89oumoptw",
-        "sharkalmond-3170-swqaxgzi8f",
-        "caprapid-3175-tkpywvtsqm"
+        "swallowshade-1675-3mil86hlrj",
+        "catfuschia-1680-esmzlh5a4j",
+        "owltar-1685-vavslkjzsf",
+        "hyenagold-1690-yyazccng8i"
       ],
       "score_k2_approved": true,
       "score_k2": 0.994478912543652
@@ -260,70 +260,69 @@
     "branch": {
       "total_savings": 3.1232,
       "total_disruption": 4,
-      "compute_time_ms": 66.529,
+      "compute_time_ms": 60.625,
       "slack_entropy": 0,
       "candidates": [
-        "chillpatch-3160-bqitzgnbig",
-        "sharkfrill-3165-t89oumoptw",
-        "sharkalmond-3170-swqaxgzi8f",
-        "caprapid-3175-tkpywvtsqm"
+        "swallowshade-1675-3mil86hlrj",
+        "catfuschia-1680-esmzlh5a4j",
+        "owltar-1685-vavslkjzsf",
+        "hyenagold-1690-yyazccng8i"
       ],
       "score_k2_approved": true,
-      "score_k2": 0.994478912543652
+      "score_k2": 0.9944789125436518
     },
     "branch_savings_sort": {
       "total_savings": 3.728,
       "total_disruption": 4,
-      "compute_time_ms": 61.832,
+      "compute_time_ms": 63.341,
       "slack_entropy": 0,
       "candidates": [
-        "caprapid-3175-tkpywvtsqm",
-        "sharkfrill-3165-t89oumoptw",
-        "rayplaid-3180-gcr6g0crnr",
-        "sharkalmond-3170-swqaxgzi8f"
+        "hyenagold-1690-yyazccng8i",
+        "catfuschia-1680-esmzlh5a4j",
+        "voledawn-1695-ptycdiiwmy",
+        "owltar-1685-vavslkjzsf"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1849871221558796
     },
     "oracle": {
-      "total_savings": 3.5896000000000003,
-      "total_disruption": 5,
-      "compute_time_ms": 216.011,
+      "total_savings": 3.728,
+      "total_disruption": 4,
+      "compute_time_ms": 216.606,
       "slack_entropy": 0,
       "candidates": [
-        "chillpatch-3160-bqitzgnbig",
-        "sharkfrill-3165-t89oumoptw",
-        "sharkalmond-3170-swqaxgzi8f",
-        "caprapid-3175-tkpywvtsqm",
-        "rayplaid-3180-gcr6g0crnr"
+        "catfuschia-1680-esmzlh5a4j",
+        "owltar-1685-vavslkjzsf",
+        "hyenagold-1690-yyazccng8i",
+        "voledawn-1695-ptycdiiwmy"
       ],
       "score_k2_approved": true,
-      "score_k2": 1.0000000000000002
+      "score_k2": 1.1849871221558796
     }
   },
   {
     "seed": 4,
     "description": "adversarial seed=4 node_count=6 allocCPU=32",
     "sorted_candidates": [
-      "twisterember-3188-z3pnaf4utc",
-      "hissscratch-3193-rlesvrii6w",
-      "minnowoil-3198-lfdwt4g5wn",
-      "bootvaliant-3203-t4bixfw8mz",
-      "raccoontyphoon-3208-a3v0dz7ypj",
-      "daggercopper-3213-ujkt5rfzlm"
+      "followerpolar-1703-oortuiyblx",
+      "crowberry-1708-rqb9rhmti6",
+      "lightningdot-1713-cyepwllrjg",
+      "hornettruth-1718-ltsqqkrudk",
+      "howlerbubble-1723-gkigkzhp4o",
+      "slothflint-1728-o56aftnkkr"
     ],
     "sorted_candidates_savings_ratio": [
-      "daggercopper-3213-ujkt5rfzlm",
-      "bootvaliant-3203-t4bixfw8mz",
-      "twisterember-3188-z3pnaf4utc",
-      "hissscratch-3193-rlesvrii6w",
-      "minnowoil-3198-lfdwt4g5wn",
-      "raccoontyphoon-3208-a3v0dz7ypj"
+      "slothflint-1728-o56aftnkkr",
+      "crowberry-1708-rqb9rhmti6",
+      "hornettruth-1718-ltsqqkrudk",
+      "followerpolar-1703-oortuiyblx",
+      "lightningdot-1713-cyepwllrjg",
+      "howlerbubble-1723-gkigkzhp4o"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 13.897,
+      "compute_time_ms": 14.802,
       "slack_entropy": 1.7914875952600167,
       "candidates": null,
       "score_k2_approved": false,
@@ -332,41 +331,41 @@
     "branch": {
       "total_savings": 3.6784,
       "total_disruption": 4,
-      "compute_time_ms": 91.048,
+      "compute_time_ms": 91.761,
       "slack_entropy": 0.6929246213649034,
       "candidates": [
-        "hissscratch-3193-rlesvrii6w",
-        "minnowoil-3198-lfdwt4g5wn",
-        "raccoontyphoon-3208-a3v0dz7ypj",
-        "daggercopper-3213-ujkt5rfzlm"
+        "crowberry-1708-rqb9rhmti6",
+        "lightningdot-1713-cyepwllrjg",
+        "howlerbubble-1723-gkigkzhp4o",
+        "slothflint-1728-o56aftnkkr"
       ],
       "score_k2_approved": true,
-      "score_k2": 0.8612851056946671
+      "score_k2": 0.8612851056946673
     },
     "branch_savings_sort": {
       "total_savings": 3.6784,
       "total_disruption": 4,
-      "compute_time_ms": 91.254,
+      "compute_time_ms": 86.123,
       "slack_entropy": 0.6929246213649034,
       "candidates": [
-        "daggercopper-3213-ujkt5rfzlm",
-        "hissscratch-3193-rlesvrii6w",
-        "minnowoil-3198-lfdwt4g5wn",
-        "raccoontyphoon-3208-a3v0dz7ypj"
+        "slothflint-1728-o56aftnkkr",
+        "crowberry-1708-rqb9rhmti6",
+        "lightningdot-1713-cyepwllrjg",
+        "howlerbubble-1723-gkigkzhp4o"
       ],
       "score_k2_approved": true,
-      "score_k2": 0.8612851056946671
+      "score_k2": 0.861285105694667
     },
     "oracle": {
       "total_savings": 3.6784,
       "total_disruption": 4,
-      "compute_time_ms": 434.438,
+      "compute_time_ms": 425.258,
       "slack_entropy": 0.6929246213649034,
       "candidates": [
-        "hissscratch-3193-rlesvrii6w",
-        "minnowoil-3198-lfdwt4g5wn",
-        "raccoontyphoon-3208-a3v0dz7ypj",
-        "daggercopper-3213-ujkt5rfzlm"
+        "crowberry-1708-rqb9rhmti6",
+        "lightningdot-1713-cyepwllrjg",
+        "howlerbubble-1723-gkigkzhp4o",
+        "slothflint-1728-o56aftnkkr"
       ],
       "score_k2_approved": true,
       "score_k2": 0.8612851056946671
@@ -376,21 +375,21 @@
     "seed": 5,
     "description": "adversarial seed=5 node_count=4 allocCPU=32",
     "sorted_candidates": [
-      "flamesun-3221-ak3ituyalt",
-      "sightbronze-3226-y1ysdorkq1",
-      "ripperbranch-3231-d8jwt8oti3",
-      "wingstellar-3236-0biixbbctx"
+      "spearchestnut-1736-itqgqg2oea",
+      "napecurse-1741-glzxtd2smi",
+      "dukecold-1746-lqhbtcrxqf",
+      "condorhazel-1751-cc4kqibnrc"
     ],
     "sorted_candidates_savings_ratio": [
-      "ripperbranch-3231-d8jwt8oti3",
-      "flamesun-3221-ak3ituyalt",
-      "sightbronze-3226-y1ysdorkq1",
-      "wingstellar-3236-0biixbbctx"
+      "dukecold-1746-lqhbtcrxqf",
+      "spearchestnut-1736-itqgqg2oea",
+      "napecurse-1741-glzxtd2smi",
+      "condorhazel-1751-cc4kqibnrc"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 13.855,
+      "compute_time_ms": 14.055,
       "slack_entropy": 1.3859407567576074,
       "candidates": null,
       "score_k2_approved": false,
@@ -399,12 +398,12 @@
     "branch": {
       "total_savings": 1.9646000000000001,
       "total_disruption": 3,
-      "compute_time_ms": 70.431,
+      "compute_time_ms": 70.924,
       "slack_entropy": 0,
       "candidates": [
-        "sightbronze-3226-y1ysdorkq1",
-        "ripperbranch-3231-d8jwt8oti3",
-        "wingstellar-3236-0biixbbctx"
+        "napecurse-1741-glzxtd2smi",
+        "dukecold-1746-lqhbtcrxqf",
+        "condorhazel-1751-cc4kqibnrc"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1353916940329098
@@ -412,12 +411,12 @@
     "branch_savings_sort": {
       "total_savings": 1.9646000000000001,
       "total_disruption": 3,
-      "compute_time_ms": 71.762,
+      "compute_time_ms": 72.426,
       "slack_entropy": 0,
       "candidates": [
-        "ripperbranch-3231-d8jwt8oti3",
-        "sightbronze-3226-y1ysdorkq1",
-        "wingstellar-3236-0biixbbctx"
+        "dukecold-1746-lqhbtcrxqf",
+        "napecurse-1741-glzxtd2smi",
+        "condorhazel-1751-cc4kqibnrc"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1353916940329098
@@ -425,12 +424,12 @@
     "oracle": {
       "total_savings": 1.9646000000000001,
       "total_disruption": 3,
-      "compute_time_ms": 107.472,
+      "compute_time_ms": 107.135,
       "slack_entropy": 0,
       "candidates": [
-        "sightbronze-3226-y1ysdorkq1",
-        "ripperbranch-3231-d8jwt8oti3",
-        "wingstellar-3236-0biixbbctx"
+        "napecurse-1741-glzxtd2smi",
+        "dukecold-1746-lqhbtcrxqf",
+        "condorhazel-1751-cc4kqibnrc"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1353916940329098
@@ -440,23 +439,23 @@
     "seed": 6,
     "description": "adversarial seed=6 node_count=5 allocCPU=32",
     "sorted_candidates": [
-      "musepurple-3244-xojcytdegp",
-      "zebrahorse-3249-yqxb003coi",
-      "wolfcerulean-3254-qkvbjhuf17",
-      "musetree-3259-olqoun2jsv",
-      "catperidot-3264-ihgkqicxui"
+      "healerpink-1759-eqlljdd8pq",
+      "riderbronze-1764-nlgqzwhofq",
+      "hairneon-1769-f98solbjqu",
+      "orioleolive-1774-apaywzmygj",
+      "hornetsand-1779-etiekwax16"
     ],
     "sorted_candidates_savings_ratio": [
-      "wolfcerulean-3254-qkvbjhuf17",
-      "catperidot-3264-ihgkqicxui",
-      "musepurple-3244-xojcytdegp",
-      "zebrahorse-3249-yqxb003coi",
-      "musetree-3259-olqoun2jsv"
+      "hairneon-1769-f98solbjqu",
+      "hornetsand-1779-etiekwax16",
+      "healerpink-1759-eqlljdd8pq",
+      "riderbronze-1764-nlgqzwhofq",
+      "orioleolive-1774-apaywzmygj"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 13.801,
+      "compute_time_ms": 13.833,
       "slack_entropy": 1.6091132798103236,
       "candidates": null,
       "score_k2_approved": false,
@@ -465,13 +464,13 @@
     "branch": {
       "total_savings": 1.7316,
       "total_disruption": 4,
-      "compute_time_ms": 85.734,
+      "compute_time_ms": 79.952,
       "slack_entropy": 0,
       "candidates": [
-        "zebrahorse-3249-yqxb003coi",
-        "wolfcerulean-3254-qkvbjhuf17",
-        "musetree-3259-olqoun2jsv",
-        "catperidot-3264-ihgkqicxui"
+        "riderbronze-1764-nlgqzwhofq",
+        "hairneon-1769-f98solbjqu",
+        "orioleolive-1774-apaywzmygj",
+        "hornetsand-1779-etiekwax16"
       ],
       "score_k2_approved": true,
       "score_k2": 1.190752293847358
@@ -479,13 +478,13 @@
     "branch_savings_sort": {
       "total_savings": 1.7316,
       "total_disruption": 4,
-      "compute_time_ms": 61.437,
+      "compute_time_ms": 68.65,
       "slack_entropy": 0,
       "candidates": [
-        "wolfcerulean-3254-qkvbjhuf17",
-        "catperidot-3264-ihgkqicxui",
-        "zebrahorse-3249-yqxb003coi",
-        "musetree-3259-olqoun2jsv"
+        "hairneon-1769-f98solbjqu",
+        "hornetsand-1779-etiekwax16",
+        "riderbronze-1764-nlgqzwhofq",
+        "orioleolive-1774-apaywzmygj"
       ],
       "score_k2_approved": true,
       "score_k2": 1.190752293847358
@@ -493,42 +492,42 @@
     "oracle": {
       "total_savings": 1.7316,
       "total_disruption": 4,
-      "compute_time_ms": 210.479,
+      "compute_time_ms": 214.406,
       "slack_entropy": 0,
       "candidates": [
-        "zebrahorse-3249-yqxb003coi",
-        "wolfcerulean-3254-qkvbjhuf17",
-        "musetree-3259-olqoun2jsv",
-        "catperidot-3264-ihgkqicxui"
+        "riderbronze-1764-nlgqzwhofq",
+        "hairneon-1769-f98solbjqu",
+        "orioleolive-1774-apaywzmygj",
+        "hornetsand-1779-etiekwax16"
       ],
       "score_k2_approved": true,
-      "score_k2": 1.1907522938473578
+      "score_k2": 1.190752293847358
     }
   },
   {
     "seed": 7,
     "description": "adversarial seed=7 node_count=4 allocCPU=16",
     "sorted_candidates": [
-      "weaverpewter-3272-ee6z78ptfv",
-      "fishzircon-3277-yqunzpdpco",
-      "knaveslash-3282-6rifaez4vl",
-      "toothnettle-3287-mflvi93csv"
+      "ridgelinen-1787-27z63mmpjc",
+      "talonsmall-1792-2mhfvxvfar",
+      "thumbginger-1797-zfeqy1xm4k",
+      "playercalico-1802-6z7tmakb9x"
     ],
     "sorted_candidates_savings_ratio": [
-      "toothnettle-3287-mflvi93csv",
-      "weaverpewter-3272-ee6z78ptfv",
-      "knaveslash-3282-6rifaez4vl",
-      "fishzircon-3277-yqunzpdpco"
+      "playercalico-1802-6z7tmakb9x",
+      "ridgelinen-1787-27z63mmpjc",
+      "thumbginger-1797-zfeqy1xm4k",
+      "talonsmall-1792-2mhfvxvfar"
     ],
     "mainline": {
       "total_savings": 2.2491000000000003,
       "total_disruption": 3,
-      "compute_time_ms": 45.29,
+      "compute_time_ms": 43.801,
       "slack_entropy": 0,
       "candidates": [
-        "weaverpewter-3272-ee6z78ptfv",
-        "fishzircon-3277-yqunzpdpco",
-        "knaveslash-3282-6rifaez4vl"
+        "ridgelinen-1787-27z63mmpjc",
+        "talonsmall-1792-2mhfvxvfar",
+        "thumbginger-1797-zfeqy1xm4k"
       ],
       "score_k2_approved": true,
       "score_k2": 0.6873130570600662
@@ -536,12 +535,12 @@
     "branch": {
       "total_savings": 2.2491000000000003,
       "total_disruption": 3,
-      "compute_time_ms": 50.189,
+      "compute_time_ms": 51.256,
       "slack_entropy": 0,
       "candidates": [
-        "weaverpewter-3272-ee6z78ptfv",
-        "fishzircon-3277-yqunzpdpco",
-        "knaveslash-3282-6rifaez4vl"
+        "ridgelinen-1787-27z63mmpjc",
+        "talonsmall-1792-2mhfvxvfar",
+        "thumbginger-1797-zfeqy1xm4k"
       ],
       "score_k2_approved": true,
       "score_k2": 0.6873130570600662
@@ -549,56 +548,55 @@
     "branch_savings_sort": {
       "total_savings": 4.2336,
       "total_disruption": 3,
-      "compute_time_ms": 52.031,
+      "compute_time_ms": 51.174,
       "slack_entropy": 0,
       "candidates": [
-        "toothnettle-3287-mflvi93csv",
-        "weaverpewter-3272-ee6z78ptfv",
-        "knaveslash-3282-6rifaez4vl"
+        "playercalico-1802-6z7tmakb9x",
+        "ridgelinen-1787-27z63mmpjc",
+        "thumbginger-1797-zfeqy1xm4k"
       ],
       "score_k2_approved": true,
       "score_k2": 1.292458333934612
     },
     "oracle": {
-      "total_savings": 4.0259,
-      "total_disruption": 4,
-      "compute_time_ms": 102.873,
+      "total_savings": 3.3075,
+      "total_disruption": 3,
+      "compute_time_ms": 106.509,
       "slack_entropy": 0,
       "candidates": [
-        "weaverpewter-3272-ee6z78ptfv",
-        "fishzircon-3277-yqunzpdpco",
-        "knaveslash-3282-6rifaez4vl",
-        "toothnettle-3287-mflvi93csv"
+        "talonsmall-1792-2mhfvxvfar",
+        "thumbginger-1797-zfeqy1xm4k",
+        "playercalico-1802-6z7tmakb9x"
       ],
       "score_k2_approved": true,
-      "score_k2": 1
+      "score_k2": 1.0092406745683413
     }
   },
   {
     "seed": 8,
     "description": "adversarial seed=8 node_count=7 allocCPU=16",
     "sorted_candidates": [
-      "princessivory-3295-suygiecpcj",
-      "handzest-3300-fp6xin0oti",
-      "catcherspot-3305-paqavftyni",
-      "storkgeode-3310-l3cr1hxg4v",
-      "scarerchip-3315-pebhyqsy2s",
-      "gamblerstellar-3320-f8qtzhwk4g",
-      "heroatom-3325-4glhvsnleu"
+      "legshade-1810-zlh4ea5dmh",
+      "bellripple-1815-ljv9xpt3em",
+      "fancierpond-1820-98k1p1hyil",
+      "koalacosmic-1825-i5x5j9715v",
+      "butterflybrown-1830-st1ao4nnws",
+      "wyrmrose-1835-7kyibtidym",
+      "faceebony-1840-nevftrizjh"
     ],
     "sorted_candidates_savings_ratio": [
-      "catcherspot-3305-paqavftyni",
-      "scarerchip-3315-pebhyqsy2s",
-      "princessivory-3295-suygiecpcj",
-      "handzest-3300-fp6xin0oti",
-      "storkgeode-3310-l3cr1hxg4v",
-      "gamblerstellar-3320-f8qtzhwk4g",
-      "heroatom-3325-4glhvsnleu"
+      "fancierpond-1820-98k1p1hyil",
+      "butterflybrown-1830-st1ao4nnws",
+      "legshade-1810-zlh4ea5dmh",
+      "bellripple-1815-ljv9xpt3em",
+      "koalacosmic-1825-i5x5j9715v",
+      "wyrmrose-1835-7kyibtidym",
+      "faceebony-1840-nevftrizjh"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 14.03,
+      "compute_time_ms": 13.761,
       "slack_entropy": 1.9455117216104103,
       "candidates": null,
       "score_k2_approved": false,
@@ -607,31 +605,31 @@
     "branch": {
       "total_savings": 4.0046,
       "total_disruption": 6,
-      "compute_time_ms": 103.021,
+      "compute_time_ms": 103.552,
       "slack_entropy": 0,
       "candidates": [
-        "handzest-3300-fp6xin0oti",
-        "catcherspot-3305-paqavftyni",
-        "storkgeode-3310-l3cr1hxg4v",
-        "scarerchip-3315-pebhyqsy2s",
-        "gamblerstellar-3320-f8qtzhwk4g",
-        "heroatom-3325-4glhvsnleu"
+        "bellripple-1815-ljv9xpt3em",
+        "fancierpond-1820-98k1p1hyil",
+        "koalacosmic-1825-i5x5j9715v",
+        "butterflybrown-1830-st1ao4nnws",
+        "wyrmrose-1835-7kyibtidym",
+        "faceebony-1840-nevftrizjh"
       ],
       "score_k2_approved": true,
-      "score_k2": 1.0739864400622618
+      "score_k2": 1.073986440062262
     },
     "branch_savings_sort": {
       "total_savings": 4.0046,
       "total_disruption": 6,
-      "compute_time_ms": 90.731,
+      "compute_time_ms": 107.127,
       "slack_entropy": 0,
       "candidates": [
-        "catcherspot-3305-paqavftyni",
-        "scarerchip-3315-pebhyqsy2s",
-        "handzest-3300-fp6xin0oti",
-        "storkgeode-3310-l3cr1hxg4v",
-        "gamblerstellar-3320-f8qtzhwk4g",
-        "heroatom-3325-4glhvsnleu"
+        "fancierpond-1820-98k1p1hyil",
+        "butterflybrown-1830-st1ao4nnws",
+        "bellripple-1815-ljv9xpt3em",
+        "koalacosmic-1825-i5x5j9715v",
+        "wyrmrose-1835-7kyibtidym",
+        "faceebony-1840-nevftrizjh"
       ],
       "score_k2_approved": true,
       "score_k2": 1.073986440062262
@@ -639,15 +637,15 @@
     "oracle": {
       "total_savings": 4.0046,
       "total_disruption": 6,
-      "compute_time_ms": 870.89,
+      "compute_time_ms": 864.588,
       "slack_entropy": 0,
       "candidates": [
-        "handzest-3300-fp6xin0oti",
-        "catcherspot-3305-paqavftyni",
-        "storkgeode-3310-l3cr1hxg4v",
-        "scarerchip-3315-pebhyqsy2s",
-        "gamblerstellar-3320-f8qtzhwk4g",
-        "heroatom-3325-4glhvsnleu"
+        "bellripple-1815-ljv9xpt3em",
+        "fancierpond-1820-98k1p1hyil",
+        "koalacosmic-1825-i5x5j9715v",
+        "butterflybrown-1830-st1ao4nnws",
+        "wyrmrose-1835-7kyibtidym",
+        "faceebony-1840-nevftrizjh"
       ],
       "score_k2_approved": true,
       "score_k2": 1.073986440062262
@@ -657,25 +655,25 @@
     "seed": 9,
     "description": "adversarial seed=9 node_count=6 allocCPU=32",
     "sorted_candidates": [
-      "eaglecoral-3333-isoinssoqu",
-      "graspdestiny-3338-nxlsyjhnrt",
-      "griffinrowan-3343-e4civj892j",
-      "venomsprinkle-3348-ncgscvxwfy",
-      "tailplaid-3353-nqailagkf4",
-      "chatterglaze-3358-8fywp8iehq"
+      "roverdesert-1848-emozgxrbot",
+      "whimseybristle-1853-5z75r2ydmq",
+      "facefortune-1858-y0n3xen92b",
+      "shirtwell-1863-ft4yaefoky",
+      "wizardlie-1868-6e5yac0abl",
+      "bugcrazy-1873-ic6phzz8w3"
     ],
     "sorted_candidates_savings_ratio": [
-      "chatterglaze-3358-8fywp8iehq",
-      "griffinrowan-3343-e4civj892j",
-      "tailplaid-3353-nqailagkf4",
-      "graspdestiny-3338-nxlsyjhnrt",
-      "eaglecoral-3333-isoinssoqu",
-      "venomsprinkle-3348-ncgscvxwfy"
+      "bugcrazy-1873-ic6phzz8w3",
+      "facefortune-1858-y0n3xen92b",
+      "wizardlie-1868-6e5yac0abl",
+      "roverdesert-1848-emozgxrbot",
+      "whimseybristle-1853-5z75r2ydmq",
+      "shirtwell-1863-ft4yaefoky"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 21.942,
+      "compute_time_ms": 14.605,
       "slack_entropy": 1.7914627804180063,
       "candidates": null,
       "score_k2_approved": false,
@@ -684,14 +682,14 @@
     "branch": {
       "total_savings": 8.0624,
       "total_disruption": 5,
-      "compute_time_ms": 92.211,
+      "compute_time_ms": 92.212,
       "slack_entropy": 0,
       "candidates": [
-        "graspdestiny-3338-nxlsyjhnrt",
-        "griffinrowan-3343-e4civj892j",
-        "venomsprinkle-3348-ncgscvxwfy",
-        "tailplaid-3353-nqailagkf4",
-        "chatterglaze-3358-8fywp8iehq"
+        "whimseybristle-1853-5z75r2ydmq",
+        "facefortune-1858-y0n3xen92b",
+        "shirtwell-1863-ft4yaefoky",
+        "wizardlie-1868-6e5yac0abl",
+        "bugcrazy-1873-ic6phzz8w3"
       ],
       "score_k2_approved": true,
       "score_k2": 1.025630974152318
@@ -699,14 +697,14 @@
     "branch_savings_sort": {
       "total_savings": 8.0624,
       "total_disruption": 5,
-      "compute_time_ms": 65.474,
+      "compute_time_ms": 88.1,
       "slack_entropy": 0,
       "candidates": [
-        "chatterglaze-3358-8fywp8iehq",
-        "griffinrowan-3343-e4civj892j",
-        "tailplaid-3353-nqailagkf4",
-        "graspdestiny-3338-nxlsyjhnrt",
-        "venomsprinkle-3348-ncgscvxwfy"
+        "bugcrazy-1873-ic6phzz8w3",
+        "facefortune-1858-y0n3xen92b",
+        "wizardlie-1868-6e5yac0abl",
+        "whimseybristle-1853-5z75r2ydmq",
+        "shirtwell-1863-ft4yaefoky"
       ],
       "score_k2_approved": true,
       "score_k2": 1.025630974152318
@@ -714,42 +712,42 @@
     "oracle": {
       "total_savings": 8.0624,
       "total_disruption": 5,
-      "compute_time_ms": 431.451,
+      "compute_time_ms": 421.206,
       "slack_entropy": 0,
       "candidates": [
-        "graspdestiny-3338-nxlsyjhnrt",
-        "griffinrowan-3343-e4civj892j",
-        "venomsprinkle-3348-ncgscvxwfy",
-        "tailplaid-3353-nqailagkf4",
-        "chatterglaze-3358-8fywp8iehq"
+        "whimseybristle-1853-5z75r2ydmq",
+        "facefortune-1858-y0n3xen92b",
+        "shirtwell-1863-ft4yaefoky",
+        "wizardlie-1868-6e5yac0abl",
+        "bugcrazy-1873-ic6phzz8w3"
       ],
       "score_k2_approved": true,
-      "score_k2": 1.0256309741523177
+      "score_k2": 1.025630974152318
     }
   },
   {
     "seed": 10,
     "description": "adversarial seed=10 node_count=6 allocCPU=32",
     "sorted_candidates": [
-      "antelopecharm-3366-ughzx76okn",
-      "thiefround-3371-6buzsesaq5",
-      "bowbig-3376-ezwqkhodff",
-      "cowlmorning-3381-ta1pypzs1j",
-      "harelight-3386-qfrqurhfgb",
-      "bisonbuttercup-3391-r1qqscgoal"
+      "ladytime-1881-ug2wwxfo6d",
+      "shiftshade-1886-xga1zvfygt",
+      "jesterglaze-1891-azt28rg3i4",
+      "cubpitch-1896-mmjp91tmja",
+      "princerhinestone-1901-0jvjxewd7s",
+      "lordthunder-1906-shfqiqgqtk"
     ],
     "sorted_candidates_savings_ratio": [
-      "bisonbuttercup-3391-r1qqscgoal",
-      "bowbig-3376-ezwqkhodff",
-      "harelight-3386-qfrqurhfgb",
-      "antelopecharm-3366-ughzx76okn",
-      "thiefround-3371-6buzsesaq5",
-      "cowlmorning-3381-ta1pypzs1j"
+      "lordthunder-1906-shfqiqgqtk",
+      "jesterglaze-1891-azt28rg3i4",
+      "princerhinestone-1901-0jvjxewd7s",
+      "ladytime-1881-ug2wwxfo6d",
+      "shiftshade-1886-xga1zvfygt",
+      "cubpitch-1896-mmjp91tmja"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 13.927,
+      "compute_time_ms": 13.979,
       "slack_entropy": 1.7916929339815608,
       "candidates": null,
       "score_k2_approved": false,
@@ -758,14 +756,14 @@
     "branch": {
       "total_savings": 1.8264,
       "total_disruption": 5,
-      "compute_time_ms": 96.134,
+      "compute_time_ms": 93.94,
       "slack_entropy": 0,
       "candidates": [
-        "thiefround-3371-6buzsesaq5",
-        "bowbig-3376-ezwqkhodff",
-        "cowlmorning-3381-ta1pypzs1j",
-        "harelight-3386-qfrqurhfgb",
-        "bisonbuttercup-3391-r1qqscgoal"
+        "shiftshade-1886-xga1zvfygt",
+        "jesterglaze-1891-azt28rg3i4",
+        "cubpitch-1896-mmjp91tmja",
+        "princerhinestone-1901-0jvjxewd7s",
+        "lordthunder-1906-shfqiqgqtk"
       ],
       "score_k2_approved": true,
       "score_k2": 1.0965857608853606
@@ -773,29 +771,29 @@
     "branch_savings_sort": {
       "total_savings": 1.8264,
       "total_disruption": 5,
-      "compute_time_ms": 66.327,
+      "compute_time_ms": 79.289,
       "slack_entropy": 0,
       "candidates": [
-        "bisonbuttercup-3391-r1qqscgoal",
-        "bowbig-3376-ezwqkhodff",
-        "harelight-3386-qfrqurhfgb",
-        "cowlmorning-3381-ta1pypzs1j",
-        "thiefround-3371-6buzsesaq5"
+        "lordthunder-1906-shfqiqgqtk",
+        "jesterglaze-1891-azt28rg3i4",
+        "princerhinestone-1901-0jvjxewd7s",
+        "shiftshade-1886-xga1zvfygt",
+        "cubpitch-1896-mmjp91tmja"
       ],
       "score_k2_approved": true,
-      "score_k2": 1.0965857608853606
+      "score_k2": 1.0965857608853609
     },
     "oracle": {
       "total_savings": 1.8264,
       "total_disruption": 5,
-      "compute_time_ms": 430.607,
+      "compute_time_ms": 431.716,
       "slack_entropy": 0,
       "candidates": [
-        "thiefround-3371-6buzsesaq5",
-        "bowbig-3376-ezwqkhodff",
-        "cowlmorning-3381-ta1pypzs1j",
-        "harelight-3386-qfrqurhfgb",
-        "bisonbuttercup-3391-r1qqscgoal"
+        "shiftshade-1886-xga1zvfygt",
+        "jesterglaze-1891-azt28rg3i4",
+        "cubpitch-1896-mmjp91tmja",
+        "princerhinestone-1901-0jvjxewd7s",
+        "lordthunder-1906-shfqiqgqtk"
       ],
       "score_k2_approved": true,
       "score_k2": 1.0965857608853606
@@ -805,29 +803,29 @@
     "seed": 11,
     "description": "adversarial seed=11 node_count=5 allocCPU=32",
     "sorted_candidates": [
-      "spidersharp-3399-thyphfey0z",
-      "catscratch-3404-yjz0zuxlba",
-      "legstreasure-3409-suuafwrvgt",
-      "sentryplume-3414-eqqj7wkkbp",
-      "lifterfringe-3419-iuo0feeavy"
+      "panthershy-1914-zsxrbo1wvn",
+      "roarstripe-1919-zruiq26za1",
+      "heroemerald-1924-fh3bj4vgzx",
+      "boltcharm-1929-9gkfmbk7lq",
+      "rippersour-1934-lzvca2uopx"
     ],
     "sorted_candidates_savings_ratio": [
-      "lifterfringe-3419-iuo0feeavy",
-      "catscratch-3404-yjz0zuxlba",
-      "sentryplume-3414-eqqj7wkkbp",
-      "spidersharp-3399-thyphfey0z",
-      "legstreasure-3409-suuafwrvgt"
+      "rippersour-1934-lzvca2uopx",
+      "roarstripe-1919-zruiq26za1",
+      "boltcharm-1929-9gkfmbk7lq",
+      "panthershy-1914-zsxrbo1wvn",
+      "heroemerald-1924-fh3bj4vgzx"
     ],
     "mainline": {
       "total_savings": 2.4184,
       "total_disruption": 4,
-      "compute_time_ms": 55.43,
+      "compute_time_ms": 55.246,
       "slack_entropy": 0,
       "candidates": [
-        "spidersharp-3399-thyphfey0z",
-        "catscratch-3404-yjz0zuxlba",
-        "legstreasure-3409-suuafwrvgt",
-        "sentryplume-3414-eqqj7wkkbp"
+        "panthershy-1914-zsxrbo1wvn",
+        "roarstripe-1919-zruiq26za1",
+        "heroemerald-1924-fh3bj4vgzx",
+        "boltcharm-1929-9gkfmbk7lq"
       ],
       "score_k2_approved": true,
       "score_k2": 0.6671927178130703
@@ -835,74 +833,73 @@
     "branch": {
       "total_savings": 2.4184,
       "total_disruption": 4,
-      "compute_time_ms": 61.932,
+      "compute_time_ms": 62.747,
       "slack_entropy": 0,
       "candidates": [
-        "spidersharp-3399-thyphfey0z",
-        "catscratch-3404-yjz0zuxlba",
-        "legstreasure-3409-suuafwrvgt",
-        "sentryplume-3414-eqqj7wkkbp"
+        "panthershy-1914-zsxrbo1wvn",
+        "roarstripe-1919-zruiq26za1",
+        "heroemerald-1924-fh3bj4vgzx",
+        "boltcharm-1929-9gkfmbk7lq"
       ],
       "score_k2_approved": true,
-      "score_k2": 0.6671927178130703
+      "score_k2": 0.6671927178130704
     },
     "branch_savings_sort": {
       "total_savings": 4.006,
       "total_disruption": 4,
-      "compute_time_ms": 65.486,
+      "compute_time_ms": 62.191,
       "slack_entropy": 0,
       "candidates": [
-        "lifterfringe-3419-iuo0feeavy",
-        "catscratch-3404-yjz0zuxlba",
-        "sentryplume-3414-eqqj7wkkbp",
-        "spidersharp-3399-thyphfey0z"
+        "rippersour-1934-lzvca2uopx",
+        "roarstripe-1919-zruiq26za1",
+        "boltcharm-1929-9gkfmbk7lq",
+        "panthershy-1914-zsxrbo1wvn"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1044194189857843
     },
     "oracle": {
-      "total_savings": 4.3652,
-      "total_disruption": 5,
-      "compute_time_ms": 207.159,
+      "total_savings": 4.006,
+      "total_disruption": 4,
+      "compute_time_ms": 209.692,
       "slack_entropy": 0,
       "candidates": [
-        "spidersharp-3399-thyphfey0z",
-        "catscratch-3404-yjz0zuxlba",
-        "legstreasure-3409-suuafwrvgt",
-        "sentryplume-3414-eqqj7wkkbp",
-        "lifterfringe-3419-iuo0feeavy"
+        "roarstripe-1919-zruiq26za1",
+        "heroemerald-1924-fh3bj4vgzx",
+        "boltcharm-1929-9gkfmbk7lq",
+        "rippersour-1934-lzvca2uopx"
       ],
       "score_k2_approved": true,
-      "score_k2": 1
+      "score_k2": 1.102745292901232
     }
   },
   {
     "seed": 12,
     "description": "adversarial seed=12 node_count=5 allocCPU=8",
     "sorted_candidates": [
-      "forgerberry-3427-oqnjxqmybo",
-      "howlercandle-3432-lx2574gpwd",
-      "keeperpitch-3437-93wqepuo1y",
-      "raydust-3442-eid1arrald",
-      "oriolewhite-3447-csk2oskfyy"
+      "flierfire-1942-txwbep8em2",
+      "paladingiant-1947-sv0va3zook",
+      "thumbcat-1952-v29cvuxqqy",
+      "llamaflame-1957-gonnu79kek",
+      "swallowcanyon-1962-4euy46uhsx"
     ],
     "sorted_candidates_savings_ratio": [
-      "howlercandle-3432-lx2574gpwd",
-      "raydust-3442-eid1arrald",
-      "forgerberry-3427-oqnjxqmybo",
-      "keeperpitch-3437-93wqepuo1y",
-      "oriolewhite-3447-csk2oskfyy"
+      "paladingiant-1947-sv0va3zook",
+      "llamaflame-1957-gonnu79kek",
+      "thumbcat-1952-v29cvuxqqy",
+      "flierfire-1942-txwbep8em2",
+      "swallowcanyon-1962-4euy46uhsx"
     ],
     "mainline": {
       "total_savings": 1.0832000000000002,
       "total_disruption": 4,
-      "compute_time_ms": 64.358,
+      "compute_time_ms": 55.67,
       "slack_entropy": 0,
       "candidates": [
-        "forgerberry-3427-oqnjxqmybo",
-        "howlercandle-3432-lx2574gpwd",
-        "keeperpitch-3437-93wqepuo1y",
-        "raydust-3442-eid1arrald"
+        "flierfire-1942-txwbep8em2",
+        "paladingiant-1947-sv0va3zook",
+        "thumbcat-1952-v29cvuxqqy",
+        "llamaflame-1957-gonnu79kek"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1148891595784858
@@ -910,13 +907,13 @@
     "branch": {
       "total_savings": 1.0832000000000002,
       "total_disruption": 4,
-      "compute_time_ms": 63.766,
+      "compute_time_ms": 59.827,
       "slack_entropy": 0,
       "candidates": [
-        "forgerberry-3427-oqnjxqmybo",
-        "howlercandle-3432-lx2574gpwd",
-        "keeperpitch-3437-93wqepuo1y",
-        "raydust-3442-eid1arrald"
+        "flierfire-1942-txwbep8em2",
+        "paladingiant-1947-sv0va3zook",
+        "thumbcat-1952-v29cvuxqqy",
+        "llamaflame-1957-gonnu79kek"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1148891595784858
@@ -924,52 +921,51 @@
     "branch_savings_sort": {
       "total_savings": 1.0832000000000002,
       "total_disruption": 4,
-      "compute_time_ms": 62.643,
+      "compute_time_ms": 62.937,
       "slack_entropy": 0,
       "candidates": [
-        "raydust-3442-eid1arrald",
-        "howlercandle-3432-lx2574gpwd",
-        "keeperpitch-3437-93wqepuo1y",
-        "forgerberry-3427-oqnjxqmybo"
+        "paladingiant-1947-sv0va3zook",
+        "llamaflame-1957-gonnu79kek",
+        "flierfire-1942-txwbep8em2",
+        "thumbcat-1952-v29cvuxqqy"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1148891595784858
     },
     "oracle": {
-      "total_savings": 0.8755000000000002,
-      "total_disruption": 5,
-      "compute_time_ms": 210.396,
+      "total_savings": 1.0139000000000002,
+      "total_disruption": 4,
+      "compute_time_ms": 213.004,
       "slack_entropy": 0,
       "candidates": [
-        "forgerberry-3427-oqnjxqmybo",
-        "howlercandle-3432-lx2574gpwd",
-        "keeperpitch-3437-93wqepuo1y",
-        "raydust-3442-eid1arrald",
-        "oriolewhite-3447-csk2oskfyy"
+        "paladingiant-1947-sv0va3zook",
+        "thumbcat-1952-v29cvuxqqy",
+        "llamaflame-1957-gonnu79kek",
+        "swallowcanyon-1962-4euy46uhsx"
       ],
       "score_k2_approved": true,
-      "score_k2": 1
+      "score_k2": 1.0417461094859026
     }
   },
   {
     "seed": 13,
     "description": "adversarial seed=13 node_count=4 allocCPU=16",
     "sorted_candidates": [
-      "lionquilt-3455-dsdmpg8grl",
-      "tradersand-3460-zfkp0liljx",
-      "tradersouth-3465-5q9yme5onc",
-      "kickerweak-3470-4ifr469lgk"
+      "weaselmaple-1970-kv87oojj7a",
+      "bootcurse-1975-hhodxsfmwx",
+      "spikecoconut-1980-eh5f8xzku9",
+      "razorarrow-1985-lbfco8lche"
     ],
     "sorted_candidates_savings_ratio": [
-      "tradersouth-3465-5q9yme5onc",
-      "kickerweak-3470-4ifr469lgk",
-      "lionquilt-3455-dsdmpg8grl",
-      "tradersand-3460-zfkp0liljx"
+      "spikecoconut-1980-eh5f8xzku9",
+      "razorarrow-1985-lbfco8lche",
+      "weaselmaple-1970-kv87oojj7a",
+      "bootcurse-1975-hhodxsfmwx"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 13.931,
+      "compute_time_ms": 13.692,
       "slack_entropy": 1.3859501655619408,
       "candidates": null,
       "score_k2_approved": false,
@@ -978,12 +974,12 @@
     "branch": {
       "total_savings": 1.6756000000000002,
       "total_disruption": 3,
-      "compute_time_ms": 70.071,
+      "compute_time_ms": 73.17,
       "slack_entropy": 0,
       "candidates": [
-        "tradersand-3460-zfkp0liljx",
-        "tradersouth-3465-5q9yme5onc",
-        "kickerweak-3470-4ifr469lgk"
+        "bootcurse-1975-hhodxsfmwx",
+        "spikecoconut-1980-eh5f8xzku9",
+        "razorarrow-1985-lbfco8lche"
       ],
       "score_k2_approved": true,
       "score_k2": 1.107222588953885
@@ -991,12 +987,12 @@
     "branch_savings_sort": {
       "total_savings": 1.6756,
       "total_disruption": 3,
-      "compute_time_ms": 56.921,
+      "compute_time_ms": 50.686,
       "slack_entropy": 0,
       "candidates": [
-        "tradersouth-3465-5q9yme5onc",
-        "kickerweak-3470-4ifr469lgk",
-        "tradersand-3460-zfkp0liljx"
+        "spikecoconut-1980-eh5f8xzku9",
+        "razorarrow-1985-lbfco8lche",
+        "bootcurse-1975-hhodxsfmwx"
       ],
       "score_k2_approved": true,
       "score_k2": 1.107222588953885
@@ -1004,12 +1000,12 @@
     "oracle": {
       "total_savings": 1.6756000000000002,
       "total_disruption": 3,
-      "compute_time_ms": 106.265,
+      "compute_time_ms": 106.674,
       "slack_entropy": 0,
       "candidates": [
-        "tradersand-3460-zfkp0liljx",
-        "tradersouth-3465-5q9yme5onc",
-        "kickerweak-3470-4ifr469lgk"
+        "bootcurse-1975-hhodxsfmwx",
+        "spikecoconut-1980-eh5f8xzku9",
+        "razorarrow-1985-lbfco8lche"
       ],
       "score_k2_approved": true,
       "score_k2": 1.107222588953885
@@ -1019,21 +1015,21 @@
     "seed": 14,
     "description": "adversarial seed=14 node_count=4 allocCPU=8",
     "sorted_candidates": [
-      "ridertruth-3478-mvmnbqvvrf",
-      "chillerfortune-3483-obyxjojjzo",
-      "pigprickle-3488-rborslvttn",
-      "monkeyorchid-3493-g22x2luzpd"
+      "graspsheer-1993-bmjmzq7cli",
+      "gullscythe-1998-dkcb6eskrk",
+      "followerbasalt-2003-pzapwjs4zi",
+      "crownaquamarine-2008-uuwzxhcjaq"
     ],
     "sorted_candidates_savings_ratio": [
-      "monkeyorchid-3493-g22x2luzpd",
-      "pigprickle-3488-rborslvttn",
-      "ridertruth-3478-mvmnbqvvrf",
-      "chillerfortune-3483-obyxjojjzo"
+      "crownaquamarine-2008-uuwzxhcjaq",
+      "followerbasalt-2003-pzapwjs4zi",
+      "graspsheer-1993-bmjmzq7cli",
+      "gullscythe-1998-dkcb6eskrk"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 13.95,
+      "compute_time_ms": 13.833,
       "slack_entropy": 1.3848018192090525,
       "candidates": null,
       "score_k2_approved": false,
@@ -1042,12 +1038,12 @@
     "branch": {
       "total_savings": 1.345,
       "total_disruption": 3,
-      "compute_time_ms": 72.212,
+      "compute_time_ms": 72.414,
       "slack_entropy": 0,
       "candidates": [
-        "chillerfortune-3483-obyxjojjzo",
-        "pigprickle-3488-rborslvttn",
-        "monkeyorchid-3493-g22x2luzpd"
+        "gullscythe-1998-dkcb6eskrk",
+        "followerbasalt-2003-pzapwjs4zi",
+        "crownaquamarine-2008-uuwzxhcjaq"
       ],
       "score_k2_approved": true,
       "score_k2": 1.2533003677856633
@@ -1055,12 +1051,12 @@
     "branch_savings_sort": {
       "total_savings": 1.345,
       "total_disruption": 3,
-      "compute_time_ms": 59.158,
+      "compute_time_ms": 59.664,
       "slack_entropy": 0,
       "candidates": [
-        "monkeyorchid-3493-g22x2luzpd",
-        "pigprickle-3488-rborslvttn",
-        "chillerfortune-3483-obyxjojjzo"
+        "crownaquamarine-2008-uuwzxhcjaq",
+        "followerbasalt-2003-pzapwjs4zi",
+        "gullscythe-1998-dkcb6eskrk"
       ],
       "score_k2_approved": true,
       "score_k2": 1.2533003677856631
@@ -1068,12 +1064,12 @@
     "oracle": {
       "total_savings": 1.345,
       "total_disruption": 3,
-      "compute_time_ms": 105.271,
+      "compute_time_ms": 106.821,
       "slack_entropy": 0,
       "candidates": [
-        "chillerfortune-3483-obyxjojjzo",
-        "pigprickle-3488-rborslvttn",
-        "monkeyorchid-3493-g22x2luzpd"
+        "gullscythe-1998-dkcb6eskrk",
+        "followerbasalt-2003-pzapwjs4zi",
+        "crownaquamarine-2008-uuwzxhcjaq"
       ],
       "score_k2_approved": true,
       "score_k2": 1.2533003677856633
@@ -1083,27 +1079,27 @@
     "seed": 15,
     "description": "adversarial seed=15 node_count=7 allocCPU=8",
     "sorted_candidates": [
-      "edgeballistic-3501-5novjszexy",
-      "heroncypress-3506-fcrbkssdoa",
-      "roarrose-3511-jkscsvqlfq",
-      "stoneebony-3516-ypuktalurh",
-      "duckfoul-3521-aamv02sln8",
-      "chargermountain-3526-2zjb8lzf5h",
-      "flashergem-3531-fspwy4rnpe"
+      "piggrave-2016-w3zupl5ewp",
+      "antelopetabby-2021-edm49cy5ln",
+      "storkmarsh-2026-5ttp8zgugk",
+      "roarergold-2031-fi0h7jwfrr",
+      "mythgentle-2036-gncsvxfack",
+      "fighterrust-2041-04cg4pqexf",
+      "songoil-2046-ppmkk9feno"
     ],
     "sorted_candidates_savings_ratio": [
-      "flashergem-3531-fspwy4rnpe",
-      "roarrose-3511-jkscsvqlfq",
-      "duckfoul-3521-aamv02sln8",
-      "edgeballistic-3501-5novjszexy",
-      "heroncypress-3506-fcrbkssdoa",
-      "stoneebony-3516-ypuktalurh",
-      "chargermountain-3526-2zjb8lzf5h"
+      "songoil-2046-ppmkk9feno",
+      "storkmarsh-2026-5ttp8zgugk",
+      "mythgentle-2036-gncsvxfack",
+      "piggrave-2016-w3zupl5ewp",
+      "antelopetabby-2021-edm49cy5ln",
+      "roarergold-2031-fi0h7jwfrr",
+      "fighterrust-2041-04cg4pqexf"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 14.186,
+      "compute_time_ms": 14.45,
       "slack_entropy": 1.9416817794389092,
       "candidates": null,
       "score_k2_approved": false,
@@ -1112,14 +1108,14 @@
     "branch": {
       "total_savings": 1.4112,
       "total_disruption": 5,
-      "compute_time_ms": 103.815,
+      "compute_time_ms": 102.888,
       "slack_entropy": 0.6901856760188042,
       "candidates": [
-        "heroncypress-3506-fcrbkssdoa",
-        "roarrose-3511-jkscsvqlfq",
-        "stoneebony-3516-ypuktalurh",
-        "duckfoul-3521-aamv02sln8",
-        "chargermountain-3526-2zjb8lzf5h"
+        "antelopetabby-2021-edm49cy5ln",
+        "storkmarsh-2026-5ttp8zgugk",
+        "roarergold-2031-fi0h7jwfrr",
+        "mythgentle-2036-gncsvxfack",
+        "fighterrust-2041-04cg4pqexf"
       ],
       "score_k2_approved": true,
       "score_k2": 0.9223493400662441
@@ -1127,68 +1123,67 @@
     "branch_savings_sort": {
       "total_savings": 1.7388,
       "total_disruption": 5,
-      "compute_time_ms": 88.293,
+      "compute_time_ms": 94.215,
       "slack_entropy": 0.6901856760188042,
       "candidates": [
-        "flashergem-3531-fspwy4rnpe",
-        "roarrose-3511-jkscsvqlfq",
-        "duckfoul-3521-aamv02sln8",
-        "heroncypress-3506-fcrbkssdoa",
-        "stoneebony-3516-ypuktalurh"
+        "songoil-2046-ppmkk9feno",
+        "storkmarsh-2026-5ttp8zgugk",
+        "mythgentle-2036-gncsvxfack",
+        "antelopetabby-2021-edm49cy5ln",
+        "roarergold-2031-fi0h7jwfrr"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1362012076500847
     },
     "oracle": {
-      "total_savings": 1.8554,
-      "total_disruption": 6,
-      "compute_time_ms": 860.76,
-      "slack_entropy": 0.6684135372823655,
+      "total_savings": 1.7388,
+      "total_disruption": 5,
+      "compute_time_ms": 863.48,
+      "slack_entropy": 0.6901856760188042,
       "candidates": [
-        "heroncypress-3506-fcrbkssdoa",
-        "roarrose-3511-jkscsvqlfq",
-        "stoneebony-3516-ypuktalurh",
-        "duckfoul-3521-aamv02sln8",
-        "chargermountain-3526-2zjb8lzf5h",
-        "flashergem-3531-fspwy4rnpe"
+        "storkmarsh-2026-5ttp8zgugk",
+        "roarergold-2031-fi0h7jwfrr",
+        "mythgentle-2036-gncsvxfack",
+        "fighterrust-2041-04cg4pqexf",
+        "songoil-2046-ppmkk9feno"
       ],
       "score_k2_approved": true,
-      "score_k2": 1.0559961077524647
+      "score_k2": 1.1342373946894637
     }
   },
   {
     "seed": 16,
     "description": "adversarial seed=16 node_count=7 allocCPU=32",
     "sorted_candidates": [
-      "dragonbush-3539-4wmrnqzsp5",
-      "mustangbranch-3544-hpnjbviesw",
-      "speakersharp-3549-qteoukbdie",
-      "legblaze-3554-5fvohmhafi",
-      "flyprism-3559-se3m6v3d7t",
-      "handrowan-3564-5jegshyurr",
-      "goatlily-3569-jq5ushbwea"
+      "skinnersoft-2054-3qvz6ex7si",
+      "sentrytorch-2059-kmwcakqyim",
+      "roachquill-2064-ilwdtoj38v",
+      "crowtiny-2069-fzpupopjgz",
+      "deervine-2074-kca9jmc85e",
+      "roversilent-2079-csgmnxhhpx",
+      "carverhate-2084-v7vzxvlwpg"
     ],
     "sorted_candidates_savings_ratio": [
-      "dragonbush-3539-4wmrnqzsp5",
-      "speakersharp-3549-qteoukbdie",
-      "flyprism-3559-se3m6v3d7t",
-      "mustangbranch-3544-hpnjbviesw",
-      "legblaze-3554-5fvohmhafi",
-      "handrowan-3564-5jegshyurr",
-      "goatlily-3569-jq5ushbwea"
+      "skinnersoft-2054-3qvz6ex7si",
+      "roachquill-2064-ilwdtoj38v",
+      "deervine-2074-kca9jmc85e",
+      "sentrytorch-2059-kmwcakqyim",
+      "crowtiny-2069-fzpupopjgz",
+      "roversilent-2079-csgmnxhhpx",
+      "carverhate-2084-v7vzxvlwpg"
     ],
     "mainline": {
       "total_savings": 6.048,
       "total_disruption": 6,
-      "compute_time_ms": 66.414,
+      "compute_time_ms": 60.613,
       "slack_entropy": 0,
       "candidates": [
-        "dragonbush-3539-4wmrnqzsp5",
-        "mustangbranch-3544-hpnjbviesw",
-        "speakersharp-3549-qteoukbdie",
-        "legblaze-3554-5fvohmhafi",
-        "flyprism-3559-se3m6v3d7t",
-        "handrowan-3564-5jegshyurr"
+        "skinnersoft-2054-3qvz6ex7si",
+        "sentrytorch-2059-kmwcakqyim",
+        "roachquill-2064-ilwdtoj38v",
+        "crowtiny-2069-fzpupopjgz",
+        "deervine-2074-kca9jmc85e",
+        "roversilent-2079-csgmnxhhpx"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1425440896309973
@@ -1196,15 +1191,15 @@
     "branch": {
       "total_savings": 6.048,
       "total_disruption": 6,
-      "compute_time_ms": 71.292,
+      "compute_time_ms": 68.286,
       "slack_entropy": 0,
       "candidates": [
-        "dragonbush-3539-4wmrnqzsp5",
-        "mustangbranch-3544-hpnjbviesw",
-        "speakersharp-3549-qteoukbdie",
-        "legblaze-3554-5fvohmhafi",
-        "flyprism-3559-se3m6v3d7t",
-        "handrowan-3564-5jegshyurr"
+        "skinnersoft-2054-3qvz6ex7si",
+        "sentrytorch-2059-kmwcakqyim",
+        "roachquill-2064-ilwdtoj38v",
+        "crowtiny-2069-fzpupopjgz",
+        "deervine-2074-kca9jmc85e",
+        "roversilent-2079-csgmnxhhpx"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1425440896309973
@@ -1212,58 +1207,57 @@
     "branch_savings_sort": {
       "total_savings": 6.048,
       "total_disruption": 6,
-      "compute_time_ms": 70.878,
+      "compute_time_ms": 69.545,
       "slack_entropy": 0,
       "candidates": [
-        "flyprism-3559-se3m6v3d7t",
-        "dragonbush-3539-4wmrnqzsp5",
-        "speakersharp-3549-qteoukbdie",
-        "legblaze-3554-5fvohmhafi",
-        "handrowan-3564-5jegshyurr",
-        "mustangbranch-3544-hpnjbviesw"
+        "skinnersoft-2054-3qvz6ex7si",
+        "roachquill-2064-ilwdtoj38v",
+        "deervine-2074-kca9jmc85e",
+        "sentrytorch-2059-kmwcakqyim",
+        "crowtiny-2069-fzpupopjgz",
+        "roversilent-2079-csgmnxhhpx"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1425440896309973
     },
     "oracle": {
-      "total_savings": 5.8403,
-      "total_disruption": 7,
-      "compute_time_ms": 861.961,
+      "total_savings": 4.5675,
+      "total_disruption": 6,
+      "compute_time_ms": 875.838,
       "slack_entropy": 0,
       "candidates": [
-        "dragonbush-3539-4wmrnqzsp5",
-        "mustangbranch-3544-hpnjbviesw",
-        "speakersharp-3549-qteoukbdie",
-        "legblaze-3554-5fvohmhafi",
-        "flyprism-3559-se3m6v3d7t",
-        "handrowan-3564-5jegshyurr",
-        "goatlily-3569-jq5ushbwea"
+        "sentrytorch-2059-kmwcakqyim",
+        "roachquill-2064-ilwdtoj38v",
+        "crowtiny-2069-fzpupopjgz",
+        "deervine-2074-kca9jmc85e",
+        "roversilent-2079-csgmnxhhpx",
+        "carverhate-2084-v7vzxvlwpg"
       ],
       "score_k2_approved": true,
-      "score_k2": 1
+      "score_k2": 0.8617464180913009
     }
   },
   {
     "seed": 17,
     "description": "adversarial seed=17 node_count=5 allocCPU=32",
     "sorted_candidates": [
-      "witchfortune-3577-cekp3bsgsa",
-      "monkeymaple-3582-c6kpugtq5y",
-      "tigerround-3587-xkp8iibnhx",
-      "wanderersharp-3592-whtyjpfi9c",
-      "goatcream-3597-jebg84bw2z"
+      "skullplum-2092-fmtndhvx9b",
+      "donkeydull-2097-xdobuurtux",
+      "scareraquamarine-2102-3rdndrcsym",
+      "boaflicker-2107-qoxwzl5xwn",
+      "boamad-2112-xb4ljgo053"
     ],
     "sorted_candidates_savings_ratio": [
-      "goatcream-3597-jebg84bw2z",
-      "wanderersharp-3592-whtyjpfi9c",
-      "witchfortune-3577-cekp3bsgsa",
-      "monkeymaple-3582-c6kpugtq5y",
-      "tigerround-3587-xkp8iibnhx"
+      "boamad-2112-xb4ljgo053",
+      "skullplum-2092-fmtndhvx9b",
+      "donkeydull-2097-xdobuurtux",
+      "scareraquamarine-2102-3rdndrcsym",
+      "boaflicker-2107-qoxwzl5xwn"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 14.164,
+      "compute_time_ms": 13.592,
       "slack_entropy": 1.6091132798103236,
       "candidates": null,
       "score_k2_approved": false,
@@ -1272,12 +1266,12 @@
     "branch": {
       "total_savings": 3.7296,
       "total_disruption": 3,
-      "compute_time_ms": 82.319,
+      "compute_time_ms": 81.786,
       "slack_entropy": 0.6928184134311288,
       "candidates": [
-        "monkeymaple-3582-c6kpugtq5y",
-        "wanderersharp-3592-whtyjpfi9c",
-        "goatcream-3597-jebg84bw2z"
+        "donkeydull-2097-xdobuurtux",
+        "boaflicker-2107-qoxwzl5xwn",
+        "boamad-2112-xb4ljgo053"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1630310358716502
@@ -1285,12 +1279,12 @@
     "branch_savings_sort": {
       "total_savings": 3.7296,
       "total_disruption": 3,
-      "compute_time_ms": 84.242,
+      "compute_time_ms": 80.207,
       "slack_entropy": 0.6928184134311288,
       "candidates": [
-        "goatcream-3597-jebg84bw2z",
-        "wanderersharp-3592-whtyjpfi9c",
-        "monkeymaple-3582-c6kpugtq5y"
+        "boamad-2112-xb4ljgo053",
+        "donkeydull-2097-xdobuurtux",
+        "boaflicker-2107-qoxwzl5xwn"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1630310358716502
@@ -1298,12 +1292,12 @@
     "oracle": {
       "total_savings": 3.7296,
       "total_disruption": 3,
-      "compute_time_ms": 209.076,
+      "compute_time_ms": 208.35,
       "slack_entropy": 0.6928184134311288,
       "candidates": [
-        "monkeymaple-3582-c6kpugtq5y",
-        "wanderersharp-3592-whtyjpfi9c",
-        "goatcream-3597-jebg84bw2z"
+        "donkeydull-2097-xdobuurtux",
+        "boaflicker-2107-qoxwzl5xwn",
+        "boamad-2112-xb4ljgo053"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1630310358716502
@@ -1313,25 +1307,25 @@
     "seed": 18,
     "description": "adversarial seed=18 node_count=6 allocCPU=16",
     "sorted_candidates": [
-      "bughollow-3605-mydqudmowv",
-      "leopardpolar-3610-xxxs9mb08d",
-      "warriorglimmer-3615-bbkd5kv5vr",
-      "lizardbow-3620-prnoslqngo",
-      "saverdot-3625-oumft4qfbf",
-      "hawkmorning-3630-sd6e48hdgi"
+      "bugmaze-2120-rbk3xcut8t",
+      "drifterhorse-2125-5yilj2w71w",
+      "chargersulpher-2130-asrta199zq",
+      "goatbush-2135-xbx9ziuoiv",
+      "princesssummer-2140-jv3prlisiz",
+      "lightershimmer-2145-4eyutvgnt2"
     ],
     "sorted_candidates_savings_ratio": [
-      "hawkmorning-3630-sd6e48hdgi",
-      "warriorglimmer-3615-bbkd5kv5vr",
-      "saverdot-3625-oumft4qfbf",
-      "leopardpolar-3610-xxxs9mb08d",
-      "lizardbow-3620-prnoslqngo",
-      "bughollow-3605-mydqudmowv"
+      "lightershimmer-2145-4eyutvgnt2",
+      "chargersulpher-2130-asrta199zq",
+      "princesssummer-2140-jv3prlisiz",
+      "goatbush-2135-xbx9ziuoiv",
+      "bugmaze-2120-rbk3xcut8t",
+      "drifterhorse-2125-5yilj2w71w"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 14.144,
+      "compute_time_ms": 14.147,
       "slack_entropy": 1.7913034603932771,
       "candidates": null,
       "score_k2_approved": false,
@@ -1340,27 +1334,27 @@
     "branch": {
       "total_savings": 6.702400000000001,
       "total_disruption": 4,
-      "compute_time_ms": 95.614,
+      "compute_time_ms": 93.059,
       "slack_entropy": 0.6929691707091894,
       "candidates": [
-        "leopardpolar-3610-xxxs9mb08d",
-        "warriorglimmer-3615-bbkd5kv5vr",
-        "saverdot-3625-oumft4qfbf",
-        "hawkmorning-3630-sd6e48hdgi"
+        "drifterhorse-2125-5yilj2w71w",
+        "chargersulpher-2130-asrta199zq",
+        "princesssummer-2140-jv3prlisiz",
+        "lightershimmer-2145-4eyutvgnt2"
       ],
       "score_k2_approved": true,
-      "score_k2": 1.0661800613230172
+      "score_k2": 1.066180061323017
     },
     "branch_savings_sort": {
       "total_savings": 6.7024,
       "total_disruption": 4,
-      "compute_time_ms": 80.821,
+      "compute_time_ms": 79.849,
       "slack_entropy": 0.6929691707091894,
       "candidates": [
-        "hawkmorning-3630-sd6e48hdgi",
-        "warriorglimmer-3615-bbkd5kv5vr",
-        "saverdot-3625-oumft4qfbf",
-        "leopardpolar-3610-xxxs9mb08d"
+        "lightershimmer-2145-4eyutvgnt2",
+        "chargersulpher-2130-asrta199zq",
+        "princesssummer-2140-jv3prlisiz",
+        "drifterhorse-2125-5yilj2w71w"
       ],
       "score_k2_approved": true,
       "score_k2": 1.0661800613230172
@@ -1368,13 +1362,13 @@
     "oracle": {
       "total_savings": 6.702400000000001,
       "total_disruption": 4,
-      "compute_time_ms": 421.576,
+      "compute_time_ms": 441.124,
       "slack_entropy": 0.6929691707091894,
       "candidates": [
-        "leopardpolar-3610-xxxs9mb08d",
-        "warriorglimmer-3615-bbkd5kv5vr",
-        "saverdot-3625-oumft4qfbf",
-        "hawkmorning-3630-sd6e48hdgi"
+        "drifterhorse-2125-5yilj2w71w",
+        "chargersulpher-2130-asrta199zq",
+        "princesssummer-2140-jv3prlisiz",
+        "lightershimmer-2145-4eyutvgnt2"
       ],
       "score_k2_approved": true,
       "score_k2": 1.0661800613230172
@@ -1384,21 +1378,21 @@
     "seed": 19,
     "description": "adversarial seed=19 node_count=4 allocCPU=32",
     "sorted_candidates": [
-      "finripple-3638-hezywmmyef",
-      "carpetsnow-3643-bbch67u7xf",
-      "fightersummer-3648-eggeq0zdqw",
-      "runnerbird-3653-xbzkp4d3gm"
+      "otterbrindle-2153-qthlm824wo",
+      "bearglimmer-2158-ubmwwys2ou",
+      "capbevel-2163-glwggkl8mu",
+      "guardianrelic-2168-hqgl2ukhta"
     ],
     "sorted_candidates_savings_ratio": [
-      "finripple-3638-hezywmmyef",
-      "carpetsnow-3643-bbch67u7xf",
-      "runnerbird-3653-xbzkp4d3gm",
-      "fightersummer-3648-eggeq0zdqw"
+      "bearglimmer-2158-ubmwwys2ou",
+      "otterbrindle-2153-qthlm824wo",
+      "guardianrelic-2168-hqgl2ukhta",
+      "capbevel-2163-glwggkl8mu"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 14.026,
+      "compute_time_ms": 13.614,
       "slack_entropy": 1.386210369116454,
       "candidates": null,
       "score_k2_approved": false,
@@ -1407,12 +1401,12 @@
     "branch": {
       "total_savings": 2.683,
       "total_disruption": 3,
-      "compute_time_ms": 72.798,
+      "compute_time_ms": 70.69,
       "slack_entropy": 0,
       "candidates": [
-        "carpetsnow-3643-bbch67u7xf",
-        "fightersummer-3648-eggeq0zdqw",
-        "runnerbird-3653-xbzkp4d3gm"
+        "bearglimmer-2158-ubmwwys2ou",
+        "capbevel-2163-glwggkl8mu",
+        "guardianrelic-2168-hqgl2ukhta"
       ],
       "score_k2_approved": true,
       "score_k2": 0.8837694041580706
@@ -1420,12 +1414,12 @@
     "branch_savings_sort": {
       "total_savings": 2.6830000000000003,
       "total_disruption": 3,
-      "compute_time_ms": 72.182,
+      "compute_time_ms": 71.004,
       "slack_entropy": 0,
       "candidates": [
-        "carpetsnow-3643-bbch67u7xf",
-        "runnerbird-3653-xbzkp4d3gm",
-        "fightersummer-3648-eggeq0zdqw"
+        "bearglimmer-2158-ubmwwys2ou",
+        "guardianrelic-2168-hqgl2ukhta",
+        "capbevel-2163-glwggkl8mu"
       ],
       "score_k2_approved": true,
       "score_k2": 0.8837694041580707
@@ -1433,12 +1427,12 @@
     "oracle": {
       "total_savings": 2.683,
       "total_disruption": 3,
-      "compute_time_ms": 107.302,
+      "compute_time_ms": 102.937,
       "slack_entropy": 0,
       "candidates": [
-        "carpetsnow-3643-bbch67u7xf",
-        "fightersummer-3648-eggeq0zdqw",
-        "runnerbird-3653-xbzkp4d3gm"
+        "bearglimmer-2158-ubmwwys2ou",
+        "capbevel-2163-glwggkl8mu",
+        "guardianrelic-2168-hqgl2ukhta"
       ],
       "score_k2_approved": true,
       "score_k2": 0.8837694041580706
@@ -1448,29 +1442,29 @@
     "seed": 20,
     "description": "adversarial seed=20 node_count=5 allocCPU=8",
     "sorted_candidates": [
-      "princessquartz-3661-ju0y7rrfsx",
-      "hornetmercury-3666-va0bpwqn5g",
-      "monkeyregal-3671-edjrumvgib",
-      "frillscratch-3676-q87jjo73wf",
-      "geckomaze-3681-mn3qxztiri"
+      "kangaroobloom-2176-phcsgkezd2",
+      "shirtoil-2181-yt721u9gcs",
+      "sightdandelion-2186-xcg2dlabhh",
+      "kickersticky-2191-4ex6vp5bvu",
+      "chillerprong-2196-bg0vvjc2yi"
     ],
     "sorted_candidates_savings_ratio": [
-      "geckomaze-3681-mn3qxztiri",
-      "monkeyregal-3671-edjrumvgib",
-      "princessquartz-3661-ju0y7rrfsx",
-      "hornetmercury-3666-va0bpwqn5g",
-      "frillscratch-3676-q87jjo73wf"
+      "chillerprong-2196-bg0vvjc2yi",
+      "sightdandelion-2186-xcg2dlabhh",
+      "kangaroobloom-2176-phcsgkezd2",
+      "kickersticky-2191-4ex6vp5bvu",
+      "shirtoil-2181-yt721u9gcs"
     ],
     "mainline": {
       "total_savings": 1.2096,
       "total_disruption": 4,
-      "compute_time_ms": 54.499,
+      "compute_time_ms": 54.651,
       "slack_entropy": 0,
       "candidates": [
-        "princessquartz-3661-ju0y7rrfsx",
-        "hornetmercury-3666-va0bpwqn5g",
-        "monkeyregal-3671-edjrumvgib",
-        "frillscratch-3676-q87jjo73wf"
+        "kangaroobloom-2176-phcsgkezd2",
+        "shirtoil-2181-yt721u9gcs",
+        "sightdandelion-2186-xcg2dlabhh",
+        "kickersticky-2191-4ex6vp5bvu"
       ],
       "score_k2_approved": false,
       "score_k2": 0.45498965776409456
@@ -1478,13 +1472,13 @@
     "branch": {
       "total_savings": 1.2096,
       "total_disruption": 4,
-      "compute_time_ms": 61.557,
+      "compute_time_ms": 60.42,
       "slack_entropy": 0,
       "candidates": [
-        "princessquartz-3661-ju0y7rrfsx",
-        "hornetmercury-3666-va0bpwqn5g",
-        "monkeyregal-3671-edjrumvgib",
-        "frillscratch-3676-q87jjo73wf"
+        "kangaroobloom-2176-phcsgkezd2",
+        "shirtoil-2181-yt721u9gcs",
+        "sightdandelion-2186-xcg2dlabhh",
+        "kickersticky-2191-4ex6vp5bvu"
       ],
       "score_k2_approved": false,
       "score_k2": 0.45498965776409456
@@ -1492,58 +1486,57 @@
     "branch_savings_sort": {
       "total_savings": 3.1248,
       "total_disruption": 4,
-      "compute_time_ms": 60.915,
+      "compute_time_ms": 61.367,
       "slack_entropy": 0,
       "candidates": [
-        "geckomaze-3681-mn3qxztiri",
-        "princessquartz-3661-ju0y7rrfsx",
-        "monkeyregal-3671-edjrumvgib",
-        "hornetmercury-3666-va0bpwqn5g"
+        "chillerprong-2196-bg0vvjc2yi",
+        "kangaroobloom-2176-phcsgkezd2",
+        "sightdandelion-2186-xcg2dlabhh",
+        "shirtoil-2181-yt721u9gcs"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1744955259908547
     },
     "oracle": {
-      "total_savings": 3.1564,
-      "total_disruption": 5,
-      "compute_time_ms": 208.664,
+      "total_savings": 2.9232,
+      "total_disruption": 4,
+      "compute_time_ms": 212.228,
       "slack_entropy": 0,
       "candidates": [
-        "princessquartz-3661-ju0y7rrfsx",
-        "hornetmercury-3666-va0bpwqn5g",
-        "monkeyregal-3671-edjrumvgib",
-        "frillscratch-3676-q87jjo73wf",
-        "geckomaze-3681-mn3qxztiri"
+        "shirtoil-2181-yt721u9gcs",
+        "sightdandelion-2186-xcg2dlabhh",
+        "kickersticky-2191-4ex6vp5bvu",
+        "chillerprong-2196-bg0vvjc2yi"
       ],
       "score_k2_approved": true,
-      "score_k2": 1
+      "score_k2": 1.097752008648471
     }
   },
   {
     "seed": 21,
     "description": "adversarial seed=21 node_count=7 allocCPU=16",
     "sorted_candidates": [
-      "questerwarp-3689-emrdbii2xz",
-      "doghazel-3694-hnuokqgmxu",
-      "fliertulip-3699-7cw2gfusas",
-      "cockatootree-3704-ydb18ndvoe",
-      "mindoil-3709-eh8lv5qeyy",
-      "hawkpalm-3714-wlregkxhrw",
-      "seedcute-3719-fhvwpatjij"
+      "shriekquark-2204-1kjjzhunax",
+      "neckpolar-2209-cpojwoiyzk",
+      "shiftvaliant-2214-y9xrphme1t",
+      "elfchain-2219-g05kqfsydx",
+      "geckoheather-2224-7chxfk6gm3",
+      "foxlily-2229-qfvd13vqkh",
+      "flasherhorn-2234-il37ywyoqi"
     ],
     "sorted_candidates_savings_ratio": [
-      "seedcute-3719-fhvwpatjij",
-      "questerwarp-3689-emrdbii2xz",
-      "doghazel-3694-hnuokqgmxu",
-      "cockatootree-3704-ydb18ndvoe",
-      "hawkpalm-3714-wlregkxhrw",
-      "fliertulip-3699-7cw2gfusas",
-      "mindoil-3709-eh8lv5qeyy"
+      "flasherhorn-2234-il37ywyoqi",
+      "shriekquark-2204-1kjjzhunax",
+      "neckpolar-2209-cpojwoiyzk",
+      "elfchain-2219-g05kqfsydx",
+      "foxlily-2229-qfvd13vqkh",
+      "shiftvaliant-2214-y9xrphme1t",
+      "geckoheather-2224-7chxfk6gm3"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 13.822,
+      "compute_time_ms": 13.726,
       "slack_entropy": 1.945655844360986,
       "candidates": null,
       "score_k2_approved": false,
@@ -1552,15 +1545,15 @@
     "branch": {
       "total_savings": 1.8264000000000002,
       "total_disruption": 6,
-      "compute_time_ms": 113.31,
+      "compute_time_ms": 111.194,
       "slack_entropy": 0,
       "candidates": [
-        "doghazel-3694-hnuokqgmxu",
-        "fliertulip-3699-7cw2gfusas",
-        "cockatootree-3704-ydb18ndvoe",
-        "mindoil-3709-eh8lv5qeyy",
-        "hawkpalm-3714-wlregkxhrw",
-        "seedcute-3719-fhvwpatjij"
+        "neckpolar-2209-cpojwoiyzk",
+        "shiftvaliant-2214-y9xrphme1t",
+        "elfchain-2219-g05kqfsydx",
+        "geckoheather-2224-7chxfk6gm3",
+        "foxlily-2229-qfvd13vqkh",
+        "flasherhorn-2234-il37ywyoqi"
       ],
       "score_k2_approved": true,
       "score_k2": 0.9829262081972524
@@ -1568,15 +1561,15 @@
     "branch_savings_sort": {
       "total_savings": 1.8264000000000002,
       "total_disruption": 6,
-      "compute_time_ms": 96.525,
+      "compute_time_ms": 95.461,
       "slack_entropy": 0,
       "candidates": [
-        "seedcute-3719-fhvwpatjij",
-        "cockatootree-3704-ydb18ndvoe",
-        "doghazel-3694-hnuokqgmxu",
-        "hawkpalm-3714-wlregkxhrw",
-        "fliertulip-3699-7cw2gfusas",
-        "mindoil-3709-eh8lv5qeyy"
+        "flasherhorn-2234-il37ywyoqi",
+        "elfchain-2219-g05kqfsydx",
+        "neckpolar-2209-cpojwoiyzk",
+        "foxlily-2229-qfvd13vqkh",
+        "shiftvaliant-2214-y9xrphme1t",
+        "geckoheather-2224-7chxfk6gm3"
       ],
       "score_k2_approved": true,
       "score_k2": 0.9829262081972524
@@ -1584,15 +1577,15 @@
     "oracle": {
       "total_savings": 1.8264000000000002,
       "total_disruption": 6,
-      "compute_time_ms": 858.225,
+      "compute_time_ms": 869.239,
       "slack_entropy": 0,
       "candidates": [
-        "doghazel-3694-hnuokqgmxu",
-        "fliertulip-3699-7cw2gfusas",
-        "cockatootree-3704-ydb18ndvoe",
-        "mindoil-3709-eh8lv5qeyy",
-        "hawkpalm-3714-wlregkxhrw",
-        "seedcute-3719-fhvwpatjij"
+        "neckpolar-2209-cpojwoiyzk",
+        "shiftvaliant-2214-y9xrphme1t",
+        "elfchain-2219-g05kqfsydx",
+        "geckoheather-2224-7chxfk6gm3",
+        "foxlily-2229-qfvd13vqkh",
+        "flasherhorn-2234-il37ywyoqi"
       ],
       "score_k2_approved": true,
       "score_k2": 0.9829262081972524
@@ -1602,21 +1595,21 @@
     "seed": 22,
     "description": "adversarial seed=22 node_count=4 allocCPU=32",
     "sorted_candidates": [
-      "ferrettorch-3727-sdmv8qllmt",
-      "beakbuttercup-3732-1czui1eyro",
-      "mooseash-3737-vrfofudnkw",
-      "hidebush-3742-fr8skh8zua"
+      "drifternickel-2242-mmglmgaz65",
+      "dutchessforest-2247-p527o1khgj",
+      "shriekcrimson-2252-njyiivi6p9",
+      "goatpickle-2257-kkmb56aipn"
     ],
     "sorted_candidates_savings_ratio": [
-      "hidebush-3742-fr8skh8zua",
-      "ferrettorch-3727-sdmv8qllmt",
-      "beakbuttercup-3732-1czui1eyro",
-      "mooseash-3737-vrfofudnkw"
+      "goatpickle-2257-kkmb56aipn",
+      "drifternickel-2242-mmglmgaz65",
+      "dutchessforest-2247-p527o1khgj",
+      "shriekcrimson-2252-njyiivi6p9"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 14.281,
+      "compute_time_ms": 14.122,
       "slack_entropy": 1.386210369116454,
       "candidates": null,
       "score_k2_approved": false,
@@ -1625,12 +1618,12 @@
     "branch": {
       "total_savings": 3.88,
       "total_disruption": 3,
-      "compute_time_ms": 72.899,
+      "compute_time_ms": 70.901,
       "slack_entropy": 0,
       "candidates": [
-        "beakbuttercup-3732-1czui1eyro",
-        "mooseash-3737-vrfofudnkw",
-        "hidebush-3742-fr8skh8zua"
+        "dutchessforest-2247-p527o1khgj",
+        "shriekcrimson-2252-njyiivi6p9",
+        "goatpickle-2257-kkmb56aipn"
       ],
       "score_k2_approved": true,
       "score_k2": 0.9867831460473685
@@ -1638,12 +1631,12 @@
     "branch_savings_sort": {
       "total_savings": 3.88,
       "total_disruption": 3,
-      "compute_time_ms": 71.544,
+      "compute_time_ms": 69.286,
       "slack_entropy": 0,
       "candidates": [
-        "hidebush-3742-fr8skh8zua",
-        "beakbuttercup-3732-1czui1eyro",
-        "mooseash-3737-vrfofudnkw"
+        "goatpickle-2257-kkmb56aipn",
+        "dutchessforest-2247-p527o1khgj",
+        "shriekcrimson-2252-njyiivi6p9"
       ],
       "score_k2_approved": true,
       "score_k2": 0.9867831460473685
@@ -1651,12 +1644,12 @@
     "oracle": {
       "total_savings": 3.88,
       "total_disruption": 3,
-      "compute_time_ms": 103.915,
+      "compute_time_ms": 107.091,
       "slack_entropy": 0,
       "candidates": [
-        "beakbuttercup-3732-1czui1eyro",
-        "mooseash-3737-vrfofudnkw",
-        "hidebush-3742-fr8skh8zua"
+        "dutchessforest-2247-p527o1khgj",
+        "shriekcrimson-2252-njyiivi6p9",
+        "goatpickle-2257-kkmb56aipn"
       ],
       "score_k2_approved": true,
       "score_k2": 0.9867831460473685
@@ -1666,25 +1659,25 @@
     "seed": 23,
     "description": "adversarial seed=23 node_count=6 allocCPU=8",
     "sorted_candidates": [
-      "roachbevel-3750-yjzshrqgza",
-      "lightningcherry-3755-iq6de3rtj5",
-      "hornshine-3760-mzcpyfopip",
-      "cockatooindigo-3765-xrdgdclybc",
-      "pythonscythe-3770-tejiiishgz",
-      "scorpionvine-3775-ykbd6x9e31"
+      "browspangle-2265-mdih2ntxpz",
+      "stonefuschia-2270-xckjazlauj",
+      "otterbuttercup-2275-qsovsarl5g",
+      "watcherpond-2280-apdhpcpxw0",
+      "carpshort-2285-vyriudq2ej",
+      "geckofrost-2290-pdgggancbd"
     ],
     "sorted_candidates_savings_ratio": [
-      "scorpionvine-3775-ykbd6x9e31",
-      "hornshine-3760-mzcpyfopip",
-      "pythonscythe-3770-tejiiishgz",
-      "roachbevel-3750-yjzshrqgza",
-      "lightningcherry-3755-iq6de3rtj5",
-      "cockatooindigo-3765-xrdgdclybc"
+      "geckofrost-2290-pdgggancbd",
+      "otterbuttercup-2275-qsovsarl5g",
+      "carpshort-2285-vyriudq2ej",
+      "browspangle-2265-mdih2ntxpz",
+      "stonefuschia-2270-xckjazlauj",
+      "watcherpond-2280-apdhpcpxw0"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 14.175,
+      "compute_time_ms": 14.215,
       "slack_entropy": 1.786845099513167,
       "candidates": null,
       "score_k2_approved": false,
@@ -1693,14 +1686,14 @@
     "branch": {
       "total_savings": 2.21,
       "total_disruption": 5,
-      "compute_time_ms": 95.205,
+      "compute_time_ms": 92.725,
       "slack_entropy": 0,
       "candidates": [
-        "lightningcherry-3755-iq6de3rtj5",
-        "hornshine-3760-mzcpyfopip",
-        "cockatooindigo-3765-xrdgdclybc",
-        "pythonscythe-3770-tejiiishgz",
-        "scorpionvine-3775-ykbd6x9e31"
+        "stonefuschia-2270-xckjazlauj",
+        "otterbuttercup-2275-qsovsarl5g",
+        "watcherpond-2280-apdhpcpxw0",
+        "carpshort-2285-vyriudq2ej",
+        "geckofrost-2290-pdgggancbd"
       ],
       "score_k2_approved": true,
       "score_k2": 1.154427061864608
@@ -1708,14 +1701,14 @@
     "branch_savings_sort": {
       "total_savings": 2.21,
       "total_disruption": 5,
-      "compute_time_ms": 79.048,
+      "compute_time_ms": 77.356,
       "slack_entropy": 0,
       "candidates": [
-        "scorpionvine-3775-ykbd6x9e31",
-        "hornshine-3760-mzcpyfopip",
-        "pythonscythe-3770-tejiiishgz",
-        "lightningcherry-3755-iq6de3rtj5",
-        "cockatooindigo-3765-xrdgdclybc"
+        "geckofrost-2290-pdgggancbd",
+        "otterbuttercup-2275-qsovsarl5g",
+        "carpshort-2285-vyriudq2ej",
+        "stonefuschia-2270-xckjazlauj",
+        "watcherpond-2280-apdhpcpxw0"
       ],
       "score_k2_approved": true,
       "score_k2": 1.154427061864608
@@ -1723,14 +1716,14 @@
     "oracle": {
       "total_savings": 2.21,
       "total_disruption": 5,
-      "compute_time_ms": 431.005,
+      "compute_time_ms": 423.716,
       "slack_entropy": 0,
       "candidates": [
-        "lightningcherry-3755-iq6de3rtj5",
-        "hornshine-3760-mzcpyfopip",
-        "cockatooindigo-3765-xrdgdclybc",
-        "pythonscythe-3770-tejiiishgz",
-        "scorpionvine-3775-ykbd6x9e31"
+        "stonefuschia-2270-xckjazlauj",
+        "otterbuttercup-2275-qsovsarl5g",
+        "watcherpond-2280-apdhpcpxw0",
+        "carpshort-2285-vyriudq2ej",
+        "geckofrost-2290-pdgggancbd"
       ],
       "score_k2_approved": true,
       "score_k2": 1.154427061864608
@@ -1740,110 +1733,109 @@
     "seed": 24,
     "description": "adversarial seed=24 node_count=6 allocCPU=32",
     "sorted_candidates": [
-      "thornlily-3783-mqasodtqtr",
-      "armsplit-3788-cnql4f3eal",
-      "lancerbutton-3793-z4w5xvfdkl",
-      "griffinripple-3798-ir1dvavez6",
-      "butterflydust-3803-bc4vothvlk",
-      "chinbattle-3808-xzgrw34x8j"
+      "carpetdaisy-2298-xikhnpgii4",
+      "questerdesert-2303-83emucelgt",
+      "thiefspangle-2308-g9nwjr8llm",
+      "crushernebula-2313-3nsumzbygd",
+      "mooserainbow-2318-sdjyqr2q4k",
+      "carpethail-2323-wtijygtwyq"
     ],
     "sorted_candidates_savings_ratio": [
-      "thornlily-3783-mqasodtqtr",
-      "lancerbutton-3793-z4w5xvfdkl",
-      "butterflydust-3803-bc4vothvlk",
-      "armsplit-3788-cnql4f3eal",
-      "griffinripple-3798-ir1dvavez6",
-      "chinbattle-3808-xzgrw34x8j"
+      "carpetdaisy-2298-xikhnpgii4",
+      "thiefspangle-2308-g9nwjr8llm",
+      "mooserainbow-2318-sdjyqr2q4k",
+      "questerdesert-2303-83emucelgt",
+      "crushernebula-2313-3nsumzbygd",
+      "carpethail-2323-wtijygtwyq"
     ],
     "mainline": {
       "total_savings": 4.760000000000001,
       "total_disruption": 5,
-      "compute_time_ms": 58.1,
+      "compute_time_ms": 59.544,
       "slack_entropy": 0,
       "candidates": [
-        "thornlily-3783-mqasodtqtr",
-        "armsplit-3788-cnql4f3eal",
-        "lancerbutton-3793-z4w5xvfdkl",
-        "griffinripple-3798-ir1dvavez6",
-        "butterflydust-3803-bc4vothvlk"
-      ],
-      "score_k2_approved": true,
-      "score_k2": 1.1761965636071856
-    },
-    "branch": {
-      "total_savings": 4.760000000000001,
-      "total_disruption": 5,
-      "compute_time_ms": 81.555,
-      "slack_entropy": 0,
-      "candidates": [
-        "thornlily-3783-mqasodtqtr",
-        "armsplit-3788-cnql4f3eal",
-        "lancerbutton-3793-z4w5xvfdkl",
-        "griffinripple-3798-ir1dvavez6",
-        "butterflydust-3803-bc4vothvlk"
+        "carpetdaisy-2298-xikhnpgii4",
+        "questerdesert-2303-83emucelgt",
+        "thiefspangle-2308-g9nwjr8llm",
+        "crushernebula-2313-3nsumzbygd",
+        "mooserainbow-2318-sdjyqr2q4k"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1761965636071858
     },
+    "branch": {
+      "total_savings": 4.760000000000001,
+      "total_disruption": 5,
+      "compute_time_ms": 68.486,
+      "slack_entropy": 0,
+      "candidates": [
+        "carpetdaisy-2298-xikhnpgii4",
+        "questerdesert-2303-83emucelgt",
+        "thiefspangle-2308-g9nwjr8llm",
+        "crushernebula-2313-3nsumzbygd",
+        "mooserainbow-2318-sdjyqr2q4k"
+      ],
+      "score_k2_approved": true,
+      "score_k2": 1.1761965636071856
+    },
     "branch_savings_sort": {
       "total_savings": 4.76,
       "total_disruption": 5,
-      "compute_time_ms": 66.74,
+      "compute_time_ms": 68.052,
       "slack_entropy": 0,
       "candidates": [
-        "lancerbutton-3793-z4w5xvfdkl",
-        "butterflydust-3803-bc4vothvlk",
-        "thornlily-3783-mqasodtqtr",
-        "armsplit-3788-cnql4f3eal",
-        "griffinripple-3798-ir1dvavez6"
+        "carpetdaisy-2298-xikhnpgii4",
+        "thiefspangle-2308-g9nwjr8llm",
+        "mooserainbow-2318-sdjyqr2q4k",
+        "questerdesert-2303-83emucelgt",
+        "crushernebula-2313-3nsumzbygd"
       ],
       "score_k2_approved": true,
-      "score_k2": 1.1761965636071854
+      "score_k2": 1.1761965636071858
     },
     "oracle": {
-      "total_savings": 4.520800000000001,
-      "total_disruption": 6,
-      "compute_time_ms": 430.516,
+      "total_savings": 3.5008000000000004,
+      "total_disruption": 5,
+      "compute_time_ms": 435.599,
       "slack_entropy": 0,
       "candidates": [
-        "thornlily-3783-mqasodtqtr",
-        "armsplit-3788-cnql4f3eal",
-        "lancerbutton-3793-z4w5xvfdkl",
-        "griffinripple-3798-ir1dvavez6",
-        "butterflydust-3803-bc4vothvlk",
-        "chinbattle-3808-xzgrw34x8j"
+        "questerdesert-2303-83emucelgt",
+        "thiefspangle-2308-g9nwjr8llm",
+        "crushernebula-2313-3nsumzbygd",
+        "mooserainbow-2318-sdjyqr2q4k",
+        "carpethail-2323-wtijygtwyq"
       ],
       "score_k2_approved": true,
-      "score_k2": 1
+      "score_k2": 0.8637068904216907
     }
   },
   {
     "seed": 25,
     "description": "adversarial seed=25 node_count=5 allocCPU=8",
     "sorted_candidates": [
-      "wolverinemangrove-3816-xgdwl1svzp",
-      "finchocolate-3821-ybbtlagn6d",
-      "llamaebony-3826-frmpj21hlj",
-      "forgercosmic-3831-ajdw3jjfqx",
-      "devourersunrise-3836-yjvrh2p1ua"
+      "taloncandy-2331-3ukhkpelcn",
+      "dutchessspectrum-2336-ihspjlfmwm",
+      "legquick-2341-5pgqvvhmhm",
+      "goosestump-2346-5ppumijl7k",
+      "molevanilla-2351-it1orjqtxq"
     ],
     "sorted_candidates_savings_ratio": [
-      "devourersunrise-3836-yjvrh2p1ua",
-      "llamaebony-3826-frmpj21hlj",
-      "wolverinemangrove-3816-xgdwl1svzp",
-      "finchocolate-3821-ybbtlagn6d",
-      "forgercosmic-3831-ajdw3jjfqx"
+      "molevanilla-2351-it1orjqtxq",
+      "taloncandy-2331-3ukhkpelcn",
+      "legquick-2341-5pgqvvhmhm",
+      "goosestump-2346-5ppumijl7k",
+      "dutchessspectrum-2336-ihspjlfmwm"
     ],
     "mainline": {
       "total_savings": 1.008,
       "total_disruption": 4,
-      "compute_time_ms": 54.507,
+      "compute_time_ms": 54.677,
       "slack_entropy": 0,
       "candidates": [
-        "wolverinemangrove-3816-xgdwl1svzp",
-        "finchocolate-3821-ybbtlagn6d",
-        "llamaebony-3826-frmpj21hlj",
-        "forgercosmic-3831-ajdw3jjfqx"
+        "taloncandy-2331-3ukhkpelcn",
+        "dutchessspectrum-2336-ihspjlfmwm",
+        "legquick-2341-5pgqvvhmhm",
+        "goosestump-2346-5ppumijl7k"
       ],
       "score_k2_approved": false,
       "score_k2": 0.4034390846563876
@@ -1851,13 +1843,13 @@
     "branch": {
       "total_savings": 1.008,
       "total_disruption": 4,
-      "compute_time_ms": 61.234,
+      "compute_time_ms": 61.038,
       "slack_entropy": 0,
       "candidates": [
-        "wolverinemangrove-3816-xgdwl1svzp",
-        "finchocolate-3821-ybbtlagn6d",
-        "llamaebony-3826-frmpj21hlj",
-        "forgercosmic-3831-ajdw3jjfqx"
+        "taloncandy-2331-3ukhkpelcn",
+        "dutchessspectrum-2336-ihspjlfmwm",
+        "legquick-2341-5pgqvvhmhm",
+        "goosestump-2346-5ppumijl7k"
       ],
       "score_k2_approved": false,
       "score_k2": 0.4034390846563876
@@ -1865,56 +1857,55 @@
     "branch_savings_sort": {
       "total_savings": 3.024,
       "total_disruption": 4,
-      "compute_time_ms": 61.768,
+      "compute_time_ms": 60.558,
       "slack_entropy": 0,
       "candidates": [
-        "devourersunrise-3836-yjvrh2p1ua",
-        "wolverinemangrove-3816-xgdwl1svzp",
-        "llamaebony-3826-frmpj21hlj",
-        "finchocolate-3821-ybbtlagn6d"
+        "molevanilla-2351-it1orjqtxq",
+        "taloncandy-2331-3ukhkpelcn",
+        "legquick-2341-5pgqvvhmhm",
+        "dutchessspectrum-2336-ihspjlfmwm"
       ],
       "score_k2_approved": true,
       "score_k2": 1.2098249274662964
     },
     "oracle": {
-      "total_savings": 2.7848,
-      "total_disruption": 5,
-      "compute_time_ms": 204.907,
+      "total_savings": 2.7216,
+      "total_disruption": 4,
+      "compute_time_ms": 222.284,
       "slack_entropy": 0,
       "candidates": [
-        "wolverinemangrove-3816-xgdwl1svzp",
-        "finchocolate-3821-ybbtlagn6d",
-        "llamaebony-3826-frmpj21hlj",
-        "forgercosmic-3831-ajdw3jjfqx",
-        "devourersunrise-3836-yjvrh2p1ua"
+        "dutchessspectrum-2336-ihspjlfmwm",
+        "legquick-2341-5pgqvvhmhm",
+        "goosestump-2346-5ppumijl7k",
+        "molevanilla-2351-it1orjqtxq"
       ],
       "score_k2_approved": true,
-      "score_k2": 1
+      "score_k2": 1.0882063720841377
     }
   },
   {
     "seed": 26,
     "description": "adversarial seed=26 node_count=6 allocCPU=8",
     "sorted_candidates": [
-      "eyevanilla-3844-2yvseipbu5",
-      "braidbloom-3849-wy0zc67p1n",
-      "rideremerald-3854-l6m4gla2lc",
-      "tonguefoil-3859-vzw1mcpzxf",
-      "chopperhill-3864-kzwuabnils",
-      "oxriver-3869-adklmatdfo"
+      "ridercitrine-2359-b4wbofznri",
+      "toothmidnight-2364-rfwvayrams",
+      "bitetitanium-2369-nsjturklbi",
+      "ratflicker-2374-hwlbbyfq9z",
+      "boarcrocus-2379-fsairztjt5",
+      "spearsteel-2384-hmp82vbel8"
     ],
     "sorted_candidates_savings_ratio": [
-      "oxriver-3869-adklmatdfo",
-      "rideremerald-3854-l6m4gla2lc",
-      "chopperhill-3864-kzwuabnils",
-      "braidbloom-3849-wy0zc67p1n",
-      "eyevanilla-3844-2yvseipbu5",
-      "tonguefoil-3859-vzw1mcpzxf"
+      "spearsteel-2384-hmp82vbel8",
+      "bitetitanium-2369-nsjturklbi",
+      "boarcrocus-2379-fsairztjt5",
+      "ridercitrine-2359-b4wbofznri",
+      "toothmidnight-2364-rfwvayrams",
+      "ratflicker-2374-hwlbbyfq9z"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 14.266,
+      "compute_time_ms": 14.213,
       "slack_entropy": 1.786350107714536,
       "candidates": null,
       "score_k2_approved": false,
@@ -1923,13 +1914,13 @@
     "branch": {
       "total_savings": 1.4450000000000003,
       "total_disruption": 4,
-      "compute_time_ms": 94.268,
+      "compute_time_ms": 94.226,
       "slack_entropy": 0.6846162778013047,
       "candidates": [
-        "braidbloom-3849-wy0zc67p1n",
-        "rideremerald-3854-l6m4gla2lc",
-        "chopperhill-3864-kzwuabnils",
-        "oxriver-3869-adklmatdfo"
+        "toothmidnight-2364-rfwvayrams",
+        "bitetitanium-2369-nsjturklbi",
+        "boarcrocus-2379-fsairztjt5",
+        "spearsteel-2384-hmp82vbel8"
       ],
       "score_k2_approved": true,
       "score_k2": 1.3401665830215266
@@ -1937,27 +1928,27 @@
     "branch_savings_sort": {
       "total_savings": 1.445,
       "total_disruption": 4,
-      "compute_time_ms": 79.662,
+      "compute_time_ms": 65.883,
       "slack_entropy": 0.6846162778013047,
       "candidates": [
-        "oxriver-3869-adklmatdfo",
-        "rideremerald-3854-l6m4gla2lc",
-        "chopperhill-3864-kzwuabnils",
-        "braidbloom-3849-wy0zc67p1n"
+        "spearsteel-2384-hmp82vbel8",
+        "bitetitanium-2369-nsjturklbi",
+        "boarcrocus-2379-fsairztjt5",
+        "toothmidnight-2364-rfwvayrams"
       ],
       "score_k2_approved": true,
-      "score_k2": 1.3401665830215268
+      "score_k2": 1.3401665830215266
     },
     "oracle": {
       "total_savings": 1.4450000000000003,
       "total_disruption": 4,
-      "compute_time_ms": 433.555,
+      "compute_time_ms": 431.146,
       "slack_entropy": 0.6846162778013047,
       "candidates": [
-        "braidbloom-3849-wy0zc67p1n",
-        "rideremerald-3854-l6m4gla2lc",
-        "chopperhill-3864-kzwuabnils",
-        "oxriver-3869-adklmatdfo"
+        "toothmidnight-2364-rfwvayrams",
+        "bitetitanium-2369-nsjturklbi",
+        "boarcrocus-2379-fsairztjt5",
+        "spearsteel-2384-hmp82vbel8"
       ],
       "score_k2_approved": true,
       "score_k2": 1.3401665830215268
@@ -1967,21 +1958,21 @@
     "seed": 27,
     "description": "adversarial seed=27 node_count=4 allocCPU=32",
     "sorted_candidates": [
-      "walkercold-3877-mddlwhtmh5",
-      "antelopescratch-3882-sidczuh2wz",
-      "stormdaisy-3887-szatbf4cxj",
-      "mindscythe-3892-7mz5zsob4a"
+      "stalkerscratch-2392-gihebmtimx",
+      "lighterdirt-2397-vcnnbjaupn",
+      "ninjagrove-2402-haspfait3o",
+      "scourgenight-2407-5lf2uvpwq6"
     ],
     "sorted_candidates_savings_ratio": [
-      "mindscythe-3892-7mz5zsob4a",
-      "stormdaisy-3887-szatbf4cxj",
-      "walkercold-3877-mddlwhtmh5",
-      "antelopescratch-3882-sidczuh2wz"
+      "scourgenight-2407-5lf2uvpwq6",
+      "ninjagrove-2402-haspfait3o",
+      "stalkerscratch-2392-gihebmtimx",
+      "lighterdirt-2397-vcnnbjaupn"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 13.836,
+      "compute_time_ms": 14.086,
       "slack_entropy": 1.3859407567576074,
       "candidates": null,
       "score_k2_approved": false,
@@ -1990,38 +1981,38 @@
     "branch": {
       "total_savings": 2.3341,
       "total_disruption": 3,
-      "compute_time_ms": 71.359,
+      "compute_time_ms": 71.348,
       "slack_entropy": 0,
       "candidates": [
-        "antelopescratch-3882-sidczuh2wz",
-        "stormdaisy-3887-szatbf4cxj",
-        "mindscythe-3892-7mz5zsob4a"
+        "lighterdirt-2397-vcnnbjaupn",
+        "ninjagrove-2402-haspfait3o",
+        "scourgenight-2407-5lf2uvpwq6"
       ],
       "score_k2_approved": true,
-      "score_k2": 1.2848040344923115
+      "score_k2": 1.284804034492311
     },
     "branch_savings_sort": {
       "total_savings": 2.3341,
       "total_disruption": 3,
-      "compute_time_ms": 57.097,
+      "compute_time_ms": 51.703,
       "slack_entropy": 0,
       "candidates": [
-        "mindscythe-3892-7mz5zsob4a",
-        "stormdaisy-3887-szatbf4cxj",
-        "antelopescratch-3882-sidczuh2wz"
+        "scourgenight-2407-5lf2uvpwq6",
+        "ninjagrove-2402-haspfait3o",
+        "lighterdirt-2397-vcnnbjaupn"
       ],
       "score_k2_approved": true,
-      "score_k2": 1.2848040344923115
+      "score_k2": 1.284804034492311
     },
     "oracle": {
       "total_savings": 2.3341,
       "total_disruption": 3,
-      "compute_time_ms": 108.015,
+      "compute_time_ms": 107.968,
       "slack_entropy": 0,
       "candidates": [
-        "antelopescratch-3882-sidczuh2wz",
-        "stormdaisy-3887-szatbf4cxj",
-        "mindscythe-3892-7mz5zsob4a"
+        "lighterdirt-2397-vcnnbjaupn",
+        "ninjagrove-2402-haspfait3o",
+        "scourgenight-2407-5lf2uvpwq6"
       ],
       "score_k2_approved": true,
       "score_k2": 1.284804034492311
@@ -2031,21 +2022,21 @@
     "seed": 28,
     "description": "adversarial seed=28 node_count=4 allocCPU=16",
     "sorted_candidates": [
-      "bardquark-3900-xsqlh5f29t",
-      "cranesalt-3905-4d7ahlmcwy",
-      "faceglaze-3910-u1eypwot5n",
-      "robinclear-3915-claqt7ibk1"
+      "condorshimmer-2415-f36gmof0rz",
+      "knavejasper-2420-kc0r3nlr1a",
+      "scorpionhollow-2425-9xsbmrp6cx",
+      "horseamber-2430-tnxpb7vdgg"
     ],
     "sorted_candidates_savings_ratio": [
-      "robinclear-3915-claqt7ibk1",
-      "faceglaze-3910-u1eypwot5n",
-      "bardquark-3900-xsqlh5f29t",
-      "cranesalt-3905-4d7ahlmcwy"
+      "horseamber-2430-tnxpb7vdgg",
+      "scorpionhollow-2425-9xsbmrp6cx",
+      "condorshimmer-2415-f36gmof0rz",
+      "knavejasper-2420-kc0r3nlr1a"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 14.085,
+      "compute_time_ms": 13.753,
       "slack_entropy": 1.3848018192090525,
       "candidates": null,
       "score_k2_approved": false,
@@ -2054,12 +2045,12 @@
     "branch": {
       "total_savings": 0.6362000000000001,
       "total_disruption": 3,
-      "compute_time_ms": 71.364,
+      "compute_time_ms": 71.154,
       "slack_entropy": 0,
       "candidates": [
-        "cranesalt-3905-4d7ahlmcwy",
-        "faceglaze-3910-u1eypwot5n",
-        "robinclear-3915-claqt7ibk1"
+        "knavejasper-2420-kc0r3nlr1a",
+        "scorpionhollow-2425-9xsbmrp6cx",
+        "horseamber-2430-tnxpb7vdgg"
       ],
       "score_k2_approved": true,
       "score_k2": 1.0511546923672515
@@ -2067,12 +2058,12 @@
     "branch_savings_sort": {
       "total_savings": 0.6362,
       "total_disruption": 3,
-      "compute_time_ms": 57.485,
+      "compute_time_ms": 51.212,
       "slack_entropy": 0,
       "candidates": [
-        "robinclear-3915-claqt7ibk1",
-        "faceglaze-3910-u1eypwot5n",
-        "cranesalt-3905-4d7ahlmcwy"
+        "horseamber-2430-tnxpb7vdgg",
+        "scorpionhollow-2425-9xsbmrp6cx",
+        "knavejasper-2420-kc0r3nlr1a"
       ],
       "score_k2_approved": true,
       "score_k2": 1.0511546923672512
@@ -2080,50 +2071,50 @@
     "oracle": {
       "total_savings": 0.6362000000000001,
       "total_disruption": 3,
-      "compute_time_ms": 106.962,
+      "compute_time_ms": 103.541,
       "slack_entropy": 0,
       "candidates": [
-        "cranesalt-3905-4d7ahlmcwy",
-        "faceglaze-3910-u1eypwot5n",
-        "robinclear-3915-claqt7ibk1"
+        "knavejasper-2420-kc0r3nlr1a",
+        "scorpionhollow-2425-9xsbmrp6cx",
+        "horseamber-2430-tnxpb7vdgg"
       ],
       "score_k2_approved": true,
-      "score_k2": 1.0511546923672512
+      "score_k2": 1.051154692367251
     }
   },
   {
     "seed": 29,
     "description": "adversarial seed=29 node_count=7 allocCPU=32",
     "sorted_candidates": [
-      "headjet-3923-krhnaoadlu",
-      "banestorm-3928-lm5meaex8q",
-      "paladintitanium-3933-unntfxpyj5",
-      "stormpuddle-3938-n19xqyjtv4",
-      "scarpurple-3943-dwpjjtzchp",
-      "beemercury-3948-z0qwfnkpse",
-      "eagleiron-3953-pge9alwhfo"
+      "flametitanium-2438-zqsbywcdsa",
+      "lordsage-2443-opjctzwwj3",
+      "scribespeckle-2448-yyf4vig6q0",
+      "doomcarnation-2453-thyvca2tkb",
+      "dancerlemon-2458-vo4khso0od",
+      "eaterdesert-2463-5rostogk0m",
+      "serpentarrow-2468-21jlfwuucj"
     ],
     "sorted_candidates_savings_ratio": [
-      "paladintitanium-3933-unntfxpyj5",
-      "headjet-3923-krhnaoadlu",
-      "scarpurple-3943-dwpjjtzchp",
-      "eagleiron-3953-pge9alwhfo",
-      "banestorm-3928-lm5meaex8q",
-      "stormpuddle-3938-n19xqyjtv4",
-      "beemercury-3948-z0qwfnkpse"
+      "flametitanium-2438-zqsbywcdsa",
+      "scribespeckle-2448-yyf4vig6q0",
+      "dancerlemon-2458-vo4khso0od",
+      "serpentarrow-2468-21jlfwuucj",
+      "lordsage-2443-opjctzwwj3",
+      "doomcarnation-2453-thyvca2tkb",
+      "eaterdesert-2463-5rostogk0m"
     ],
     "mainline": {
       "total_savings": 4.59,
       "total_disruption": 6,
-      "compute_time_ms": 63.53,
+      "compute_time_ms": 61.803,
       "slack_entropy": 0,
       "candidates": [
-        "headjet-3923-krhnaoadlu",
-        "banestorm-3928-lm5meaex8q",
-        "paladintitanium-3933-unntfxpyj5",
-        "stormpuddle-3938-n19xqyjtv4",
-        "scarpurple-3943-dwpjjtzchp",
-        "beemercury-3948-z0qwfnkpse"
+        "flametitanium-2438-zqsbywcdsa",
+        "lordsage-2443-opjctzwwj3",
+        "scribespeckle-2448-yyf4vig6q0",
+        "doomcarnation-2453-thyvca2tkb",
+        "dancerlemon-2458-vo4khso0od",
+        "eaterdesert-2463-5rostogk0m"
       ],
       "score_k2_approved": true,
       "score_k2": 0.948924218545792
@@ -2131,78 +2122,77 @@
     "branch": {
       "total_savings": 4.59,
       "total_disruption": 6,
-      "compute_time_ms": 69.171,
+      "compute_time_ms": 69.35,
       "slack_entropy": 0,
       "candidates": [
-        "headjet-3923-krhnaoadlu",
-        "banestorm-3928-lm5meaex8q",
-        "paladintitanium-3933-unntfxpyj5",
-        "stormpuddle-3938-n19xqyjtv4",
-        "scarpurple-3943-dwpjjtzchp",
-        "beemercury-3948-z0qwfnkpse"
+        "flametitanium-2438-zqsbywcdsa",
+        "lordsage-2443-opjctzwwj3",
+        "scribespeckle-2448-yyf4vig6q0",
+        "doomcarnation-2453-thyvca2tkb",
+        "dancerlemon-2458-vo4khso0od",
+        "eaterdesert-2463-5rostogk0m"
       ],
       "score_k2_approved": true,
-      "score_k2": 0.9489242185457922
+      "score_k2": 0.948924218545792
     },
     "branch_savings_sort": {
       "total_savings": 5.4784,
       "total_disruption": 6,
-      "compute_time_ms": 71.266,
+      "compute_time_ms": 70.569,
       "slack_entropy": 0,
       "candidates": [
-        "headjet-3923-krhnaoadlu",
-        "paladintitanium-3933-unntfxpyj5",
-        "scarpurple-3943-dwpjjtzchp",
-        "eagleiron-3953-pge9alwhfo",
-        "banestorm-3928-lm5meaex8q",
-        "stormpuddle-3938-n19xqyjtv4"
+        "flametitanium-2438-zqsbywcdsa",
+        "scribespeckle-2448-yyf4vig6q0",
+        "dancerlemon-2458-vo4khso0od",
+        "serpentarrow-2468-21jlfwuucj",
+        "lordsage-2443-opjctzwwj3",
+        "doomcarnation-2453-thyvca2tkb"
       ],
       "score_k2_approved": true,
       "score_k2": 1.13245629165787
     },
     "oracle": {
-      "total_savings": 5.3084,
-      "total_disruption": 7,
-      "compute_time_ms": 863.4,
+      "total_savings": 4.2884,
+      "total_disruption": 6,
+      "compute_time_ms": 853.373,
       "slack_entropy": 0,
       "candidates": [
-        "headjet-3923-krhnaoadlu",
-        "banestorm-3928-lm5meaex8q",
-        "paladintitanium-3933-unntfxpyj5",
-        "stormpuddle-3938-n19xqyjtv4",
-        "scarpurple-3943-dwpjjtzchp",
-        "beemercury-3948-z0qwfnkpse",
-        "eagleiron-3953-pge9alwhfo"
+        "lordsage-2443-opjctzwwj3",
+        "scribespeckle-2448-yyf4vig6q0",
+        "doomcarnation-2453-thyvca2tkb",
+        "dancerlemon-2458-vo4khso0od",
+        "eaterdesert-2463-5rostogk0m",
+        "serpentarrow-2468-21jlfwuucj"
       ],
       "score_k2_approved": true,
-      "score_k2": 1.0000000000000002
+      "score_k2": 0.8846764188339615
     }
   },
   {
     "seed": 30,
     "description": "adversarial seed=30 node_count=7 allocCPU=8",
     "sorted_candidates": [
-      "markdenim-3961-eusoumochn",
-      "crusherpaper-3966-vs7iqpvvu6",
-      "pythonpear-3971-hhmdbcmjhg",
-      "princessbranch-3976-m4bjaldesh",
-      "pantherbutter-3981-270csw4oz8",
-      "catchergreat-3986-fmsmbyh39z",
-      "kickerzinc-3991-41kcukbbt3"
+      "bitesplit-2476-iwtts6drua",
+      "cranemaze-2481-xftyy0a7jb",
+      "chestlinen-2486-pv0hvmdvex",
+      "butterflyglacier-2491-9szke4xbp2",
+      "chinsun-2496-75vg5lvzgi",
+      "condorlove-2501-esn5lazzki",
+      "panthercerulean-2506-ea1vc3jxom"
     ],
     "sorted_candidates_savings_ratio": [
-      "kickerzinc-3991-41kcukbbt3",
-      "princessbranch-3976-m4bjaldesh",
-      "markdenim-3961-eusoumochn",
-      "crusherpaper-3966-vs7iqpvvu6",
-      "catchergreat-3986-fmsmbyh39z",
-      "pythonpear-3971-hhmdbcmjhg",
-      "pantherbutter-3981-270csw4oz8"
+      "panthercerulean-2506-ea1vc3jxom",
+      "bitesplit-2476-iwtts6drua",
+      "cranemaze-2481-xftyy0a7jb",
+      "butterflyglacier-2491-9szke4xbp2",
+      "condorlove-2501-esn5lazzki",
+      "chestlinen-2486-pv0hvmdvex",
+      "chinsun-2496-75vg5lvzgi"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 14.044,
+      "compute_time_ms": 14.607,
       "slack_entropy": 1.9447794968369427,
       "candidates": null,
       "score_k2_approved": false,
@@ -2211,47 +2201,47 @@
     "branch": {
       "total_savings": 1.3038,
       "total_disruption": 6,
-      "compute_time_ms": 103.254,
+      "compute_time_ms": 101.689,
       "slack_entropy": 0,
       "candidates": [
-        "crusherpaper-3966-vs7iqpvvu6",
-        "pythonpear-3971-hhmdbcmjhg",
-        "princessbranch-3976-m4bjaldesh",
-        "pantherbutter-3981-270csw4oz8",
-        "catchergreat-3986-fmsmbyh39z",
-        "kickerzinc-3991-41kcukbbt3"
+        "cranemaze-2481-xftyy0a7jb",
+        "chestlinen-2486-pv0hvmdvex",
+        "butterflyglacier-2491-9szke4xbp2",
+        "chinsun-2496-75vg5lvzgi",
+        "condorlove-2501-esn5lazzki",
+        "panthercerulean-2506-ea1vc3jxom"
       ],
       "score_k2_approved": true,
-      "score_k2": 1.0310101856042497
+      "score_k2": 1.0310101856042502
     },
     "branch_savings_sort": {
       "total_savings": 1.3038000000000003,
       "total_disruption": 6,
-      "compute_time_ms": 101.15,
+      "compute_time_ms": 91.102,
       "slack_entropy": 0,
       "candidates": [
-        "kickerzinc-3991-41kcukbbt3",
-        "crusherpaper-3966-vs7iqpvvu6",
-        "princessbranch-3976-m4bjaldesh",
-        "catchergreat-3986-fmsmbyh39z",
-        "pythonpear-3971-hhmdbcmjhg",
-        "pantherbutter-3981-270csw4oz8"
+        "panthercerulean-2506-ea1vc3jxom",
+        "cranemaze-2481-xftyy0a7jb",
+        "butterflyglacier-2491-9szke4xbp2",
+        "condorlove-2501-esn5lazzki",
+        "chestlinen-2486-pv0hvmdvex",
+        "chinsun-2496-75vg5lvzgi"
       ],
       "score_k2_approved": true,
-      "score_k2": 1.0310101856042497
+      "score_k2": 1.0310101856042502
     },
     "oracle": {
       "total_savings": 1.3038,
       "total_disruption": 6,
-      "compute_time_ms": 865.348,
+      "compute_time_ms": 873.404,
       "slack_entropy": 0,
       "candidates": [
-        "crusherpaper-3966-vs7iqpvvu6",
-        "pythonpear-3971-hhmdbcmjhg",
-        "princessbranch-3976-m4bjaldesh",
-        "pantherbutter-3981-270csw4oz8",
-        "catchergreat-3986-fmsmbyh39z",
-        "kickerzinc-3991-41kcukbbt3"
+        "cranemaze-2481-xftyy0a7jb",
+        "chestlinen-2486-pv0hvmdvex",
+        "butterflyglacier-2491-9szke4xbp2",
+        "chinsun-2496-75vg5lvzgi",
+        "condorlove-2501-esn5lazzki",
+        "panthercerulean-2506-ea1vc3jxom"
       ],
       "score_k2_approved": true,
       "score_k2": 1.0310101856042497
@@ -2261,25 +2251,25 @@
     "seed": 31,
     "description": "adversarial seed=31 node_count=6 allocCPU=8",
     "sorted_candidates": [
-      "lanceramber-3999-2gwzubcr9a",
-      "facestellar-4004-sgtcmdyvsn",
-      "mousegray-4009-jcr6iym16x",
-      "bellbranch-4014-9tfzldkp3h",
-      "beaknight-4019-adhu8nbcqx",
-      "ridgefast-4024-hcede6qc5q"
+      "chopperprism-2514-hczzs4vqrn",
+      "batbuttercup-2519-c83lblimxt",
+      "antlerfringe-2524-d8aj8npug2",
+      "swisherfoul-2529-hwgqklrf9u",
+      "pumashimmer-2534-pkud9vbsqd",
+      "condordark-2539-pjmnrwpgvk"
     ],
     "sorted_candidates_savings_ratio": [
-      "bellbranch-4014-9tfzldkp3h",
-      "lanceramber-3999-2gwzubcr9a",
-      "facestellar-4004-sgtcmdyvsn",
-      "ridgefast-4024-hcede6qc5q",
-      "mousegray-4009-jcr6iym16x",
-      "beaknight-4019-adhu8nbcqx"
+      "chopperprism-2514-hczzs4vqrn",
+      "batbuttercup-2519-c83lblimxt",
+      "swisherfoul-2529-hwgqklrf9u",
+      "condordark-2539-pjmnrwpgvk",
+      "antlerfringe-2524-d8aj8npug2",
+      "pumashimmer-2534-pkud9vbsqd"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 14.163,
+      "compute_time_ms": 14.504,
       "slack_entropy": 1.7916482709160437,
       "candidates": null,
       "score_k2_approved": false,
@@ -2288,29 +2278,29 @@
     "branch": {
       "total_savings": 2.4184,
       "total_disruption": 5,
-      "compute_time_ms": 92.418,
+      "compute_time_ms": 91.214,
       "slack_entropy": 0,
       "candidates": [
-        "facestellar-4004-sgtcmdyvsn",
-        "mousegray-4009-jcr6iym16x",
-        "bellbranch-4014-9tfzldkp3h",
-        "beaknight-4019-adhu8nbcqx",
-        "ridgefast-4024-hcede6qc5q"
+        "batbuttercup-2519-c83lblimxt",
+        "antlerfringe-2524-d8aj8npug2",
+        "swisherfoul-2529-hwgqklrf9u",
+        "pumashimmer-2534-pkud9vbsqd",
+        "condordark-2539-pjmnrwpgvk"
       ],
       "score_k2_approved": true,
-      "score_k2": 0.9358220334753091
+      "score_k2": 0.935822033475309
     },
     "branch_savings_sort": {
       "total_savings": 2.4184000000000005,
       "total_disruption": 5,
-      "compute_time_ms": 96.076,
+      "compute_time_ms": 86.059,
       "slack_entropy": 0,
       "candidates": [
-        "bellbranch-4014-9tfzldkp3h",
-        "facestellar-4004-sgtcmdyvsn",
-        "ridgefast-4024-hcede6qc5q",
-        "mousegray-4009-jcr6iym16x",
-        "beaknight-4019-adhu8nbcqx"
+        "batbuttercup-2519-c83lblimxt",
+        "swisherfoul-2529-hwgqklrf9u",
+        "condordark-2539-pjmnrwpgvk",
+        "antlerfringe-2524-d8aj8npug2",
+        "pumashimmer-2534-pkud9vbsqd"
       ],
       "score_k2_approved": true,
       "score_k2": 0.9358220334753092
@@ -2318,14 +2308,14 @@
     "oracle": {
       "total_savings": 2.4184,
       "total_disruption": 5,
-      "compute_time_ms": 437.218,
+      "compute_time_ms": 429.041,
       "slack_entropy": 0,
       "candidates": [
-        "facestellar-4004-sgtcmdyvsn",
-        "mousegray-4009-jcr6iym16x",
-        "bellbranch-4014-9tfzldkp3h",
-        "beaknight-4019-adhu8nbcqx",
-        "ridgefast-4024-hcede6qc5q"
+        "batbuttercup-2519-c83lblimxt",
+        "antlerfringe-2524-d8aj8npug2",
+        "swisherfoul-2529-hwgqklrf9u",
+        "pumashimmer-2534-pkud9vbsqd",
+        "condordark-2539-pjmnrwpgvk"
       ],
       "score_k2_approved": true,
       "score_k2": 0.9358220334753091
@@ -2335,25 +2325,25 @@
     "seed": 32,
     "description": "adversarial seed=32 node_count=6 allocCPU=32",
     "sorted_candidates": [
-      "crownspectrum-4032-zfdpaolh4d",
-      "watchertulip-4037-ybwrwe7mga",
-      "jawtrail-4042-om1tbvmfxv",
-      "batcoral-4047-bg7dskaxdn",
-      "burnspectrum-4052-ugo1p64c1w",
-      "giversplash-4057-zz6ccw40dv"
+      "jackalruby-2547-hlzaswqldl",
+      "curtainmercury-2552-lw9nr3tnh2",
+      "gemshard-2557-wrgws3qucw",
+      "thornvanilla-2562-faozvnnep5",
+      "legendquasar-2567-cxbioiveo5",
+      "viperplume-2572-yrjayjrqck"
     ],
     "sorted_candidates_savings_ratio": [
-      "giversplash-4057-zz6ccw40dv",
-      "batcoral-4047-bg7dskaxdn",
-      "crownspectrum-4032-zfdpaolh4d",
-      "watchertulip-4037-ybwrwe7mga",
-      "jawtrail-4042-om1tbvmfxv",
-      "burnspectrum-4052-ugo1p64c1w"
+      "viperplume-2572-yrjayjrqck",
+      "curtainmercury-2552-lw9nr3tnh2",
+      "thornvanilla-2562-faozvnnep5",
+      "jackalruby-2547-hlzaswqldl",
+      "gemshard-2557-wrgws3qucw",
+      "legendquasar-2567-cxbioiveo5"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 13.884,
+      "compute_time_ms": 14.068,
       "slack_entropy": 1.7916868056370996,
       "candidates": null,
       "score_k2_approved": false,
@@ -2362,29 +2352,29 @@
     "branch": {
       "total_savings": 3.9942,
       "total_disruption": 5,
-      "compute_time_ms": 93.112,
+      "compute_time_ms": 90.285,
       "slack_entropy": 0,
       "candidates": [
-        "watchertulip-4037-ybwrwe7mga",
-        "jawtrail-4042-om1tbvmfxv",
-        "batcoral-4047-bg7dskaxdn",
-        "burnspectrum-4052-ugo1p64c1w",
-        "giversplash-4057-zz6ccw40dv"
+        "curtainmercury-2552-lw9nr3tnh2",
+        "gemshard-2557-wrgws3qucw",
+        "thornvanilla-2562-faozvnnep5",
+        "legendquasar-2567-cxbioiveo5",
+        "viperplume-2572-yrjayjrqck"
       ],
       "score_k2_approved": true,
-      "score_k2": 0.9975080261964475
+      "score_k2": 0.9975080261964474
     },
     "branch_savings_sort": {
       "total_savings": 3.9941999999999998,
       "total_disruption": 5,
-      "compute_time_ms": 92.104,
+      "compute_time_ms": 93.715,
       "slack_entropy": 0,
       "candidates": [
-        "giversplash-4057-zz6ccw40dv",
-        "watchertulip-4037-ybwrwe7mga",
-        "batcoral-4047-bg7dskaxdn",
-        "jawtrail-4042-om1tbvmfxv",
-        "burnspectrum-4052-ugo1p64c1w"
+        "viperplume-2572-yrjayjrqck",
+        "curtainmercury-2552-lw9nr3tnh2",
+        "thornvanilla-2562-faozvnnep5",
+        "gemshard-2557-wrgws3qucw",
+        "legendquasar-2567-cxbioiveo5"
       ],
       "score_k2_approved": true,
       "score_k2": 0.9975080261964475
@@ -2392,46 +2382,46 @@
     "oracle": {
       "total_savings": 3.9942,
       "total_disruption": 5,
-      "compute_time_ms": 424.312,
+      "compute_time_ms": 435.764,
       "slack_entropy": 0,
       "candidates": [
-        "watchertulip-4037-ybwrwe7mga",
-        "jawtrail-4042-om1tbvmfxv",
-        "batcoral-4047-bg7dskaxdn",
-        "burnspectrum-4052-ugo1p64c1w",
-        "giversplash-4057-zz6ccw40dv"
+        "curtainmercury-2552-lw9nr3tnh2",
+        "gemshard-2557-wrgws3qucw",
+        "thornvanilla-2562-faozvnnep5",
+        "legendquasar-2567-cxbioiveo5",
+        "viperplume-2572-yrjayjrqck"
       ],
       "score_k2_approved": true,
-      "score_k2": 0.9975080261964474
+      "score_k2": 0.9975080261964475
     }
   },
   {
     "seed": 33,
     "description": "adversarial seed=33 node_count=5 allocCPU=8",
     "sorted_candidates": [
-      "roverripple-4065-y1citvjm6f",
-      "keeperstream-4070-ydqbenxqws",
-      "scorpioncotton-4075-i4q0rc3jok",
-      "pythonmuck-4080-j6towbpf3v",
-      "ninjaforest-4085-ada0urpeco"
+      "gemlight-2580-vxjxef6fc1",
+      "pumashadow-2585-mafd82bfn9",
+      "flywarp-2590-qyfbwaxvlw",
+      "razorchestnut-2595-lmb7h7cw0q",
+      "nosebitter-2600-vt9trpyiom"
     ],
     "sorted_candidates_savings_ratio": [
-      "ninjaforest-4085-ada0urpeco",
-      "roverripple-4065-y1citvjm6f",
-      "scorpioncotton-4075-i4q0rc3jok",
-      "keeperstream-4070-ydqbenxqws",
-      "pythonmuck-4080-j6towbpf3v"
+      "nosebitter-2600-vt9trpyiom",
+      "flywarp-2590-qyfbwaxvlw",
+      "gemlight-2580-vxjxef6fc1",
+      "pumashadow-2585-mafd82bfn9",
+      "razorchestnut-2595-lmb7h7cw0q"
     ],
     "mainline": {
       "total_savings": 0.8692000000000001,
       "total_disruption": 4,
-      "compute_time_ms": 54.733,
+      "compute_time_ms": 59.501,
       "slack_entropy": 0,
       "candidates": [
-        "roverripple-4065-y1citvjm6f",
-        "keeperstream-4070-ydqbenxqws",
-        "scorpioncotton-4075-i4q0rc3jok",
-        "pythonmuck-4080-j6towbpf3v"
+        "gemlight-2580-vxjxef6fc1",
+        "pumashadow-2585-mafd82bfn9",
+        "flywarp-2590-qyfbwaxvlw",
+        "razorchestnut-2595-lmb7h7cw0q"
       ],
       "score_k2_approved": true,
       "score_k2": 0.7779170021259765
@@ -2439,13 +2429,13 @@
     "branch": {
       "total_savings": 0.8692000000000001,
       "total_disruption": 4,
-      "compute_time_ms": 64.546,
+      "compute_time_ms": 63.285,
       "slack_entropy": 0,
       "candidates": [
-        "roverripple-4065-y1citvjm6f",
-        "keeperstream-4070-ydqbenxqws",
-        "scorpioncotton-4075-i4q0rc3jok",
-        "pythonmuck-4080-j6towbpf3v"
+        "gemlight-2580-vxjxef6fc1",
+        "pumashadow-2585-mafd82bfn9",
+        "flywarp-2590-qyfbwaxvlw",
+        "razorchestnut-2595-lmb7h7cw0q"
       ],
       "score_k2_approved": true,
       "score_k2": 0.7779170021259765
@@ -2453,54 +2443,53 @@
     "branch_savings_sort": {
       "total_savings": 1.2284,
       "total_disruption": 4,
-      "compute_time_ms": 62.759,
+      "compute_time_ms": 62.674,
       "slack_entropy": 0,
       "candidates": [
-        "ninjaforest-4085-ada0urpeco",
-        "roverripple-4065-y1citvjm6f",
-        "scorpioncotton-4075-i4q0rc3jok",
-        "keeperstream-4070-ydqbenxqws"
+        "nosebitter-2600-vt9trpyiom",
+        "gemlight-2580-vxjxef6fc1",
+        "flywarp-2590-qyfbwaxvlw",
+        "pumashadow-2585-mafd82bfn9"
       ],
       "score_k2_approved": true,
-      "score_k2": 1.098462479526239
+      "score_k2": 1.0984624795262388
     },
     "oracle": {
-      "total_savings": 1.0584,
-      "total_disruption": 5,
-      "compute_time_ms": 210.103,
+      "total_savings": 1.1338,
+      "total_disruption": 4,
+      "compute_time_ms": 206.288,
       "slack_entropy": 0,
       "candidates": [
-        "roverripple-4065-y1citvjm6f",
-        "keeperstream-4070-ydqbenxqws",
-        "scorpioncotton-4075-i4q0rc3jok",
-        "pythonmuck-4080-j6towbpf3v",
-        "ninjaforest-4085-ada0urpeco"
+        "pumashadow-2585-mafd82bfn9",
+        "flywarp-2590-qyfbwaxvlw",
+        "razorchestnut-2595-lmb7h7cw0q",
+        "nosebitter-2600-vt9trpyiom"
       ],
       "score_k2_approved": true,
-      "score_k2": 1.0000000000000002
+      "score_k2": 1.012271801927016
     }
   },
   {
     "seed": 34,
     "description": "adversarial seed=34 node_count=5 allocCPU=8",
     "sorted_candidates": [
-      "wizardcandy-4093-nesxvx8pm2",
-      "terrierlake-4098-vouarteelw",
-      "cougarnotch-4103-zkah9wq4vy",
-      "raptorchocolate-4108-unl9cqrgze",
-      "rabbitrose-4113-xl3fdhfdrl"
+      "beakcopper-2608-wn8zdwxjuy",
+      "eatershade-2613-rkht5lvod6",
+      "lightningpink-2618-gvanymz1fa",
+      "vultureswift-2623-v4zhpqdh47",
+      "fingersplash-2628-vyjtmcmkzh"
     ],
     "sorted_candidates_savings_ratio": [
-      "rabbitrose-4113-xl3fdhfdrl",
-      "wizardcandy-4093-nesxvx8pm2",
-      "terrierlake-4098-vouarteelw",
-      "cougarnotch-4103-zkah9wq4vy",
-      "raptorchocolate-4108-unl9cqrgze"
+      "fingersplash-2628-vyjtmcmkzh",
+      "beakcopper-2608-wn8zdwxjuy",
+      "eatershade-2613-rkht5lvod6",
+      "lightningpink-2618-gvanymz1fa",
+      "vultureswift-2623-v4zhpqdh47"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 14.009,
+      "compute_time_ms": 14.372,
       "slack_entropy": 1.6035681031705151,
       "candidates": null,
       "score_k2_approved": false,
@@ -2509,12 +2498,12 @@
     "branch": {
       "total_savings": 0.4346,
       "total_disruption": 3,
-      "compute_time_ms": 81.808,
+      "compute_time_ms": 82.481,
       "slack_entropy": 0.686371452146747,
       "candidates": [
-        "terrierlake-4098-vouarteelw",
-        "raptorchocolate-4108-unl9cqrgze",
-        "rabbitrose-4113-xl3fdhfdrl"
+        "eatershade-2613-rkht5lvod6",
+        "vultureswift-2623-v4zhpqdh47",
+        "fingersplash-2628-vyjtmcmkzh"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1972401936974844
@@ -2522,12 +2511,12 @@
     "branch_savings_sort": {
       "total_savings": 0.43460000000000004,
       "total_disruption": 3,
-      "compute_time_ms": 81.838,
+      "compute_time_ms": 80.994,
       "slack_entropy": 0.686371452146747,
       "candidates": [
-        "rabbitrose-4113-xl3fdhfdrl",
-        "raptorchocolate-4108-unl9cqrgze",
-        "terrierlake-4098-vouarteelw"
+        "fingersplash-2628-vyjtmcmkzh",
+        "eatershade-2613-rkht5lvod6",
+        "vultureswift-2623-v4zhpqdh47"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1972401936974844
@@ -2535,12 +2524,12 @@
     "oracle": {
       "total_savings": 0.4346,
       "total_disruption": 3,
-      "compute_time_ms": 213.885,
+      "compute_time_ms": 210.885,
       "slack_entropy": 0.686371452146747,
       "candidates": [
-        "terrierlake-4098-vouarteelw",
-        "raptorchocolate-4108-unl9cqrgze",
-        "rabbitrose-4113-xl3fdhfdrl"
+        "eatershade-2613-rkht5lvod6",
+        "vultureswift-2623-v4zhpqdh47",
+        "fingersplash-2628-vyjtmcmkzh"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1972401936974844
@@ -2550,27 +2539,27 @@
     "seed": 35,
     "description": "adversarial seed=35 node_count=7 allocCPU=32",
     "sorted_candidates": [
-      "piraterattle-4121-fvo1kvqczz",
-      "heronfluff-4126-q8cs0zzlkb",
-      "carpettin-4131-rvdy00cqor",
-      "paladinpebble-4136-7vv1wyyiiy",
-      "rayyellow-4141-v6rwm1v1fi",
-      "mistressslow-4146-m2gaf7kvrs",
-      "hissfoul-4151-n9eaaqa5vs"
+      "spiritwax-2636-uqokt8szjp",
+      "cougarbrave-2641-bihjfkkv5d",
+      "bearsharp-2646-qvn063to3r",
+      "seedspangle-2651-bjpvej2stc",
+      "hidechocolate-2656-bvqeqcci9e",
+      "thornlime-2661-0lsdortqhm",
+      "spikestitch-2666-hsirj3l0lc"
     ],
     "sorted_candidates_savings_ratio": [
-      "hissfoul-4151-n9eaaqa5vs",
-      "piraterattle-4121-fvo1kvqczz",
-      "heronfluff-4126-q8cs0zzlkb",
-      "paladinpebble-4136-7vv1wyyiiy",
-      "mistressslow-4146-m2gaf7kvrs",
-      "carpettin-4131-rvdy00cqor",
-      "rayyellow-4141-v6rwm1v1fi"
+      "spikestitch-2666-hsirj3l0lc",
+      "spiritwax-2636-uqokt8szjp",
+      "cougarbrave-2641-bihjfkkv5d",
+      "seedspangle-2651-bjpvej2stc",
+      "thornlime-2661-0lsdortqhm",
+      "bearsharp-2646-qvn063to3r",
+      "hidechocolate-2656-bvqeqcci9e"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 13.89,
+      "compute_time_ms": 13.8,
       "slack_entropy": 1.9456760240849729,
       "candidates": null,
       "score_k2_approved": false,
@@ -2579,29 +2568,29 @@
     "branch": {
       "total_savings": 1.6880000000000002,
       "total_disruption": 5,
-      "compute_time_ms": 103.914,
+      "compute_time_ms": 106.09,
       "slack_entropy": 0.6928397930080377,
       "candidates": [
-        "heronfluff-4126-q8cs0zzlkb",
-        "carpettin-4131-rvdy00cqor",
-        "rayyellow-4141-v6rwm1v1fi",
-        "mistressslow-4146-m2gaf7kvrs",
-        "hissfoul-4151-n9eaaqa5vs"
+        "cougarbrave-2641-bihjfkkv5d",
+        "bearsharp-2646-qvn063to3r",
+        "hidechocolate-2656-bvqeqcci9e",
+        "thornlime-2661-0lsdortqhm",
+        "spikestitch-2666-hsirj3l0lc"
       ],
       "score_k2_approved": true,
-      "score_k2": 0.9970745308843416
+      "score_k2": 0.9970745308843417
     },
     "branch_savings_sort": {
       "total_savings": 1.6880000000000002,
       "total_disruption": 5,
-      "compute_time_ms": 114.455,
+      "compute_time_ms": 105.335,
       "slack_entropy": 0.6928397930080377,
       "candidates": [
-        "hissfoul-4151-n9eaaqa5vs",
-        "heronfluff-4126-q8cs0zzlkb",
-        "mistressslow-4146-m2gaf7kvrs",
-        "carpettin-4131-rvdy00cqor",
-        "rayyellow-4141-v6rwm1v1fi"
+        "spikestitch-2666-hsirj3l0lc",
+        "cougarbrave-2641-bihjfkkv5d",
+        "thornlime-2661-0lsdortqhm",
+        "bearsharp-2646-qvn063to3r",
+        "hidechocolate-2656-bvqeqcci9e"
       ],
       "score_k2_approved": true,
       "score_k2": 0.9970745308843416
@@ -2609,14 +2598,14 @@
     "oracle": {
       "total_savings": 1.6880000000000002,
       "total_disruption": 5,
-      "compute_time_ms": 888.724,
+      "compute_time_ms": 871.921,
       "slack_entropy": 0.6928397930080377,
       "candidates": [
-        "heronfluff-4126-q8cs0zzlkb",
-        "carpettin-4131-rvdy00cqor",
-        "rayyellow-4141-v6rwm1v1fi",
-        "mistressslow-4146-m2gaf7kvrs",
-        "hissfoul-4151-n9eaaqa5vs"
+        "cougarbrave-2641-bihjfkkv5d",
+        "bearsharp-2646-qvn063to3r",
+        "hidechocolate-2656-bvqeqcci9e",
+        "thornlime-2661-0lsdortqhm",
+        "spikestitch-2666-hsirj3l0lc"
       ],
       "score_k2_approved": true,
       "score_k2": 0.9970745308843416
@@ -2626,21 +2615,21 @@
     "seed": 36,
     "description": "adversarial seed=36 node_count=4 allocCPU=16",
     "sorted_candidates": [
-      "leopardplume-4159-vtyl43tlnr",
-      "ogrejewel-4164-rjwti5cvgc",
-      "hunterforest-4169-fhuogpcorh",
-      "leopardglass-4174-lfanyig2w4"
+      "twisterband-2674-uwzagtv5a7",
+      "thumblinen-2679-matj8i2mks",
+      "birdtorch-2684-lvwulhhr4c",
+      "mistressnebula-2689-3zjemsd2bj"
     ],
     "sorted_candidates_savings_ratio": [
-      "leopardglass-4174-lfanyig2w4",
-      "leopardplume-4159-vtyl43tlnr",
-      "ogrejewel-4164-rjwti5cvgc",
-      "hunterforest-4169-fhuogpcorh"
+      "mistressnebula-2689-3zjemsd2bj",
+      "thumblinen-2679-matj8i2mks",
+      "twisterband-2674-uwzagtv5a7",
+      "birdtorch-2684-lvwulhhr4c"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 13.652,
+      "compute_time_ms": 13.973,
       "slack_entropy": 1.3857739794847803,
       "candidates": null,
       "score_k2_approved": false,
@@ -2649,12 +2638,12 @@
     "branch": {
       "total_savings": 3.6784,
       "total_disruption": 3,
-      "compute_time_ms": 69.866,
+      "compute_time_ms": 69.722,
       "slack_entropy": 0,
       "candidates": [
-        "ogrejewel-4164-rjwti5cvgc",
-        "hunterforest-4169-fhuogpcorh",
-        "leopardglass-4174-lfanyig2w4"
+        "thumblinen-2679-matj8i2mks",
+        "birdtorch-2684-lvwulhhr4c",
+        "mistressnebula-2689-3zjemsd2bj"
       ],
       "score_k2_approved": true,
       "score_k2": 0.9719870254907148
@@ -2662,12 +2651,12 @@
     "branch_savings_sort": {
       "total_savings": 3.6784,
       "total_disruption": 3,
-      "compute_time_ms": 68.995,
+      "compute_time_ms": 70.568,
       "slack_entropy": 0,
       "candidates": [
-        "leopardglass-4174-lfanyig2w4",
-        "ogrejewel-4164-rjwti5cvgc",
-        "hunterforest-4169-fhuogpcorh"
+        "mistressnebula-2689-3zjemsd2bj",
+        "thumblinen-2679-matj8i2mks",
+        "birdtorch-2684-lvwulhhr4c"
       ],
       "score_k2_approved": true,
       "score_k2": 0.9719870254907148
@@ -2675,12 +2664,12 @@
     "oracle": {
       "total_savings": 3.6784,
       "total_disruption": 3,
-      "compute_time_ms": 105.223,
+      "compute_time_ms": 105.512,
       "slack_entropy": 0,
       "candidates": [
-        "ogrejewel-4164-rjwti5cvgc",
-        "hunterforest-4169-fhuogpcorh",
-        "leopardglass-4174-lfanyig2w4"
+        "thumblinen-2679-matj8i2mks",
+        "birdtorch-2684-lvwulhhr4c",
+        "mistressnebula-2689-3zjemsd2bj"
       ],
       "score_k2_approved": true,
       "score_k2": 0.9719870254907148
@@ -2690,35 +2679,35 @@
     "seed": 37,
     "description": "adversarial seed=37 node_count=7 allocCPU=16",
     "sorted_candidates": [
-      "goatorchid-4182-lrg7cnob4n",
-      "snapplanet-4187-s3bdozqjkp",
-      "scalebattle-4192-txqyia2olf",
-      "condornotch-4197-m9wrhfdoue",
-      "bitestellar-4202-0jybhmgrxk",
-      "browbronze-4207-rdgs3jufgy",
-      "elkwater-4212-c2oyhin0wj"
+      "boothail-2697-odih4y62km",
+      "shoulderflax-2702-qeaj86q1qz",
+      "crowndenim-2707-isx10yj3yy",
+      "throatglow-2712-bhzpyn49lm",
+      "handhelix-2717-wvtqwmcper",
+      "doomsmall-2722-nzxpp8e0az",
+      "kingnettle-2727-xacsycygqo"
     ],
     "sorted_candidates_savings_ratio": [
-      "snapplanet-4187-s3bdozqjkp",
-      "condornotch-4197-m9wrhfdoue",
-      "browbronze-4207-rdgs3jufgy",
-      "elkwater-4212-c2oyhin0wj",
-      "goatorchid-4182-lrg7cnob4n",
-      "scalebattle-4192-txqyia2olf",
-      "bitestellar-4202-0jybhmgrxk"
+      "shoulderflax-2702-qeaj86q1qz",
+      "throatglow-2712-bhzpyn49lm",
+      "doomsmall-2722-nzxpp8e0az",
+      "kingnettle-2727-xacsycygqo",
+      "boothail-2697-odih4y62km",
+      "crowndenim-2707-isx10yj3yy",
+      "handhelix-2717-wvtqwmcper"
     ],
     "mainline": {
       "total_savings": 4.3824000000000005,
       "total_disruption": 6,
-      "compute_time_ms": 62.109,
+      "compute_time_ms": 125.544,
       "slack_entropy": 0,
       "candidates": [
-        "goatorchid-4182-lrg7cnob4n",
-        "snapplanet-4187-s3bdozqjkp",
-        "scalebattle-4192-txqyia2olf",
-        "condornotch-4197-m9wrhfdoue",
-        "bitestellar-4202-0jybhmgrxk",
-        "browbronze-4207-rdgs3jufgy"
+        "boothail-2697-odih4y62km",
+        "shoulderflax-2702-qeaj86q1qz",
+        "crowndenim-2707-isx10yj3yy",
+        "throatglow-2712-bhzpyn49lm",
+        "handhelix-2717-wvtqwmcper",
+        "doomsmall-2722-nzxpp8e0az"
       ],
       "score_k2_approved": true,
       "score_k2": 1.0420221827800307
@@ -2726,15 +2715,15 @@
     "branch": {
       "total_savings": 4.3824000000000005,
       "total_disruption": 6,
-      "compute_time_ms": 70.122,
+      "compute_time_ms": 68.274,
       "slack_entropy": 0,
       "candidates": [
-        "goatorchid-4182-lrg7cnob4n",
-        "snapplanet-4187-s3bdozqjkp",
-        "scalebattle-4192-txqyia2olf",
-        "condornotch-4197-m9wrhfdoue",
-        "bitestellar-4202-0jybhmgrxk",
-        "browbronze-4207-rdgs3jufgy"
+        "boothail-2697-odih4y62km",
+        "shoulderflax-2702-qeaj86q1qz",
+        "crowndenim-2707-isx10yj3yy",
+        "throatglow-2712-bhzpyn49lm",
+        "handhelix-2717-wvtqwmcper",
+        "doomsmall-2722-nzxpp8e0az"
       ],
       "score_k2_approved": true,
       "score_k2": 1.0420221827800304
@@ -2742,67 +2731,66 @@
     "branch_savings_sort": {
       "total_savings": 4.8108,
       "total_disruption": 6,
-      "compute_time_ms": 68.899,
+      "compute_time_ms": 69.099,
       "slack_entropy": 0,
       "candidates": [
-        "snapplanet-4187-s3bdozqjkp",
-        "condornotch-4197-m9wrhfdoue",
-        "browbronze-4207-rdgs3jufgy",
-        "elkwater-4212-c2oyhin0wj",
-        "scalebattle-4192-txqyia2olf",
-        "goatorchid-4182-lrg7cnob4n"
+        "shoulderflax-2702-qeaj86q1qz",
+        "throatglow-2712-bhzpyn49lm",
+        "doomsmall-2722-nzxpp8e0az",
+        "kingnettle-2727-xacsycygqo",
+        "boothail-2697-odih4y62km",
+        "crowndenim-2707-isx10yj3yy"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1428951726886973
     },
     "oracle": {
-      "total_savings": 4.741600000000001,
-      "total_disruption": 7,
-      "compute_time_ms": 859.908,
+      "total_savings": 4.8108,
+      "total_disruption": 6,
+      "compute_time_ms": 854.842,
       "slack_entropy": 0,
       "candidates": [
-        "goatorchid-4182-lrg7cnob4n",
-        "snapplanet-4187-s3bdozqjkp",
-        "scalebattle-4192-txqyia2olf",
-        "condornotch-4197-m9wrhfdoue",
-        "bitestellar-4202-0jybhmgrxk",
-        "browbronze-4207-rdgs3jufgy",
-        "elkwater-4212-c2oyhin0wj"
+        "shoulderflax-2702-qeaj86q1qz",
+        "crowndenim-2707-isx10yj3yy",
+        "throatglow-2712-bhzpyn49lm",
+        "handhelix-2717-wvtqwmcper",
+        "doomsmall-2722-nzxpp8e0az",
+        "kingnettle-2727-xacsycygqo"
       ],
       "score_k2_approved": true,
-      "score_k2": 0.9999999999999998
+      "score_k2": 1.141969893797514
     }
   },
   {
     "seed": 38,
     "description": "adversarial seed=38 node_count=6 allocCPU=8",
     "sorted_candidates": [
-      "songeast-4220-qyvggcyftt",
-      "foeholy-4225-mwpp8vma8k",
-      "dukeweed-4230-s3bvsiuxca",
-      "snapperberyl-4235-mb8rhkd94b",
-      "falconpuzzle-4240-ea3kpy2t34",
-      "questercake-4245-jvazbbzelp"
+      "paladinpebble-2735-xnvukwuz2r",
+      "mothfortune-2740-ep7x2sdzqu",
+      "warriortide-2745-jwfn5fx9nz",
+      "finpool-2750-k0pora7jze",
+      "spidermarsh-2755-ehuqgmbzks",
+      "drifterdesert-2760-zysjxawf8t"
     ],
     "sorted_candidates_savings_ratio": [
-      "questercake-4245-jvazbbzelp",
-      "songeast-4220-qyvggcyftt",
-      "dukeweed-4230-s3bvsiuxca",
-      "falconpuzzle-4240-ea3kpy2t34",
-      "foeholy-4225-mwpp8vma8k",
-      "snapperberyl-4235-mb8rhkd94b"
+      "drifterdesert-2760-zysjxawf8t",
+      "paladinpebble-2735-xnvukwuz2r",
+      "warriortide-2745-jwfn5fx9nz",
+      "spidermarsh-2755-ehuqgmbzks",
+      "mothfortune-2740-ep7x2sdzqu",
+      "finpool-2750-k0pora7jze"
     ],
     "mainline": {
       "total_savings": 1.1900000000000002,
       "total_disruption": 5,
-      "compute_time_ms": 58.161,
+      "compute_time_ms": 58.787,
       "slack_entropy": 0,
       "candidates": [
-        "songeast-4220-qyvggcyftt",
-        "foeholy-4225-mwpp8vma8k",
-        "dukeweed-4230-s3bvsiuxca",
-        "snapperberyl-4235-mb8rhkd94b",
-        "falconpuzzle-4240-ea3kpy2t34"
+        "paladinpebble-2735-xnvukwuz2r",
+        "mothfortune-2740-ep7x2sdzqu",
+        "warriortide-2745-jwfn5fx9nz",
+        "finpool-2750-k0pora7jze",
+        "spidermarsh-2755-ehuqgmbzks"
       ],
       "score_k2_approved": false,
       "score_k2": 0.43221362056980905
@@ -2810,71 +2798,70 @@
     "branch": {
       "total_savings": 1.1900000000000002,
       "total_disruption": 5,
-      "compute_time_ms": 64.238,
+      "compute_time_ms": 63.495,
       "slack_entropy": 0,
       "candidates": [
-        "songeast-4220-qyvggcyftt",
-        "foeholy-4225-mwpp8vma8k",
-        "dukeweed-4230-s3bvsiuxca",
-        "snapperberyl-4235-mb8rhkd94b",
-        "falconpuzzle-4240-ea3kpy2t34"
+        "paladinpebble-2735-xnvukwuz2r",
+        "mothfortune-2740-ep7x2sdzqu",
+        "warriortide-2745-jwfn5fx9nz",
+        "finpool-2750-k0pora7jze",
+        "spidermarsh-2755-ehuqgmbzks"
       ],
       "score_k2_approved": false,
-      "score_k2": 0.43221362056980894
+      "score_k2": 0.43221362056980905
     },
     "branch_savings_sort": {
       "total_savings": 3.2217999999999996,
       "total_disruption": 5,
-      "compute_time_ms": 64.229,
+      "compute_time_ms": 64.916,
       "slack_entropy": 0,
       "candidates": [
-        "questercake-4245-jvazbbzelp",
-        "songeast-4220-qyvggcyftt",
-        "dukeweed-4230-s3bvsiuxca",
-        "falconpuzzle-4240-ea3kpy2t34",
-        "foeholy-4225-mwpp8vma8k"
+        "drifterdesert-2760-zysjxawf8t",
+        "paladinpebble-2735-xnvukwuz2r",
+        "warriortide-2745-jwfn5fx9nz",
+        "spidermarsh-2755-ehuqgmbzks",
+        "mothfortune-2740-ep7x2sdzqu"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1695949502770864
     },
     "oracle": {
       "total_savings": 2.9668,
-      "total_disruption": 6,
-      "compute_time_ms": 419.038,
+      "total_disruption": 5,
+      "compute_time_ms": 428.598,
       "slack_entropy": 0,
       "candidates": [
-        "songeast-4220-qyvggcyftt",
-        "foeholy-4225-mwpp8vma8k",
-        "dukeweed-4230-s3bvsiuxca",
-        "snapperberyl-4235-mb8rhkd94b",
-        "falconpuzzle-4240-ea3kpy2t34",
-        "questercake-4245-jvazbbzelp"
+        "mothfortune-2740-ep7x2sdzqu",
+        "warriortide-2745-jwfn5fx9nz",
+        "finpool-2750-k0pora7jze",
+        "spidermarsh-2755-ehuqgmbzks",
+        "drifterdesert-2760-zysjxawf8t"
       ],
       "score_k2_approved": true,
-      "score_k2": 1
+      "score_k2": 1.075325388990877
     }
   },
   {
     "seed": 39,
     "description": "adversarial seed=39 node_count=5 allocCPU=32",
     "sorted_candidates": [
-      "paladinspice-4253-o5zx6rbxbo",
-      "spritebrass-4258-9anbkco9qw",
-      "crafterrowan-4263-epkulbgy2t",
-      "heronlead-4268-7m3iiahaaw",
-      "iguanafeather-4273-kkevnwiqdr"
+      "koalasand-2768-ehmaxdi52s",
+      "trackerspice-2773-stqusgxqxx",
+      "scarersoft-2778-ae9z4e6q6u",
+      "takercookie-2783-uv3amsyeia",
+      "braidcactus-2788-ehlshd5m69"
     ],
     "sorted_candidates_savings_ratio": [
-      "iguanafeather-4273-kkevnwiqdr",
-      "paladinspice-4253-o5zx6rbxbo",
-      "spritebrass-4258-9anbkco9qw",
-      "crafterrowan-4263-epkulbgy2t",
-      "heronlead-4268-7m3iiahaaw"
+      "braidcactus-2788-ehlshd5m69",
+      "koalasand-2768-ehmaxdi52s",
+      "trackerspice-2773-stqusgxqxx",
+      "scarersoft-2778-ae9z4e6q6u",
+      "takercookie-2783-uv3amsyeia"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 13.901,
+      "compute_time_ms": 14.158,
       "slack_entropy": 1.6094330066356177,
       "candidates": null,
       "score_k2_approved": false,
@@ -2883,38 +2870,38 @@
     "branch": {
       "total_savings": 0.9764,
       "total_disruption": 3,
-      "compute_time_ms": 81.073,
+      "compute_time_ms": 82.706,
       "slack_entropy": 0.6931382788261842,
       "candidates": [
-        "spritebrass-4258-9anbkco9qw",
-        "heronlead-4268-7m3iiahaaw",
-        "iguanafeather-4273-kkevnwiqdr"
+        "trackerspice-2773-stqusgxqxx",
+        "takercookie-2783-uv3amsyeia",
+        "braidcactus-2788-ehlshd5m69"
       ],
       "score_k2_approved": true,
-      "score_k2": 1.4181380476671692
+      "score_k2": 1.4181380476671694
     },
     "branch_savings_sort": {
       "total_savings": 0.9763999999999999,
       "total_disruption": 3,
-      "compute_time_ms": 81.814,
+      "compute_time_ms": 82.453,
       "slack_entropy": 0.6931382788261842,
       "candidates": [
-        "iguanafeather-4273-kkevnwiqdr",
-        "spritebrass-4258-9anbkco9qw",
-        "heronlead-4268-7m3iiahaaw"
+        "braidcactus-2788-ehlshd5m69",
+        "trackerspice-2773-stqusgxqxx",
+        "takercookie-2783-uv3amsyeia"
       ],
       "score_k2_approved": true,
-      "score_k2": 1.4181380476671692
+      "score_k2": 1.4181380476671694
     },
     "oracle": {
       "total_savings": 0.9764,
       "total_disruption": 3,
-      "compute_time_ms": 225.906,
+      "compute_time_ms": 213.181,
       "slack_entropy": 0.6931382788261842,
       "candidates": [
-        "spritebrass-4258-9anbkco9qw",
-        "heronlead-4268-7m3iiahaaw",
-        "iguanafeather-4273-kkevnwiqdr"
+        "trackerspice-2773-stqusgxqxx",
+        "takercookie-2783-uv3amsyeia",
+        "braidcactus-2788-ehlshd5m69"
       ],
       "score_k2_approved": true,
       "score_k2": 1.4181380476671694
@@ -2924,23 +2911,23 @@
     "seed": 40,
     "description": "adversarial seed=40 node_count=5 allocCPU=16",
     "sorted_candidates": [
-      "chopperdeep-4281-zyeluljbdv",
-      "toothmercury-4286-nibu6uppca",
-      "raccoonclear-4291-clkiwp65cy",
-      "houndcherry-4296-zplcrhwu08",
-      "skulljuniper-4301-uibdpdklwb"
+      "seerquark-2796-lhh7vuqkpx",
+      "oxbrook-2801-fjtv3zjk7d",
+      "flyround-2806-5ugu9qicpu",
+      "eaglecactus-2811-4wemfmrnbk",
+      "crafterforest-2816-bhzofmol0s"
     ],
     "sorted_candidates_savings_ratio": [
-      "skulljuniper-4301-uibdpdklwb",
-      "chopperdeep-4281-zyeluljbdv",
-      "toothmercury-4286-nibu6uppca",
-      "raccoonclear-4291-clkiwp65cy",
-      "houndcherry-4296-zplcrhwu08"
+      "crafterforest-2816-bhzofmol0s",
+      "seerquark-2796-lhh7vuqkpx",
+      "oxbrook-2801-fjtv3zjk7d",
+      "flyround-2806-5ugu9qicpu",
+      "eaglecactus-2811-4wemfmrnbk"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 14.215,
+      "compute_time_ms": 13.9,
       "slack_entropy": 1.6093582972051088,
       "candidates": null,
       "score_k2_approved": false,
@@ -2949,12 +2936,12 @@
     "branch": {
       "total_savings": 0.9764,
       "total_disruption": 3,
-      "compute_time_ms": 80.584,
+      "compute_time_ms": 83.393,
       "slack_entropy": 0.6922017029622767,
       "candidates": [
-        "toothmercury-4286-nibu6uppca",
-        "houndcherry-4296-zplcrhwu08",
-        "skulljuniper-4301-uibdpdklwb"
+        "oxbrook-2801-fjtv3zjk7d",
+        "eaglecactus-2811-4wemfmrnbk",
+        "crafterforest-2816-bhzofmol0s"
       ],
       "score_k2_approved": true,
       "score_k2": 1.4174392992969709
@@ -2962,54 +2949,54 @@
     "branch_savings_sort": {
       "total_savings": 0.9763999999999999,
       "total_disruption": 3,
-      "compute_time_ms": 80.912,
+      "compute_time_ms": 67.675,
       "slack_entropy": 0.6922017029622767,
       "candidates": [
-        "skulljuniper-4301-uibdpdklwb",
-        "toothmercury-4286-nibu6uppca",
-        "houndcherry-4296-zplcrhwu08"
+        "crafterforest-2816-bhzofmol0s",
+        "oxbrook-2801-fjtv3zjk7d",
+        "eaglecactus-2811-4wemfmrnbk"
       ],
       "score_k2_approved": true,
-      "score_k2": 1.4174392992969707
+      "score_k2": 1.417439299296971
     },
     "oracle": {
       "total_savings": 0.9764,
       "total_disruption": 3,
-      "compute_time_ms": 215.258,
+      "compute_time_ms": 210.632,
       "slack_entropy": 0.6922017029622767,
       "candidates": [
-        "toothmercury-4286-nibu6uppca",
-        "houndcherry-4296-zplcrhwu08",
-        "skulljuniper-4301-uibdpdklwb"
+        "oxbrook-2801-fjtv3zjk7d",
+        "eaglecactus-2811-4wemfmrnbk",
+        "crafterforest-2816-bhzofmol0s"
       ],
       "score_k2_approved": true,
-      "score_k2": 1.4174392992969713
+      "score_k2": 1.4174392992969709
     }
   },
   {
     "seed": 41,
     "description": "adversarial seed=41 node_count=4 allocCPU=8",
     "sorted_candidates": [
-      "gemcarnelian-4309-xqlupnfymu",
-      "catgravel-4314-hz317b0rsa",
-      "lynxstorm-4319-1k1kcf4rdj",
-      "roarchocolate-4324-3fkxxnwunw"
+      "venomtulip-2824-d6rvwyl8di",
+      "turnerfire-2829-8qrc0fpvee",
+      "iguanaash-2834-fver8tunht",
+      "dolphinseason-2839-d0go5owoah"
     ],
     "sorted_candidates_savings_ratio": [
-      "roarchocolate-4324-3fkxxnwunw",
-      "gemcarnelian-4309-xqlupnfymu",
-      "lynxstorm-4319-1k1kcf4rdj",
-      "catgravel-4314-hz317b0rsa"
+      "dolphinseason-2839-d0go5owoah",
+      "venomtulip-2824-d6rvwyl8di",
+      "iguanaash-2834-fver8tunht",
+      "turnerfire-2829-8qrc0fpvee"
     ],
     "mainline": {
       "total_savings": 1.008,
       "total_disruption": 3,
-      "compute_time_ms": 48.655,
+      "compute_time_ms": 43.885,
       "slack_entropy": 0,
       "candidates": [
-        "gemcarnelian-4309-xqlupnfymu",
-        "catgravel-4314-hz317b0rsa",
-        "lynxstorm-4319-1k1kcf4rdj"
+        "venomtulip-2824-d6rvwyl8di",
+        "turnerfire-2829-8qrc0fpvee",
+        "iguanaash-2834-fver8tunht"
       ],
       "score_k2_approved": true,
       "score_k2": 0.8753063904344727
@@ -3017,12 +3004,12 @@
     "branch": {
       "total_savings": 1.008,
       "total_disruption": 3,
-      "compute_time_ms": 52.61,
+      "compute_time_ms": 50.271,
       "slack_entropy": 0,
       "candidates": [
-        "gemcarnelian-4309-xqlupnfymu",
-        "catgravel-4314-hz317b0rsa",
-        "lynxstorm-4319-1k1kcf4rdj"
+        "venomtulip-2824-d6rvwyl8di",
+        "turnerfire-2829-8qrc0fpvee",
+        "iguanaash-2834-fver8tunht"
       ],
       "score_k2_approved": true,
       "score_k2": 0.8753063904344727
@@ -3030,131 +3017,129 @@
     "branch_savings_sort": {
       "total_savings": 1.3356,
       "total_disruption": 3,
-      "compute_time_ms": 50.944,
+      "compute_time_ms": 50.626,
       "slack_entropy": 0,
       "candidates": [
-        "roarchocolate-4324-3fkxxnwunw",
-        "gemcarnelian-4309-xqlupnfymu",
-        "lynxstorm-4319-1k1kcf4rdj"
+        "dolphinseason-2839-d0go5owoah",
+        "venomtulip-2824-d6rvwyl8di",
+        "iguanaash-2834-fver8tunht"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1577640543063992
     },
     "oracle": {
-      "total_savings": 1.4522,
-      "total_disruption": 4,
-      "compute_time_ms": 106.06,
+      "total_savings": 1.134,
+      "total_disruption": 3,
+      "compute_time_ms": 102.569,
       "slack_entropy": 0,
       "candidates": [
-        "gemcarnelian-4309-xqlupnfymu",
-        "catgravel-4314-hz317b0rsa",
-        "lynxstorm-4319-1k1kcf4rdj",
-        "roarchocolate-4324-3fkxxnwunw"
+        "turnerfire-2829-8qrc0fpvee",
+        "iguanaash-2834-fver8tunht",
+        "dolphinseason-2839-d0go5owoah"
       ],
       "score_k2_approved": true,
-      "score_k2": 1
+      "score_k2": 0.9827852710453705
     }
   },
   {
     "seed": 42,
     "description": "adversarial seed=42 node_count=5 allocCPU=32",
     "sorted_candidates": [
-      "carverglaze-4332-01exlrkw8i",
-      "bellycoral-4337-tkj5cnebmt",
-      "kinggossamer-4342-rc0mmuzlji",
-      "fairyrag-4347-xsq3syiaiw",
-      "elkrose-4352-tzaincih2h"
+      "bugmesquite-2847-xq8uegd7ig",
+      "hoofprism-2852-fe1vhwlrbw",
+      "wolverinetruth-2857-crm08zdgei",
+      "browzest-2862-flgfln87vv",
+      "samuraimalachite-2867-obtt6yusd3"
     ],
     "sorted_candidates_savings_ratio": [
-      "elkrose-4352-tzaincih2h",
-      "carverglaze-4332-01exlrkw8i",
-      "kinggossamer-4342-rc0mmuzlji",
-      "fairyrag-4347-xsq3syiaiw",
-      "bellycoral-4337-tkj5cnebmt"
+      "samuraimalachite-2867-obtt6yusd3",
+      "wolverinetruth-2857-crm08zdgei",
+      "bugmesquite-2847-xq8uegd7ig",
+      "hoofprism-2852-fe1vhwlrbw",
+      "browzest-2862-flgfln87vv"
     ],
     "mainline": {
       "total_savings": 1.26,
       "total_disruption": 4,
-      "compute_time_ms": 54.598,
+      "compute_time_ms": 54.724,
       "slack_entropy": 0,
       "candidates": [
-        "carverglaze-4332-01exlrkw8i",
-        "bellycoral-4337-tkj5cnebmt",
-        "kinggossamer-4342-rc0mmuzlji",
-        "fairyrag-4347-xsq3syiaiw"
-      ],
-      "score_k2_approved": false,
-      "score_k2": 0.4668149619815101
-    },
-    "branch": {
-      "total_savings": 1.26,
-      "total_disruption": 4,
-      "compute_time_ms": 61.474,
-      "slack_entropy": 0,
-      "candidates": [
-        "carverglaze-4332-01exlrkw8i",
-        "bellycoral-4337-tkj5cnebmt",
-        "kinggossamer-4342-rc0mmuzlji",
-        "fairyrag-4347-xsq3syiaiw"
+        "bugmesquite-2847-xq8uegd7ig",
+        "hoofprism-2852-fe1vhwlrbw",
+        "wolverinetruth-2857-crm08zdgei",
+        "browzest-2862-flgfln87vv"
       ],
       "score_k2_approved": false,
       "score_k2": 0.46681496198151007
     },
+    "branch": {
+      "total_savings": 1.26,
+      "total_disruption": 4,
+      "compute_time_ms": 60.926,
+      "slack_entropy": 0,
+      "candidates": [
+        "bugmesquite-2847-xq8uegd7ig",
+        "hoofprism-2852-fe1vhwlrbw",
+        "wolverinetruth-2857-crm08zdgei",
+        "browzest-2862-flgfln87vv"
+      ],
+      "score_k2_approved": false,
+      "score_k2": 0.4668149619815101
+    },
     "branch_savings_sort": {
       "total_savings": 3.276,
       "total_disruption": 4,
-      "compute_time_ms": 62.44,
+      "compute_time_ms": 61.319,
       "slack_entropy": 0,
       "candidates": [
-        "elkrose-4352-tzaincih2h",
-        "kinggossamer-4342-rc0mmuzlji",
-        "carverglaze-4332-01exlrkw8i",
-        "bellycoral-4337-tkj5cnebmt"
+        "samuraimalachite-2867-obtt6yusd3",
+        "bugmesquite-2847-xq8uegd7ig",
+        "wolverinetruth-2857-crm08zdgei",
+        "hoofprism-2852-fe1vhwlrbw"
       ],
       "score_k2_approved": true,
       "score_k2": 1.2132136045862514
     },
     "oracle": {
-      "total_savings": 3.0368000000000004,
-      "total_disruption": 5,
-      "compute_time_ms": 210.958,
+      "total_savings": 2.8476,
+      "total_disruption": 4,
+      "compute_time_ms": 212.171,
       "slack_entropy": 0,
       "candidates": [
-        "carverglaze-4332-01exlrkw8i",
-        "bellycoral-4337-tkj5cnebmt",
-        "kinggossamer-4342-rc0mmuzlji",
-        "fairyrag-4347-xsq3syiaiw",
-        "elkrose-4352-tzaincih2h"
+        "hoofprism-2852-fe1vhwlrbw",
+        "wolverinetruth-2857-crm08zdgei",
+        "browzest-2862-flgfln87vv",
+        "samuraimalachite-2867-obtt6yusd3"
       ],
       "score_k2_approved": true,
-      "score_k2": 0.9999999999999999
+      "score_k2": 1.053084747822821
     }
   },
   {
     "seed": 43,
     "description": "adversarial seed=43 node_count=7 allocCPU=8",
     "sorted_candidates": [
-      "riderroad-4360-kvfsx5jrfg",
-      "scorpioniris-4365-1sb4zxxbcx",
-      "skinnercrystal-4370-octoljzpme",
-      "bitersticky-4375-bx0p2icfj8",
-      "antnarrow-4380-w1ln2ogoaq",
-      "hornrainbow-4385-c3akbkg6ir",
-      "waspbrindle-4390-2e9s5r5akp"
+      "frillwheat-2875-6qxs9mnkll",
+      "cubrainbow-2880-nvz3ty7e2d",
+      "warlocklunar-2885-cdljbwo4r7",
+      "friendfortune-2890-p8kp5zyaqm",
+      "pythondust-2895-j8fhy96wi3",
+      "leadersour-2900-8vnftra0qf",
+      "bunnylace-2905-nl5ysxx6vg"
     ],
     "sorted_candidates_savings_ratio": [
-      "riderroad-4360-kvfsx5jrfg",
-      "scorpioniris-4365-1sb4zxxbcx",
-      "bitersticky-4375-bx0p2icfj8",
-      "hornrainbow-4385-c3akbkg6ir",
-      "waspbrindle-4390-2e9s5r5akp",
-      "skinnercrystal-4370-octoljzpme",
-      "antnarrow-4380-w1ln2ogoaq"
+      "frillwheat-2875-6qxs9mnkll",
+      "cubrainbow-2880-nvz3ty7e2d",
+      "friendfortune-2890-p8kp5zyaqm",
+      "leadersour-2900-8vnftra0qf",
+      "bunnylace-2905-nl5ysxx6vg",
+      "warlocklunar-2885-cdljbwo4r7",
+      "pythondust-2895-j8fhy96wi3"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 13.676,
+      "compute_time_ms": 14.052,
       "slack_entropy": 1.9416817794389092,
       "candidates": null,
       "score_k2_approved": false,
@@ -3163,15 +3148,15 @@
     "branch": {
       "total_savings": 5.6676,
       "total_disruption": 6,
-      "compute_time_ms": 103.875,
+      "compute_time_ms": 105.168,
       "slack_entropy": 0,
       "candidates": [
-        "scorpioniris-4365-1sb4zxxbcx",
-        "skinnercrystal-4370-octoljzpme",
-        "bitersticky-4375-bx0p2icfj8",
-        "antnarrow-4380-w1ln2ogoaq",
-        "hornrainbow-4385-c3akbkg6ir",
-        "waspbrindle-4390-2e9s5r5akp"
+        "cubrainbow-2880-nvz3ty7e2d",
+        "warlocklunar-2885-cdljbwo4r7",
+        "friendfortune-2890-p8kp5zyaqm",
+        "pythondust-2895-j8fhy96wi3",
+        "leadersour-2900-8vnftra0qf",
+        "bunnylace-2905-nl5ysxx6vg"
       ],
       "score_k2_approved": true,
       "score_k2": 0.9398916075291867
@@ -3179,15 +3164,15 @@
     "branch_savings_sort": {
       "total_savings": 5.667599999999999,
       "total_disruption": 6,
-      "compute_time_ms": 107.028,
+      "compute_time_ms": 106.34,
       "slack_entropy": 0,
       "candidates": [
-        "scorpioniris-4365-1sb4zxxbcx",
-        "bitersticky-4375-bx0p2icfj8",
-        "hornrainbow-4385-c3akbkg6ir",
-        "waspbrindle-4390-2e9s5r5akp",
-        "skinnercrystal-4370-octoljzpme",
-        "antnarrow-4380-w1ln2ogoaq"
+        "cubrainbow-2880-nvz3ty7e2d",
+        "friendfortune-2890-p8kp5zyaqm",
+        "leadersour-2900-8vnftra0qf",
+        "bunnylace-2905-nl5ysxx6vg",
+        "warlocklunar-2885-cdljbwo4r7",
+        "pythondust-2895-j8fhy96wi3"
       ],
       "score_k2_approved": true,
       "score_k2": 0.9398916075291865
@@ -3195,15 +3180,15 @@
     "oracle": {
       "total_savings": 5.6676,
       "total_disruption": 6,
-      "compute_time_ms": 867.65,
+      "compute_time_ms": 868.707,
       "slack_entropy": 0,
       "candidates": [
-        "scorpioniris-4365-1sb4zxxbcx",
-        "skinnercrystal-4370-octoljzpme",
-        "bitersticky-4375-bx0p2icfj8",
-        "antnarrow-4380-w1ln2ogoaq",
-        "hornrainbow-4385-c3akbkg6ir",
-        "waspbrindle-4390-2e9s5r5akp"
+        "cubrainbow-2880-nvz3ty7e2d",
+        "warlocklunar-2885-cdljbwo4r7",
+        "friendfortune-2890-p8kp5zyaqm",
+        "pythondust-2895-j8fhy96wi3",
+        "leadersour-2900-8vnftra0qf",
+        "bunnylace-2905-nl5ysxx6vg"
       ],
       "score_k2_approved": true,
       "score_k2": 0.9398916075291867
@@ -3213,21 +3198,21 @@
     "seed": 44,
     "description": "adversarial seed=44 node_count=4 allocCPU=16",
     "sorted_candidates": [
-      "glasspaint-4398-sezlmqqr0p",
-      "hoofripple-4403-krwg6nad3n",
-      "swishervivid-4408-wormoi32ss",
-      "minnowleather-4413-xjwfeftrxm"
+      "stalkerregal-2913-gjcrxbc21k",
+      "stallionsequoia-2918-crnxueacqm",
+      "flystream-2923-bpj7sx5a8q",
+      "maskcarnation-2928-58mjwtzgx1"
     ],
     "sorted_candidates_savings_ratio": [
-      "minnowleather-4413-xjwfeftrxm",
-      "glasspaint-4398-sezlmqqr0p",
-      "hoofripple-4403-krwg6nad3n",
-      "swishervivid-4408-wormoi32ss"
+      "maskcarnation-2928-58mjwtzgx1",
+      "stallionsequoia-2918-crnxueacqm",
+      "stalkerregal-2913-gjcrxbc21k",
+      "flystream-2923-bpj7sx5a8q"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 13.869,
+      "compute_time_ms": 13.886,
       "slack_entropy": 1.3848475472169075,
       "candidates": null,
       "score_k2_approved": false,
@@ -3236,12 +3221,12 @@
     "branch": {
       "total_savings": 2.4944,
       "total_disruption": 3,
-      "compute_time_ms": 80.422,
+      "compute_time_ms": 73.186,
       "slack_entropy": 0,
       "candidates": [
-        "hoofripple-4403-krwg6nad3n",
-        "swishervivid-4408-wormoi32ss",
-        "minnowleather-4413-xjwfeftrxm"
+        "stallionsequoia-2918-crnxueacqm",
+        "flystream-2923-bpj7sx5a8q",
+        "maskcarnation-2928-58mjwtzgx1"
       ],
       "score_k2_approved": true,
       "score_k2": 1.0470329371153402
@@ -3249,12 +3234,12 @@
     "branch_savings_sort": {
       "total_savings": 2.4944,
       "total_disruption": 3,
-      "compute_time_ms": 72.311,
+      "compute_time_ms": 71.11,
       "slack_entropy": 0,
       "candidates": [
-        "minnowleather-4413-xjwfeftrxm",
-        "hoofripple-4403-krwg6nad3n",
-        "swishervivid-4408-wormoi32ss"
+        "maskcarnation-2928-58mjwtzgx1",
+        "stallionsequoia-2918-crnxueacqm",
+        "flystream-2923-bpj7sx5a8q"
       ],
       "score_k2_approved": true,
       "score_k2": 1.0470329371153402
@@ -3262,12 +3247,12 @@
     "oracle": {
       "total_savings": 2.4944,
       "total_disruption": 3,
-      "compute_time_ms": 107.317,
+      "compute_time_ms": 104.361,
       "slack_entropy": 0,
       "candidates": [
-        "hoofripple-4403-krwg6nad3n",
-        "swishervivid-4408-wormoi32ss",
-        "minnowleather-4413-xjwfeftrxm"
+        "stallionsequoia-2918-crnxueacqm",
+        "flystream-2923-bpj7sx5a8q",
+        "maskcarnation-2928-58mjwtzgx1"
       ],
       "score_k2_approved": true,
       "score_k2": 1.0470329371153402
@@ -3277,25 +3262,25 @@
     "seed": 45,
     "description": "adversarial seed=45 node_count=6 allocCPU=32",
     "sorted_candidates": [
-      "chillerfern-4421-hmatqkbavj",
-      "knavemeadow-4426-tpwegeddg3",
-      "cubsaber-4431-d5dgxbkyes",
-      "dolphinpurple-4436-sfkitswzr9",
-      "walkertabby-4441-usbtfivxqh",
-      "paladincliff-4446-i3dn9rsmml"
+      "minnowcalico-2936-frpkkfaawt",
+      "knavewheat-2941-prnqbxm9an",
+      "flywest-2946-mtyoszte8j",
+      "otterspring-2951-q6ywhoyhuv",
+      "whimseysilent-2956-zue1usjh8o",
+      "tailsilver-2961-ghfv16g1wb"
     ],
     "sorted_candidates_savings_ratio": [
-      "paladincliff-4446-i3dn9rsmml",
-      "knavemeadow-4426-tpwegeddg3",
-      "chillerfern-4421-hmatqkbavj",
-      "dolphinpurple-4436-sfkitswzr9",
-      "cubsaber-4431-d5dgxbkyes",
-      "walkertabby-4441-usbtfivxqh"
+      "tailsilver-2961-ghfv16g1wb",
+      "minnowcalico-2936-frpkkfaawt",
+      "knavewheat-2941-prnqbxm9an",
+      "otterspring-2951-q6ywhoyhuv",
+      "flywest-2946-mtyoszte8j",
+      "whimseysilent-2956-zue1usjh8o"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 13.669,
+      "compute_time_ms": 14.114,
       "slack_entropy": 1.7914875952600164,
       "candidates": null,
       "score_k2_approved": false,
@@ -3304,29 +3289,29 @@
     "branch": {
       "total_savings": 2.62,
       "total_disruption": 5,
-      "compute_time_ms": 91.273,
+      "compute_time_ms": 131.809,
       "slack_entropy": 0,
       "candidates": [
-        "knavemeadow-4426-tpwegeddg3",
-        "cubsaber-4431-d5dgxbkyes",
-        "dolphinpurple-4436-sfkitswzr9",
-        "walkertabby-4441-usbtfivxqh",
-        "paladincliff-4446-i3dn9rsmml"
+        "knavewheat-2941-prnqbxm9an",
+        "flywest-2946-mtyoszte8j",
+        "otterspring-2951-q6ywhoyhuv",
+        "whimseysilent-2956-zue1usjh8o",
+        "tailsilver-2961-ghfv16g1wb"
       ],
       "score_k2_approved": true,
-      "score_k2": 0.9518016180895565
+      "score_k2": 0.9518016180895564
     },
     "branch_savings_sort": {
       "total_savings": 2.62,
       "total_disruption": 5,
-      "compute_time_ms": 90.057,
+      "compute_time_ms": 92.96,
       "slack_entropy": 0,
       "candidates": [
-        "paladincliff-4446-i3dn9rsmml",
-        "knavemeadow-4426-tpwegeddg3",
-        "dolphinpurple-4436-sfkitswzr9",
-        "cubsaber-4431-d5dgxbkyes",
-        "walkertabby-4441-usbtfivxqh"
+        "tailsilver-2961-ghfv16g1wb",
+        "knavewheat-2941-prnqbxm9an",
+        "otterspring-2951-q6ywhoyhuv",
+        "flywest-2946-mtyoszte8j",
+        "whimseysilent-2956-zue1usjh8o"
       ],
       "score_k2_approved": true,
       "score_k2": 0.9518016180895564
@@ -3334,49 +3319,49 @@
     "oracle": {
       "total_savings": 2.62,
       "total_disruption": 5,
-      "compute_time_ms": 427.601,
+      "compute_time_ms": 428.764,
       "slack_entropy": 0,
       "candidates": [
-        "knavemeadow-4426-tpwegeddg3",
-        "cubsaber-4431-d5dgxbkyes",
-        "dolphinpurple-4436-sfkitswzr9",
-        "walkertabby-4441-usbtfivxqh",
-        "paladincliff-4446-i3dn9rsmml"
+        "knavewheat-2941-prnqbxm9an",
+        "flywest-2946-mtyoszte8j",
+        "otterspring-2951-q6ywhoyhuv",
+        "whimseysilent-2956-zue1usjh8o",
+        "tailsilver-2961-ghfv16g1wb"
       ],
       "score_k2_approved": true,
-      "score_k2": 0.9518016180895564
+      "score_k2": 0.9518016180895565
     }
   },
   {
     "seed": 46,
     "description": "adversarial seed=46 node_count=6 allocCPU=16",
     "sorted_candidates": [
-      "butterflybone-4454-afb7xvdtpm",
-      "llamabranch-4459-w2pvzxxh9e",
-      "tongueash-4464-y60ztym0x2",
-      "ridergem-4469-aaf4wlbvrb",
-      "shriekeralabaster-4474-ovvtwt7zpe",
-      "snaplily-4479-i9pl9qputf"
+      "rovershadow-2969-ehnibm5mh6",
+      "llamapurple-2974-axjx7xkrhb",
+      "paladincrocus-2979-vcb9uapvdx",
+      "kingrapid-2984-b7helyb8pf",
+      "kickertar-2989-hyewnzru5o",
+      "frillshade-2994-lwddrnmlfs"
     ],
     "sorted_candidates_savings_ratio": [
-      "butterflybone-4454-afb7xvdtpm",
-      "tongueash-4464-y60ztym0x2",
-      "shriekeralabaster-4474-ovvtwt7zpe",
-      "snaplily-4479-i9pl9qputf",
-      "llamabranch-4459-w2pvzxxh9e",
-      "ridergem-4469-aaf4wlbvrb"
+      "rovershadow-2969-ehnibm5mh6",
+      "paladincrocus-2979-vcb9uapvdx",
+      "kickertar-2989-hyewnzru5o",
+      "frillshade-2994-lwddrnmlfs",
+      "llamapurple-2974-axjx7xkrhb",
+      "kingrapid-2984-b7helyb8pf"
     ],
     "mainline": {
       "total_savings": 5.0084,
       "total_disruption": 5,
-      "compute_time_ms": 58.782,
+      "compute_time_ms": 57.83,
       "slack_entropy": 0,
       "candidates": [
-        "butterflybone-4454-afb7xvdtpm",
-        "llamabranch-4459-w2pvzxxh9e",
-        "tongueash-4464-y60ztym0x2",
-        "ridergem-4469-aaf4wlbvrb",
-        "shriekeralabaster-4474-ovvtwt7zpe"
+        "rovershadow-2969-ehnibm5mh6",
+        "llamapurple-2974-axjx7xkrhb",
+        "paladincrocus-2979-vcb9uapvdx",
+        "kingrapid-2984-b7helyb8pf",
+        "kickertar-2989-hyewnzru5o"
       ],
       "score_k2_approved": true,
       "score_k2": 0.9914380062278463
@@ -3384,14 +3369,14 @@
     "branch": {
       "total_savings": 5.0084,
       "total_disruption": 5,
-      "compute_time_ms": 67.212,
+      "compute_time_ms": 65.246,
       "slack_entropy": 0,
       "candidates": [
-        "butterflybone-4454-afb7xvdtpm",
-        "llamabranch-4459-w2pvzxxh9e",
-        "tongueash-4464-y60ztym0x2",
-        "ridergem-4469-aaf4wlbvrb",
-        "shriekeralabaster-4474-ovvtwt7zpe"
+        "rovershadow-2969-ehnibm5mh6",
+        "llamapurple-2974-axjx7xkrhb",
+        "paladincrocus-2979-vcb9uapvdx",
+        "kingrapid-2984-b7helyb8pf",
+        "kickertar-2989-hyewnzru5o"
       ],
       "score_k2_approved": true,
       "score_k2": 0.9914380062278463
@@ -3399,56 +3384,55 @@
     "branch_savings_sort": {
       "total_savings": 5.9818,
       "total_disruption": 5,
-      "compute_time_ms": 68.634,
+      "compute_time_ms": 71.291,
       "slack_entropy": 0,
       "candidates": [
-        "butterflybone-4454-afb7xvdtpm",
-        "tongueash-4464-y60ztym0x2",
-        "shriekeralabaster-4474-ovvtwt7zpe",
-        "snaplily-4479-i9pl9qputf",
-        "llamabranch-4459-w2pvzxxh9e"
+        "rovershadow-2969-ehnibm5mh6",
+        "paladincrocus-2979-vcb9uapvdx",
+        "kickertar-2989-hyewnzru5o",
+        "frillshade-2994-lwddrnmlfs",
+        "llamapurple-2974-axjx7xkrhb"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1837408455266436
     },
     "oracle": {
-      "total_savings": 5.7268,
-      "total_disruption": 6,
-      "compute_time_ms": 423.882,
+      "total_savings": 4.454,
+      "total_disruption": 5,
+      "compute_time_ms": 427.208,
       "slack_entropy": 0,
       "candidates": [
-        "butterflybone-4454-afb7xvdtpm",
-        "llamabranch-4459-w2pvzxxh9e",
-        "tongueash-4464-y60ztym0x2",
-        "ridergem-4469-aaf4wlbvrb",
-        "shriekeralabaster-4474-ovvtwt7zpe",
-        "snaplily-4479-i9pl9qputf"
+        "llamapurple-2974-axjx7xkrhb",
+        "paladincrocus-2979-vcb9uapvdx",
+        "kingrapid-2984-b7helyb8pf",
+        "kickertar-2989-hyewnzru5o",
+        "frillshade-2994-lwddrnmlfs"
       ],
       "score_k2_approved": true,
-      "score_k2": 1
+      "score_k2": 0.8799417974976501
     }
   },
   {
     "seed": 47,
     "description": "adversarial seed=47 node_count=5 allocCPU=8",
     "sorted_candidates": [
-      "seekerjelly-4487-podwml0uuh",
-      "musebattle-4492-oe7gsdlj4m",
-      "fisheroil-4497-kycyohwatd",
-      "songsolstice-4502-at3zoluskv",
-      "hissobsidian-4507-tiqng9ykif"
+      "parrotribbon-3002-mersd9f26h",
+      "weedcookie-3007-u2cfv4xwrv",
+      "swordscratch-3012-v5walcsaaw",
+      "hidehoney-3017-k20qhcrq8p",
+      "wolverinefuschia-3022-qx5llcq3p3"
     ],
     "sorted_candidates_savings_ratio": [
-      "hissobsidian-4507-tiqng9ykif",
-      "seekerjelly-4487-podwml0uuh",
-      "musebattle-4492-oe7gsdlj4m",
-      "fisheroil-4497-kycyohwatd",
-      "songsolstice-4502-at3zoluskv"
+      "wolverinefuschia-3022-qx5llcq3p3",
+      "parrotribbon-3002-mersd9f26h",
+      "weedcookie-3007-u2cfv4xwrv",
+      "swordscratch-3012-v5walcsaaw",
+      "hidehoney-3017-k20qhcrq8p"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 14.293,
+      "compute_time_ms": 13.781,
       "slack_entropy": 1.6035681031705151,
       "candidates": null,
       "score_k2_approved": false,
@@ -3457,12 +3441,12 @@
     "branch": {
       "total_savings": 2.2868,
       "total_disruption": 3,
-      "compute_time_ms": 82.547,
+      "compute_time_ms": 80.459,
       "slack_entropy": 0.6909233093138181,
       "candidates": [
-        "musebattle-4492-oe7gsdlj4m",
-        "songsolstice-4502-at3zoluskv",
-        "hissobsidian-4507-tiqng9ykif"
+        "weedcookie-3007-u2cfv4xwrv",
+        "hidehoney-3017-k20qhcrq8p",
+        "wolverinefuschia-3022-qx5llcq3p3"
       ],
       "score_k2_approved": true,
       "score_k2": 1.5489804334913575
@@ -3470,12 +3454,12 @@
     "branch_savings_sort": {
       "total_savings": 2.2868,
       "total_disruption": 3,
-      "compute_time_ms": 78.096,
+      "compute_time_ms": 67.962,
       "slack_entropy": 0.6909233093138181,
       "candidates": [
-        "hissobsidian-4507-tiqng9ykif",
-        "musebattle-4492-oe7gsdlj4m",
-        "songsolstice-4502-at3zoluskv"
+        "wolverinefuschia-3022-qx5llcq3p3",
+        "hidehoney-3017-k20qhcrq8p",
+        "weedcookie-3007-u2cfv4xwrv"
       ],
       "score_k2_approved": true,
       "score_k2": 1.5489804334913575
@@ -3483,12 +3467,12 @@
     "oracle": {
       "total_savings": 2.2868,
       "total_disruption": 3,
-      "compute_time_ms": 214.486,
+      "compute_time_ms": 215.14,
       "slack_entropy": 0.6909233093138181,
       "candidates": [
-        "musebattle-4492-oe7gsdlj4m",
-        "songsolstice-4502-at3zoluskv",
-        "hissobsidian-4507-tiqng9ykif"
+        "weedcookie-3007-u2cfv4xwrv",
+        "hidehoney-3017-k20qhcrq8p",
+        "wolverinefuschia-3022-qx5llcq3p3"
       ],
       "score_k2_approved": true,
       "score_k2": 1.5489804334913575
@@ -3498,23 +3482,23 @@
     "seed": 48,
     "description": "adversarial seed=48 node_count=5 allocCPU=8",
     "sorted_candidates": [
-      "spriteapple-4515-qbnlrkqmwq",
-      "devourercherry-4520-sqvthcdur3",
-      "browchip-4525-i6b7iujiwp",
-      "bardpetal-4530-yqmz2xtrqv",
-      "swallowwave-4535-4z2sktcola"
+      "jayviolet-3030-kxhwxw5ebx",
+      "hornetspark-3035-hmvrs9looq",
+      "browginger-3040-cnon5kqvlb",
+      "scowlfog-3045-o2hoslfwlf",
+      "pixiecanyon-3050-zknczuaeyp"
     ],
     "sorted_candidates_savings_ratio": [
-      "swallowwave-4535-4z2sktcola",
-      "spriteapple-4515-qbnlrkqmwq",
-      "devourercherry-4520-sqvthcdur3",
-      "browchip-4525-i6b7iujiwp",
-      "bardpetal-4530-yqmz2xtrqv"
+      "pixiecanyon-3050-zknczuaeyp",
+      "hornetspark-3035-hmvrs9looq",
+      "browginger-3040-cnon5kqvlb",
+      "jayviolet-3030-kxhwxw5ebx",
+      "scowlfog-3045-o2hoslfwlf"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 14.239,
+      "compute_time_ms": 13.986,
       "slack_entropy": 1.6091132798103236,
       "candidates": null,
       "score_k2_approved": false,
@@ -3523,12 +3507,12 @@
     "branch": {
       "total_savings": 3.4768,
       "total_disruption": 3,
-      "compute_time_ms": 81.802,
+      "compute_time_ms": 81.345,
       "slack_entropy": 0.6931471805599453,
       "candidates": [
-        "devourercherry-4520-sqvthcdur3",
-        "bardpetal-4530-yqmz2xtrqv",
-        "swallowwave-4535-4z2sktcola"
+        "hornetspark-3035-hmvrs9looq",
+        "scowlfog-3045-o2hoslfwlf",
+        "pixiecanyon-3050-zknczuaeyp"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1965516921886168
@@ -3536,12 +3520,12 @@
     "branch_savings_sort": {
       "total_savings": 3.4768000000000003,
       "total_disruption": 3,
-      "compute_time_ms": 84.529,
+      "compute_time_ms": 82.312,
       "slack_entropy": 0.6931471805599453,
       "candidates": [
-        "swallowwave-4535-4z2sktcola",
-        "devourercherry-4520-sqvthcdur3",
-        "bardpetal-4530-yqmz2xtrqv"
+        "pixiecanyon-3050-zknczuaeyp",
+        "hornetspark-3035-hmvrs9looq",
+        "scowlfog-3045-o2hoslfwlf"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1965516921886168
@@ -3549,12 +3533,12 @@
     "oracle": {
       "total_savings": 3.4768,
       "total_disruption": 3,
-      "compute_time_ms": 217.09,
+      "compute_time_ms": 214.396,
       "slack_entropy": 0.6931471805599453,
       "candidates": [
-        "devourercherry-4520-sqvthcdur3",
-        "bardpetal-4530-yqmz2xtrqv",
-        "swallowwave-4535-4z2sktcola"
+        "hornetspark-3035-hmvrs9looq",
+        "scowlfog-3045-o2hoslfwlf",
+        "pixiecanyon-3050-zknczuaeyp"
       ],
       "score_k2_approved": true,
       "score_k2": 1.1965516921886168
@@ -3564,27 +3548,27 @@
     "seed": 49,
     "description": "adversarial seed=49 node_count=7 allocCPU=16",
     "sorted_candidates": [
-      "chopperfield-4543-yw7j9t5nnu",
-      "crestindigo-4548-pcnbcnzs3q",
-      "storkcitrine-4553-jvxoaxefq7",
-      "deathwarp-4558-syw4et1w0x",
-      "ridermarsh-4563-0ricixxfpm",
-      "daggerrowan-4568-jtmqfgh8p1",
-      "weaselfossil-4573-aztrygcgye"
+      "pixietitanium-3058-qxpjohmvuq",
+      "gemlace-3063-j4vsnzoxw2",
+      "wanderermaple-3068-i0s0h9wcun",
+      "dutchessmad-3073-kbomceahmc",
+      "lifterfast-3078-wf7miezvys",
+      "razorlove-3083-f6tabd73it",
+      "stagpepper-3088-1bigahggl1"
     ],
     "sorted_candidates_savings_ratio": [
-      "storkcitrine-4553-jvxoaxefq7",
-      "ridermarsh-4563-0ricixxfpm",
-      "deathwarp-4558-syw4et1w0x",
-      "chopperfield-4543-yw7j9t5nnu",
-      "crestindigo-4548-pcnbcnzs3q",
-      "daggerrowan-4568-jtmqfgh8p1",
-      "weaselfossil-4573-aztrygcgye"
+      "wanderermaple-3068-i0s0h9wcun",
+      "lifterfast-3078-wf7miezvys",
+      "pixietitanium-3058-qxpjohmvuq",
+      "gemlace-3063-j4vsnzoxw2",
+      "dutchessmad-3073-kbomceahmc",
+      "razorlove-3083-f6tabd73it",
+      "stagpepper-3088-1bigahggl1"
     ],
     "mainline": {
       "total_savings": 0,
       "total_disruption": 0,
-      "compute_time_ms": 13.842,
+      "compute_time_ms": 13.959,
       "slack_entropy": 1.9448492123783632,
       "candidates": null,
       "score_k2_approved": false,
@@ -3593,15 +3577,15 @@
     "branch": {
       "total_savings": 4.6998,
       "total_disruption": 6,
-      "compute_time_ms": 103.059,
+      "compute_time_ms": 101.604,
       "slack_entropy": 0,
       "candidates": [
-        "crestindigo-4548-pcnbcnzs3q",
-        "storkcitrine-4553-jvxoaxefq7",
-        "deathwarp-4558-syw4et1w0x",
-        "ridermarsh-4563-0ricixxfpm",
-        "daggerrowan-4568-jtmqfgh8p1",
-        "weaselfossil-4573-aztrygcgye"
+        "gemlace-3063-j4vsnzoxw2",
+        "wanderermaple-3068-i0s0h9wcun",
+        "dutchessmad-3073-kbomceahmc",
+        "lifterfast-3078-wf7miezvys",
+        "razorlove-3083-f6tabd73it",
+        "stagpepper-3088-1bigahggl1"
       ],
       "score_k2_approved": true,
       "score_k2": 1.0735486503685288
@@ -3609,15 +3593,15 @@
     "branch_savings_sort": {
       "total_savings": 4.6998,
       "total_disruption": 6,
-      "compute_time_ms": 95.974,
+      "compute_time_ms": 95.986,
       "slack_entropy": 0,
       "candidates": [
-        "storkcitrine-4553-jvxoaxefq7",
-        "ridermarsh-4563-0ricixxfpm",
-        "crestindigo-4548-pcnbcnzs3q",
-        "deathwarp-4558-syw4et1w0x",
-        "daggerrowan-4568-jtmqfgh8p1",
-        "weaselfossil-4573-aztrygcgye"
+        "wanderermaple-3068-i0s0h9wcun",
+        "lifterfast-3078-wf7miezvys",
+        "gemlace-3063-j4vsnzoxw2",
+        "dutchessmad-3073-kbomceahmc",
+        "razorlove-3083-f6tabd73it",
+        "stagpepper-3088-1bigahggl1"
       ],
       "score_k2_approved": true,
       "score_k2": 1.0735486503685288
@@ -3625,15 +3609,15 @@
     "oracle": {
       "total_savings": 4.6998,
       "total_disruption": 6,
-      "compute_time_ms": 868.325,
+      "compute_time_ms": 862.881,
       "slack_entropy": 0,
       "candidates": [
-        "crestindigo-4548-pcnbcnzs3q",
-        "storkcitrine-4553-jvxoaxefq7",
-        "deathwarp-4558-syw4et1w0x",
-        "ridermarsh-4563-0ricixxfpm",
-        "daggerrowan-4568-jtmqfgh8p1",
-        "weaselfossil-4573-aztrygcgye"
+        "gemlace-3063-j4vsnzoxw2",
+        "wanderermaple-3068-i0s0h9wcun",
+        "dutchessmad-3073-kbomceahmc",
+        "lifterfast-3078-wf7miezvys",
+        "razorlove-3083-f6tabd73it",
+        "stagpepper-3088-1bigahggl1"
       ],
       "score_k2_approved": true,
       "score_k2": 1.0735486503685288

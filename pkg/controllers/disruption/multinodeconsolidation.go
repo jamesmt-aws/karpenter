@@ -592,7 +592,22 @@ func (m *MultiNodeConsolidation) bruteForceSearch(ctx context.Context, candidate
 			}
 			return Command{}, err
 		}
-		if cmd.Decision() == NoOpDecision {
+		// Mirror binarySearchPrefix's validity check: a Replace
+		// decision is feasible only when filterOutSameInstanceType
+		// leaves a non-empty replacement option list. Without this
+		// check the oracle accepts no-op Replace results (where the
+		// only available replacement is one of the existing types
+		// the algorithm would correctly reject), and reports as
+		// "feasible at size N" subsets the production algorithm
+		// would correctly skip.
+		validDecision := cmd.Decision() == DeleteDecision
+		if cmd.Decision() == ReplaceDecision {
+			cmd.Replacements[0], err = filterOutSameInstanceType(cmd.Replacements[0], subset)
+			if err == nil && len(cmd.Replacements[0].InstanceTypeOptions) > 0 {
+				validDecision = true
+			}
+		}
+		if !validDecision {
 			continue
 		}
 		// Score: prefer larger subset, tie-break on summed disruption
