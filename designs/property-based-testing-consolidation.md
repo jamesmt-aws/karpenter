@@ -255,6 +255,45 @@ described above. The lesson is that any oracle's feasibility
 predicate has to match the production algorithm's predicate
 exactly; lenient oracles produce ghost shapes.
 
+### Provisioning side
+
+A first 100-seed run of the provisioning corpus
+(`scenarios.GenerateProvisioning`, greenfield, CPU+Memory pods only,
+no constraints) surfaces one shape:
+
+- **First-fit monolith bias**: when N pending pods all sum within
+  some single instance type's allocatable, the scheduler launches
+  one node of that type. The brute-force oracle finds a 2-way split
+  into smaller instances that provisions strictly less total
+  capacity at lower total price. 23 of 100 corpus seeds manifest
+  this. Disagreement rate scales monotonically with pod count
+  (3 pods: 4%; 4: 17%; 5: 36%; 6: 40%). Worst-case overpay 1.6x;
+  most disagreements cluster at 1.333x. All splits surfaced are
+  2-way; no 3+ way splits in 100 seeds.
+
+  Mechanism: `Scheduler.Solve` adds pods to a NodeClaim greedily and
+  only triggers a new NodeClaim when a pod doesn't fit the running
+  one. The trigger condition is "doesn't fit", not "splitting would
+  be cheaper." So the NodeClaim ends up with `InstanceTypeOptions`
+  filtered to types that fit the cumulative pod set; the cheapest
+  of those is launched. That cheapest single-fit type is sometimes
+  more expensive than two smaller instances summing to less total
+  capacity. The shape parallels Shape C on the consolidation side:
+  the search structure (greedy commit) cannot reach the alternative
+  (split), so the disagreement is structural, not a missed comparison
+  inside the existing search.
+
+  Out of scope for an immediate fix; would need either a 2-pass
+  "consider splitting before launch" search at small N, or a
+  bounded brute-force placement at the bin-packing step.
+
+  In linear-pricing instance families (c7i, m7i, r7i are linear by
+  size) the savings come from picking less total capacity, not from
+  arbitrage across families. In families with sub-linear pricing
+  the shape would be muted; in super-linear pricing it would be
+  amplified. Worth re-running the corpus on a sub-linearly-priced
+  fixture to confirm.
+
 ## How to use the framework
 
 ### Run the existing corpus
@@ -282,6 +321,23 @@ A targeted analyzer is at `testdata/analyze_incomplete.py`. It
 filters to seeds where one algorithm under-consolidated relative
 to another and reports the position-of-missed-candidate
 distribution.
+
+### Run the provisioning corpus
+
+```
+KUBEBUILDER_ASSETS=$(setup-envtest use -p path 1.35.x) \
+  go test -tags=corpus -count=1 -timeout=20m \
+  ./pkg/controllers/provisioning/ \
+  -run TestAPIs --ginkgo.focus 'Provisioning Corpus'
+```
+
+The provisioning corpus runs 100 greenfield seeds (3..6 pending
+pods, CPU+Memory only, no constraints) through the production
+scheduler and the brute-force placement oracle. Writes
+`pkg/controllers/provisioning/testdata/corpus_results.json`. A
+matching analyzer is at the same path: `analyze_overpay.py` reports
+cost-ratio distribution, disagreement rate by pod count, and the
+monolith-vs-split breakdown.
 
 ### Generate adversarial scenarios
 
