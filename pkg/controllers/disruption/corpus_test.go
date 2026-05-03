@@ -72,21 +72,29 @@ type corpusEntry struct {
 }
 
 type corpusRun struct {
-	TotalSavings    float64       `json:"total_savings"`
-	TotalDisruption int           `json:"total_disruption"`
-	ComputeTimeMs   float64       `json:"compute_time_ms"`
-	SlackEntropy    float64       `json:"slack_entropy"`
-	Candidates      []string      `json:"candidates"`
-	Error           string        `json:"error,omitempty"`
+	TotalSavings    float64  `json:"total_savings"`
+	TotalDisruption int      `json:"total_disruption"`
+	ComputeTimeMs   float64  `json:"compute_time_ms"`
+	SlackEntropy    float64  `json:"slack_entropy"`
+	Candidates      []string `json:"candidates"`
+	// Balanced score gate evaluation (post-hoc, k=2). Tells us
+	// whether the algorithm's output would have been approved by
+	// the Balanced policy. Used to look for Shape D: cases where
+	// a feasible move would be score-rejected.
+	ScoreK2Approved bool    `json:"score_k2_approved"`
+	ScoreK2         float64 `json:"score_k2"`
+	Error           string  `json:"error,omitempty"`
 }
 
-func metricsToRun(m scenarios.Metrics, candidates []string, err error) corpusRun {
+func metricsToRun(m scenarios.Metrics, candidates []string, score disruption.BalancedScoreResult, err error) corpusRun {
 	r := corpusRun{
 		TotalSavings:    m.TotalSavings,
 		TotalDisruption: m.TotalDisruption,
 		ComputeTimeMs:   float64(m.ComputeTime.Microseconds()) / 1000.0,
 		SlackEntropy:    m.SlackEntropy,
 		Candidates:      candidates,
+		ScoreK2Approved: score.Approved,
+		ScoreK2:         score.Score,
 	}
 	if err != nil {
 		r.Error = err.Error()
@@ -131,16 +139,16 @@ func runCorpusScenario(seed int64) corpusEntry {
 	nodePool := built.NodePools[0]
 	priceFor := makeCorpusPriceFunc(cloudProvider.InstanceTypes)
 
-	mainlineMoves, mainlineCands, mainlineDur := computeMoves(nodePool, "mainline")
+	mainlineMoves, mainlineCands, mainlineDur, mainlineScore := computeMovesAndScore(nodePool, "mainline")
 	mainlineMetrics, mainlineErr := scenarios.Evaluate(built, mainlineMoves, priceFor, scenarios.DefaultEntropyWeights, mainlineDur)
 
-	branchMoves, branchCands, branchDur := computeMoves(nodePool, "branch")
+	branchMoves, branchCands, branchDur, branchScore := computeMovesAndScore(nodePool, "branch")
 	branchMetrics, branchErr := scenarios.Evaluate(built, branchMoves, priceFor, scenarios.DefaultEntropyWeights, branchDur)
 
-	branchSavingsMoves, branchSavingsCands, branchSavingsDur := computeMoves(nodePool, "branch_savings")
+	branchSavingsMoves, branchSavingsCands, branchSavingsDur, branchSavingsScore := computeMovesAndScore(nodePool, "branch_savings")
 	branchSavingsMetrics, branchSavingsErr := scenarios.Evaluate(built, branchSavingsMoves, priceFor, scenarios.DefaultEntropyWeights, branchSavingsDur)
 
-	oracleMoves, oracleCands, oracleDur := computeMoves(nodePool, "oracle")
+	oracleMoves, oracleCands, oracleDur, oracleScore := computeMovesAndScore(nodePool, "oracle")
 	oracleMetrics, oracleErr := scenarios.Evaluate(built, oracleMoves, priceFor, scenarios.DefaultEntropyWeights, oracleDur)
 
 	sortedCands := sortedCandidateNames(nodePool)
@@ -151,10 +159,10 @@ func runCorpusScenario(seed int64) corpusEntry {
 		Description:           s.Description,
 		SortedCandidates:      sortedCands,
 		SortedCandidatesRatio: sortedCandsRatio,
-		Mainline:              metricsToRun(mainlineMetrics, mainlineCands, mainlineErr),
-		Branch:                metricsToRun(branchMetrics, branchCands, branchErr),
-		BranchSavingsSort:     metricsToRun(branchSavingsMetrics, branchSavingsCands, branchSavingsErr),
-		Oracle:                metricsToRun(oracleMetrics, oracleCands, oracleErr),
+		Mainline:              metricsToRun(mainlineMetrics, mainlineCands, mainlineScore, mainlineErr),
+		Branch:                metricsToRun(branchMetrics, branchCands, branchScore, branchErr),
+		BranchSavingsSort:     metricsToRun(branchSavingsMetrics, branchSavingsCands, branchSavingsScore, branchSavingsErr),
+		Oracle:                metricsToRun(oracleMetrics, oracleCands, oracleScore, oracleErr),
 	}
 }
 
@@ -197,6 +205,47 @@ func sortedCandidateNamesSavingsRatio(nodePool *v1.NodePool) []string {
 		names = append(names, cand.Node.Name)
 	}
 	return names
+}
+
+// computeMovesAndScore is computeMoves plus post-hoc Balanced score
+// evaluation at k=2. Returns the score result for the chosen subset
+// against the full candidate list's NodePool totals.
+func computeMovesAndScore(nodePool *v1.NodePool, algo string) ([]scenarios.Move, []string, time.Duration, disruption.BalancedScoreResult) {
+	moves, cands, dur := computeMoves(nodePool, algo)
+	// Score: re-fetch the full candidate list and the chosen subset.
+	// Done in a separate pass so the timing measurement above stays
+	// untainted.
+	c := disruption.MakeConsolidation(fakeClock, cluster, env.Client, prov, cloudProvider, recorder, queue)
+	multi := disruption.NewMultiNodeConsolidation(c,
+		disruption.WithValidator(NewTestMultiConsolidationValidator(nodePool)),
+	)
+	allCandidates, err := disruption.GetCandidates(ctx, cluster, env.Client, recorder, fakeClock, cloudProvider,
+		multi.ShouldDisrupt, multi.Class(), queue)
+	Expect(err).To(Succeed())
+	if len(allCandidates) == 0 || len(cands) == 0 {
+		return moves, cands, dur, disruption.BalancedScoreResult{K: 2}
+	}
+	totals := disruption.ComputeNodePoolTotalsForCorpus(ctx, allCandidates)
+	poolName := allCandidates[0].NodePool.Name
+	// Build chosen-candidate slice by name match.
+	chosenSet := map[string]*disruption.Candidate{}
+	for _, name := range cands {
+		for _, ac := range allCandidates {
+			if ac.Node.Name == name {
+				chosenSet[name] = ac
+				break
+			}
+		}
+	}
+	chosen := make([]*disruption.Candidate, 0, len(chosenSet))
+	moveSavings := 0.0
+	for _, ac := range chosenSet {
+		chosen = append(chosen, ac)
+		moveSavings += disruption.CandidatePrice(ac)
+	}
+	moveDisruption := disruption.ComputeMoveDisruptionCostForCorpus(ctx, chosen)
+	score := disruption.ScoreMoveK(moveSavings, moveDisruption, totals[poolName], 2)
+	return moves, cands, dur, score
 }
 
 func computeMoves(nodePool *v1.NodePool, algo string) ([]scenarios.Move, []string, time.Duration) {

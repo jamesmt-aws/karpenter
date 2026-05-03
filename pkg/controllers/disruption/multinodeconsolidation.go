@@ -94,7 +94,7 @@ func (m *MultiNodeConsolidation) sortCandidates(candidates []*Candidate) []*Cand
 // pulling in the eviction-cost helper. Exported for the corpus
 // harness's diagnostic sort.
 func CandidateSavingsRatio(c *Candidate) float64 {
-	price := candidatePrice(c)
+	price := CandidatePrice(c)
 	dc := c.DisruptionCost
 	if dc < 1.0 {
 		dc = 1.0 // matches Balanced's per-node base of 1.0
@@ -102,10 +102,10 @@ func CandidateSavingsRatio(c *Candidate) float64 {
 	return price / dc
 }
 
-// candidatePrice returns the cheapest available offering price for a
+// CandidatePrice returns the cheapest available offering price for a
 // candidate. Returns 0 if the candidate has no instance type or no
 // available offerings.
-func candidatePrice(c *Candidate) float64 {
+func CandidatePrice(c *Candidate) float64 {
 	if c.instanceType == nil {
 		return 0
 	}

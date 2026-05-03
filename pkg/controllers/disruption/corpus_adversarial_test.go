@@ -84,16 +84,16 @@ func runAdversarialCorpusScenario(seed int64) corpusEntry {
 	nodePool := built.NodePools[0]
 	priceFor := makeCorpusPriceFunc(cloudProvider.InstanceTypes)
 
-	mainlineMoves, mainlineCands, mainlineDur := computeMoves(nodePool, "mainline")
+	mainlineMoves, mainlineCands, mainlineDur, mainlineScore := computeMovesAndScore(nodePool, "mainline")
 	mainlineMetrics, mainlineErr := scenarios.Evaluate(built, mainlineMoves, priceFor, scenarios.DefaultEntropyWeights, mainlineDur)
 
-	branchMoves, branchCands, branchDur := computeMoves(nodePool, "branch")
+	branchMoves, branchCands, branchDur, branchScore := computeMovesAndScore(nodePool, "branch")
 	branchMetrics, branchErr := scenarios.Evaluate(built, branchMoves, priceFor, scenarios.DefaultEntropyWeights, branchDur)
 
-	branchSavingsMoves, branchSavingsCands, branchSavingsDur := computeMoves(nodePool, "branch_savings")
+	branchSavingsMoves, branchSavingsCands, branchSavingsDur, branchSavingsScore := computeMovesAndScore(nodePool, "branch_savings")
 	branchSavingsMetrics, branchSavingsErr := scenarios.Evaluate(built, branchSavingsMoves, priceFor, scenarios.DefaultEntropyWeights, branchSavingsDur)
 
-	oracleMoves, oracleCands, oracleDur := computeMoves(nodePool, "oracle")
+	oracleMoves, oracleCands, oracleDur, oracleScore := computeMovesAndScore(nodePool, "oracle")
 	oracleMetrics, oracleErr := scenarios.Evaluate(built, oracleMoves, priceFor, scenarios.DefaultEntropyWeights, oracleDur)
 
 	sortedCands := sortedCandidateNames(nodePool)
@@ -104,9 +104,9 @@ func runAdversarialCorpusScenario(seed int64) corpusEntry {
 		Description:           s.Description,
 		SortedCandidates:      sortedCands,
 		SortedCandidatesRatio: sortedCandsRatio,
-		Mainline:              metricsToRun(mainlineMetrics, mainlineCands, mainlineErr),
-		Branch:                metricsToRun(branchMetrics, branchCands, branchErr),
-		BranchSavingsSort:     metricsToRun(branchSavingsMetrics, branchSavingsCands, branchSavingsErr),
-		Oracle:                metricsToRun(oracleMetrics, oracleCands, oracleErr),
+		Mainline:              metricsToRun(mainlineMetrics, mainlineCands, mainlineScore, mainlineErr),
+		Branch:                metricsToRun(branchMetrics, branchCands, branchScore, branchErr),
+		BranchSavingsSort:     metricsToRun(branchSavingsMetrics, branchSavingsCands, branchSavingsScore, branchSavingsErr),
+		Oracle:                metricsToRun(oracleMetrics, oracleCands, oracleScore, oracleErr),
 	}
 }
