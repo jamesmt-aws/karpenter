@@ -2,9 +2,9 @@
 
 ## Why this exists
 
-Consolidation is a search problem dressed up as a controller. The
-controller asks: "given this snapshot of cluster state, which
-combination of nodes can I jointly remove without stranding pods,
+Consolidation is a search problem. The controller asks: "given this
+snapshot of cluster state, which combination of nodes can I jointly
+remove without stranding pods,
 in a way that reduces cost?" The answer is a subset of candidates,
 and the right subset is rarely obvious from a unit test.
 
@@ -33,9 +33,7 @@ A brute-force enumeration oracle that returns the largest feasible
 joint deletion. A build-tagged corpus runner that pulls these
 together and reports per-seed and aggregate results.
 
-The pieces are independent and replaceable. The grammar describes
-a snapshot. The generator produces snapshots from a seed. The
-oracle evaluates snapshots. The harness is glue.
+The pieces are independent and replaceable.
 
 ## The four axes
 
@@ -49,11 +47,8 @@ Each consolidation move evaluates against:
   slack is more disruptable next cycle.
 
 Why four axes and not just savings? Single-axis evaluation hides
-real tradeoffs. A move that saves more by disrupting more nodes is
-not always preferred. A move that saves the same by leaving slack
-distributed across many nodes is worse than one that concentrates
-the slack on a single survivor. Four axes lets us ask Pareto-shape
-questions instead of "which algorithm wins."
+tradeoffs. A move that saves more by disrupting more nodes is not
+always preferred. Four axes lets us ask Pareto-shape questions.
 
 ## The brute-force oracle
 
@@ -64,10 +59,8 @@ feasible subset. It does not sort, does not search prefixes, does
 not maintain an accept-or-skip walk. It is mechanically distinct
 from any production multi-node algorithm.
 
-The oracle is too expensive for production. Average wall time on a
-100-scenario corpus is over a second per scenario, versus tens of
-milliseconds for the production binary search. That is fine. The
-oracle's job is to be the right answer, not the fast answer.
+The oracle averages over a second per scenario (production binary
+search: tens of milliseconds). Its job is to be right, not fast.
 
 When the production algorithm and the oracle disagree, the
 disagreement is structural information, not just a bug report.
@@ -99,23 +92,24 @@ production multi-node consolidation algorithm:
 
 - **Shape C**: binary search accepts a prefix that is itself a
   poor commitment. A strictly different non-prefix subset that
-  *excludes* part of the prefix is feasible. The original demo
-  used a hand-crafted envtest with a single absorber slot that
-  exactly fills with one candidate's pod, blocking every joint
-  removal that includes that candidate, where the better non-
-  prefix subset is also strictly larger. The AWS-realistic
-  adversarial corpus surfaces a same-size variant: the algorithm
-  returns a feasible size-k prefix while a non-prefix subset of
-  the same size k carries strictly higher savings (different
-  members, often skipping the cheapest candidate at position 0
-  in favor of a higher-priced one further down the sort). The
-  pairwise extension cannot eject already-accepted candidates,
-  so it cannot reach either variant. Out of scope for the
-  current fix direction; would need bounded brute-force at small
-  N or a swap-walk that ejects accepted candidates. With the
-  AWS-realistic corpus and the strict-feasibility oracle (see
-  below), 15 of 50 adversarial seeds manifest the same-size
-  variant.
+  *excludes* part of the prefix is feasible. Two variants:
+
+  - *Strictly-larger variant.* A hand-crafted envtest with a
+    single absorber slot that exactly fills with one candidate's
+    pod, blocking every joint removal that includes that
+    candidate. The better non-prefix subset is strictly larger.
+
+  - *Same-size variant.* The adversarial corpus surfaces cases
+    where a non-prefix subset of the same size k carries strictly
+    higher savings (different members, often skipping the cheapest
+    candidate at position 0 in favor of a higher-priced one
+    further down the sort). 15 of 50 adversarial seeds manifest
+    this variant.
+
+  The pairwise extension cannot eject already-accepted candidates,
+  so it cannot reach either variant. Out of scope for the current
+  fix direction; would need bounded brute-force at small N or a
+  swap-walk that ejects accepted candidates.
 
 - **Marginal-cost regime under the Balanced score gate**: the
   algorithm's chosen plan is feasible per the simulator but
@@ -135,30 +129,19 @@ reach non-prefix subsets to recover maximality. The fourth sits
 orthogonal: it is not about whether the search is complete, but
 about whether the resulting plan is worth applying.
 
-An earlier draft of this guide claimed the Balanced score gate
-was approximately a no-op on the corpus. That was a mistake of
-attribution: the gate did not fire because the corpus did not
-exercise it (all candidates within a scenario shared a price, so
-score collapsed to K/N over K/N), not because it is meaningless.
-The marginal corpus and a fix to `pickCorpusInstances` (dedupe by
-`(cpu, mem)` shape so the eight-instance pool actually spans
-prices) corrected the picture.
+Two lessons from building the oracle:
 
-A second oracle correction landed alongside the AWS-realistic
-instance type substitution. The brute-force oracle's feasibility
-check originally accepted any non-NoOp Command, including
-`ReplaceDecision` results where `filterOutSameInstanceType` would
-have left an empty replacement option list. The production binary
-search rejects those (no cheaper instance type is actually
-available), so the oracle was over-counting feasible subsets and
-reporting a Shape C disagreement on cases that were not real bug
-shapes. The fix mirrors the algorithm's `validDecision` check
-inside `bruteForceSearch`. Once tightened, the 15 adversarial
-seeds the lenient oracle had marked as larger-set Shape C
-disagreements re-classified as the same-size Shape C variant
-described above. The lesson is that any oracle's feasibility
-predicate has to match the production algorithm's predicate
-exactly; lenient oracles produce ghost shapes.
+- Input distributions that collapse a metric make that metric a
+  no-op. `pickCorpusInstances` deduplicates by `(cpu, mem)` shape
+  to ensure the eight-instance pool spans prices; without price
+  variation the savings-ratio sort and the score gate are both
+  effectively inert.
+
+- The oracle's feasibility predicate must match the production
+  algorithm's predicate exactly. `bruteForceSearch` mirrors the
+  algorithm's `validDecision` check (rejecting `ReplaceDecision`
+  results where `filterOutSameInstanceType` leaves an empty
+  option list). Lenient oracles produce ghost shapes.
 
 ## How to use the framework
 
@@ -318,7 +301,10 @@ Properties that would be useful but are not yet encoded:
 - **Pod priority variation.** All pods have the same priority.
   `EvictionCost` adds priority/2^25 to its result, so non-uniform
   priorities would create per-pod disruption-cost variance that
-  the score gate could meaningfully respond to.
+  the score gate could meaningfully respond to. To exercise the
+  score gate via `PodDeletionCost` annotations, the generator
+  would need values in the 10^7-10^9 range that move EvictionCost
+  across its [-10, 10] clamp range.
 - **DoNotDisrupt annotations** and other `ShouldDisrupt` filters.
 - **TopologySpread constraints**, hostport contention, and
   affinity-driven multi-blocker patterns beyond the simple
@@ -329,11 +315,11 @@ Properties that would be useful but are not yet encoded:
   output) rather than as a production policy active during
   search.
 - **Score gate at multiple k values.** Only k=2 evaluated.
-- **N greater than 8.** The brute-force oracle's powerset cap
-  is the practical ceiling. Production clusters with hundreds
-  of candidates per cycle are out of reach.
+- **N greater than 8.** The brute-force oracle's powerset cap is
+  the practical ceiling. The oracle is a tool for finding shapes
+  at small N, not for benchmarking real-cluster behavior.
 
-### Roughly speaking
+### Summary
 
 The corpus reaches the search-shape questions for delete-only
 multi-node consolidation at small N, single pool, uniform pods,
@@ -343,50 +329,15 @@ the four bug shapes documented above. It is not enough to find
 shapes that depend on Replace dynamics, multi-pool budgets,
 priority variation, PDB-Eventual interaction, or scale.
 
-A rough way to think about the structural space: there are
-roughly six independent axes of consolidation behavior (search
-shape, sort key, score gate, Replace dynamics, pool topology,
-candidate filtering). The corpus exercises three of them
-non-trivially (search shape, sort key, score gate marginal
-regime). Coverage is meaningful within those axes; a fourth or
-fifth axis would need new generator work.
+There are roughly six independent axes of consolidation behavior
+(search shape, sort key, score gate, Replace dynamics, pool
+topology, candidate filtering). The corpus exercises three
+non-trivially. A fourth or fifth axis would need new generator
+work.
 
-## Other limitations
-
-The corpus generator is small in shape. Single NodePool per
-scenario in `Generate`, a few instance types in
-`GenerateAdversarial` and `GenerateMarginal`. Up to 8 candidates
-per scenario (the brute-force oracle's practical cap). Pods are
-simple (1 per candidate, basic constraints). To find shapes that
-need richer state, the generator needs corresponding axes added.
-
-The candidate sample pool from the cloud provider matters. The
-default `pickCorpusInstances` deduplicates by `(cpu, mem)` shape
-to ensure price variation across the eight-instance pool; an
-earlier version deduplicated by full type name and ended up
-picking 8 same-price 1-CPU-1-mem variants. Without price
-variation the savings-ratio sort and the score gate are both
-effectively no-ops, which is not a property of the algorithm but
-a property of the input distribution.
-
-The score formula `savings_fraction / disruption_fraction`
-collapses to roughly 1.0 when per-pod EvictionCost is uniform,
-which it is here because `EvictionCost(p)` defaults to 1.0 and
-`PodDeletionCost` annotations contribute a vanishingly small
-shift (divided by 2^27 inside the formula). To exercise the score
-gate, the generator needs pod priorities or PodDeletionCost
-annotations in the 10^7-10^9 magnitude range that actually move
-EvictionCost across its [-10, 10] clamp range.
-
-The brute-force oracle is N-bounded. For a scenario with more than
-8 candidates, the powerset would not fit in a single test cycle.
-Production clusters will have hundreds of candidates per cycle in
-the worst case. The oracle is a tool for finding shapes at small
-N, not for benchmarking real-cluster behavior.
-
-The compute-time axis is noisy. Same algorithm, same input, same
-machine: variance of a few milliseconds. Pareto comparisons that
-hinge on a small compute-time delta are not reliable.
+The compute-time axis is noisy (millisecond-level variance across
+runs on the same machine). Pareto comparisons that hinge on a
+small compute-time delta are not reliable.
 
 ## Where things live
 
@@ -404,30 +355,3 @@ hinge on a small compute-time delta are not reliable.
   corpus runner.
 - `pkg/controllers/disruption/testdata/` — committed baselines and
   Python analyzers.
-
-## A short manifesto
-
-Property-based testing for systems software lives or dies on the
-quality of the oracle. Without an oracle, you have a generator
-that produces inputs you can feed to your code, no way to tell
-whether the output is right. The temptation is to use the
-algorithm's own simulator as the oracle, which gives you "the code
-is consistent with itself" but not "the code is correct." A
-brute-force enumeration oracle, even at modest N, breaks that
-circularity. Where it disagrees with the production algorithm is
-where the bugs are.
-
-The corpus generator does not need to be sophisticated. It needs
-to be diverse enough that the oracle has a chance to disagree.
-Variance in pod constraints, candidate counts, sort divergence,
-and cost structure is more important than realism. The oracle's
-job is to find disagreements; the generator's job is to give the
-oracle inputs where disagreements can manifest.
-
-When you find a disagreement, the next step is not to write a
-unit test for that specific input. The next step is to characterize
-the *shape* of the disagreement (what property of the input made
-it disagree) and either widen the property check to cover the
-shape, or fix the algorithm so the shape is no longer a
-disagreement. Each fix should be sound across all inputs that
-manifest the shape, not just the one that triggered investigation.
