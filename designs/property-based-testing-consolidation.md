@@ -99,14 +99,23 @@ production multi-node consolidation algorithm:
 
 - **Shape C**: binary search accepts a prefix that is itself a
   poor commitment. A strictly different non-prefix subset that
-  *excludes* part of the prefix is feasible and larger. Demoed
-  by a hand-crafted envtest with a single absorber slot that
+  *excludes* part of the prefix is feasible. The original demo
+  used a hand-crafted envtest with a single absorber slot that
   exactly fills with one candidate's pod, blocking every joint
-  removal that includes that candidate. The pairwise extension
-  cannot eject already-accepted candidates, so it cannot reach
-  the better non-prefix subset. Out of scope for the current fix
-  direction; would need bounded brute-force at small N or a
-  swap-walk that ejects accepted candidates.
+  removal that includes that candidate, where the better non-
+  prefix subset is also strictly larger. The AWS-realistic
+  adversarial corpus surfaces a same-size variant: the algorithm
+  returns a feasible size-k prefix while a non-prefix subset of
+  the same size k carries strictly higher savings (different
+  members, often skipping the cheapest candidate at position 0
+  in favor of a higher-priced one further down the sort). The
+  pairwise extension cannot eject already-accepted candidates,
+  so it cannot reach either variant. Out of scope for the
+  current fix direction; would need bounded brute-force at small
+  N or a swap-walk that ejects accepted candidates. With the
+  AWS-realistic corpus and the strict-feasibility oracle (see
+  below), 15 of 50 adversarial seeds manifest the same-size
+  variant.
 
 - **Marginal-cost regime under the Balanced score gate**: the
   algorithm's chosen plan is feasible per the simulator but
@@ -134,6 +143,22 @@ score collapsed to K/N over K/N), not because it is meaningless.
 The marginal corpus and a fix to `pickCorpusInstances` (dedupe by
 `(cpu, mem)` shape so the eight-instance pool actually spans
 prices) corrected the picture.
+
+A second oracle correction landed alongside the AWS-realistic
+instance type substitution. The brute-force oracle's feasibility
+check originally accepted any non-NoOp Command, including
+`ReplaceDecision` results where `filterOutSameInstanceType` would
+have left an empty replacement option list. The production binary
+search rejects those (no cheaper instance type is actually
+available), so the oracle was over-counting feasible subsets and
+reporting a Shape C disagreement on cases that were not real bug
+shapes. The fix mirrors the algorithm's `validDecision` check
+inside `bruteForceSearch`. Once tightened, the 15 adversarial
+seeds the lenient oracle had marked as larger-set Shape C
+disagreements re-classified as the same-size Shape C variant
+described above. The lesson is that any oracle's feasibility
+predicate has to match the production algorithm's predicate
+exactly; lenient oracles produce ghost shapes.
 
 ## How to use the framework
 
