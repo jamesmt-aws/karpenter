@@ -72,6 +72,11 @@ type Node struct {
 	Pool        string
 	Allocatable corev1.ResourceList
 	ExtraLabels map[string]string
+	// Instance, if non-nil, overrides the scenario-level InstanceMeta
+	// for this specific node. Used by the adversarial generator to
+	// give different candidates different prices so the savings-ratio
+	// sort actually diverges from the disruption-cost sort.
+	Instance *InstanceMeta
 	// Consolidatable controls whether the linked NodeClaim's
 	// ConditionTypeConsolidatable is set to True. Default true. Use
 	// false for absorber-style nodes that should not appear as

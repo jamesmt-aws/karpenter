@@ -147,15 +147,22 @@ func (s *Scenario) buildNodeClaimAndNode(n Node, idx int) (*v1.NodeClaim, *corev
 			corev1.ResourcePods: resource.MustParse("100"),
 		}
 	}
+	// Per-node InstanceMeta override (Node.Instance) takes precedence
+	// over the scenario-level Instance. Used by adversarial generation
+	// to give different candidates different prices.
+	im := s.instance
+	if n.Instance != nil {
+		im = *n.Instance
+	}
 	labels := lo.Assign(map[string]string{
 		v1.NodePoolLabelKey:            n.Pool,
-		corev1.LabelInstanceTypeStable: s.instance.InstanceType,
+		corev1.LabelInstanceTypeStable: im.InstanceType,
 	}, n.ExtraLabels)
-	if s.instance.CapacityType != "" {
-		labels[v1.CapacityTypeLabelKey] = s.instance.CapacityType
+	if im.CapacityType != "" {
+		labels[v1.CapacityTypeLabelKey] = im.CapacityType
 	}
-	if s.instance.Zone != "" {
-		labels[corev1.LabelTopologyZone] = s.instance.Zone
+	if im.Zone != "" {
+		labels[corev1.LabelTopologyZone] = im.Zone
 	}
 
 	nc, node := test.NodeClaimAndNode(v1.NodeClaim{
