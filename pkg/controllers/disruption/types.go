@@ -50,9 +50,10 @@ const (
 )
 
 type MethodOptions struct {
-	validator              Validator
-	binarySearchOnly       bool
-	bruteForceEnumeration  bool
+	validator             Validator
+	binarySearchOnly      bool
+	bruteForceEnumeration bool
+	savingsRatioSort      bool
 }
 
 func WithValidator(v Validator) option.Function[MethodOptions] {
@@ -81,6 +82,19 @@ func WithBinarySearchOnly() option.Function[MethodOptions] {
 func WithBruteForceEnumeration() option.Function[MethodOptions] {
 	return func(o *MethodOptions) {
 		o.bruteForceEnumeration = true
+	}
+}
+
+// WithSavingsRatioSort sorts candidates by savings ratio descending
+// (price / disruption_cost) instead of by disruption cost ascending.
+// Mirrors the sort key the Balanced consolidation policy uses
+// when activated (see jamesmt-aws/karpenter:balanced-impl-pr's
+// sortCandidates). Test-only knob; used by the corpus harness to
+// test whether the bug-shape taxonomy (Shapes A, B, C) shifts in
+// frequency or kind under the alternative sort order.
+func WithSavingsRatioSort() option.Function[MethodOptions] {
+	return func(o *MethodOptions) {
+		o.savingsRatioSort = true
 	}
 }
 

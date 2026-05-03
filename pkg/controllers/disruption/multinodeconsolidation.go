@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"math"
 	"slices"
+	"sort"
 	"time"
 
 	"github.com/awslabs/operatorpkg/option"
@@ -51,6 +52,7 @@ type MultiNodeConsolidation struct {
 	validator             Validator
 	binarySearchOnly      bool
 	bruteForceEnumeration bool
+	savingsRatioSort      bool
 }
 
 func NewMultiNodeConsolidation(c consolidation, opts ...option.Function[MethodOptions]) *MultiNodeConsolidation {
@@ -60,7 +62,66 @@ func NewMultiNodeConsolidation(c consolidation, opts ...option.Function[MethodOp
 		validator:             o.validator,
 		binarySearchOnly:      o.binarySearchOnly,
 		bruteForceEnumeration: o.bruteForceEnumeration,
+		savingsRatioSort:      o.savingsRatioSort,
 	}
+}
+
+// sortCandidates dispatches between the production sort (disruption
+// cost ascending) and the Balanced-style sort (savings ratio
+// descending) based on the savingsRatioSort option. When the option
+// is unset, this delegates to the embedded consolidation's
+// sortCandidates so the production behavior is preserved exactly.
+//
+// Mirrors the dispatch in jamesmt-aws/karpenter:balanced-impl-pr's
+// sortCandidates, but expressed as a test option instead of a per-
+// NodePool policy. Used by the corpus harness to test whether bug
+// shapes (Shapes A, B, C) shift under the alternative sort.
+func (m *MultiNodeConsolidation) sortCandidates(candidates []*Candidate) []*Candidate {
+	if !m.savingsRatioSort {
+		return m.consolidation.sortCandidates(candidates)
+	}
+	sort.Slice(candidates, func(i, j int) bool {
+		return CandidateSavingsRatio(candidates[i]) > CandidateSavingsRatio(candidates[j])
+	})
+	return candidates
+}
+
+// CandidateSavingsRatio returns price / disruption_cost. Higher
+// ratio means better consolidation value (more savings per unit
+// disruption). Mirrors candidateSavingsRatio in
+// jamesmt-aws/karpenter:balanced-impl-pr/consolidation.go but uses
+// the candidate's existing DisruptionCost field directly to avoid
+// pulling in the eviction-cost helper. Exported for the corpus
+// harness's diagnostic sort.
+func CandidateSavingsRatio(c *Candidate) float64 {
+	price := candidatePrice(c)
+	dc := c.DisruptionCost
+	if dc < 1.0 {
+		dc = 1.0 // matches Balanced's per-node base of 1.0
+	}
+	return price / dc
+}
+
+// candidatePrice returns the cheapest available offering price for a
+// candidate. Returns 0 if the candidate has no instance type or no
+// available offerings.
+func candidatePrice(c *Candidate) float64 {
+	if c.instanceType == nil {
+		return 0
+	}
+	best := math.Inf(1)
+	for _, off := range c.instanceType.Offerings {
+		if !off.Available {
+			continue
+		}
+		if off.Price < best {
+			best = off.Price
+		}
+	}
+	if math.IsInf(best, 1) {
+		return 0
+	}
+	return best
 }
 
 // nolint:gocyclo

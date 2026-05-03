@@ -61,12 +61,14 @@ const corpusOutputDir = "testdata"
 const corpusOutputFile = "corpus_results.json"
 
 type corpusEntry struct {
-	Seed              int64     `json:"seed"`
-	Description       string    `json:"description"`
-	SortedCandidates  []string  `json:"sorted_candidates"`
-	Mainline          corpusRun `json:"mainline"`
-	Branch            corpusRun `json:"branch"`
-	Oracle            corpusRun `json:"oracle,omitempty"`
+	Seed                  int64     `json:"seed"`
+	Description           string    `json:"description"`
+	SortedCandidates      []string  `json:"sorted_candidates"`
+	SortedCandidatesRatio []string  `json:"sorted_candidates_savings_ratio,omitempty"`
+	Mainline              corpusRun `json:"mainline"`
+	Branch                corpusRun `json:"branch"`
+	BranchSavingsSort     corpusRun `json:"branch_savings_sort,omitempty"`
+	Oracle                corpusRun `json:"oracle,omitempty"`
 }
 
 type corpusRun struct {
@@ -135,18 +137,24 @@ func runCorpusScenario(seed int64) corpusEntry {
 	branchMoves, branchCands, branchDur := computeMoves(nodePool, "branch")
 	branchMetrics, branchErr := scenarios.Evaluate(built, branchMoves, priceFor, scenarios.DefaultEntropyWeights, branchDur)
 
+	branchSavingsMoves, branchSavingsCands, branchSavingsDur := computeMoves(nodePool, "branch_savings")
+	branchSavingsMetrics, branchSavingsErr := scenarios.Evaluate(built, branchSavingsMoves, priceFor, scenarios.DefaultEntropyWeights, branchSavingsDur)
+
 	oracleMoves, oracleCands, oracleDur := computeMoves(nodePool, "oracle")
 	oracleMetrics, oracleErr := scenarios.Evaluate(built, oracleMoves, priceFor, scenarios.DefaultEntropyWeights, oracleDur)
 
 	sortedCands := sortedCandidateNames(nodePool)
+	sortedCandsRatio := sortedCandidateNamesSavingsRatio(nodePool)
 
 	return corpusEntry{
-		Seed:             seed,
-		Description:      s.Description,
-		SortedCandidates: sortedCands,
-		Mainline:         metricsToRun(mainlineMetrics, mainlineCands, mainlineErr),
-		Branch:           metricsToRun(branchMetrics, branchCands, branchErr),
-		Oracle:           metricsToRun(oracleMetrics, oracleCands, oracleErr),
+		Seed:                  seed,
+		Description:           s.Description,
+		SortedCandidates:      sortedCands,
+		SortedCandidatesRatio: sortedCandsRatio,
+		Mainline:              metricsToRun(mainlineMetrics, mainlineCands, mainlineErr),
+		Branch:                metricsToRun(branchMetrics, branchCands, branchErr),
+		BranchSavingsSort:     metricsToRun(branchSavingsMetrics, branchSavingsCands, branchSavingsErr),
+		Oracle:                metricsToRun(oracleMetrics, oracleCands, oracleErr),
 	}
 }
 
@@ -170,6 +178,27 @@ func sortedCandidateNames(nodePool *v1.NodePool) []string {
 	return names
 }
 
+// sortedCandidateNamesSavingsRatio returns the full candidate list
+// sorted by savings ratio (price / disruption_cost) descending,
+// matching the WithSavingsRatioSort option's behavior.
+func sortedCandidateNamesSavingsRatio(nodePool *v1.NodePool) []string {
+	c := disruption.MakeConsolidation(fakeClock, cluster, env.Client, prov, cloudProvider, recorder, queue)
+	multi := disruption.NewMultiNodeConsolidation(c,
+		disruption.WithValidator(NewTestMultiConsolidationValidator(nodePool)),
+	)
+	candidates, err := disruption.GetCandidates(ctx, cluster, env.Client, recorder, fakeClock, cloudProvider,
+		multi.ShouldDisrupt, multi.Class(), queue)
+	Expect(err).To(Succeed())
+	sort.SliceStable(candidates, func(i, j int) bool {
+		return disruption.CandidateSavingsRatio(candidates[i]) > disruption.CandidateSavingsRatio(candidates[j])
+	})
+	names := make([]string, 0, len(candidates))
+	for _, cand := range candidates {
+		names = append(names, cand.Node.Name)
+	}
+	return names
+}
+
 func computeMoves(nodePool *v1.NodePool, algo string) ([]scenarios.Move, []string, time.Duration) {
 	c := disruption.MakeConsolidation(fakeClock, cluster, env.Client, prov, cloudProvider, recorder, queue)
 	opts := []option.Function[disruption.MethodOptions]{
@@ -182,6 +211,8 @@ func computeMoves(nodePool *v1.NodePool, algo string) ([]scenarios.Move, []strin
 		opts = append(opts, disruption.WithBruteForceEnumeration())
 	case "branch":
 		// default, no extra option
+	case "branch_savings":
+		opts = append(opts, disruption.WithSavingsRatioSort())
 	default:
 		Fail(fmt.Sprintf("unknown algorithm %q", algo))
 	}
