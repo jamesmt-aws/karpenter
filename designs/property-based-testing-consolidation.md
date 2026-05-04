@@ -321,6 +321,21 @@ no constraints) surfaces one shape:
   the oracle's view, including the allocatable side of the
   Capacity vs Allocatable distinction.
 
+- **Daemon-overhead corpus is a rigor check, not a new shape**:
+  GenerateProvisioningDaemon is the greenfield generator plus one
+  NodeAgentDaemon (100m CPU, 128MiB memory, tolerates everything).
+  Production and oracle both subtract daemon resources from every
+  new node's effective allocatable, so the relative comparison
+  reproduces the greenfield corpus exactly: 77/100 agree, 23
+  disagree on the same first-fit shape. The 100m/128MiB overhead
+  is too small relative to the pod resource choices (500m..4 CPU,
+  512MiB..4GiB) to push any pod across an instance-type boundary.
+  Value: a divergent overhead bug (oracle subtracts overhead but
+  production does not, or vice versa) would surface as cost_ratio
+  movement relative to the no-daemon baseline. A bigger daemon
+  (~500m CPU, ~512MiB) would shift fit decisions and is left as a
+  follow-on for real-cluster overhead profiles.
+
 - **Per-zone monolith bias under hard TopologySpread**: when every
   pod carries a hard `topologySpreadConstraints` on
   `topology.kubernetes.io/zone` with MaxSkew=1, the scheduler is
@@ -403,6 +418,20 @@ oracle is widened to enumerate every (M+1)^N assignment of pending
 pods to (existing node, or stay pending) and run the partition
 oracle on the pending remainder. Existing-node price is treated as
 zero. Writes `corpus_fleet_results.json`.
+
+### Run the provisioning daemon corpus
+
+```
+KUBEBUILDER_ASSETS=$(setup-envtest use -p path 1.35.x) \
+  go test -tags=corpus -count=1 -timeout=20m \
+  ./pkg/controllers/provisioning/ \
+  -run TestAPIs --ginkgo.focus 'Provisioning Daemon Corpus'
+```
+
+The daemon corpus is the greenfield generator plus one NodeAgentDaemon
+DaemonSet. The oracle subtracts the daemon's CPU/memory from every
+new-node group sum before fit checks, mirroring production's
+getDaemonOverhead handling. Writes `corpus_daemon_results.json`.
 
 ### Run the provisioning topology corpus
 
