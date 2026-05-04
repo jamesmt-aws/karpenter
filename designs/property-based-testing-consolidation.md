@@ -70,9 +70,9 @@ node) assignments are feasible.
   how unevenly the matching pods can be spread across topology
   domains. The constraint says no domain may have more than MaxSkew
   more matching pods than another.
-- **Resource requests against allocatable** are the simplest
-  constraint. The sum of CPU requests of pods on a node cannot
-  exceed the node's allocatable CPU, and the same for memory.
+- **Resource requests against allocatable.** The sum of CPU
+  requests of pods on a node cannot exceed the node's allocatable
+  CPU, and the same for memory.
 
 An assignment is feasible when every one of these constraints is
 satisfied. The grammar's job on the feasibility side is to make
@@ -179,9 +179,11 @@ capped at 8 candidates per scenario so the powerset of 256 subsets
 stays tractable. For each subset it asks the simulator whether the
 joint deletion is feasible, and it returns the feasible subset with
 the largest savings. It does not sort. It does not search prefixes.
-It does not maintain an accept-or-skip walk. The mechanism does not
-overlap with any production multi-node algorithm, which is the
-point.
+It does not maintain an accept-or-skip walk. The mechanism is
+intentionally distinct from any production multi-node algorithm.
+Any disagreement reflects a difference between brute force and the
+production search, not a shared bug between the oracle and the
+algorithm.
 
 The oracle is too expensive for production. Average wall time on a
 100-scenario corpus is over a second per scenario, versus tens of
@@ -299,18 +301,18 @@ A first 100-seed run of the provisioning corpus
 requests only, no other constraints) surfaces one shape, plus
 several runs of that same shape under additional axes.
 
-- **First-fit monolith bias.** When N pending pods all sum within
-  some single instance type's allocatable, the scheduler launches
-  one node of that type. The brute-force oracle finds a two-way
-  split into smaller instances that provisions strictly less total
-  capacity at lower total price. 23 of 100 corpus seeds manifest
+- **First-fit monolith bias.** When the cumulative resource
+  requests of N pending pods fit inside some single instance type's
+  allocatable, the scheduler launches one node of that type. The
+  brute-force oracle finds a two-way split into smaller instances
+  that provisions strictly less total capacity at lower total price. 23 of 100 corpus seeds manifest
   this. The disagreement rate scales monotonically with pod count
   (3 pods at 4%, 4 at 17%, 5 at 36%, 6 at 40%). Worst-case overpay
   is 1.6x and most disagreements cluster at 1.333x. All splits
   surfaced are two-way, with no three-or-more-way splits in 100
   seeds.
 
-  The mechanism is that `Scheduler.Solve` adds pods to a NodeClaim
+  The cause is that `Scheduler.Solve` adds pods to a NodeClaim
   greedily, and only triggers a new NodeClaim when a pod does not
   fit the running one. The trigger condition is "doesn't fit," not
   "splitting would be cheaper." The NodeClaim ends up with
@@ -331,8 +333,8 @@ several runs of that same shape under additional axes.
   by size) the savings come from picking less total capacity, not
   from arbitrage across families. In families with sub-linear
   pricing the shape would be muted, and in super-linear pricing it
-  would be amplified. It is worth re-running the corpus on a
-  sub-linearly-priced fixture to confirm that.
+  would be amplified. Re-running the corpus on a sub-linearly-
+  priced fixture would confirm or refute that claim.
 
 - **First-fit monolith bias persists under existing-fleet
   starting state, at lower frequency.** When 1 to 3 existing
@@ -390,14 +392,15 @@ several runs of that same shape under additional axes.
   52%, 6 at 47%). Cost ratio mean is 1.081, max 1.372. 36 of 37
   disagreements are 2 nodes versus 2 nodes. 1 is 2 versus 3, where
   the oracle splits within a zone for further savings. Production
-  sizing is asymmetric in 26 of the 37 cases and symmetric in 11,
-  so the shape is not "always picks the same instance for both
-  zones." It is "per-zone size is locally minimal under greedy
-  commitment, not globally minimal across the partition." Same
-  mechanism as the unconstrained shape. Greedy commits a pod to a
-  zone-and-NodeClaim pair as soon as the pod fits, and never
-  reconsiders whether a different zone-assignment of pods would
-  let both zones run on cheaper instance types.
+  sizing is asymmetric in 26 of 37 cases and symmetric in 11. The
+  shape is not that production always picks the same instance for
+  both zones. The shape is that each zone gets the cheapest
+  single instance for the pods that landed there, but the way pods
+  landed across zones is not the way that would let both zones run
+  on cheaper instances together. Same cause as the unconstrained
+  shape. Greedy commits a pod to a zone-and-NodeClaim pair as soon
+  as the pod fits, and never reconsiders whether a different
+  zone-assignment of pods would yield a cheaper plan.
 
 ## How to use the framework
 
@@ -501,7 +504,7 @@ analyzer reads it.
 `scenarios.GenerateAdversarial` produces scenarios with per-node
 instance type variation, so different candidates have different
 prices, alongside engineered blocker placement designed to split
-the two production sort orderings. Run it via the second corpus.
+the two production sort orderings.
 
 ```
 KUBEBUILDER_ASSETS=... go test -tags=corpus -count=1 -timeout=20m \
@@ -654,10 +657,10 @@ find the four bug shapes documented above. It is not enough to
 find shapes that depend on Replace dynamics, multi-pool budgets,
 priority variation, PDB-Eventual interaction, or scale.
 
-There are roughly six independent axes of consolidation behavior
-(search shape, sort key, score gate, Replace dynamics, pool
-topology, candidate filtering). The corpus exercises three of
-them non-trivially (search shape, sort key, score gate marginal
+Six independent axes of consolidation behavior matter (search
+shape, sort key, score gate, Replace dynamics, pool topology,
+candidate filtering). The corpus exercises three of them
+non-trivially (search shape, sort key, score gate marginal
 regime). Coverage is meaningful within those three axes. A fourth
 or fifth axis would need new generator work.
 
