@@ -161,16 +161,17 @@ Each consolidation move is scored on four axes.
   next cycle. Slack spread thinly across many nodes leaves no
   single node empty enough to remove.
 
-Why four axes and not just savings? A single-axis score hides
-tradeoffs the operator might care about. A move that saves more by
-disrupting more nodes is not always preferred over a smaller move
-that disrupts less. A move that saves the same dollar amount but
-leaves slack distributed across many nodes is worse than one that
-concentrates the slack on a single survivor. Four axes lets us
-compare moves with Pareto reasoning. A move dominates another only
-when it is at least as good on every metric and strictly better on
-at least one. The result is a tradeoff comparison instead of a
-single ranking that hides where the tradeoffs are.
+Each axis matters because operators weigh them differently. Dollar
+savings tells you the move's direct cost reduction. Disruption
+count tells you how many running nodes are torn down to get those
+savings. Slack entropy tells you whether the surviving cluster
+can be consolidated again on the next cycle. Compute time tells
+you whether the algorithm fit inside the disruption controller's
+cycle budget.
+
+The four axes together support Pareto comparisons. A move
+dominates another when it is at least as good on every axis and
+strictly better on at least one.
 
 ## The brute-force oracle
 
@@ -191,11 +192,11 @@ milliseconds for the production binary search. That is fine. The
 oracle's job is to be correct, not fast.
 
 When the production algorithm and the oracle disagree, the
-disagreement tells us more than just "the production algorithm is
-wrong on this input." We can see which subset the production
-algorithm chose, which subset the oracle chose, and how they differ
-on each metric. That detail is what lets us name and characterize
-bug shapes instead of patching one input at a time.
+disagreement carries the detail we need to name a bug shape. We
+can see which subset the production algorithm chose, which subset
+the oracle chose, and how they differ on each metric. That detail
+lets us characterize disagreements at the class level. A single
+fix can address every input that exhibits the shape.
 
 ## What the oracle has surfaced
 
@@ -257,17 +258,19 @@ algorithm has surfaced four bug shapes.
   high-price non-removable candidate alongside cheap removable
   candidates. The algorithm picks predominantly the cheap
   candidates, and 33 of 50 marginal seeds produce plans the gate
-  rejects at k=2. This is the gate working as designed, declining
-  marginal consolidations rather than catching a search bug, but it
-  is the regime to probe when reasoning about Balanced policy
-  behavior.
+  rejects at k=2. This is the gate doing what it was designed to
+  do, declining marginal consolidations. The corpus result
+  confirms the gate's design intent and is the regime worth
+  probing when reasoning about Balanced policy behavior.
 
 The first three shapes share a pattern. Prefix-based binary search
-is correct as far as it goes, but it is not always maximal. The
-search structure must be able to reach non-prefix subsets if it is
-to recover maximality. The fourth shape sits in a different
-direction. It is not about whether the search is complete, but
-about whether the resulting plan is worth applying.
+is correct, since every subset it returns is feasible. It
+sometimes misses the largest feasible subset because the largest
+is reachable only by walking a non-prefix path. The search
+structure has to reach non-prefix subsets to recover maximality.
+The fourth shape is about a different question entirely, whether
+the resulting plan is worth applying once the search has found
+it.
 
 An earlier draft of this guide claimed the Balanced score gate was
 approximately a no-op on the corpus. That was a mistake of
