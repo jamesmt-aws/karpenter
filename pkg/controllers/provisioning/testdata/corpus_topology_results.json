@@ -1,0 +1,7203 @@
+[
+  {
+    "seed": 0,
+    "description": "seed=0 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.34,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge",
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ],
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "compute_time_ms": 6.437
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.xlarge@us-east-1a",
+        "c7i.xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 1,
+    "description": "seed=1 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 1.02,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.4xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          },
+          {
+            "name": "m7i.8xlarge",
+            "price": 1.6128
+          },
+          {
+            "name": "r7i.4xlarge",
+            "price": 1.0584
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.221
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.8500000000000001,
+      "instance_types": [
+        "c7i.4xlarge@us-east-1a",
+        "c7i.xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.2
+  },
+  {
+    "seed": 2,
+    "description": "seed=2 pending_pods=5 instance_types=15 topology=zone",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.34,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge",
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ],
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "compute_time_ms": 13.154
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.xlarge@us-east-1a",
+        "c7i.xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 3,
+    "description": "seed=3 pending_pods=5 instance_types=15 topology=zone",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 16.303
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 4,
+    "description": "seed=4 pending_pods=5 instance_types=15 topology=zone",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 17.894
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.42500000000000004,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.2
+  },
+  {
+    "seed": 5,
+    "description": "seed=5 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.255,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.large",
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.large",
+            "price": 0.085
+          },
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          }
+        ],
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "compute_time_ms": 6.082
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.255,
+      "instance_types": [
+        "c7i.xlarge@us-east-1a",
+        "c7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 6,
+    "description": "seed=6 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.068
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 7,
+    "description": "seed=7 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "compute_time_ms": 7.02
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 8,
+    "description": "seed=8 pending_pods=5 instance_types=15 topology=zone",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.34,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge",
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ],
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "compute_time_ms": 6.071
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.255,
+      "instance_types": [
+        "c7i.xlarge@us-east-1a",
+        "c7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.3333333333333335
+  },
+  {
+    "seed": 9,
+    "description": "seed=9 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.34,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge",
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ],
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "compute_time_ms": 12.087
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.xlarge@us-east-1a",
+        "c7i.xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 10,
+    "description": "seed=10 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.621
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 11,
+    "description": "seed=11 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.144
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 12,
+    "description": "seed=12 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 8.137
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 13,
+    "description": "seed=13 pending_pods=5 instance_types=15 topology=zone",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 2,
+      "total_cost": 1.02,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.4xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          },
+          {
+            "name": "m7i.8xlarge",
+            "price": 1.6128
+          },
+          {
+            "name": "r7i.4xlarge",
+            "price": 1.0584
+          }
+        ]
+      ],
+      "compute_time_ms": 6.136
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.7808,
+      "instance_types": [
+        "c7i.4xlarge@us-east-1a",
+        "m7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.3063524590163933
+  },
+  {
+    "seed": 14,
+    "description": "seed=14 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.2331,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "r7i.large",
+        "m7i.large"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          }
+        ],
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.large",
+            "price": 0.1008
+          }
+        ]
+      ],
+      "compute_time_ms": 6.309
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.2173,
+      "instance_types": [
+        "r7i.large@us-east-1a",
+        "c7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.072710538426139
+  },
+  {
+    "seed": 15,
+    "description": "seed=15 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.27080000000000004,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "m7i.large",
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.large",
+            "price": 0.1008
+          }
+        ],
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "compute_time_ms": 23.759
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.27080000000000004,
+      "instance_types": [
+        "c7i.xlarge@us-east-1a",
+        "m7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 16,
+    "description": "seed=16 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 1.02,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.4xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          },
+          {
+            "name": "m7i.8xlarge",
+            "price": 1.6128
+          },
+          {
+            "name": "r7i.4xlarge",
+            "price": 1.0584
+          }
+        ]
+      ],
+      "compute_time_ms": 6.071
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 1.02,
+      "instance_types": [
+        "c7i.4xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 17,
+    "description": "seed=17 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.42500000000000004,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.large",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.large",
+            "price": 0.085
+          },
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 5.948
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.42500000000000004,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 18,
+    "description": "seed=18 pending_pods=5 instance_types=15 topology=zone",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.37160000000000004,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "m7i.xlarge",
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          }
+        ],
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "compute_time_ms": 7.072
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.27080000000000004,
+      "instance_types": [
+        "c7i.xlarge@us-east-1a",
+        "m7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.3722304283604136
+  },
+  {
+    "seed": 19,
+    "description": "seed=19 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "compute_time_ms": 6.389
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 20,
+    "description": "seed=20 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.304
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.3333333333333335
+  },
+  {
+    "seed": 21,
+    "description": "seed=21 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.214
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.3333333333333335
+  },
+  {
+    "seed": 22,
+    "description": "seed=22 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 25.066
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 23,
+    "description": "seed=23 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 1.02,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.4xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          },
+          {
+            "name": "m7i.8xlarge",
+            "price": 1.6128
+          },
+          {
+            "name": "r7i.4xlarge",
+            "price": 1.0584
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.779
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.8500000000000001,
+      "instance_types": [
+        "c7i.4xlarge@us-east-1a",
+        "c7i.xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.2
+  },
+  {
+    "seed": 24,
+    "description": "seed=24 pending_pods=5 instance_types=15 topology=zone",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.188
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.42500000000000004,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.2
+  },
+  {
+    "seed": 25,
+    "description": "seed=25 pending_pods=5 instance_types=15 topology=zone",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 7.584
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 26,
+    "description": "seed=26 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 1.36,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.4xlarge",
+        "c7i.4xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          },
+          {
+            "name": "m7i.8xlarge",
+            "price": 1.6128
+          },
+          {
+            "name": "r7i.4xlarge",
+            "price": 1.0584
+          }
+        ],
+        [
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          },
+          {
+            "name": "m7i.8xlarge",
+            "price": 1.6128
+          },
+          {
+            "name": "r7i.4xlarge",
+            "price": 1.0584
+          }
+        ]
+      ],
+      "compute_time_ms": 9.319
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 1.02,
+      "instance_types": [
+        "c7i.4xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.3333333333333335
+  },
+  {
+    "seed": 27,
+    "description": "seed=27 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 1.02,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.4xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          },
+          {
+            "name": "m7i.8xlarge",
+            "price": 1.6128
+          },
+          {
+            "name": "r7i.4xlarge",
+            "price": 1.0584
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 10.342
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.8500000000000001,
+      "instance_types": [
+        "c7i.4xlarge@us-east-1a",
+        "c7i.xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.2
+  },
+  {
+    "seed": 28,
+    "description": "seed=28 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 7.064
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 29,
+    "description": "seed=29 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.255,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.large",
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.large",
+            "price": 0.085
+          },
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          }
+        ],
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "compute_time_ms": 6.133
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.255,
+      "instance_types": [
+        "c7i.xlarge@us-east-1a",
+        "c7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 30,
+    "description": "seed=30 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.5416000000000001,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "m7i.xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 34.309
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.4408,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "m7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.2286751361161525
+  },
+  {
+    "seed": 31,
+    "description": "seed=31 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "compute_time_ms": 18.161
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 32,
+    "description": "seed=32 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 7.434
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 33,
+    "description": "seed=33 pending_pods=5 instance_types=15 topology=zone",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 7.266
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.3333333333333335
+  },
+  {
+    "seed": 34,
+    "description": "seed=34 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 22.233
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.4408,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "m7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.1569872958257712
+  },
+  {
+    "seed": 35,
+    "description": "seed=35 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.255,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.large",
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.large",
+            "price": 0.085
+          },
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          }
+        ],
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "compute_time_ms": 20.484
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.255,
+      "instance_types": [
+        "c7i.xlarge@us-east-1a",
+        "c7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 36,
+    "description": "seed=36 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.321
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 37,
+    "description": "seed=37 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 1.02,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.4xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          },
+          {
+            "name": "m7i.8xlarge",
+            "price": 1.6128
+          },
+          {
+            "name": "r7i.4xlarge",
+            "price": 1.0584
+          }
+        ]
+      ],
+      "compute_time_ms": 6.281
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 1.02,
+      "instance_types": [
+        "c7i.4xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 38,
+    "description": "seed=38 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.076
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.5416000000000001,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "m7i.xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.2555391432791727
+  },
+  {
+    "seed": 39,
+    "description": "seed=39 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "compute_time_ms": 6.213
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 40,
+    "description": "seed=40 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 1.02,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.4xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          },
+          {
+            "name": "m7i.8xlarge",
+            "price": 1.6128
+          },
+          {
+            "name": "r7i.4xlarge",
+            "price": 1.0584
+          }
+        ]
+      ],
+      "compute_time_ms": 23.662
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 1.02,
+      "instance_types": [
+        "c7i.4xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 41,
+    "description": "seed=41 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.4408,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "m7i.large",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.large",
+            "price": 0.1008
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 17.36
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.4408,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "m7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 42,
+    "description": "seed=42 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 1.02,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.4xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          },
+          {
+            "name": "m7i.8xlarge",
+            "price": 1.6128
+          },
+          {
+            "name": "r7i.4xlarge",
+            "price": 1.0584
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.245
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.8500000000000001,
+      "instance_types": [
+        "c7i.4xlarge@us-east-1a",
+        "c7i.xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.2
+  },
+  {
+    "seed": 43,
+    "description": "seed=43 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 27.169
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.42500000000000004,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.2
+  },
+  {
+    "seed": 44,
+    "description": "seed=44 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.34,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge",
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ],
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "compute_time_ms": 7.363
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.27080000000000004,
+      "instance_types": [
+        "c7i.xlarge@us-east-1a",
+        "m7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.2555391432791727
+  },
+  {
+    "seed": 45,
+    "description": "seed=45 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.255,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.large",
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.large",
+            "price": 0.085
+          },
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          }
+        ],
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "compute_time_ms": 22.58
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.255,
+      "instance_types": [
+        "c7i.xlarge@us-east-1a",
+        "c7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 46,
+    "description": "seed=46 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.081
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 47,
+    "description": "seed=47 pending_pods=5 instance_types=15 topology=zone",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 2,
+      "total_cost": 1.02,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.4xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          },
+          {
+            "name": "m7i.8xlarge",
+            "price": 1.6128
+          },
+          {
+            "name": "r7i.4xlarge",
+            "price": 1.0584
+          }
+        ]
+      ],
+      "compute_time_ms": 6.26
+    },
+    "oracle": {
+      "node_count": 3,
+      "total_cost": 0.85,
+      "instance_types": [
+        "c7i.4xlarge@us-east-1a",
+        "c7i.large@us-east-1b",
+        "c7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.2
+  },
+  {
+    "seed": 48,
+    "description": "seed=48 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.27080000000000004,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "m7i.large",
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.large",
+            "price": 0.1008
+          }
+        ],
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "compute_time_ms": 20.523
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.27080000000000004,
+      "instance_types": [
+        "c7i.xlarge@us-east-1a",
+        "m7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 49,
+    "description": "seed=49 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.27080000000000004,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "m7i.large",
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.large",
+            "price": 0.1008
+          }
+        ],
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "compute_time_ms": 23.543
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.27080000000000004,
+      "instance_types": [
+        "c7i.xlarge@us-east-1a",
+        "m7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 50,
+    "description": "seed=50 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 31.469
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.4408,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "m7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.1569872958257712
+  },
+  {
+    "seed": 51,
+    "description": "seed=51 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 25.712
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 52,
+    "description": "seed=52 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.015
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.4408,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "m7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.1569872958257712
+  },
+  {
+    "seed": 53,
+    "description": "seed=53 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.023
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.4408,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "m7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.1569872958257712
+  },
+  {
+    "seed": 54,
+    "description": "seed=54 pending_pods=5 instance_types=15 topology=zone",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 5.977
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 55,
+    "description": "seed=55 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.4408,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "m7i.large",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.large",
+            "price": 0.1008
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 18.224
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.42500000000000004,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.0371764705882351
+  },
+  {
+    "seed": 56,
+    "description": "seed=56 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.255,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.large",
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.large",
+            "price": 0.085
+          },
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          }
+        ],
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "compute_time_ms": 14.733
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.255,
+      "instance_types": [
+        "c7i.xlarge@us-east-1a",
+        "c7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 57,
+    "description": "seed=57 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.189
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 58,
+    "description": "seed=58 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.55
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 59,
+    "description": "seed=59 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.34,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge",
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ],
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "compute_time_ms": 6.516
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.xlarge@us-east-1a",
+        "c7i.xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 60,
+    "description": "seed=60 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.028
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.42500000000000004,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.2
+  },
+  {
+    "seed": 61,
+    "description": "seed=61 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.263
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 62,
+    "description": "seed=62 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.42500000000000004,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.large",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.large",
+            "price": 0.085
+          },
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.899
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.42500000000000004,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 63,
+    "description": "seed=63 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.34,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge",
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ],
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "compute_time_ms": 8.996
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.xlarge@us-east-1a",
+        "c7i.xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 64,
+    "description": "seed=64 pending_pods=5 instance_types=15 topology=zone",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.282
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.4408,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "m7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.1569872958257712
+  },
+  {
+    "seed": 65,
+    "description": "seed=65 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.5416000000000001,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "m7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          }
+        ]
+      ],
+      "compute_time_ms": 6.92
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.0619607843137255
+  },
+  {
+    "seed": 66,
+    "description": "seed=66 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.203
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 67,
+    "description": "seed=67 pending_pods=5 instance_types=15 topology=zone",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.086
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 68,
+    "description": "seed=68 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 21.678
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 69,
+    "description": "seed=69 pending_pods=5 instance_types=15 topology=zone",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 15.06
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 70,
+    "description": "seed=70 pending_pods=5 instance_types=15 topology=zone",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.37160000000000004,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge",
+        "m7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          }
+        ]
+      ],
+      "compute_time_ms": 6.211
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.27080000000000004,
+      "instance_types": [
+        "c7i.xlarge@us-east-1a",
+        "m7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.3722304283604136
+  },
+  {
+    "seed": 71,
+    "description": "seed=71 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.5416000000000001,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "m7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          }
+        ]
+      ],
+      "compute_time_ms": 6.289
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.47230000000000005,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "r7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.1467287740842684
+  },
+  {
+    "seed": 72,
+    "description": "seed=72 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.345
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 73,
+    "description": "seed=73 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.17,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.large",
+        "c7i.large"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.large",
+            "price": 0.085
+          },
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          }
+        ],
+        [
+          {
+            "name": "c7i.large",
+            "price": 0.085
+          },
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          }
+        ]
+      ],
+      "compute_time_ms": 21.483
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.17,
+      "instance_types": [
+        "c7i.large@us-east-1a",
+        "c7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 74,
+    "description": "seed=74 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.19
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.3333333333333335
+  },
+  {
+    "seed": 75,
+    "description": "seed=75 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 20.707
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 76,
+    "description": "seed=76 pending_pods=5 instance_types=15 topology=zone",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 9.335
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.42500000000000004,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.2
+  },
+  {
+    "seed": 77,
+    "description": "seed=77 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.156
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 78,
+    "description": "seed=78 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 27.467
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 79,
+    "description": "seed=79 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.5416000000000001,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "m7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          }
+        ]
+      ],
+      "compute_time_ms": 6.865
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.0619607843137255
+  },
+  {
+    "seed": 80,
+    "description": "seed=80 pending_pods=5 instance_types=15 topology=zone",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.5416000000000001,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "m7i.xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 10.817
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.4408,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "m7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.2286751361161525
+  },
+  {
+    "seed": 81,
+    "description": "seed=81 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 1.36,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.4xlarge",
+        "c7i.4xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          },
+          {
+            "name": "m7i.8xlarge",
+            "price": 1.6128
+          },
+          {
+            "name": "r7i.4xlarge",
+            "price": 1.0584
+          }
+        ],
+        [
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          },
+          {
+            "name": "m7i.8xlarge",
+            "price": 1.6128
+          },
+          {
+            "name": "r7i.4xlarge",
+            "price": 1.0584
+          }
+        ]
+      ],
+      "compute_time_ms": 6.417
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 1.02,
+      "instance_types": [
+        "c7i.4xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.3333333333333335
+  },
+  {
+    "seed": 82,
+    "description": "seed=82 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.527
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 83,
+    "description": "seed=83 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.18580000000000002,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.large",
+        "m7i.large"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.large",
+            "price": 0.085
+          },
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          }
+        ],
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.large",
+            "price": 0.1008
+          }
+        ]
+      ],
+      "compute_time_ms": 13.044
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.18580000000000002,
+      "instance_types": [
+        "m7i.large@us-east-1a",
+        "c7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 84,
+    "description": "seed=84 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.571
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 85,
+    "description": "seed=85 pending_pods=5 instance_types=15 topology=zone",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.27080000000000004,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "m7i.large",
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.large",
+            "price": 0.1008
+          }
+        ],
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "compute_time_ms": 14.43
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.27080000000000004,
+      "instance_types": [
+        "c7i.xlarge@us-east-1a",
+        "m7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 86,
+    "description": "seed=86 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 8.952
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 87,
+    "description": "seed=87 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.074
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 88,
+    "description": "seed=88 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.34,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge",
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ],
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "compute_time_ms": 6.393
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.xlarge@us-east-1a",
+        "c7i.xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 89,
+    "description": "seed=89 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.427
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.3333333333333335
+  },
+  {
+    "seed": 90,
+    "description": "seed=90 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.4032,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "m7i.xlarge",
+        "m7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          }
+        ]
+      ],
+      "compute_time_ms": 6.17
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.37160000000000004,
+      "instance_types": [
+        "m7i.xlarge@us-east-1a",
+        "c7i.xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.0850376749192678
+  },
+  {
+    "seed": 91,
+    "description": "seed=91 pending_pods=5 instance_types=15 topology=zone",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 17.791
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 92,
+    "description": "seed=92 pending_pods=5 instance_types=15 topology=zone",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.34,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge",
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ],
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "compute_time_ms": 14.721
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.xlarge@us-east-1a",
+        "c7i.xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 93,
+    "description": "seed=93 pending_pods=5 instance_types=15 topology=zone",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.241
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 94,
+    "description": "seed=94 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 31.844
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 95,
+    "description": "seed=95 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 28.901
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.4408,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "m7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1.1569872958257712
+  },
+  {
+    "seed": 96,
+    "description": "seed=96 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 31.835
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 97,
+    "description": "seed=97 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.17,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.large",
+        "c7i.large"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.large",
+            "price": 0.085
+          },
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          }
+        ],
+        [
+          {
+            "name": "c7i.large",
+            "price": 0.085
+          },
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          }
+        ]
+      ],
+      "compute_time_ms": 31.426
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.17,
+      "instance_types": [
+        "c7i.large@us-east-1a",
+        "c7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 98,
+    "description": "seed=98 pending_pods=4 instance_types=15 topology=zone",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.255,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.large",
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.large",
+            "price": 0.085
+          },
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          }
+        ],
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "compute_time_ms": 30.863
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.255,
+      "instance_types": [
+        "c7i.xlarge@us-east-1a",
+        "c7i.large@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 99,
+    "description": "seed=99 pending_pods=6 instance_types=15 topology=zone",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ],
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "compute_time_ms": 6.123
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.2xlarge@us-east-1a",
+        "c7i.2xlarge@us-east-1b"
+      ],
+      "feasible": true
+    },
+    "cost_ratio": 1
+  }
+]

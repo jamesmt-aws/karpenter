@@ -54,9 +54,11 @@ import (
 )
 
 const (
-	provCorpusSize       = 100
-	provCorpusOutputDir  = "testdata"
-	provCorpusOutputFile = "corpus_results.json"
+	provCorpusSize           = 100
+	provCorpusOutputDir      = "testdata"
+	provCorpusOutputFile     = "corpus_results.json"
+	provTopologyCorpusSize   = 100
+	provTopologyOutputFile   = "corpus_topology_results.json"
 )
 
 type provCorpusEntry struct {
@@ -117,6 +119,72 @@ var _ = Describe("Provisioning Corpus", Ordered, Label("corpus"), func() {
 		_, _ = fmt.Fprintf(GinkgoWriter, "wrote %d corpus entries to %s\n", len(corpus), path)
 	})
 })
+
+var _ = Describe("Provisioning Topology Corpus", Ordered, Label("corpus"), func() {
+	var corpus []provCorpusEntry
+
+	for i := 0; i < provTopologyCorpusSize; i++ {
+		seed := int64(i)
+		It(fmt.Sprintf("seed=%d", seed), func() {
+			corpus = append(corpus, runProvisioningTopologyScenario(seed))
+		})
+	}
+
+	AfterAll(func() {
+		Expect(os.MkdirAll(provCorpusOutputDir, 0o755)).To(Succeed())
+		out, err := json.MarshalIndent(corpus, "", "  ")
+		Expect(err).To(Succeed())
+		path := filepath.Join(provCorpusOutputDir, provTopologyOutputFile)
+		Expect(os.WriteFile(path, out, 0o644)).To(Succeed())
+		_, _ = fmt.Fprintf(GinkgoWriter, "wrote %d corpus entries to %s\n", len(corpus), path)
+	})
+})
+
+func runProvisioningTopologyScenario(seed int64) provCorpusEntry {
+	useAWSInstanceTypes()
+	instances := pickAWSInstances()
+	s := scenarios.GenerateProvisioningTopology(scenarios.GenerateProvisioningTopologyParams{
+		Seed:      seed,
+		Instances: instances,
+	})
+	built := s.Build()
+
+	ExpectApplied(ctx, env.Client, built.ReplicaSet)
+	built.LinkOwners()
+	ExpectApplied(ctx, env.Client, built.RemainingObjects()...)
+
+	prodRun := runProductionScheduler(built.PendingPods)
+	oracleRun := runOraclePlacementWithTopology(built.PendingPods, cloudProvider.InstanceTypes)
+
+	entry := provCorpusEntry{
+		Seed:            seed,
+		Description:     s.Description,
+		PendingPodCount: len(built.PendingPods),
+		Production:      prodRun,
+		Oracle:          oracleRun,
+	}
+	if oracleRun.Feasible && oracleRun.TotalCost > 0 {
+		entry.CostRatio = prodRun.TotalCost / oracleRun.TotalCost
+	}
+	return entry
+}
+
+func runOraclePlacementWithTopology(pendingPods []*corev1.Pod, types []*cloudprovider.InstanceType) provOracleRun {
+	plan := bruteForcePlacementWithTopology(pendingPods, types)
+	if plan == nil {
+		return provOracleRun{Feasible: false}
+	}
+	names := make([]string, 0, len(plan.InstanceTypes))
+	for i, it := range plan.InstanceTypes {
+		names = append(names, fmt.Sprintf("%s@%s", it.Name, plan.Zones[i]))
+	}
+	return provOracleRun{
+		NodeCount:     len(plan.Groups),
+		TotalCost:     plan.TotalPrice,
+		InstanceTypes: names,
+		Feasible:      true,
+	}
+}
 
 func runProvisioningScenario(seed int64) provCorpusEntry {
 	useAWSInstanceTypes()
