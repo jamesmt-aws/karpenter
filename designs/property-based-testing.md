@@ -2,13 +2,12 @@
 
 ## Why this exists
 
-Consolidation and provisioning are two related optimization
-problems on a cluster. The space of possible plans is big. Only
-part of it is feasible, and within the feasible part some plans
-are cheaper than others by properties the operator cares about
-(cost, disruption count, slack). Provisioning and consolidation
-are related but distinct problems. Consolidation looks for the
-cheapest set of nodes it can remove while meeting customer
+Consolidation and provisioning are related but distinct
+optimization problems on a cluster. The space of possible plans is
+big. Only part of it is feasible, and within the feasible part
+some plans are cheaper than others by properties the operator
+cares about (cost, disruption count, slack). Consolidation looks
+for the cheapest set of nodes it can remove while meeting customer
 requirements. Provisioning looks for the cheapest set of new nodes
 that will carry the pending pods while meeting customer
 requirements.
@@ -44,109 +43,65 @@ scope.
 
 ## Feasibility and cost
 
-Both algorithms work on the same problem shape. There is a set of
-pods and a set of (potential) nodes, and the algorithm is choosing
-how to assign pods to nodes. Some assignments are feasible, meaning
-every constraint Kubernetes cares about is satisfied. Among the
-feasible assignments, some cost less than others. The framework's
-grammar exists so a scenario can express both kinds of information.
+Both algorithms search over assignments of pods to nodes. Some
+assignments are feasible (every Kubernetes constraint satisfied).
+Among feasible ones, some cost less than others. The grammar at
+`pkg/test/scenarios/` lets a scenario express both.
 
-Kubernetes has five kinds of constraints that decide which (pod,
-node) assignments are feasible.
+Feasibility is decided by the usual primitives: NodeSelector and
+NodeAffinity, Taints and Tolerations, PodAffinity and
+PodAntiAffinity, TopologySpread, and resource requests against
+allocatable. The grammar surfaces these through a `Constraint`
+interface (NodeAffinity, AntiAffinitySelf, Toleration,
+TopologySpread), pod-level fields (NodeSelector, CPU, Memory), and
+NodePool fields (Requirements, Taints).
 
-- **NodeSelector** and **NodeAffinity** (when set to required) say
-  a pod can only land on nodes whose labels satisfy a predicate.
-  Each clause shrinks the set of nodes the pod can land on.
-- **Taints** and **Tolerations** work the other direction. A node's
-  taint excludes pods that don't tolerate it, but a pod that
-  tolerates the taint can land there. Together they let a scenario
-  say "this node is reserved for pods that opt in."
-- **PodAffinity** and **PodAntiAffinity** (when set to required)
-  tie pods to each other. The constraint is about how pods relate
-  to each other, not where one pod can land on its own. For
-  example, "if pod A lands at zone X, then pod B must also land
-  at zone X," or "must not land at zone X."
-- **TopologySpread** (with WhenUnsatisfiable=DoNotSchedule) limits
-  how unevenly the matching pods can be spread across topology
-  domains. The constraint says no domain may have more than MaxSkew
-  more matching pods than another.
-- **Resource requests against allocatable.** The sum of CPU
-  requests of pods on a node cannot exceed the node's allocatable
-  CPU, and the same for memory.
+Cost is decided by instance pricing and per-pod EvictionCost
+(priority plus PodDeletionCost annotation). The harness tracks
+four cost-shaped metrics (savings, disruption count, slack entropy,
+compute time) that sometimes disagree on which move is cheaper,
+so we use Pareto comparisons. A move dominates another when it is
+at least as good on every metric and strictly better on at least
+one. In code, cost lives in `InstanceMeta` (per-scenario or
+per-Node), `Pod.DeletionCost`, and the metrics module.
 
-An assignment is feasible when every one of these constraints is
-satisfied. The grammar's job on the feasibility side is to make
-every one of these constraint types expressible. In code, that is
-the `Constraint` interface (NodeAffinity, AntiAffinitySelf,
-Toleration, TopologySpread), pod-level fields (NodeSelector, CPU,
-Memory), and NodePool fields (Requirements, Taints).
+The split clarifies what each generator does. The default
+consolidation generator varies feasibility (NodeSelector-blocked
+candidates) at fixed pricing. The adversarial generator varies
+pricing (per-Node InstanceMeta overrides) so the savings-ratio
+sort and the price-based score gate become non-trivial. The
+marginal generator engineers a specific feasibility-and-pricing
+interaction where a high-price candidate cannot be removed but its
+price still drives the score gate's denominator. For provisioning,
+generators can vary pending-pod constraints (feasibility) without
+varying NodePool instance type lists (cost), or vice versa.
 
-Cost is separate from feasibility. Among feasible assignments, the
-cheaper ones are preferred. Instance price ranks individual node
-choices. Sum of node prices ranks whole-cluster assignments. Per-pod
-EvictionCost (priority plus PodDeletionCost annotation) ranks how
-expensive each pod is to disrupt during consolidation. The four
-metrics the harness tracks (savings, disruption count, slack
-entropy, compute time) don't always agree on which move is cheaper,
-so we use Pareto comparisons. A move dominates another only when it
-is at least as good on every metric and strictly better on at least
-one. The grammar's job on the cost side is to make instance
-pricing, deletion costs, and per-axis metrics expressible. In code,
-that is `InstanceMeta` (per-scenario or per-Node),
-`Pod.DeletionCost`, and the metrics module.
-
-This split clarifies what each generator does. The default
-consolidation generator varies feasibility by injecting
-NodeSelector-blocked candidates while keeping pricing fixed at one
-InstanceMeta per scenario. The adversarial generator varies pricing
-by giving different candidates different InstanceMeta overrides, so
-the savings-ratio sort and the price-based score gate become
-non-trivial. The marginal generator engineers a specific
-feasibility-and-pricing interaction where a high-price candidate
-cannot be removed but its price still drives the score gate's
-denominator. For provisioning the same split applies. The generator
-can vary pending-pod constraints (feasibility) without varying
-NodePool instance type lists (cost), or vice versa.
-
-When adding a generator, a useful sanity check is whether the
-scenarios it produces vary along feasibility, cost, or both. If
-every scenario it produces shares a price and shares a constraint
-shape, then neither feasibility nor cost is being exercised, and
-the oracle will rarely disagree with the algorithm.
+A useful sanity check when adding a generator: if every scenario
+shares a price and a constraint shape, neither feasibility nor
+cost is exercised, and the oracle will rarely disagree with the
+algorithm.
 
 ## What we have
 
-The framework has five pieces.
-
-The grammar in `pkg/test/scenarios/` describes cluster snapshots.
-A snapshot has a static side (NodePools with requirements and
-taints, existing Nodes with bound Pods, PDBs) and an optional
-pending workload (PendingPods waiting to schedule, DaemonSets that
-contribute per-node overhead). Consolidation scenarios populate
-the static side and leave PendingPods and DaemonSets empty.
-Provisioning scenarios populate PendingPods and NodePool templates,
-and may leave Nodes empty (greenfield) or include a small fleet to
-exercise existing-node placement.
-
-The seeded generator turns a seed and a few parameters into a
-snapshot that is ready to apply against envtest.
-
-The metrics harness scores any consolidation move along four axes
-(savings, disruption count, compute time, slack entropy).
-
-There is one oracle per algorithm. The consolidation oracle
+A snapshot scenario grammar at `pkg/test/scenarios/`. A seeded
+generator that turns parameters into envtest-ready clusters. A
+four-axis metrics harness that scores any consolidation move. Two
+brute-force oracles, one per algorithm (the consolidation oracle
 enumerates the powerset of candidate subsets and returns the
-feasible subset with the largest savings. The provisioning oracle
+feasible subset with the largest savings, the provisioning oracle
 enumerates placement assignments at small N and returns the
-cheapest feasible plan.
+cheapest feasible plan). A build-tagged corpus runner that pulls
+these together and reports per-seed and aggregate results.
 
-The corpus runner ties the other four pieces together. It lives
-behind a build tag and writes per-seed and aggregate JSON results.
+The grammar models a cluster snapshot (NodePools with requirements
+and taints, existing Nodes with bound Pods, PDBs) plus an optional
+pending workload (PendingPods waiting to schedule, DaemonSets that
+contribute per-node overhead). Consolidation scenarios populate the
+snapshot side. Provisioning scenarios populate PendingPods and
+NodePool templates, and may leave Nodes empty (greenfield) or
+include a small fleet to exercise existing-node placement.
 
-The five pieces are independent and replaceable. Replacing the
-generator does not require touching the grammar or the oracle.
-Adding a new oracle for a new algorithm does not require changing
-the grammar.
+The pieces are independent and replaceable.
 
 ## The four axes
 
@@ -161,17 +116,10 @@ Each consolidation move is scored on four axes.
   next cycle. Slack spread thinly across many nodes leaves no
   single node empty enough to remove.
 
-Each axis matters because operators weigh them differently. Dollar
-savings tells you the move's direct cost reduction. Disruption
-count tells you how many running nodes are torn down to get those
-savings. Slack entropy tells you whether the surviving cluster
-can be consolidated again on the next cycle. Compute time tells
-you whether the algorithm fit inside the disruption controller's
-cycle budget.
-
-The four axes together support Pareto comparisons. A move
-dominates another when it is at least as good on every axis and
-strictly better on at least one.
+Operators weigh these differently, so the four axes together
+support Pareto comparisons. A move dominates another when it is
+at least as good on every axis and strictly better on at least
+one.
 
 ## The brute-force oracle
 
@@ -229,27 +177,27 @@ algorithm has surfaced four bug shapes.
   tail.
 
 - **Shape C**, where the binary search accepts a feasible prefix
-  but a different non-prefix subset would be better. The non-prefix
-  subset has different members from the prefix, often by skipping
-  one of the prefix candidates and including a candidate further
-  down the sort that the prefix could not reach. The original
-  demonstration used a hand-crafted scenario with a single absorber
-  slot, a remaining node with capacity that exactly fits one
-  candidate's pod and nothing more. The slot blocks every joint
-  removal that includes that candidate, and the better non-prefix
-  subset (which excludes that candidate) is also strictly larger
-  than the prefix. The AWS-realistic adversarial corpus surfaces a
-  same-size variant of the same shape. The algorithm returns a
-  feasible size-k prefix, while a non-prefix subset of the same size
-  k carries higher savings. The non-prefix subset has different
-  members and often skips the cheapest candidate at position 0 in
-  favor of a higher-priced one further down the sort. The pairwise
-  extension cannot eject candidates it has already accepted, so it
-  cannot reach either variant. A fix would need bounded brute-force
-  at small N or a swap-walk that ejects accepted candidates. With
-  the AWS-realistic corpus and the strict-feasibility oracle
-  described below, 15 of 50 adversarial seeds manifest the same-size
-  variant.
+  but a different non-prefix subset would be better. Two variants.
+
+  - *Strictly-larger variant.* A hand-crafted scenario with a
+    single absorber slot (a remaining node with capacity that
+    exactly fits one candidate's pod and nothing more) blocks
+    every joint removal that includes that candidate. A non-prefix
+    subset that excludes that candidate is feasible and strictly
+    larger than the prefix.
+
+  - *Same-size variant.* The AWS-realistic adversarial corpus
+    surfaces cases where a non-prefix subset of the same size k
+    carries higher savings. The non-prefix subset has different
+    members, often skipping the cheapest candidate at position 0
+    in favor of a higher-priced one further down the sort. With
+    the strict-feasibility oracle described below, 15 of 50
+    adversarial seeds manifest this variant.
+
+  The pairwise extension cannot eject candidates it has already
+  accepted, so it cannot reach either variant. A fix would need
+  bounded brute-force at small N or a swap-walk that ejects
+  accepted candidates.
 
 - **Marginal-cost regime under the Balanced score gate**, where the
   algorithm's chosen plan is feasible per the simulator but fails
@@ -272,30 +220,24 @@ The fourth shape is about a different question entirely, whether
 the resulting plan is worth applying once the search has found
 it.
 
-An earlier draft of this guide claimed the Balanced score gate was
-approximately a no-op on the corpus. That was a mistake of
-attribution. The gate did not fire because the corpus did not
-exercise it, since all candidates within a scenario shared a price
-and the score collapsed to K/N over K/N. The gate is not
-meaningless. The marginal corpus, plus a fix to
-`pickCorpusInstances` to dedupe by `(cpu, mem)` shape so the
-eight-instance pool spans real prices, corrected the picture.
+Two lessons from building the oracle:
 
-A second oracle correction landed alongside the AWS-realistic
-instance type substitution. The brute-force oracle's feasibility
-check originally accepted any non-NoOp Command, including
-`ReplaceDecision` results where `filterOutSameInstanceType` would
-have left an empty replacement option list. The production binary
-search rejects those, since no cheaper instance type is available,
-so the oracle was over-counting feasible subsets and
-reporting a Shape C disagreement on cases that were not real bug
-shapes. The fix mirrors the algorithm's `validDecision` check
-inside `bruteForceSearch`. Once tightened, the 15 adversarial seeds
-the lenient oracle had marked as larger-set Shape C disagreements
-re-classified as the same-size Shape C variant described above.
-The lesson here is that any oracle's feasibility predicate has to
-match the production algorithm's predicate exactly. Lenient oracles
-produce ghost shapes.
+- Input distributions that collapse a metric make that metric a
+  no-op. `pickCorpusInstances` deduplicates by `(cpu, mem)` shape
+  so the eight-instance pool spans real prices. Without price
+  variation the savings-ratio sort and the score gate are both
+  inert. An earlier draft of this guide misattributed the gate's
+  silence to the gate itself; the silence was a property of the
+  input distribution.
+
+- The oracle's feasibility predicate must match the production
+  algorithm's predicate exactly. `bruteForceSearch` mirrors the
+  algorithm's `validDecision` check, rejecting `ReplaceDecision`
+  results where `filterOutSameInstanceType` leaves an empty option
+  list. Before that fix, 15 adversarial seeds were classified as
+  larger-set Shape C disagreements; with the strict oracle they
+  re-classified as the same-size variant. Lenient oracles produce
+  ghost shapes.
 
 ### Provisioning side
 
@@ -650,7 +592,7 @@ Three properties that would be useful but are not yet checked.
   the practical ceiling. Production clusters with hundreds of
   candidates per cycle are out of reach.
 
-### Roughly speaking
+### Summary
 
 The corpus reaches the search-shape questions for delete-only
 multi-node consolidation at small N, single pool, uniform pods,
@@ -662,50 +604,22 @@ priority variation, PDB-Eventual interaction, or scale.
 
 Six independent axes of consolidation behavior matter (search
 shape, sort key, score gate, Replace dynamics, pool topology,
-candidate filtering). The corpus exercises three of them
-non-trivially (search shape, sort key, score gate marginal
-regime). Coverage is meaningful within those three axes. A fourth
-or fifth axis would need new generator work.
+candidate filtering). The corpus exercises three non-trivially. A
+fourth or fifth axis would need new generator work.
 
-## Other limitations
+The brute-force oracle is N-bounded. For more than 8 candidates,
+the powerset will not fit in a single test cycle. The oracle finds
+shapes at small N; it does not benchmark real-cluster behavior.
 
-The corpus generator is narrow. `Generate` produces one NodePool
-per scenario. `GenerateAdversarial` and `GenerateMarginal` use a
-few instance types each. The cap is 8 candidates per scenario,
-which is the brute-force oracle's practical limit. Pods are
-simple, with one pod per candidate and basic constraints. To find
-shapes that need richer state, the generator needs corresponding
-axes added.
+The compute-time axis is noisy (millisecond-level variance across
+runs on the same machine). Pareto comparisons that hinge on a
+small compute-time delta are not reliable.
 
-The candidate sample pool from the cloud provider matters. The
-default `pickCorpusInstances` deduplicates by `(cpu, mem)` shape
-to ensure price variation across the eight-instance pool. An
-earlier version deduplicated by full type name and ended up
-picking 8 same-price 1-CPU-1-mem variants. Without price variation
-the savings-ratio sort and the score gate are both effectively
-no-ops. That is a property of the input distribution, not the
-algorithm.
-
-The score formula `savings_fraction / disruption_fraction`
-collapses to roughly 1.0 when per-pod `EvictionCost` is uniform.
-It is uniform here because `EvictionCost(p)` defaults to 1.0 and
-`PodDeletionCost` annotations contribute a vanishingly small shift
-(they are divided by 2^27 inside the formula). To exercise the
-score gate, the generator needs pod priorities or
-`PodDeletionCost` annotations in the 10^7 to 10^9 magnitude range,
-high enough to move `EvictionCost` across its [-10, 10] clamp
-range.
-
-The brute-force oracle is N-bounded. For a scenario with more than
-8 candidates, the powerset would not fit in a single test cycle.
-Production clusters will have hundreds of candidates per cycle in
-the worst case. The oracle is a tool for finding shapes at small
-N, not for benchmarking real-cluster behavior.
-
-The compute-time axis is noisy. Same algorithm, same input, same
-machine, you still get variance of a few milliseconds. Pareto
-comparisons that hinge on a small compute-time delta are not
-reliable.
+To exercise the score gate via `PodDeletionCost`, the generator
+needs values in the 10^7 to 10^9 range that move `EvictionCost`
+across its [-10, 10] clamp. With uniform default `EvictionCost`,
+the score formula `savings_fraction / disruption_fraction`
+collapses to roughly 1.0.
 
 ## Where things live
 
@@ -739,38 +653,3 @@ reliable.
   distribution, disagreement rate by pod count, and shape
   breakdown.
 
-## A short manifesto
-
-Property-based testing for systems software depends on the quality
-of the oracle. Without an oracle, you have a generator that
-produces inputs you can feed to your code, but no way to tell
-whether the output is right. The tempting shortcut is to use the
-algorithm's own simulator as the oracle. That gives you "the code
-is consistent with itself" but not "the code is correct." A
-brute-force enumeration oracle, even at modest N, breaks that
-circularity. Where it disagrees with the production algorithm is
-where you start looking. Sometimes the production algorithm is
-wrong. Sometimes the oracle is too lenient and produces ghost
-shapes. Either way, disagreements are the signal worth
-investigating.
-
-The corpus generator does not need to be sophisticated. It needs
-to be varied enough that the oracle has a chance to disagree.
-What matters is variance. The generator should vary pod
-constraints, candidate counts, sort divergence, and cost structure. Each axis the generator
-varies gives the oracle one more way to disagree. Realism on its
-own does not. AWS-realistic prices proved valuable for the
-consolidation corpus, but that was because they introduced price
-variance across candidates within a scenario, not because they
-imitated any specific real cluster. The oracle's job is to find
-disagreements. The generator's job is to give the oracle inputs
-where disagreements can manifest.
-
-When you find a disagreement, the next step is not to write a unit
-test for that specific input. The next step is to characterize the
-*shape* of the disagreement, meaning the property of the input
-that made the algorithm disagree, then either widen the property
-check to cover the shape, or fix the algorithm so the shape is no
-longer a disagreement. Each fix should be sound across all inputs
-that manifest the shape, not just the one that triggered the
-investigation.
