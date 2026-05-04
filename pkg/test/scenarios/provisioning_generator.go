@@ -83,6 +83,30 @@ type GenerateProvisioningTopologyParams struct {
 	Instances []InstanceMeta
 }
 
+// GenerateProvisioningDaemonParams configures the seeded daemon-
+// overhead variant generator.
+type GenerateProvisioningDaemonParams struct {
+	Seed      int64
+	Instances []InstanceMeta
+}
+
+// GenerateProvisioningDaemon produces a greenfield scenario plus one
+// NodeAgentDaemon DaemonSet, exercising the daemon-overhead code path.
+// Resource sizing is identical to GenerateProvisioning but each new
+// NodeClaim's effective allocatable for pending pods is reduced by the
+// daemon's CPU and memory requests, so the bin-packing decisions
+// shift compared to the no-daemon baseline.
+func GenerateProvisioningDaemon(p GenerateProvisioningDaemonParams) *Scenario {
+	s := GenerateProvisioning(GenerateProvisioningParams{
+		Seed:      p.Seed,
+		Instances: p.Instances,
+	})
+	s.ID = fmt.Sprintf("prov-daemon-%d", p.Seed)
+	s.Description = fmt.Sprintf("%s daemon=node-agent", s.Description)
+	s.AddDaemonSet(NodeAgentDaemon())
+	return s
+}
+
 // GenerateProvisioningFleetParams configures the seeded existing-
 // fleet variant generator.
 type GenerateProvisioningFleetParams struct {

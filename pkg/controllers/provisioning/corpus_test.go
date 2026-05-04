@@ -64,6 +64,8 @@ const (
 	provTopologyOutputFile = "corpus_topology_results.json"
 	provFleetCorpusSize    = 100
 	provFleetOutputFile    = "corpus_fleet_results.json"
+	provDaemonCorpusSize   = 100
+	provDaemonOutputFile   = "corpus_daemon_results.json"
 )
 
 type provCorpusEntry struct {
@@ -172,6 +174,26 @@ var _ = Describe("Provisioning Fleet Corpus", Ordered, Label("corpus"), func() {
 		out, err := json.MarshalIndent(corpus, "", "  ")
 		Expect(err).To(Succeed())
 		path := filepath.Join(provCorpusOutputDir, provFleetOutputFile)
+		Expect(os.WriteFile(path, out, 0o644)).To(Succeed())
+		_, _ = fmt.Fprintf(GinkgoWriter, "wrote %d corpus entries to %s\n", len(corpus), path)
+	})
+})
+
+var _ = Describe("Provisioning Daemon Corpus", Ordered, Label("corpus"), func() {
+	var corpus []provCorpusEntry
+
+	for i := 0; i < provDaemonCorpusSize; i++ {
+		seed := int64(i)
+		It(fmt.Sprintf("seed=%d", seed), func() {
+			corpus = append(corpus, runProvisioningDaemonScenario(seed))
+		})
+	}
+
+	AfterAll(func() {
+		Expect(os.MkdirAll(provCorpusOutputDir, 0o755)).To(Succeed())
+		out, err := json.MarshalIndent(corpus, "", "  ")
+		Expect(err).To(Succeed())
+		path := filepath.Join(provCorpusOutputDir, provDaemonOutputFile)
 		Expect(os.WriteFile(path, out, 0o644)).To(Succeed())
 		_, _ = fmt.Fprintf(GinkgoWriter, "wrote %d corpus entries to %s\n", len(corpus), path)
 	})
@@ -396,6 +418,63 @@ func runOraclePlacementWithExisting(pendingPods []*corev1.Pod, types []*cloudpro
 		ExistingSlack:   slackViews,
 		ExistingUsage:   usage,
 		PendingPodSizes: podSizes,
+	}
+}
+
+func runProvisioningDaemonScenario(seed int64) provCorpusEntry {
+	useAWSInstanceTypes()
+	instances := pickAWSInstances()
+	s := scenarios.GenerateProvisioningDaemon(scenarios.GenerateProvisioningDaemonParams{
+		Seed:      seed,
+		Instances: instances,
+	})
+	built := s.Build()
+
+	ExpectApplied(ctx, env.Client, built.ReplicaSet)
+	built.LinkOwners()
+	ExpectApplied(ctx, env.Client, built.RemainingObjects()...)
+
+	prodRun := runProductionScheduler(built.PendingPods)
+	daemonCPU, daemonMem := sumDaemonRequests(built.DaemonSetPods)
+	oracleRun := runOraclePlacementWithDaemons(built.PendingPods, cloudProvider.InstanceTypes, daemonCPU, daemonMem)
+
+	entry := provCorpusEntry{
+		Seed:            seed,
+		Description:     s.Description,
+		PendingPodCount: len(built.PendingPods),
+		Production:      prodRun,
+		Oracle:          oracleRun,
+	}
+	if oracleRun.Feasible && oracleRun.TotalCost > 0 {
+		entry.CostRatio = prodRun.TotalCost / oracleRun.TotalCost
+	}
+	return entry
+}
+
+func sumDaemonRequests(daemonPods []*corev1.Pod) (cpuMilli, memBytes int64) {
+	for _, p := range daemonPods {
+		for _, c := range p.Spec.Containers {
+			cpuMilli += c.Resources.Requests.Cpu().MilliValue()
+			memBytes += c.Resources.Requests.Memory().Value()
+		}
+	}
+	return
+}
+
+func runOraclePlacementWithDaemons(pendingPods []*corev1.Pod, types []*cloudprovider.InstanceType, daemonCPU, daemonMem int64) provOracleRun {
+	plan := bruteForcePlacementWithDaemons(pendingPods, types, daemonCPU, daemonMem)
+	if plan == nil {
+		return provOracleRun{Feasible: false}
+	}
+	names := make([]string, 0, len(plan.InstanceTypes))
+	for _, it := range plan.InstanceTypes {
+		names = append(names, it.Name)
+	}
+	return provOracleRun{
+		NodeCount:     len(plan.Groups),
+		TotalCost:     plan.TotalPrice,
+		InstanceTypes: names,
+		Feasible:      true,
 	}
 }
 

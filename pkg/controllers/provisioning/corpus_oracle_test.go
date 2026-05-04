@@ -140,12 +140,23 @@ func copyGroups(groups [][]int) [][]int {
 // satisfies the summed CPU and Memory requests of the pods in group.
 // Returns nil if no instance type fits.
 func cheapestFit(group []int, pods []*corev1.Pod, types []*cloudprovider.InstanceType) *cloudprovider.InstanceType {
+	return cheapestFitWithDaemons(group, pods, types, 0, 0)
+}
+
+// cheapestFitWithDaemons is cheapestFit with per-new-node daemon
+// overhead subtracted from each candidate's Allocatable() before the
+// fit check. Mirrors production's getDaemonOverhead handling, where
+// daemon pods that match a NodeClaim template's selectors consume
+// allocatable on every new NodeClaim launched for that pool.
+func cheapestFitWithDaemons(group []int, pods []*corev1.Pod, types []*cloudprovider.InstanceType, daemonCPUMilli, daemonMemBytes int64) *cloudprovider.InstanceType {
 	var sumCPU, sumMem int64
 	for _, idx := range group {
 		req := pods[idx].Spec.Containers[0].Resources.Requests
 		sumCPU += req.Cpu().MilliValue()
 		sumMem += req.Memory().Value()
 	}
+	sumCPU += daemonCPUMilli
+	sumMem += daemonMemBytes
 	var best *cloudprovider.InstanceType
 	bestPrice := math.Inf(1)
 	for _, it := range types {
@@ -162,6 +173,45 @@ func cheapestFit(group []int, pods []*corev1.Pod, types []*cloudprovider.Instanc
 			best = it
 		}
 	}
+	return best
+}
+
+// bruteForcePlacementWithDaemons is bruteForcePlacement with per-new-
+// node daemon overhead applied. The daemon resources are added to
+// every group's effective request sum before fit checks, so the
+// oracle's choice of instance type per group reflects production's
+// allocatable accounting.
+func bruteForcePlacementWithDaemons(pods []*corev1.Pod, types []*cloudprovider.InstanceType, daemonCPUMilli, daemonMemBytes int64) *oraclePlan {
+	if len(pods) == 0 {
+		return &oraclePlan{}
+	}
+	var best *oraclePlan
+	walkPartitions(len(pods), func(groups [][]int) {
+		var (
+			chosen     []*cloudprovider.InstanceType
+			totalPrice float64
+			feasible   = true
+		)
+		for _, g := range groups {
+			it := cheapestFitWithDaemons(g, pods, types, daemonCPUMilli, daemonMemBytes)
+			if it == nil {
+				feasible = false
+				break
+			}
+			chosen = append(chosen, it)
+			totalPrice += offeringPrice(it)
+		}
+		if !feasible {
+			return
+		}
+		if best == nil || totalPrice < best.TotalPrice {
+			best = &oraclePlan{
+				Groups:        copyGroups(groups),
+				InstanceTypes: chosen,
+				TotalPrice:    totalPrice,
+			}
+		}
+	})
 	return best
 }
 
