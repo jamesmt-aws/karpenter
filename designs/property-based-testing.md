@@ -82,10 +82,13 @@ The harness also tracks two exploratory signals, useful for
 consolidation, provisioning, and likely other Karpenter
 subsystems:
 
-- **Compute time** — wall time of the production algorithm. Noisy
-  (millisecond-level variance across runs), so not reliable for
-  close comparisons. With estimates of variance, compute time
-  could be promoted to a Pareto axis using confidence intervals
+- **Compute time** — wall time of the production algorithm. At
+  current corpus sizes (3–8 candidates), compute time differences
+  are millisecond-level and dominated by noise. At larger input
+  sizes the production algorithm's search strategy would produce
+  meaningful time differences between approaches, and compute time
+  would become a real axis. With estimates of variance, it could
+  be promoted to the Pareto comparison using confidence intervals
   rather than point estimates.
 - **Slack entropy** — Shannon entropy of the post-state's per-node
   free resources, weighted across CPU and memory. Lower is better
@@ -93,9 +96,9 @@ subsystems:
   removable next cycle). With the current generators, entropy is
   near zero in 98 of 100 default corpus seeds — the scenarios
   consolidate aggressively enough that remaining slack is trivial.
-  Generators that produce tighter-packed clusters would exercise
-  this axis. As with compute time, variance estimates would let
-  this join the Pareto comparison.
+  Generators that produce tighter-packed clusters with more
+  surviving nodes would exercise this axis and make entropy
+  differences meaningful.
 
 ### Provisioning
 
@@ -114,6 +117,19 @@ options available, including relevant vCPU/memory overhead from
 daemonsets and dataplane on each provisioned node. When the
 findings say "the oracle found a cheaper plan," that means
 strictly lower total node cost for the same set of pending pods.
+
+### The snapshot-and-react model
+
+Both measurements share a structure: generate a cluster snapshot,
+let the algorithm react to it, and grade the reaction along the
+axes above. The snapshot is the input (existing nodes, bound pods,
+pending pods, constraints). The reaction is the algorithm's
+proposed plan (which nodes to add, remove, or replace). The grade
+is how that plan scores on savings, disruption count, and cost.
+The oracle provides the reference grade — the best feasible
+reaction to the same snapshot. Any algorithm can be plugged into
+this model and compared against the oracle or against other
+algorithms on the same corpus of snapshots.
 
 ## The oracle
 
@@ -139,10 +155,23 @@ partition oracle on the remainder. For topology scenarios it
 enumerates every (partition, zone-assignment) pair and checks
 TopologySpread feasibility.
 
-The oracle is too expensive for production — over a second per
-scenario versus tens of milliseconds for the production binary
-search. This is intended, because the oracle's job is to be
-correct on small input sizes, not necessarily fast.
+The oracle is too expensive for production. For consolidation,
+the full action space per node is ternary (no-op, replace, delete),
+so the space is 3^N. The current oracle simplifies to delete-only
+subsets (2^N) and takes about 1.8 seconds at N=8 (256 subsets),
+scaling roughly as:
+
+| Candidates | Subsets | Oracle time |
+|-----------|---------|-------------|
+| 8 | 256 | ~2 seconds |
+| 16 | 65,536 | ~7 minutes |
+| 32 | 4.3 billion | ~1 year |
+
+The production binary search takes tens of milliseconds regardless
+of N. This is intended — the oracle's job is to be correct on
+small input sizes, not necessarily fast. At small N the oracle
+finds the shapes; production clusters with hundreds of candidates
+per cycle would need a sampling or heuristic oracle.
 
 ## What the oracle has already found
 
