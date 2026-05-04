@@ -83,6 +83,85 @@ type GenerateProvisioningTopologyParams struct {
 	Instances []InstanceMeta
 }
 
+// GenerateProvisioningFleetParams configures the seeded existing-
+// fleet variant generator.
+type GenerateProvisioningFleetParams struct {
+	Seed      int64
+	Instances []InstanceMeta
+}
+
+// GenerateProvisioningFleet produces a scenario where 1..3 existing
+// nodes carry some bound pods (creating partial slack) and 3..6
+// pending pods need scheduling on top. The pending pods may fit on
+// the existing slack, may force new NodeClaims, or may need a mix.
+// All instance types are eligible for new NodeClaims; existing nodes
+// are sampled from the same pool.
+//
+// Pod count caps at 6 to keep the oracle's enumeration tractable: the
+// existing-fleet oracle iterates (M+1)^N pod-to-node assignments
+// (each pending pod chooses "go to existing node i" or "stay
+// pending"), then runs the partition oracle on the pending remainder.
+// For N=6, M=3 that is 4^6 * B(6) <= 832k inner steps worst case.
+func GenerateProvisioningFleet(p GenerateProvisioningFleetParams) *Scenario {
+	if len(p.Instances) == 0 {
+		panic("scenarios.GenerateProvisioningFleet: at least one instance type required")
+	}
+	r := rand.New(rand.NewSource(p.Seed))
+
+	instanceTypes := make([]string, len(p.Instances))
+	for i, im := range p.Instances {
+		instanceTypes[i] = im.InstanceType
+	}
+
+	id := fmt.Sprintf("prov-fleet-%d", p.Seed)
+	s := New(id).
+		WithInstance(p.Instances[0]).
+		AddNodePool(NodePool{
+			Name:          "default",
+			InstanceTypes: instanceTypes,
+		})
+
+	// Existing nodes: 1..3, sampled from the instance pool.
+	existingCount := 1 + r.Intn(3)
+	cpuChoices := []string{"500m", "1", "2"}
+	memChoices := []string{"512Mi", "1Gi", "2Gi"}
+	for i := 0; i < existingCount; i++ {
+		im := p.Instances[r.Intn(len(p.Instances))]
+		boundCount := r.Intn(3) // 0..2 bound pods, leaving slack
+		var pods []Pod
+		for j := 0; j < boundCount; j++ {
+			pods = append(pods, Pod{
+				Name:   fmt.Sprintf("bound-%d-%d", i, j),
+				CPU:    cpuChoices[r.Intn(len(cpuChoices))],
+				Memory: memChoices[r.Intn(len(memChoices))],
+			})
+		}
+		nodeIM := im
+		s.AddNode(Node{
+			Pool:     "default",
+			Instance: &nodeIM,
+			Pods:     pods,
+		})
+	}
+
+	// Pending pods: 3..6.
+	pendingCount := 3 + r.Intn(4)
+	pendingCPUs := []string{"500m", "1", "2", "4"}
+	pendingMems := []string{"512Mi", "1Gi", "2Gi", "4Gi"}
+	for i := 0; i < pendingCount; i++ {
+		s.AddPendingPod(PendingPod{
+			Name:   fmt.Sprintf("pending-%d", i),
+			CPU:    pendingCPUs[r.Intn(len(pendingCPUs))],
+			Memory: pendingMems[r.Intn(len(pendingMems))],
+		})
+	}
+	s.Describe(fmt.Sprintf(
+		"seed=%d existing_nodes=%d pending_pods=%d instance_types=%d",
+		p.Seed, existingCount, pendingCount, len(p.Instances),
+	))
+	return s
+}
+
 // GenerateProvisioningTopology produces a scenario where every pending
 // pod carries a hard TopologySpreadConstraint on
 // topology.kubernetes.io/zone with MaxSkew=1, WhenUnsatisfiable=

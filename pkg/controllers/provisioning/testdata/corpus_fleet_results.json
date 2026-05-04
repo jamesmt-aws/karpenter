@@ -1,0 +1,8410 @@
+[
+  {
+    "seed": 0,
+    "description": "seed=0 existing_nodes=1 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 5000,
+          "mem_mib": 5632
+        }
+      ],
+      "compute_time_ms": 4.74
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 31900,
+          "mem_mib": 131062
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 5000,
+          "mem_mib": 5632
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 1,
+    "description": "seed=1 existing_nodes=3 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        1
+      ],
+      "production_existing_usage": [
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 1500,
+          "mem_mib": 4096
+        },
+        {
+          "type": "m7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        }
+      ],
+      "compute_time_ms": 4.339
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 65526
+        },
+        {
+          "type": "m7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 8182
+        },
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 8182
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 5500,
+          "mem_mib": 6144
+        },
+        {
+          "type": "m7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 2,
+    "description": "seed=2 existing_nodes=2 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 3500,
+          "mem_mib": 8704
+        },
+        {
+          "type": "m7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.029
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 16374
+        },
+        {
+          "type": "m7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 8182
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 3500,
+          "mem_mib": 8704
+        },
+        {
+          "type": "m7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 4096
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 3,
+    "description": "seed=3 existing_nodes=2 pending_pods=6 instance_types=15",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.17,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        2
+      ],
+      "production_existing_usage": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 7000,
+          "mem_mib": 10240
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.632
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.17,
+      "instance_types": [
+        "c7i.xlarge"
+      ],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 16374
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 4086
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 7000,
+          "mem_mib": 10240
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 4,
+    "description": "seed=4 existing_nodes=2 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 6000,
+          "mem_mib": 3072
+        },
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 1000,
+          "mem_mib": 512
+        }
+      ],
+      "compute_time_ms": 4.374
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 8182
+        },
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 32758
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 3000,
+          "mem_mib": 2560
+        },
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 5,
+    "description": "seed=5 existing_nodes=1 pending_pods=5 instance_types=15",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        3
+      ],
+      "production_existing_usage": [
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 2500,
+          "mem_mib": 3072
+        }
+      ],
+      "compute_time_ms": 4.142
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 8182
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 3000,
+          "mem_mib": 3584
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 6,
+    "description": "seed=6 existing_nodes=1 pending_pods=5 instance_types=15",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 11500,
+          "mem_mib": 17408
+        }
+      ],
+      "compute_time_ms": 4.281
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 65526
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 11500,
+          "mem_mib": 17408
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 4096
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 7,
+    "description": "seed=7 existing_nodes=3 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        },
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        }
+      ],
+      "compute_time_ms": 4.305
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 4086
+        },
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 32758
+        },
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 16374
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        },
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 8,
+    "description": "seed=8 existing_nodes=2 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 1500,
+          "mem_mib": 4608
+        },
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 4000,
+          "mem_mib": 512
+        }
+      ],
+      "compute_time_ms": 4.005
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 32758
+        },
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 16374
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 5500,
+          "mem_mib": 5120
+        },
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 9,
+    "description": "seed=9 existing_nodes=3 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "r7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 4500,
+          "mem_mib": 6144
+        },
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        }
+      ],
+      "compute_time_ms": 4.17
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "r7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 16374
+        },
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 65526
+        },
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 65526
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "r7i.large",
+          "cpu_milli": 1500,
+          "mem_mib": 4096
+        },
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 4000,
+          "mem_mib": 4096
+        },
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 10,
+    "description": "seed=10 existing_nodes=3 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "c7i.8xlarge",
+          "cpu_milli": 5500,
+          "mem_mib": 7680
+        },
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.189
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 131062
+        },
+        {
+          "type": "c7i.8xlarge",
+          "cpu_milli": 31900,
+          "mem_mib": 65526
+        },
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 32758
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 5500,
+          "mem_mib": 7680
+        },
+        {
+          "type": "c7i.8xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 11,
+    "description": "seed=11 existing_nodes=1 pending_pods=6 instance_types=15",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.68,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.4xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          },
+          {
+            "name": "m7i.8xlarge",
+            "price": 1.6128
+          },
+          {
+            "name": "r7i.4xlarge",
+            "price": 1.0584
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        4
+      ],
+      "production_existing_usage": [
+        {
+          "type": "r7i.xlarge",
+          "cpu_milli": 1500,
+          "mem_mib": 3072
+        }
+      ],
+      "compute_time_ms": 4.216
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "r7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 32758
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "r7i.xlarge",
+          "cpu_milli": 3500,
+          "mem_mib": 4096
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        }
+      ]
+    },
+    "cost_ratio": 2
+  },
+  {
+    "seed": 12,
+    "description": "seed=12 existing_nodes=1 pending_pods=5 instance_types=15",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 11500,
+          "mem_mib": 7168
+        }
+      ],
+      "compute_time_ms": 4.204
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 131062
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 11500,
+          "mem_mib": 7168
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 13,
+    "description": "seed=13 existing_nodes=2 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 3000,
+          "mem_mib": 8704
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.34
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 16374
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 4086
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 3000,
+          "mem_mib": 8704
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 14,
+    "description": "seed=14 existing_nodes=3 pending_pods=5 instance_types=15",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "c7i.8xlarge",
+          "cpu_milli": 10000,
+          "mem_mib": 9216
+        },
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.227
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 65526
+        },
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 65526
+        },
+        {
+          "type": "c7i.8xlarge",
+          "cpu_milli": 31900,
+          "mem_mib": 65526
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 10000,
+          "mem_mib": 9216
+        },
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "c7i.8xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 15,
+    "description": "seed=15 existing_nodes=1 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        4
+      ],
+      "production_existing_usage": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 5.42
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 4086
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1500,
+          "mem_mib": 2560
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 16,
+    "description": "seed=16 existing_nodes=1 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "c7i.8xlarge",
+          "cpu_milli": 2500,
+          "mem_mib": 7168
+        }
+      ],
+      "compute_time_ms": 4.686
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.8xlarge",
+          "cpu_milli": 31900,
+          "mem_mib": 65526
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.8xlarge",
+          "cpu_milli": 2500,
+          "mem_mib": 7168
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 17,
+    "description": "seed=17 existing_nodes=1 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.17,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        3
+      ],
+      "production_existing_usage": [
+        {
+          "type": "m7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.688
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.085,
+      "instance_types": [
+        "c7i.large"
+      ],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 8182
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.large",
+          "cpu_milli": 1500,
+          "mem_mib": 3072
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 2
+  },
+  {
+    "seed": 18,
+    "description": "seed=18 existing_nodes=2 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "m7i.large",
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        },
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 6500,
+          "mem_mib": 5120
+        }
+      ],
+      "compute_time_ms": 4.22
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 8182
+        },
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 31900,
+          "mem_mib": 131062
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.large",
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 6000,
+          "mem_mib": 3072
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 19,
+    "description": "seed=19 existing_nodes=3 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 5000,
+          "mem_mib": 3584
+        },
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 4000,
+          "mem_mib": 512
+        },
+        {
+          "type": "r7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 5.099
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 32758
+        },
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 32758
+        },
+        {
+          "type": "r7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 16374
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 5000,
+          "mem_mib": 3584
+        },
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 4000,
+          "mem_mib": 512
+        },
+        {
+          "type": "r7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 20,
+    "description": "seed=20 existing_nodes=3 pending_pods=5 instance_types=15",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 12500,
+          "mem_mib": 11264
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.082
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 32758
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 4086
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 4086
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 12500,
+          "mem_mib": 11264
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 21,
+    "description": "seed=21 existing_nodes=3 pending_pods=5 instance_types=15",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 7500,
+          "mem_mib": 13312
+        },
+        {
+          "type": "m7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        }
+      ],
+      "compute_time_ms": 4.367
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 32758
+        },
+        {
+          "type": "m7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 8182
+        },
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 32758
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 7500,
+          "mem_mib": 13312
+        },
+        {
+          "type": "m7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 4096
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 22,
+    "description": "seed=22 existing_nodes=1 pending_pods=5 instance_types=15",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 10000,
+          "mem_mib": 9728
+        }
+      ],
+      "compute_time_ms": 4.373
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 31900,
+          "mem_mib": 131062
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 10000,
+          "mem_mib": 9728
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 23,
+    "description": "seed=23 existing_nodes=3 pending_pods=5 instance_types=15",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 9000,
+          "mem_mib": 5120
+        },
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.155
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 32758
+        },
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 32758
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 131062
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 7000,
+          "mem_mib": 3072
+        },
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 24,
+    "description": "seed=24 existing_nodes=2 pending_pods=5 instance_types=15",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        3
+      ],
+      "production_existing_usage": [
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 6000,
+          "mem_mib": 4096
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.259
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 4086
+        },
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 65526
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 500,
+          "mem_mib": 512
+        },
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 6000,
+          "mem_mib": 4096
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 25,
+    "description": "seed=25 existing_nodes=2 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.68,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.4xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          },
+          {
+            "name": "m7i.8xlarge",
+            "price": 1.6128
+          },
+          {
+            "name": "r7i.4xlarge",
+            "price": 1.0584
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        4
+      ],
+      "production_existing_usage": [
+        {
+          "type": "r7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.383
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.xlarge"
+      ],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "r7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 16374
+        },
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 16374
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "r7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 1.3333333333333335
+  },
+  {
+    "seed": 26,
+    "description": "seed=26 existing_nodes=3 pending_pods=5 instance_types=15",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "r7i.8xlarge",
+          "cpu_milli": 11500,
+          "mem_mib": 14336
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 5.006
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 131062
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 4086
+        },
+        {
+          "type": "r7i.8xlarge",
+          "cpu_milli": 31900,
+          "mem_mib": 262134
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 11500,
+          "mem_mib": 14336
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "r7i.8xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 4096
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 27,
+    "description": "seed=27 existing_nodes=3 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 500,
+          "mem_mib": 512
+        },
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 2000,
+          "mem_mib": 3072
+        },
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.165
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 16374
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 4086
+        },
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 16374
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 2500,
+          "mem_mib": 3584
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 28,
+    "description": "seed=28 existing_nodes=3 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "r7i.xlarge",
+          "cpu_milli": 3500,
+          "mem_mib": 10240
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.134
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 4086
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 4086
+        },
+        {
+          "type": "r7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 32758
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "r7i.xlarge",
+          "cpu_milli": 3000,
+          "mem_mib": 8192
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 29,
+    "description": "seed=29 existing_nodes=1 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        1
+      ],
+      "production_existing_usage": [
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 3000,
+          "mem_mib": 4608
+        }
+      ],
+      "compute_time_ms": 4.166
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 16374
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 3000,
+          "mem_mib": 4608
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 30,
+    "description": "seed=30 existing_nodes=1 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        2
+      ],
+      "production_existing_usage": [
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 1500,
+          "mem_mib": 3072
+        }
+      ],
+      "compute_time_ms": 4.114
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 8182
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 2000,
+          "mem_mib": 7168
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 31,
+    "description": "seed=31 existing_nodes=3 pending_pods=5 instance_types=15",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 5500,
+          "mem_mib": 8704
+        },
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.101
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 31900,
+          "mem_mib": 131062
+        },
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 32758
+        },
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 31900,
+          "mem_mib": 131062
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 5500,
+          "mem_mib": 8704
+        },
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 32,
+    "description": "seed=32 existing_nodes=3 pending_pods=5 instance_types=15",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 3000,
+          "mem_mib": 4608
+        },
+        {
+          "type": "r7i.large",
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 2000,
+          "mem_mib": 6144
+        }
+      ],
+      "compute_time_ms": 4.167
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "r7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 16374
+        },
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 8182
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 131062
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "r7i.large",
+          "cpu_milli": 1500,
+          "mem_mib": 5120
+        },
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 3000,
+          "mem_mib": 4608
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 33,
+    "description": "seed=33 existing_nodes=2 pending_pods=5 instance_types=15",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 10500,
+          "mem_mib": 10240
+        },
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 5.221
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 65526
+        },
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 8182
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 10500,
+          "mem_mib": 10240
+        },
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 34,
+    "description": "seed=34 existing_nodes=1 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 5000,
+          "mem_mib": 10240
+        }
+      ],
+      "compute_time_ms": 4.596
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 31900,
+          "mem_mib": 131062
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 5000,
+          "mem_mib": 10240
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 35,
+    "description": "seed=35 existing_nodes=1 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 4000,
+          "mem_mib": 7680
+        }
+      ],
+      "compute_time_ms": 4.002
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 16374
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 4000,
+          "mem_mib": 7680
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 36,
+    "description": "seed=36 existing_nodes=3 pending_pods=5 instance_types=15",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 6500,
+          "mem_mib": 3584
+        },
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.345
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 16374
+        },
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 32758
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 131062
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 3500,
+          "mem_mib": 2560
+        },
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 3000,
+          "mem_mib": 1024
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 37,
+    "description": "seed=37 existing_nodes=1 pending_pods=6 instance_types=15",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "r7i.8xlarge",
+          "cpu_milli": 9000,
+          "mem_mib": 19456
+        }
+      ],
+      "compute_time_ms": 4.213
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "r7i.8xlarge",
+          "cpu_milli": 31900,
+          "mem_mib": 262134
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "r7i.8xlarge",
+          "cpu_milli": 9000,
+          "mem_mib": 19456
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 38,
+    "description": "seed=38 existing_nodes=3 pending_pods=5 instance_types=15",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 1000,
+          "mem_mib": 512
+        },
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 10000,
+          "mem_mib": 3584
+        }
+      ],
+      "compute_time_ms": 4.238
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 65526
+        },
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 8182
+        },
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 8182
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 13000,
+          "mem_mib": 6144
+        },
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 39,
+    "description": "seed=39 existing_nodes=3 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "r7i.8xlarge",
+          "cpu_milli": 5000,
+          "mem_mib": 4096
+        },
+        {
+          "type": "r7i.xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.387
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 16374
+        },
+        {
+          "type": "r7i.8xlarge",
+          "cpu_milli": 31900,
+          "mem_mib": 262134
+        },
+        {
+          "type": "r7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 32758
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 5000,
+          "mem_mib": 4096
+        },
+        {
+          "type": "r7i.8xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "r7i.xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 40,
+    "description": "seed=40 existing_nodes=1 pending_pods=6 instance_types=15",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.17,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        2
+      ],
+      "production_existing_usage": [
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 7500,
+          "mem_mib": 6656
+        }
+      ],
+      "compute_time_ms": 4.346
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.17,
+      "instance_types": [
+        "c7i.xlarge"
+      ],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 32758
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 7500,
+          "mem_mib": 6656
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 41,
+    "description": "seed=41 existing_nodes=1 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.17,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        2
+      ],
+      "production_existing_usage": [
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        }
+      ],
+      "compute_time_ms": 4.218
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 32758
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 7000,
+          "mem_mib": 7168
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        }
+      ]
+    }
+  },
+  {
+    "seed": 42,
+    "description": "seed=42 existing_nodes=3 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "r7i.xlarge",
+          "cpu_milli": 500,
+          "mem_mib": 4096
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 2500,
+          "mem_mib": 3072
+        },
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.068
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 16374
+        },
+        {
+          "type": "r7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 32758
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 131062
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 3000,
+          "mem_mib": 7168
+        },
+        {
+          "type": "r7i.xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 43,
+    "description": "seed=43 existing_nodes=1 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 5500,
+          "mem_mib": 8192
+        }
+      ],
+      "compute_time_ms": 4.301
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 131062
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 5500,
+          "mem_mib": 8192
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 4096
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 44,
+    "description": "seed=44 existing_nodes=3 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        2
+      ],
+      "production_existing_usage": [
+        {
+          "type": "r7i.xlarge",
+          "cpu_milli": 500,
+          "mem_mib": 512
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "r7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.281
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "r7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 16374
+        },
+        {
+          "type": "r7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 32758
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 4086
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "r7i.large",
+          "cpu_milli": 500,
+          "mem_mib": 512
+        },
+        {
+          "type": "r7i.xlarge",
+          "cpu_milli": 2000,
+          "mem_mib": 4096
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 45,
+    "description": "seed=45 existing_nodes=1 pending_pods=5 instance_types=15",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        3
+      ],
+      "production_existing_usage": [
+        {
+          "type": "r7i.large",
+          "cpu_milli": 1500,
+          "mem_mib": 1536
+        }
+      ],
+      "compute_time_ms": 4.757
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "r7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 16374
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "r7i.large",
+          "cpu_milli": 1500,
+          "mem_mib": 1536
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 46,
+    "description": "seed=46 existing_nodes=1 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.68,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.4xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          },
+          {
+            "name": "m7i.8xlarge",
+            "price": 1.6128
+          },
+          {
+            "name": "r7i.4xlarge",
+            "price": 1.0584
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        3
+      ],
+      "production_existing_usage": [
+        {
+          "type": "r7i.xlarge",
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        }
+      ],
+      "compute_time_ms": 4.491
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.4xlarge"
+      ],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "r7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 32758
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "r7i.xlarge",
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 47,
+    "description": "seed=47 existing_nodes=2 pending_pods=6 instance_types=15",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 11500,
+          "mem_mib": 5632
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.175
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 65526
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 131062
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 11500,
+          "mem_mib": 5632
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 48,
+    "description": "seed=48 existing_nodes=1 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        3
+      ],
+      "production_existing_usage": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 5.478
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 4086
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 4096
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 49,
+    "description": "seed=49 existing_nodes=1 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 6500,
+          "mem_mib": 7168
+        }
+      ],
+      "compute_time_ms": 4.425
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 65526
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 6500,
+          "mem_mib": 7168
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 4096
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 50,
+    "description": "seed=50 existing_nodes=1 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 5500,
+          "mem_mib": 8192
+        }
+      ],
+      "compute_time_ms": 4.165
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 31900,
+          "mem_mib": 131062
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 5500,
+          "mem_mib": 8192
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 51,
+    "description": "seed=51 existing_nodes=1 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 6000,
+          "mem_mib": 5120
+        }
+      ],
+      "compute_time_ms": 4.292
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 16374
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 6000,
+          "mem_mib": 5120
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 52,
+    "description": "seed=52 existing_nodes=1 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        2
+      ],
+      "production_existing_usage": [
+        {
+          "type": "m7i.large",
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        }
+      ],
+      "compute_time_ms": 7.514
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 8182
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.large",
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 53,
+    "description": "seed=53 existing_nodes=1 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 6000,
+          "mem_mib": 10240
+        }
+      ],
+      "compute_time_ms": 4.493
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 32758
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 6000,
+          "mem_mib": 10240
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 54,
+    "description": "seed=54 existing_nodes=2 pending_pods=6 instance_types=15",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 7000,
+          "mem_mib": 10752
+        },
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 8000,
+          "mem_mib": 3072
+        }
+      ],
+      "compute_time_ms": 4.114
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 32758
+        },
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 16374
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 15000,
+          "mem_mib": 13824
+        },
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 55,
+    "description": "seed=55 existing_nodes=1 pending_pods=6 instance_types=15",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "r7i.8xlarge",
+          "cpu_milli": 6000,
+          "mem_mib": 5120
+        }
+      ],
+      "compute_time_ms": 4.205
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "r7i.8xlarge",
+          "cpu_milli": 31900,
+          "mem_mib": 262134
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "r7i.8xlarge",
+          "cpu_milli": 6000,
+          "mem_mib": 5120
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 56,
+    "description": "seed=56 existing_nodes=1 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 1500,
+          "mem_mib": 5632
+        }
+      ],
+      "compute_time_ms": 5.166
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 32758
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 1500,
+          "mem_mib": 5632
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 500,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 57,
+    "description": "seed=57 existing_nodes=3 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 11000,
+          "mem_mib": 10240
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.337
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 65526
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 4086
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 131062
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 11000,
+          "mem_mib": 10240
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 58,
+    "description": "seed=58 existing_nodes=3 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 6500,
+          "mem_mib": 9216
+        },
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.272
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 16374
+        },
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 65526
+        },
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 8182
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 7500,
+          "mem_mib": 13312
+        },
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 4096
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 59,
+    "description": "seed=59 existing_nodes=3 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 8000,
+          "mem_mib": 8192
+        },
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.233
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 65526
+        },
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 16374
+        },
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 16374
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 8000,
+          "mem_mib": 8192
+        },
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 60,
+    "description": "seed=60 existing_nodes=1 pending_pods=5 instance_types=15",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        5
+      ],
+      "production_existing_usage": [
+        {
+          "type": "m7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.279
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 8182
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.large",
+          "cpu_milli": 1500,
+          "mem_mib": 1536
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 61,
+    "description": "seed=61 existing_nodes=1 pending_pods=6 instance_types=15",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        2
+      ],
+      "production_existing_usage": [
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 3000,
+          "mem_mib": 7168
+        }
+      ],
+      "compute_time_ms": 4.248
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 8182
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 3000,
+          "mem_mib": 7168
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 62,
+    "description": "seed=62 existing_nodes=1 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 4500,
+          "mem_mib": 3584
+        }
+      ],
+      "compute_time_ms": 5.007
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 131062
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 4500,
+          "mem_mib": 3584
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 63,
+    "description": "seed=63 existing_nodes=1 pending_pods=5 instance_types=15",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        3
+      ],
+      "production_existing_usage": [
+        {
+          "type": "m7i.large",
+          "cpu_milli": 1500,
+          "mem_mib": 4096
+        }
+      ],
+      "compute_time_ms": 4.962
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 8182
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.large",
+          "cpu_milli": 1500,
+          "mem_mib": 4096
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 64,
+    "description": "seed=64 existing_nodes=2 pending_pods=5 instance_types=15",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 10000,
+          "mem_mib": 9216
+        },
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.281
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 131062
+        },
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 65526
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 10000,
+          "mem_mib": 9216
+        },
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 65,
+    "description": "seed=65 existing_nodes=3 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        1
+      ],
+      "production_existing_usage": [
+        {
+          "type": "r7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 5000,
+          "mem_mib": 3072
+        },
+        {
+          "type": "r7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.323
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 32758
+        },
+        {
+          "type": "r7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 16374
+        },
+        {
+          "type": "r7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 16374
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 5000,
+          "mem_mib": 3072
+        },
+        {
+          "type": "r7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "r7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 66,
+    "description": "seed=66 existing_nodes=1 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.085,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.large"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.large",
+            "price": 0.085
+          },
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        1
+      ],
+      "production_existing_usage": [
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 3000,
+          "mem_mib": 10240
+        }
+      ],
+      "compute_time_ms": 4.235
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 16374
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 3500,
+          "mem_mib": 11264
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        }
+      ]
+    }
+  },
+  {
+    "seed": 67,
+    "description": "seed=67 existing_nodes=2 pending_pods=6 instance_types=15",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.17,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        1
+      ],
+      "production_existing_usage": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 5500,
+          "mem_mib": 6656
+        },
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 6000,
+          "mem_mib": 3072
+        }
+      ],
+      "compute_time_ms": 4.365
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 16374
+        },
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 65526
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 7500,
+          "mem_mib": 8704
+        },
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 6000,
+          "mem_mib": 2048
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 512
+        }
+      ]
+    }
+  },
+  {
+    "seed": 68,
+    "description": "seed=68 existing_nodes=1 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 7000,
+          "mem_mib": 10240
+        }
+      ],
+      "compute_time_ms": 4.183
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 32758
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 7000,
+          "mem_mib": 10240
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 69,
+    "description": "seed=69 existing_nodes=2 pending_pods=6 instance_types=15",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 10500,
+          "mem_mib": 15360
+        },
+        {
+          "type": "r7i.8xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.284
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "r7i.8xlarge",
+          "cpu_milli": 31900,
+          "mem_mib": 262134
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 131062
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "r7i.8xlarge",
+          "cpu_milli": 10500,
+          "mem_mib": 15360
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 70,
+    "description": "seed=70 existing_nodes=2 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 2000,
+          "mem_mib": 4096
+        },
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        }
+      ],
+      "compute_time_ms": 4.246
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 65526
+        },
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 16374
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 6000,
+          "mem_mib": 5120
+        },
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 71,
+    "description": "seed=71 existing_nodes=3 pending_pods=6 instance_types=15",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "r7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "c7i.8xlarge",
+          "cpu_milli": 15500,
+          "mem_mib": 13312
+        },
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.188
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 16374
+        },
+        {
+          "type": "c7i.8xlarge",
+          "cpu_milli": 31900,
+          "mem_mib": 65526
+        },
+        {
+          "type": "r7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 16374
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 7500,
+          "mem_mib": 11264
+        },
+        {
+          "type": "c7i.8xlarge",
+          "cpu_milli": 8000,
+          "mem_mib": 2048
+        },
+        {
+          "type": "r7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 72,
+    "description": "seed=72 existing_nodes=3 pending_pods=6 instance_types=15",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.68,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.4xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          },
+          {
+            "name": "m7i.8xlarge",
+            "price": 1.6128
+          },
+          {
+            "name": "r7i.4xlarge",
+            "price": 1.0584
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        3
+      ],
+      "production_existing_usage": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 2500,
+          "mem_mib": 4096
+        },
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        }
+      ],
+      "compute_time_ms": 4.355
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.4xlarge"
+      ],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 16374
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 4086
+        },
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 8182
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 2500,
+          "mem_mib": 4096
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 73,
+    "description": "seed=73 existing_nodes=1 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.085,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.large"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.large",
+            "price": 0.085
+          },
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        1
+      ],
+      "production_existing_usage": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1500,
+          "mem_mib": 3072
+        }
+      ],
+      "compute_time_ms": 4.156
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.085,
+      "instance_types": [
+        "c7i.large"
+      ],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 4086
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1500,
+          "mem_mib": 3072
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 74,
+    "description": "seed=74 existing_nodes=3 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 5500,
+          "mem_mib": 4096
+        },
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "m7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.837
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 32758
+        },
+        {
+          "type": "m7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 8182
+        },
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 32758
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 5500,
+          "mem_mib": 4096
+        },
+        {
+          "type": "m7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 75,
+    "description": "seed=75 existing_nodes=1 pending_pods=6 instance_types=15",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "c7i.8xlarge",
+          "cpu_milli": 6500,
+          "mem_mib": 12800
+        }
+      ],
+      "compute_time_ms": 4.474
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.8xlarge",
+          "cpu_milli": 31900,
+          "mem_mib": 65526
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.8xlarge",
+          "cpu_milli": 6500,
+          "mem_mib": 12800
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 76,
+    "description": "seed=76 existing_nodes=2 pending_pods=5 instance_types=15",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "r7i.large",
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 8500,
+          "mem_mib": 8192
+        }
+      ],
+      "compute_time_ms": 4.15
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 131062
+        },
+        {
+          "type": "r7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 16374
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 9500,
+          "mem_mib": 10240
+        },
+        {
+          "type": "r7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 4096
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 77,
+    "description": "seed=77 existing_nodes=3 pending_pods=5 instance_types=15",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "r7i.8xlarge",
+          "cpu_milli": 6000,
+          "mem_mib": 15360
+        },
+        {
+          "type": "c7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.202
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 4086
+        },
+        {
+          "type": "r7i.8xlarge",
+          "cpu_milli": 31900,
+          "mem_mib": 262134
+        },
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 32758
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "r7i.8xlarge",
+          "cpu_milli": 6000,
+          "mem_mib": 15360
+        },
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 4096
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 78,
+    "description": "seed=78 existing_nodes=1 pending_pods=6 instance_types=15",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.17,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.xlarge",
+            "price": 0.17
+          },
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.xlarge",
+            "price": 0.2016
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        3
+      ],
+      "production_existing_usage": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 6500,
+          "mem_mib": 7168
+        }
+      ],
+      "compute_time_ms": 4.13
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.17,
+      "instance_types": [
+        "c7i.xlarge"
+      ],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 16374
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 7500,
+          "mem_mib": 9216
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 79,
+    "description": "seed=79 existing_nodes=3 pending_pods=5 instance_types=15",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 9500,
+          "mem_mib": 10752
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.438
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 32758
+        },
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 32758
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 131062
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 7500,
+          "mem_mib": 9728
+        },
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 80,
+    "description": "seed=80 existing_nodes=2 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.68,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.4xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          },
+          {
+            "name": "m7i.8xlarge",
+            "price": 1.6128
+          },
+          {
+            "name": "r7i.4xlarge",
+            "price": 1.0584
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        2
+      ],
+      "production_existing_usage": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1000,
+          "mem_mib": 512
+        },
+        {
+          "type": "m7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.165
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.68,
+      "instance_types": [
+        "c7i.4xlarge"
+      ],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 4086
+        },
+        {
+          "type": "m7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 8182
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1000,
+          "mem_mib": 512
+        },
+        {
+          "type": "m7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 81,
+    "description": "seed=81 existing_nodes=3 pending_pods=6 instance_types=15",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 12000,
+          "mem_mib": 9216
+        },
+        {
+          "type": "c7i.8xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "c7i.8xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.175
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.8xlarge",
+          "cpu_milli": 31900,
+          "mem_mib": 65526
+        },
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 32758
+        },
+        {
+          "type": "c7i.8xlarge",
+          "cpu_milli": 31900,
+          "mem_mib": 65526
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.8xlarge",
+          "cpu_milli": 12000,
+          "mem_mib": 9216
+        },
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "c7i.8xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 82,
+    "description": "seed=82 existing_nodes=3 pending_pods=6 instance_types=15",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        4
+      ],
+      "production_existing_usage": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "m7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "r7i.large",
+          "cpu_milli": 1500,
+          "mem_mib": 8192
+        }
+      ],
+      "compute_time_ms": 4.597
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 4086
+        },
+        {
+          "type": "r7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 16374
+        },
+        {
+          "type": "m7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 8182
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1500,
+          "mem_mib": 2560
+        },
+        {
+          "type": "r7i.large",
+          "cpu_milli": 1500,
+          "mem_mib": 8192
+        },
+        {
+          "type": "m7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 83,
+    "description": "seed=83 existing_nodes=1 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        1
+      ],
+      "production_existing_usage": [
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 2000,
+          "mem_mib": 3072
+        }
+      ],
+      "compute_time_ms": 4.239
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 16374
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.xlarge",
+          "cpu_milli": 2000,
+          "mem_mib": 3072
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 84,
+    "description": "seed=84 existing_nodes=3 pending_pods=5 instance_types=15",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 6000,
+          "mem_mib": 6144
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.492
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 65526
+        },
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 65526
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 131062
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 6000,
+          "mem_mib": 6144
+        },
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 85,
+    "description": "seed=85 existing_nodes=2 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 6500,
+          "mem_mib": 1536
+        },
+        {
+          "type": "r7i.xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.618
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "r7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 32758
+        },
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 32758
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "r7i.xlarge",
+          "cpu_milli": 2500,
+          "mem_mib": 1024
+        },
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 4000,
+          "mem_mib": 512
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 86,
+    "description": "seed=86 existing_nodes=3 pending_pods=6 instance_types=15",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "r7i.8xlarge",
+          "cpu_milli": 8000,
+          "mem_mib": 15872
+        },
+        {
+          "type": "r7i.xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.433
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "r7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 32758
+        },
+        {
+          "type": "r7i.8xlarge",
+          "cpu_milli": 31900,
+          "mem_mib": 262134
+        },
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 31900,
+          "mem_mib": 131062
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "r7i.xlarge",
+          "cpu_milli": 3500,
+          "mem_mib": 10752
+        },
+        {
+          "type": "r7i.8xlarge",
+          "cpu_milli": 4500,
+          "mem_mib": 5120
+        },
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 87,
+    "description": "seed=87 existing_nodes=1 pending_pods=6 instance_types=15",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.68,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.4xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          },
+          {
+            "name": "m7i.8xlarge",
+            "price": 1.6128
+          },
+          {
+            "name": "r7i.4xlarge",
+            "price": 1.0584
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        5
+      ],
+      "production_existing_usage": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        }
+      ],
+      "compute_time_ms": 4.281
+    },
+    "oracle": {
+      "node_count": 2,
+      "total_cost": 0.51,
+      "instance_types": [
+        "c7i.2xlarge",
+        "c7i.xlarge"
+      ],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 4086
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        }
+      ]
+    },
+    "cost_ratio": 1.3333333333333335
+  },
+  {
+    "seed": 88,
+    "description": "seed=88 existing_nodes=3 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 9500,
+          "mem_mib": 6656
+        },
+        {
+          "type": "m7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.22
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 8182
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 131062
+        },
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 31900,
+          "mem_mib": 131062
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.large",
+          "cpu_milli": 1500,
+          "mem_mib": 2048
+        },
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 8000,
+          "mem_mib": 4608
+        },
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 89,
+    "description": "seed=89 existing_nodes=3 pending_pods=6 instance_types=15",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 9500,
+          "mem_mib": 10752
+        },
+        {
+          "type": "r7i.8xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.187
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 32758
+        },
+        {
+          "type": "r7i.8xlarge",
+          "cpu_milli": 31900,
+          "mem_mib": 262134
+        },
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 65526
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.4xlarge",
+          "cpu_milli": 9500,
+          "mem_mib": 10752
+        },
+        {
+          "type": "r7i.8xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 90,
+    "description": "seed=90 existing_nodes=3 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 5500,
+          "mem_mib": 8192
+        },
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "r7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.113
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "r7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 16374
+        },
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 32758
+        },
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 65526
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "r7i.large",
+          "cpu_milli": 1500,
+          "mem_mib": 6144
+        },
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        },
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 91,
+    "description": "seed=91 existing_nodes=2 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 6500,
+          "mem_mib": 4608
+        },
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.104
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 31900,
+          "mem_mib": 131062
+        },
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 16374
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.8xlarge",
+          "cpu_milli": 6500,
+          "mem_mib": 4608
+        },
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 92,
+    "description": "seed=92 existing_nodes=2 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 8000,
+          "mem_mib": 2048
+        },
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.083
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 131062
+        },
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 65526
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 8000,
+          "mem_mib": 2048
+        },
+        {
+          "type": "m7i.4xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 93,
+    "description": "seed=93 existing_nodes=2 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 3000,
+          "mem_mib": 6144
+        },
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        }
+      ],
+      "compute_time_ms": 11.159
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 8182
+        },
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 3900,
+          "mem_mib": 8182
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 3000,
+          "mem_mib": 6144
+        },
+        {
+          "type": "c7i.xlarge",
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 94,
+    "description": "seed=94 existing_nodes=1 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 4500,
+          "mem_mib": 5632
+        }
+      ],
+      "compute_time_ms": 4.074
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 16374
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.2xlarge",
+          "cpu_milli": 4500,
+          "mem_mib": 5632
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 95,
+    "description": "seed=95 existing_nodes=1 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "r7i.8xlarge",
+          "cpu_milli": 3000,
+          "mem_mib": 10752
+        }
+      ],
+      "compute_time_ms": 4.13
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "r7i.8xlarge",
+          "cpu_milli": 31900,
+          "mem_mib": 262134
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "r7i.8xlarge",
+          "cpu_milli": 3000,
+          "mem_mib": 10752
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 96,
+    "description": "seed=96 existing_nodes=1 pending_pods=6 instance_types=15",
+    "pending_pod_count": 6,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "scheduled_count": 6,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        4
+      ],
+      "production_existing_usage": [
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 4500,
+          "mem_mib": 6144
+        }
+      ],
+      "compute_time_ms": 4.473
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 32758
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "m7i.2xlarge",
+          "cpu_milli": 7500,
+          "mem_mib": 12288
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 512
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 97,
+    "description": "seed=97 existing_nodes=1 pending_pods=3 instance_types=15",
+    "pending_pod_count": 3,
+    "production": {
+      "node_count": 1,
+      "total_cost": 0.34,
+      "scheduled_count": 3,
+      "unsched_count": 0,
+      "instance_types": [
+        "c7i.2xlarge"
+      ],
+      "option_tops": [
+        [
+          {
+            "name": "c7i.2xlarge",
+            "price": 0.34
+          },
+          {
+            "name": "c7i.4xlarge",
+            "price": 0.68
+          },
+          {
+            "name": "c7i.8xlarge",
+            "price": 1.36
+          },
+          {
+            "name": "m7i.2xlarge",
+            "price": 0.4032
+          },
+          {
+            "name": "m7i.4xlarge",
+            "price": 0.8064
+          }
+        ]
+      ],
+      "new_pod_counts": [
+        3
+      ],
+      "production_existing_usage": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.355
+    },
+    "oracle": {
+      "node_count": 1,
+      "total_cost": 0.17,
+      "instance_types": [
+        "c7i.xlarge"
+      ],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1900,
+          "mem_mib": 4086
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.large",
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 2048
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 2
+  },
+  {
+    "seed": 98,
+    "description": "seed=98 existing_nodes=1 pending_pods=5 instance_types=15",
+    "pending_pod_count": 5,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 5,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "c7i.8xlarge",
+          "cpu_milli": 9500,
+          "mem_mib": 4608
+        }
+      ],
+      "compute_time_ms": 4.245
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "c7i.8xlarge",
+          "cpu_milli": 31900,
+          "mem_mib": 65526
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "c7i.8xlarge",
+          "cpu_milli": 9500,
+          "mem_mib": 4608
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 512
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 1000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 1024
+        }
+      ]
+    },
+    "cost_ratio": 1
+  },
+  {
+    "seed": 99,
+    "description": "seed=99 existing_nodes=3 pending_pods=4 instance_types=15",
+    "pending_pod_count": 4,
+    "production": {
+      "node_count": 0,
+      "total_cost": 0,
+      "scheduled_count": 4,
+      "unsched_count": 0,
+      "instance_types": null,
+      "production_existing_usage": [
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 8500,
+          "mem_mib": 10240
+        },
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "compute_time_ms": 4.285
+    },
+    "oracle": {
+      "node_count": 0,
+      "total_cost": 0,
+      "instance_types": [],
+      "feasible": true,
+      "existing_slack": [
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 15900,
+          "mem_mib": 131062
+        },
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 65526
+        },
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 7900,
+          "mem_mib": 65526
+        }
+      ],
+      "existing_usage": [
+        {
+          "type": "r7i.4xlarge",
+          "cpu_milli": 8500,
+          "mem_mib": 10240
+        },
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        },
+        {
+          "type": "r7i.2xlarge",
+          "cpu_milli": 0,
+          "mem_mib": 0
+        }
+      ],
+      "pending_pod_sizes": [
+        {
+          "cpu_milli": 4000,
+          "mem_mib": 4096
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 2000,
+          "mem_mib": 1024
+        },
+        {
+          "cpu_milli": 500,
+          "mem_mib": 4096
+        }
+      ]
+    },
+    "cost_ratio": 1
+  }
+]

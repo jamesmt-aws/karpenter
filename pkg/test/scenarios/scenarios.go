@@ -62,10 +62,18 @@ type Scenario struct {
 // InstanceMeta is the cloud-side metadata stamped onto every Node and
 // NodeClaim in the snapshot. Tests typically pull this from
 // mostExpensiveInstance / mostExpensiveOffering in their suite fixtures.
+//
+// CPU and Memory are optional. When present and the owning Node does
+// not set its own Allocatable, Build() materializes the Node with
+// allocatable matching this instance's resources, so existing-fleet
+// scenarios accurately model the per-node slack a real cluster would
+// have. When absent, Build() falls back to a 32-CPU default.
 type InstanceMeta struct {
 	InstanceType string
 	CapacityType string
 	Zone         string
+	CPU          string
+	Memory       string
 }
 
 // NodePool describes a v1.NodePool. Defaults: ConsolidationPolicy

@@ -428,6 +428,117 @@ func labelsMatch(podLabels, selectorLabels map[string]string) bool {
 	return true
 }
 
+// existingNodeSlack is the oracle's view of one already-running node:
+// the instance type's name (for reporting) plus remaining CPU and
+// memory after subtracting bound pod requests.
+type existingNodeSlack struct {
+	Name      string
+	CPUMilli  int64
+	MemBytes  int64
+}
+
+// oraclePlanWithExisting describes the optimal placement when some
+// pending pods can land on existing nodes. ExistingPods[i] is the set
+// of pending pod indices placed onto existing node i; NewGroups,
+// NewInstanceTypes, and NewCost describe the remaining pods that need
+// new NodeClaims. ExistingPods entries with len 0 mean the node was
+// not used by any pending pod; the runner reports the union of
+// non-empty entries.
+type oraclePlanWithExisting struct {
+	ExistingPods     [][]int
+	NewGroups        [][]int
+	NewInstanceTypes []*cloudprovider.InstanceType
+	NewCost          float64
+}
+
+// bruteForcePlacementWithExisting enumerates every assignment of
+// pending pods to (existing node 0..M-1, or "stay pending"), and for
+// the pending remainder runs the partition oracle. Returns the
+// minimum-new-cost feasible plan. Cost ignores existing-node price
+// since those nodes are already running; the comparison against
+// production is on new-NodeClaim cost only.
+//
+// Search size: (M+1)^N pod-to-node assignments, each with B(N')
+// partitions over N' = pods that stayed pending. For N=6, M=3:
+// 4^6 * B(6) = 4096 * 203 = ~830k inner steps. Under one second on
+// a developer laptop.
+func bruteForcePlacementWithExisting(pods []*corev1.Pod, types []*cloudprovider.InstanceType, existing []existingNodeSlack) *oraclePlanWithExisting {
+	if len(pods) == 0 {
+		return &oraclePlanWithExisting{}
+	}
+	n := len(pods)
+	m := len(existing)
+
+	podCPU := make([]int64, n)
+	podMem := make([]int64, n)
+	for i, p := range pods {
+		req := p.Spec.Containers[0].Resources.Requests
+		podCPU[i] = req.Cpu().MilliValue()
+		podMem[i] = req.Memory().Value()
+	}
+
+	var best *oraclePlanWithExisting
+	assignment := make([]int, n)
+	var recurse func(idx int)
+	recurse = func(idx int) {
+		if idx == n {
+			existingPods := make([][]int, m)
+			var pending []int
+			for i, a := range assignment {
+				if a == m {
+					pending = append(pending, i)
+				} else {
+					existingPods[a] = append(existingPods[a], i)
+				}
+			}
+			for nodeIdx, ps := range existingPods {
+				var sumCPU, sumMem int64
+				for _, pi := range ps {
+					sumCPU += podCPU[pi]
+					sumMem += podMem[pi]
+				}
+				if sumCPU > existing[nodeIdx].CPUMilli || sumMem > existing[nodeIdx].MemBytes {
+					return
+				}
+			}
+			pendingPods := make([]*corev1.Pod, len(pending))
+			for i, idx := range pending {
+				pendingPods[i] = pods[idx]
+			}
+			plan := bruteForcePlacement(pendingPods, types)
+			if plan == nil {
+				return
+			}
+			translatedGroups := make([][]int, len(plan.Groups))
+			for gi, g := range plan.Groups {
+				translatedGroups[gi] = make([]int, len(g))
+				for j, localIdx := range g {
+					translatedGroups[gi][j] = pending[localIdx]
+				}
+			}
+			if best == nil || plan.TotalPrice < best.NewCost {
+				existingCopy := make([][]int, m)
+				for i, ps := range existingPods {
+					existingCopy[i] = append([]int(nil), ps...)
+				}
+				best = &oraclePlanWithExisting{
+					ExistingPods:     existingCopy,
+					NewGroups:        translatedGroups,
+					NewInstanceTypes: append([]*cloudprovider.InstanceType(nil), plan.InstanceTypes...),
+					NewCost:          plan.TotalPrice,
+				}
+			}
+			return
+		}
+		for choice := 0; choice <= m; choice++ {
+			assignment[idx] = choice
+			recurse(idx + 1)
+		}
+	}
+	recurse(0)
+	return best
+}
+
 func stringifyMatchLabels(m map[string]string) string {
 	if len(m) == 0 {
 		return ""

@@ -185,19 +185,35 @@ func (s *Scenario) buildNodePool(np NodePool) *v1.NodePool {
 }
 
 func (s *Scenario) buildNodeClaimAndNode(n Node, idx int) (*v1.NodeClaim, *corev1.Node) {
-	allocatable := n.Allocatable
-	if allocatable == nil {
-		allocatable = corev1.ResourceList{
-			corev1.ResourceCPU:  resource.MustParse("32"),
-			corev1.ResourcePods: resource.MustParse("100"),
-		}
-	}
 	// Per-node InstanceMeta override (Node.Instance) takes precedence
 	// over the scenario-level Instance. Used by adversarial generation
 	// to give different candidates different prices.
 	im := s.instance
 	if n.Instance != nil {
 		im = *n.Instance
+	}
+	allocatable := n.Allocatable
+	if allocatable == nil {
+		// Prefer the per-node InstanceMeta's CPU/Memory if present, so
+		// existing-fleet scenarios model real per-node slack. Fall back
+		// to 32 CPU for the consolidation-grammar tests that pre-date
+		// the CPU/Memory fields on InstanceMeta.
+		if im.CPU != "" || im.Memory != "" {
+			allocatable = corev1.ResourceList{
+				corev1.ResourcePods: resource.MustParse("100"),
+			}
+			if im.CPU != "" {
+				allocatable[corev1.ResourceCPU] = resource.MustParse(im.CPU)
+			}
+			if im.Memory != "" {
+				allocatable[corev1.ResourceMemory] = resource.MustParse(im.Memory)
+			}
+		} else {
+			allocatable = corev1.ResourceList{
+				corev1.ResourceCPU:  resource.MustParse("32"),
+				corev1.ResourcePods: resource.MustParse("100"),
+			}
+		}
 	}
 	labels := lo.Assign(map[string]string{
 		v1.NodePoolLabelKey:            n.Pool,

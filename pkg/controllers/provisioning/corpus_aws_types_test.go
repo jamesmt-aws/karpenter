@@ -117,10 +117,20 @@ func pickAWSInstances() []scenarios.InstanceMeta {
 				continue
 			}
 			zone := off.Requirements.Get(corev1.LabelTopologyZone).Any()
+			alloc := it.Allocatable()
 			meta = scenarios.InstanceMeta{
 				InstanceType: it.Name,
 				CapacityType: ct,
 				Zone:         zone,
+				// Use post-overhead allocatable so the existing-node
+				// allocatable in the materialized Node.Status matches
+				// what cloudprovider.InstanceType.Allocatable() reports.
+				// Production scheduler reads Node.Status.Allocatable for
+				// existing nodes and InstanceType.Allocatable() for new
+				// candidates; the two must agree or the oracle's existing-
+				// fleet view diverges from production's.
+				CPU:    alloc.Cpu().String(),
+				Memory: alloc.Memory().String(),
 			}
 			break
 		}
