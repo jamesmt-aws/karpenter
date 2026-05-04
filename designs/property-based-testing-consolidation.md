@@ -294,6 +294,27 @@ no constraints) surfaces one shape:
   amplified. Worth re-running the corpus on a sub-linearly-priced
   fixture to confirm.
 
+- **Per-zone monolith bias under hard TopologySpread**: when every
+  pod carries a hard `topologySpreadConstraints` on
+  `topology.kubernetes.io/zone` with MaxSkew=1, the scheduler is
+  forced to distribute pods across zones, so the single-node
+  monolith is unreachable. The bias re-emerges per zone: each zone
+  independently sizes to fit its share, and the resulting two-node
+  plan is more expensive than a plan with non-uniform per-zone
+  instance choices. 37 of 100 topology-corpus seeds manifest;
+  disagreement rate scales with pod count (4 pods: 21%, 5: 52%,
+  6: 47%). Cost ratio mean 1.081, max 1.372. 36 of 37 disagreements
+  are 2-vs-2 node count; 1 is 2-vs-3 where the oracle splits within
+  a zone for further savings. Production sizing is asymmetric in
+  26 of 37 cases and symmetric in 11, so the shape is not "always
+  picks the same instance for both zones" but rather "per-zone
+  size is locally minimal under greedy commitment, not globally
+  minimal across the partition." Same mechanism as the unconstrained
+  shape: greedy commits a pod to a zone-and-NodeClaim pair as soon
+  as the pod fits, and never reconsiders whether a different
+  zone-assignment of pods would let both zones run on cheaper
+  instance types.
+
 ## How to use the framework
 
 ### Run the existing corpus
@@ -338,6 +359,24 @@ scheduler and the brute-force placement oracle. Writes
 matching analyzer is at the same path: `analyze_overpay.py` reports
 cost-ratio distribution, disagreement rate by pod count, and the
 monolith-vs-split breakdown.
+
+### Run the provisioning topology corpus
+
+```
+KUBEBUILDER_ASSETS=$(setup-envtest use -p path 1.35.x) \
+  go test -tags=corpus -count=1 -timeout=20m \
+  ./pkg/controllers/provisioning/ \
+  -run TestAPIs --ginkgo.focus 'Provisioning Topology Corpus'
+```
+
+The topology corpus runs 100 seeds through
+`scenarios.GenerateProvisioningTopology`, which produces 4..6
+pending pods each carrying a hard TopologySpreadConstraint on
+`topology.kubernetes.io/zone` (MaxSkew=1, DoNotSchedule). The
+oracle is widened to enumerate every (partition, zone-assignment)
+pair and check TopologySpread feasibility against the full
+candidate-zones set. Writes `corpus_topology_results.json`; the same
+`analyze_overpay.py` reads it.
 
 ### Generate adversarial scenarios
 
