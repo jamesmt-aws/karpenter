@@ -294,6 +294,33 @@ no constraints) surfaces one shape:
   amplified. Worth re-running the corpus on a sub-linearly-priced
   fixture to confirm.
 
+- **First-fit monolith bias persists under existing-fleet
+  starting state, at lower frequency**: when 1..3 existing nodes
+  carry partial slack and 3..6 pending pods need scheduling,
+  production places some pods on existing slack and some on new
+  NodeClaims. 95 of 100 fleet-corpus seeds agree with the oracle;
+  5 disagree, all the same first-fit shape (production picks one
+  larger new instance where the oracle picks two smaller, or the
+  same shape at smaller scale). The drop from 23% to 5% is
+  explained by existing slack absorbing pods that would otherwise
+  drive the shape. The 5 that remain are scenarios where pending
+  pod sizes don't fit comfortably onto existing slack and the new-
+  NodeClaim shape is still picked greedily.
+
+  Surfaced one harness-side ghost shape during the first run
+  before publishing: pickAWSInstances populated InstanceMeta
+  CPU/Memory with InstanceType.Capacity, so existing nodes
+  materialized with Status.Allocatable=Capacity (no kube-reserved
+  overhead), while the oracle used InstanceType.Allocatable()
+  (post-overhead). Production read the higher Status.Allocatable
+  and accepted pods on existing nodes that the oracle rejected,
+  manifesting as five seeds with cost_ratio<1. Fixed by populating
+  InstanceMeta with Allocatable values rather than Capacity. Same
+  lesson as the consolidation oracle's validDecision case: every
+  fit predicate the production scheduler enforces must mirror in
+  the oracle's view, including the allocatable side of the
+  Capacity vs Allocatable distinction.
+
 - **Per-zone monolith bias under hard TopologySpread**: when every
   pod carries a hard `topologySpreadConstraints` on
   `topology.kubernetes.io/zone` with MaxSkew=1, the scheduler is
@@ -359,6 +386,23 @@ scheduler and the brute-force placement oracle. Writes
 matching analyzer is at the same path: `analyze_overpay.py` reports
 cost-ratio distribution, disagreement rate by pod count, and the
 monolith-vs-split breakdown.
+
+### Run the provisioning fleet corpus
+
+```
+KUBEBUILDER_ASSETS=$(setup-envtest use -p path 1.35.x) \
+  go test -tags=corpus -count=1 -timeout=20m \
+  ./pkg/controllers/provisioning/ \
+  -run TestAPIs --ginkgo.focus 'Provisioning Fleet Corpus'
+```
+
+The fleet corpus runs 100 seeds through
+`scenarios.GenerateProvisioningFleet`, which creates 1..3 existing
+nodes carrying 0..2 bound pods each and 3..6 pending pods. The
+oracle is widened to enumerate every (M+1)^N assignment of pending
+pods to (existing node, or stay pending) and run the partition
+oracle on the pending remainder. Existing-node price is treated as
+zero. Writes `corpus_fleet_results.json`.
 
 ### Run the provisioning topology corpus
 
