@@ -6,33 +6,33 @@ Consolidation and provisioning are two related optimization
 problems on a cluster. The space of possible plans is big. Only
 part of it is feasible, and within the feasible part some plans
 are cheaper than others by properties the operator cares about
-(cost, disruption count, slack). Consolidation looks for a set
-of nodes it can jointly remove without stranding pods, picking
-the cheapest such set. Provisioning looks for a set of new nodes
-that will carry the pending pods, again picking the cheapest such
-set.
+(cost, disruption count, slack). Provisioning and consolidation
+are related but distinct problems. Consolidation looks for the
+cheapest set of nodes it can remove while meeting customer
+requirements. Provisioning looks for the cheapest set of new nodes
+that will carry the pending pods while meeting customer
+requirements.
 
 Unit tests check expected output for specific inputs. They are
 easy to write for the obvious cases (delete this empty node, do
 not delete a PDB-blocked node, schedule this pod onto an existing
-node with free CPU). They do not cover the cases the author did
-not think to write down, and that is where most consolidation and
-provisioning failures live. A common failure mode is that
-feasibility does not compose. Adding or removing a single
-candidate can flip whether the whole plan is feasible. Another is
-that the algorithm picks which candidates to consider first, and
-the ordering can lock out alternatives the algorithm cannot reach
-later. Different sort keys produce different outcomes on the same
-input. Greedy placement commits to a NodeClaim before checking
-whether splitting differently would be cheaper.
+node with free CPU). They only check cases the author wrote down.
+Customers rightly complain when the algorithm misbehaves on cases
+the author did not anticipate, and that is where most
+consolidation and provisioning failures live. A common failure
+mode is that feasibility does not compose. Adding or removing a
+single candidate can flip whether the whole plan is feasible.
+Another is that the algorithm picks which candidates to consider
+first, and the ordering can lock out alternatives the algorithm
+cannot reach later. Greedy placement commits to a NodeClaim before
+checking whether splitting differently would be cheaper.
 
-Property-based testing is a useful tool against problems of this
-shape. Developers state a property the algorithm should satisfy,
-generate cluster inputs at scale, run the production algorithm
-and a reference oracle on each input, and look at where the two
-disagree. The reward is a wider net than hand-written cases. Bugs
-surface as classes of input the algorithm gets wrong, not as
-one-off test failures.
+Property-based testing is a useful tool for exploring the large
+space of provisioning and consolidation plans. Developers state a
+property the algorithm should satisfy, generate cluster inputs at
+scale, run the production algorithm and a reference oracle on each
+input, and look at where the two disagree. Bugs surface as input
+shapes the algorithm gets wrong rather than as one-off failures.
 
 The two halves of the framework share a grammar (the cluster
 snapshot plus pending workload), a metrics shape, and an oracle
@@ -62,9 +62,10 @@ node) assignments are feasible.
   tolerates the taint can land there. Together they let a scenario
   say "this node is reserved for pods that opt in."
 - **PodAffinity** and **PodAntiAffinity** (when set to required)
-  tie pods to each other. They constrain the joint assignment, not
-  a single pod's choice. For example, "if pod A lands at zone X,
-  then pod B must also land at zone X" or "must not land at zone X."
+  tie pods to each other. The constraint is about how pods relate
+  to each other, not where one pod can land on its own. For
+  example, "if pod A lands at zone X, then pod B must also land
+  at zone X," or "must not land at zone X."
 - **TopologySpread** (with WhenUnsatisfiable=DoNotSchedule) limits
   how unevenly the matching pods can be spread across topology
   domains. The constraint says no domain may have more than MaxSkew
@@ -107,38 +108,45 @@ denominator. For provisioning the same split applies. The generator
 can vary pending-pod constraints (feasibility) without varying
 NodePool instance type lists (cost), or vice versa.
 
-A useful sanity check when adding a generator. If every scenario it
-produces shares a price and shares a constraint shape, then neither
-feasibility nor cost is being exercised, and the oracle will rarely
-disagree with the algorithm.
+When adding a generator, a useful sanity check is whether the
+scenarios it produces vary along feasibility, cost, or both. If
+every scenario it produces shares a price and shares a constraint
+shape, then neither feasibility nor cost is being exercised, and
+the oracle will rarely disagree with the algorithm.
 
 ## What we have
 
-The framework has five pieces. The grammar in
-`pkg/test/scenarios/` describes a cluster snapshot in code. The
-generator turns a seed and a few parameters into a snapshot ready
-for envtest. The metrics harness scores any consolidation move on
-four axes (savings, disruption count, compute time, slack entropy).
-The brute-force oracle enumerates candidate subsets and returns the
-one with the largest feasible savings. The corpus runner ties these
-together, lives behind a build tag, and writes per-seed and
-aggregate JSON results.
+The framework has five pieces.
 
-The grammar models a cluster snapshot (NodePools with requirements
-and taints, existing Nodes with bound Pods, PDBs) plus an optional
+The grammar in `pkg/test/scenarios/` describes cluster snapshots.
+A snapshot has a static side (NodePools with requirements and
+taints, existing Nodes with bound Pods, PDBs) and an optional
 pending workload (PendingPods waiting to schedule, DaemonSets that
-contribute per-node overhead). Consolidation scenarios populate the
-snapshot side and leave PendingPods and DaemonSets empty.
+contribute per-node overhead). Consolidation scenarios populate
+the static side and leave PendingPods and DaemonSets empty.
 Provisioning scenarios populate PendingPods and NodePool templates,
 and may leave Nodes empty (greenfield) or include a small fleet to
 exercise existing-node placement.
 
-The pieces are independent and replaceable. The grammar describes
-a snapshot. The generator produces scenarios from a seed. An oracle
-evaluates each scenario. The consolidation oracle does this by
-enumerating powersets of candidate subsets, and the provisioning
-oracle does it by enumerating placement assignments at small N. The
-harness wires the pieces together.
+The seeded generator turns a seed and a few parameters into a
+snapshot that is ready to apply against envtest.
+
+The metrics harness scores any consolidation move along four axes
+(savings, disruption count, compute time, slack entropy).
+
+There is one oracle per algorithm. The consolidation oracle
+enumerates the powerset of candidate subsets and returns the
+feasible subset with the largest savings. The provisioning oracle
+enumerates placement assignments at small N and returns the
+cheapest feasible plan.
+
+The corpus runner ties the other four pieces together. It lives
+behind a build tag and writes per-seed and aggregate JSON results.
+
+The five pieces are independent and replaceable. Replacing the
+generator does not require touching the grammar or the oracle.
+Adding a new oracle for a new algorithm does not require changing
+the grammar.
 
 ## The four axes
 
@@ -149,18 +157,20 @@ Each consolidation move is scored on four axes.
 - **Compute time**, the wall time of `ComputeCommands`.
 - **Slack entropy**, Shannon entropy of the post-state's per-node
   weighted free resources. Lower is better. Concentrated slack
-  means more nodes are easy to remove next cycle, while slack
-  spread thinly across many nodes is harder to recover.
+  means at least one node is mostly empty and removable on the
+  next cycle. Slack spread thinly across many nodes leaves no
+  single node empty enough to remove.
 
-Why four axes and not just savings? A single-axis score hides real
-tradeoffs. A move that saves more by disrupting more nodes is not
-always preferred. A move that saves the same dollar amount but
+Why four axes and not just savings? A single-axis score hides
+tradeoffs the operator might care about. A move that saves more by
+disrupting more nodes is not always preferred over a smaller move
+that disrupts less. A move that saves the same dollar amount but
 leaves slack distributed across many nodes is worse than one that
 concentrates the slack on a single survivor. Four axes lets us
-compare moves with Pareto reasoning, where a move dominates another
-only if it is at least as good on every metric and strictly better
-on at least one. That gives a real picture of tradeoffs instead of
-collapsing everything into a single number that obscures them.
+compare moves with Pareto reasoning. A move dominates another only
+when it is at least as good on every metric and strictly better on
+at least one. The result is a tradeoff comparison instead of a
+single ranking that hides where the tradeoffs are.
 
 ## The brute-force oracle
 
@@ -204,34 +214,39 @@ algorithm has surfaced four bug shapes.
   search, so non-prefix subsets become reachable.
 
 - **Shape B**, where the binary search returns a feasible prefix
-  `[0:k]`, but a strictly larger non-prefix superset exists by
-  extending past `k`. The previous fix's short-circuit returned the
-  prefix immediately and never probed the superset. The corpus
-  surfaced this on 17 of 100 seeds where mainline equals branch (the
-  binary search succeeded, the pairwise fallback never ran) but the
-  oracle finds more. The fix is to extend pairwise from the binary
-  search's prefix as the initial accepted set, walking the
-  candidates beyond the prefix's tail.
+  `[0:k]`, but a larger non-prefix superset exists by extending
+  past `k`. The binary search returns as soon as it finds any
+  feasible prefix, and the Shape A fallback only runs when the
+  binary search returns NoOp, so neither path ever probes the
+  larger superset. The corpus surfaced this on 17 of 100 seeds
+  where mainline equals branch (the binary search succeeded, the
+  pairwise fallback never ran) but the oracle finds more. The fix
+  is to extend pairwise from the binary search's prefix as the
+  initial accepted set, walking the candidates beyond the prefix's
+  tail.
 
-- **Shape C**, where the binary search accepts a prefix that is
-  itself a poor commitment. A non-prefix subset that excludes part
-  of the prefix is feasible and strictly different. The original
+- **Shape C**, where the binary search accepts a feasible prefix
+  but a different non-prefix subset would be better. The non-prefix
+  subset has different members from the prefix, often by skipping
+  one of the prefix candidates and including a candidate further
+  down the sort that the prefix could not reach. The original
   demonstration used a hand-crafted scenario with a single absorber
   slot, a remaining node with capacity that exactly fits one
-  candidate's pod and nothing more. That slot blocks every joint
-  removal that includes the matching candidate, while the better
-  non-prefix subset is also strictly larger. The AWS-realistic
-  adversarial corpus surfaces a same-size variant. The algorithm
-  returns a feasible size-k prefix, while a non-prefix subset of
-  the same size k carries strictly higher savings. The non-prefix
-  subset has different members and often skips the cheapest
-  candidate at position 0 in favor of a higher-priced one further
-  down the sort. The pairwise extension cannot eject candidates it
-  has already accepted, so it cannot reach either variant. A fix
-  would need bounded brute-force at small N or a swap-walk that
-  ejects accepted candidates. With the AWS-realistic corpus and
-  the strict-feasibility oracle described below, 15 of 50
-  adversarial seeds manifest the same-size variant.
+  candidate's pod and nothing more. The slot blocks every joint
+  removal that includes that candidate, and the better non-prefix
+  subset (which excludes that candidate) is also strictly larger
+  than the prefix. The AWS-realistic adversarial corpus surfaces a
+  same-size variant of the same shape. The algorithm returns a
+  feasible size-k prefix, while a non-prefix subset of the same size
+  k carries higher savings. The non-prefix subset has different
+  members and often skips the cheapest candidate at position 0 in
+  favor of a higher-priced one further down the sort. The pairwise
+  extension cannot eject candidates it has already accepted, so it
+  cannot reach either variant. A fix would need bounded brute-force
+  at small N or a swap-walk that ejects accepted candidates. With
+  the AWS-realistic corpus and the strict-feasibility oracle
+  described below, 15 of 50 adversarial seeds manifest the same-size
+  variant.
 
 - **Marginal-cost regime under the Balanced score gate**, where the
   algorithm's chosen plan is feasible per the simulator but fails
@@ -409,8 +424,8 @@ randomization) and compute times (hardware).
 
 A targeted analyzer lives at `testdata/analyze_incomplete.py`. It
 filters to seeds where one algorithm under-consolidated relative
-to another and reports the distribution of which sort positions
-the missed candidate sat at.
+to another and reports the sort positions where the missed
+candidates appeared.
 
 ### Run the provisioning corpus
 
@@ -546,7 +561,7 @@ scenario and an algorithm output and returns whether the property
 holds. Then run the function across the corpus and report any seeds
 where it fails.
 
-Example properties the harness already checks.
+Three properties the harness already checks.
 
 - `branch.disruption_count == oracle.disruption_count` checks that
   the production algorithm is as maximal as brute force.
@@ -554,7 +569,7 @@ Example properties the harness already checks.
   correctness.
 - `len(branch.cmds) <= 1` checks shape.
 
-Properties that would be useful but are not yet checked.
+Three properties that would be useful but are not yet checked.
 
 - Disruption budgets are respected, counted per NodePool.
 - Empty-node candidates do not appear in multi-node commands.
@@ -720,22 +735,30 @@ reliable.
 
 ## A short manifesto
 
-Property-based testing for systems software depends on the
-quality of the oracle. Without an oracle, you have a generator
-that produces inputs you can feed to your code, but no way to tell
+Property-based testing for systems software depends on the quality
+of the oracle. Without an oracle, you have a generator that
+produces inputs you can feed to your code, but no way to tell
 whether the output is right. The tempting shortcut is to use the
 algorithm's own simulator as the oracle. That gives you "the code
 is consistent with itself" but not "the code is correct." A
 brute-force enumeration oracle, even at modest N, breaks that
 circularity. Where it disagrees with the production algorithm is
-where the bugs are.
+where you start looking. Sometimes the production algorithm is
+wrong. Sometimes the oracle is too lenient and produces ghost
+shapes. Either way, disagreements are the signal worth
+investigating.
 
 The corpus generator does not need to be sophisticated. It needs
-to be diverse enough that the oracle has a chance to disagree.
-Variance in pod constraints, candidate counts, sort divergence,
-and cost structure matters more than realism. The oracle's job is
-to find disagreements. The generator's job is to give the oracle
-inputs where disagreements can manifest.
+to be varied enough that the oracle has a chance to disagree.
+What matters is variance. The generator should vary pod
+constraints, candidate counts, sort divergence, and cost structure. Each axis the generator
+varies gives the oracle one more way to disagree. Realism on its
+own does not. AWS-realistic prices proved valuable for the
+consolidation corpus, but that was because they introduced price
+variance across candidates within a scenario, not because they
+imitated any specific real cluster. The oracle's job is to find
+disagreements. The generator's job is to give the oracle inputs
+where disagreements can manifest.
 
 When you find a disagreement, the next step is not to write a unit
 test for that specific input. The next step is to characterize the
