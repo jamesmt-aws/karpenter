@@ -10,7 +10,7 @@ Only a fraction of those actions are feasible given customer
 requirements (resource requests, affinities, topology constraints,
 disruption budgets). Within the feasible set, some actions are
 better than others by properties the operator cares about — cost,
-disruption count, slack distribution.
+disruption count, resource utilization.
 
 Unit tests check expected output for specific inputs. They cover
 the cases the author wrote down: delete this empty node, do not
@@ -19,8 +19,7 @@ with free CPU. They do not cover the cases the author did not
 anticipate, and that is where most consolidation and provisioning
 failures live. A common failure mode is that feasibility does not
 compose — adding or removing a single candidate can flip whether
-the whole plan is feasible. Another is that the algorithm's
-ordering locks out alternatives it cannot reach later.
+the whole plan is feasible.
 
 Property-based testing is a different approach. Instead of writing
 individual test cases, you state a property the algorithm should
@@ -28,30 +27,114 @@ satisfy ("the production algorithm finds a plan at least as good
 as any feasible alternative") and generate inputs at scale. A
 test harness runs the algorithm on each input, checks the
 property, and reports any input where the property fails. Bugs
-surface as *classes of inputs* the algorithm gets wrong, not as
-one-off failures. A single fix can address every input that
-exhibits the shape.
+surface as bug shapes — classes of inputs the algorithm gets wrong
+for the same structural reason. A single fix can address every
+input that exhibits the shape.
 
-We can use property-based testing in Karpenter to improve
-provisioning and consolidation. A brute-force oracle runs against
-the production algorithms on generated cluster snapshots —
-enumerating every feasible alternative at small N and returning
-the best one. Where the oracle finds a better plan than
-production, the disagreement names a bug shape. The framework has
-surfaced four consolidation shapes and two provisioning shapes,
-all rooted in the same structural limitation: prefix-only or
-greedy-commit search cannot reach non-prefix or split
+We can use property-based testing in Karpenter. A brute-force
+oracle enumerates every feasible alternative at small N and
+compares against the production algorithm on generated cluster
+snapshots. Where the oracle finds a better plan than production,
+the disagreement names a bug shape. This framework has surfaced
+four consolidation shapes and two provisioning shapes, all
+traceable to search structures that cannot reach certain feasible
 alternatives.
+
+## What "better" means
+
+Both algorithms search over actions, most of which are infeasible.
+Among the feasible ones, some are better than others — but
+"better" is not the same measurement for consolidation and
+provisioning.
+
+### Consolidation
+
+A consolidation move is feasible when, after removing the
+proposed nodes, every surviving pod still schedules somewhere
+that respects its requirements (resource requests, affinities,
+topology constraints, tolerations). The harness only considers
+feasible moves. If the production algorithm returns an infeasible
+move, the harness treats it as a correctness failure, not a
+quality comparison.
+
+Among feasible moves, the harness scores on two primary axes:
+
+- **Total savings** — the deleted nodes' price minus any
+  replacement node's price.
+- **Disruption count** — the number of nodes the move removes.
+
+Operators weigh these differently, so the harness uses Pareto
+comparisons rather than a single score. Move A dominates move B
+when A is at least as good on every axis and strictly better on at
+least one. Non-dominated moves are incomparable without an
+operator weighting. When the findings say "the oracle found a
+better move," that means the oracle's move dominates the
+production move — unambiguously better, not just different on the
+frontier.
+
+The harness also tracks two exploratory signals that are not part
+of the Pareto comparison:
+
+- **Compute time** — wall time of the production algorithm. Noisy
+  (millisecond-level variance across runs), so not reliable for
+  close comparisons.
+- **Slack entropy** — Shannon entropy of the post-state's per-node
+  free resources, weighted across CPU and memory. Lower is better
+  (concentrated slack means a node is mostly empty and removable
+  next cycle), but we have not confirmed it predicts next-cycle
+  savings. Tracked as an unvalidated proxy for future
+  consolidation opportunity.
+
+### Provisioning
+
+A provisioning plan is feasible when the proposed node set admits
+a valid placement for every pending pod (same scheduling
+constraints as above).
+
+Among feasible plans, the comparison is scalar: total cost of the
+provisioned nodes. The oracle returns the cheapest feasible plan.
+When the findings say "the oracle found a cheaper plan," that
+means strictly lower total node cost for the same set of pending
+pods.
+
+## The oracle
+
+The oracle is a brute-force reference algorithm that enumerates
+every feasible alternative the production algorithm could have
+chosen. Any disagreement between the oracle and production
+reflects a real difference, not a shared bug — the oracle is
+intentionally distinct from the production code. It does not sort,
+does not search prefixes, does not maintain an accept-or-skip
+walk.
+
+For consolidation, the oracle enumerates every candidate subset of
+size at least 2, capped at 8 candidates per scenario (so 256
+subsets). For each subset it asks the scheduling simulator whether
+the joint deletion is feasible, and returns the feasible subset
+with the largest savings.
+
+For provisioning, the oracle enumerates placement assignments of
+pending pods to instance types at small N and returns the cheapest
+feasible plan. For fleet scenarios it enumerates every assignment
+of pending pods to existing nodes (or stay pending), then runs the
+partition oracle on the remainder. For topology scenarios it
+enumerates every (partition, zone-assignment) pair and checks
+TopologySpread feasibility.
+
+The oracle is too expensive for production — over a second per
+scenario versus tens of milliseconds for the production binary
+search. That is fine. The oracle's job is to be correct, not fast.
 
 ## What the oracle found
 
 ### Consolidation
 
 The production multi-node consolidation algorithm sorts candidates
-and binary-searches over prefixes of that sorted list. The oracle
-enumerates every candidate subset (capped at 8 candidates, so 256
-subsets) and returns the feasible subset with the largest savings.
-Four shapes of disagreement have surfaced.
+and binary-searches over prefixes of that sorted list. All four
+shapes below are instances of the same problem: the binary search
+can only walk prefixes, so it misses feasible subsets that require
+skipping a candidate. They differ in what the binary search misses
+and why.
 
 #### Prefix-blindness (Shape A)
 
@@ -213,7 +296,8 @@ independently.
 ## How it works
 
 The framework has three pieces: a scenario grammar, generators,
-and oracles.
+and oracles. The oracle is described above. This section covers
+the grammar and generators.
 
 The scenario grammar at `pkg/test/scenarios/` models a cluster
 snapshot: NodePools with requirements and taints, existing Nodes
@@ -237,35 +321,7 @@ feasibility-and-pricing interaction. Provisioning generators vary
 pending-pod constraints, instance type lists, fleet starting
 states, and topology constraints.
 
-Oracles enumerate exhaustively. The consolidation oracle walks the
-powerset of candidate subsets (capped at 8 candidates) and returns
-the feasible subset with the largest savings. The provisioning
-oracle enumerates placement assignments at small N and returns the
-cheapest feasible plan. For fleet scenarios, the oracle enumerates
-every (M+1)^N assignment of pending pods to existing nodes (or
-stay pending), then runs the partition oracle on the remainder.
-For topology scenarios, it enumerates every (partition, zone-
-assignment) pair and checks TopologySpread feasibility. The oracles
-are intentionally distinct from the production algorithms — they
-do not sort, do not search prefixes, do not maintain an accept-or-
-skip walk. Any disagreement reflects a difference between brute
-force and the production search, not a shared bug. The oracle is
-too expensive for production (over a second per scenario versus
-tens of milliseconds for the production binary search). That is
-fine. The oracle's job is to be correct, not fast.
-
-Each consolidation move is scored on four axes: total savings
-(deleted nodes' price minus replacement), disruption count (nodes
-removed), compute time (wall time of `ComputeCommands`), and slack
-entropy (Shannon entropy of post-state per-node weighted free
-resources — lower is better, concentrated slack means a node is
-mostly empty and removable next cycle). The compute-time axis is
-noisy (millisecond-level variance across runs on the same
-machine), so Pareto comparisons that hinge on a small compute-time
-delta are not reliable. Operators weigh the other three
-differently, so the harness uses Pareto comparisons: a move
-dominates another when it is at least as good on every axis and
-strictly better on at least one.
+Oracles are described in "The oracle" above.
 
 ## Oracle gotchas
 
