@@ -24,6 +24,7 @@ import (
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/util/sets"
 
 	v1 "sigs.k8s.io/karpenter/pkg/apis/v1"
 	"sigs.k8s.io/karpenter/pkg/cloudprovider"
@@ -766,6 +767,114 @@ func TestCandidateSavingsRatio_Values(t *testing.T) {
 	ratio3 := candidateSavingsRatio(context.Background(), c3)
 	if ratio3 != 0 {
 		t.Errorf("expected ratio 0 for nil instanceType, got %.2f", ratio3)
+	}
+}
+
+// TestSingleNodeSortCandidates_BalancedSortsBySavingsRatio verifies that
+// SingleNodeConsolidation.SortCandidates uses the embedded
+// consolidation.sortCandidates ordering, which sorts by savings ratio when any
+// candidate is Balanced. The previous implementation hardcoded a sort by
+// DisruptionCost, which left high-value Balanced candidates at the back of the
+// queue and at risk of hitting the single-node 3-minute timeout before
+// evaluation.
+func TestSingleNodeSortCandidates_BalancedSortsBySavingsRatio(t *testing.T) {
+	balancedNP := makeNodePool("balanced", v1.ConsolidationPolicyBalanced)
+
+	// High ratio. Expensive instance, single small pod.
+	itHigh := makeInstanceType("expensive", 10.0)
+	candHigh := makeCandidate("node-high", balancedNP, itHigh, []*corev1.Pod{makePod("p", "")})
+	candHigh.DisruptionCost = 100.0 // high disruption cost; should not control sort
+
+	// Low ratio. Cheap instance, many pods.
+	itLow := makeInstanceType("cheap", 1.0)
+	pods := make([]*corev1.Pod, 8)
+	for i := range pods {
+		pods[i] = makePod("low-"+string(rune('0'+i)), "")
+	}
+	candLow := makeCandidate("node-low", balancedNP, itLow, pods)
+	candLow.DisruptionCost = 1.0
+
+	s := &SingleNodeConsolidation{
+		consolidation:             consolidation{},
+		PreviouslyUnseenNodePools: sets.New[string](),
+	}
+	sorted := s.SortCandidates(context.Background(), []*Candidate{candLow, candHigh})
+
+	if sorted[0] != candHigh {
+		t.Errorf("expected high-ratio candidate first, got %s", sorted[0].Node.Name)
+	}
+	if sorted[1] != candLow {
+		t.Errorf("expected low-ratio candidate second, got %s", sorted[1].Node.Name)
+	}
+}
+
+// TestSingleNodeSortCandidates_NonBalancedSortsByDisruptionCost verifies the
+// fallback path. With no Balanced candidates, sorting falls through to
+// DisruptionCost ascending, the pre-Balanced default.
+func TestSingleNodeSortCandidates_NonBalancedSortsByDisruptionCost(t *testing.T) {
+	np := makeNodePool("default", v1.ConsolidationPolicyWhenEmptyOrUnderutilized)
+	it := makeInstanceType("m7i.xlarge", 4.84)
+
+	candA := makeCandidate("a", np, it, nil)
+	candA.DisruptionCost = 10.0
+	candB := makeCandidate("b", np, it, nil)
+	candB.DisruptionCost = 1.0
+
+	s := &SingleNodeConsolidation{
+		consolidation:             consolidation{},
+		PreviouslyUnseenNodePools: sets.New[string](),
+	}
+	sorted := s.SortCandidates(context.Background(), []*Candidate{candA, candB})
+
+	if sorted[0] != candB {
+		t.Errorf("expected lowest-disruption candidate first, got %s", sorted[0].Node.Name)
+	}
+	if sorted[1] != candA {
+		t.Errorf("expected highest-disruption candidate second, got %s", sorted[1].Node.Name)
+	}
+}
+
+// TestGetCandidatePrices_MixedOfferingsBatchSum verifies that when a batch of
+// candidates contains some with missing offerings and some with valid offerings,
+// the missing-offering candidates contribute 0 each but the rest of the batch
+// contributes their valid prices. The previous implementation returned 0 for
+// the entire batch on the first missing offering, silently rejecting valid
+// multi-node moves.
+func TestGetCandidatePrices_MixedOfferingsBatchSum(t *testing.T) {
+	np := makeNodePool("default", v1.ConsolidationPolicyWhenEmptyOrUnderutilized)
+	itValid := makeInstanceType("valid", 4.0)
+	candValid1 := makeCandidate("valid-1", np, itValid, nil)
+	candValid2 := makeCandidate("valid-2", np, itValid, nil)
+
+	// Build a candidate whose Offerings are present but incompatible with the
+	// candidate's labels, so Compatible returns empty. Reuses the helper
+	// instance type, then strips offerings to force the empty-compatible path.
+	itStale := makeInstanceType("stale", 5.0)
+	itStale.Offerings = nil
+	candStale := makeCandidate("stale", np, itStale, nil)
+
+	candidates := []*Candidate{candValid1, candStale, candValid2}
+	got := getCandidatePrices(candidates)
+	want := 8.0 // two valid candidates at 4.0 each, stale contributes 0
+
+	if !approxEqual(got, want, 0.001) {
+		t.Errorf("expected batch sum %.2f, got %.2f (stale candidate should not zero the batch)", want, got)
+	}
+}
+
+// TestGetCandidatePrices_AllMissingOfferings checks the corner case where every
+// candidate has missing offerings. The sum is 0, which is the only sensible
+// answer when no candidate has a known price.
+func TestGetCandidatePrices_AllMissingOfferings(t *testing.T) {
+	np := makeNodePool("default", v1.ConsolidationPolicyWhenEmptyOrUnderutilized)
+	it := makeInstanceType("stale", 5.0)
+	it.Offerings = nil
+	candA := makeCandidate("a", np, it, nil)
+	candB := makeCandidate("b", np, it, nil)
+
+	got := getCandidatePrices([]*Candidate{candA, candB})
+	if got != 0.0 {
+		t.Errorf("expected 0 when no candidate has compatible offerings, got %.2f", got)
 	}
 }
 

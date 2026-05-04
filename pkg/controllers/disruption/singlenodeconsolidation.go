@@ -19,7 +19,6 @@ package disruption
 import (
 	"context"
 	"fmt"
-	"sort"
 	"strings"
 	"time"
 
@@ -161,15 +160,14 @@ func (s *SingleNodeConsolidation) ConsolidationType() string {
 	return SingleNodeConsolidationType
 }
 
-// sortCandidates interweaves candidates from different nodepools and prioritizes nodepools
-// that timed out in previous runs
+// SortCandidates interweaves candidates from different nodepools and prioritizes nodepools
+// that timed out in previous runs. The base ordering inside each nodepool follows the
+// embedded consolidation.sortCandidates, which sorts by savings ratio descending when any
+// candidate uses Balanced and by disruption cost ascending otherwise. Single-node was
+// previously hardcoded to sort by disruption cost regardless of policy, which left
+// high-value Balanced candidates evaluated late and at risk of hitting the timeout.
 func (s *SingleNodeConsolidation) SortCandidates(ctx context.Context, candidates []*Candidate) []*Candidate {
-
-	// First sort by disruption cost as the base ordering
-	sort.Slice(candidates, func(i int, j int) bool {
-		return candidates[i].DisruptionCost < candidates[j].DisruptionCost
-	})
-
+	candidates = s.consolidation.sortCandidates(ctx, candidates)
 	return s.shuffleCandidates(ctx, lo.GroupBy(candidates, func(c *Candidate) string { return c.NodePool.Name }))
 }
 

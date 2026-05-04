@@ -369,21 +369,23 @@ func (c *consolidation) computeSpotToSpotConsolidation(ctx context.Context, cand
 	return cmd, nil
 }
 
-// getCandidatePrices returns the sum of the prices of the given candidates
+// getCandidatePrices returns the sum of the prices of the given candidates.
+// Candidates whose offerings are missing or no longer compatible (cloud provider
+// changes, deprecated instance types, capacity reservations no longer selected)
+// contribute 0 to the sum. Drift handles nodes with mismatched offerings.
+// The previous implementation returned 0 for the entire batch when any single
+// candidate had no compatible offerings, which silently rejected valid
+// multi-node moves where only one candidate had stale pricing.
 func getCandidatePrices(candidates []*Candidate) float64 {
 	var price float64
 	for _, c := range candidates {
-		// Handle test commands or candidates without instance type info
 		if c == nil || c.instanceType == nil {
-			return 0.0
+			continue
 		}
 		reqs := scheduling.NewLabelRequirements(c.Labels())
 		compatibleOfferings := c.instanceType.Offerings.Compatible(reqs)
 		if len(compatibleOfferings) == 0 {
-			// Offerings may no longer exist due to cloud provider changes, deprecated instance types,
-			// or capacity reservations that are no longer selected. Model as free so consolidation
-			// skips this candidate; drift should handle nodes with mismatched offerings.
-			return 0.0
+			continue
 		}
 		price += compatibleOfferings.Cheapest().Price
 	}
