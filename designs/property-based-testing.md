@@ -72,18 +72,24 @@ better move," that means the oracle's move dominates the
 production move — unambiguously better, not just different on the
 frontier.
 
-The harness also tracks two exploratory signals that are not part
-of the Pareto comparison:
+The harness also tracks two exploratory signals, useful for
+consolidation, provisioning, and likely other Karpenter
+subsystems:
 
 - **Compute time** — wall time of the production algorithm. Noisy
   (millisecond-level variance across runs), so not reliable for
-  close comparisons.
+  close comparisons. With estimates of variance, compute time
+  could be promoted to a Pareto axis using confidence intervals
+  rather than point estimates.
 - **Slack entropy** — Shannon entropy of the post-state's per-node
   free resources, weighted across CPU and memory. Lower is better
-  (concentrated slack means a node is mostly empty and removable
-  next cycle), but we have not confirmed it predicts next-cycle
-  savings. Tracked as an unvalidated proxy for future
-  consolidation opportunity.
+  (concentrated slack means at least one node is mostly empty and
+  removable next cycle). With the current generators, entropy is
+  near zero in 98 of 100 default corpus seeds — the scenarios
+  consolidate aggressively enough that remaining slack is trivial.
+  Generators that produce tighter-packed clusters would exercise
+  this axis. As with compute time, variance estimates would let
+  this join the Pareto comparison.
 
 ### Provisioning
 
@@ -91,11 +97,17 @@ A provisioning plan is feasible when the proposed node set admits
 a valid placement for every pending pod (same scheduling
 constraints as above).
 
-Among feasible plans, the comparison is scalar: total cost of the
-provisioned nodes. The oracle returns the cheapest feasible plan.
-When the findings say "the oracle found a cheaper plan," that
-means strictly lower total node cost for the same set of pending
-pods.
+Among feasible plans, we prefer cheaper nodes. This can get quite
+complex when we consider different financial features of AWS
+(Spot, ODCRs, etc), capacity availability is stochastic, Spot
+instances are both cheaper and less available in a hard-to-define
+way, and if pod lifetimes are uncorrelated then utilization at
+provisioning time starts out happy and gets worse as pods leave.
+However, under reasonable assumptions we'll take the cheapest
+options available, including relevant vCPU/memory overhead from
+daemonsets and dataplane on each provisioned node. When the
+findings say "the oracle found a cheaper plan," that means
+strictly lower total node cost for the same set of pending pods.
 
 ## The oracle
 
@@ -123,18 +135,19 @@ TopologySpread feasibility.
 
 The oracle is too expensive for production — over a second per
 scenario versus tens of milliseconds for the production binary
-search. That is fine. The oracle's job is to be correct, not fast.
+search. This is intended, because the oracle's job is to be
+correct on small input sizes, not necessarily fast.
 
-## What the oracle found
+## What the oracle has already found
 
 ### Consolidation
 
-The production multi-node consolidation algorithm sorts candidates
-and binary-searches over prefixes of that sorted list. All four
-shapes below are instances of the same problem: the binary search
-can only walk prefixes, so it misses feasible subsets that require
-skipping a candidate. They differ in what the binary search misses
-and why.
+As of early May 2026, the mainline multi-node consolidation
+algorithm sorts candidates and binary-searches over prefixes of
+that sorted list. All four shapes below are instances of the same
+problem: the binary search can only walk prefixes, so it misses
+feasible subsets that require skipping a candidate. They differ in
+what the binary search misses and why.
 
 #### Prefix-blindness (Shape A)
 
@@ -205,16 +218,6 @@ This is not a bug shape. The gate is declining marginal
 consolidations, which is what it was designed to do. The corpus
 result confirms the gate's design intent and is the regime worth
 probing when reasoning about Balanced policy behavior.
-
-#### Pattern across A, B, and C
-
-The first three shapes share a structure. Prefix-based binary
-search is correct — every subset it returns is feasible. It
-sometimes misses the largest feasible subset because the largest
-is reachable only by walking a non-prefix path. The search
-structure has to reach non-prefix subsets to recover maximality.
-The fourth shape is about a different question: whether the
-resulting plan is worth applying once the search has found it.
 
 ### Provisioning
 
