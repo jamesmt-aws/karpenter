@@ -12,40 +12,46 @@ disruption budgets). Within the feasible set, some actions are
 better than others by properties the operator cares about — cost,
 disruption count, resource utilization.
 
-Unit tests check expected output for specific inputs. They cover
-the cases the author wrote down: delete this empty node, do not
-delete a PDB-blocked node, schedule this pod onto an existing node
-with free CPU. They do not cover the cases the author did not
-anticipate, and that is where most consolidation and provisioning
-failures live. A common failure mode is that feasibility does not
-compose — adding or removing a single candidate can flip whether
-the whole plan is feasible.
+Unit tests work well for feasibility checks — given this input,
+is the output feasible? Those are easy to write because the
+property is binary and the expected answer is clear. Unit tests
+are harder to write for search strategy, because the feasible
+input space and feasible output space are both giant, and in
+production the algorithm makes tradeoffs the test author cannot
+enumerate. The author writes the obvious cases (delete this empty
+node, do not delete a PDB-blocked node, schedule this pod onto an
+existing node with free CPU) but cannot anticipate the cases where
+the search strategy's structural limitations interact with a
+particular input shape to miss a better feasible plan.
 
-Property-based testing is a different approach. Instead of writing
+Property-based testing addresses this. Instead of writing
 individual test cases, you state a property the algorithm should
 satisfy ("the production algorithm finds a plan at least as good
 as any feasible alternative") and generate inputs at scale. A
 test harness runs the algorithm on each input, checks the
 property, and reports any input where the property fails. Bugs
 surface as bug shapes — classes of inputs the algorithm gets wrong
-for the same structural reason. A single fix can address every
-input that exhibits the shape.
+for the same structural reason. A bug shape is not a single
+failing test case; it is a named structural limitation that
+explains why a whole family of inputs produces suboptimal output.
+A single fix can address every input that exhibits the shape.
 
 We can use property-based testing in Karpenter. A brute-force
 oracle enumerates every feasible alternative at small N and
 compares against the production algorithm on generated cluster
 snapshots. Where the oracle finds a better plan than production,
-the disagreement names a bug shape. This framework has surfaced
-four consolidation shapes and two provisioning shapes, all
-traceable to search structures that cannot reach certain feasible
-alternatives.
+the disagreement names a bug shape. This framework has already
+surfaced four consolidation shapes and two provisioning shapes,
+all traceable to search structures that cannot reach certain
+feasible alternatives.
 
 ## What "better" means
 
-Both algorithms search over actions, most of which are infeasible.
-Among the feasible ones, some are better than others — but
-"better" is not the same measurement for consolidation and
-provisioning.
+Both algorithms search over the space of all possible actions for
+provisioning and consolidation. This space is enormous for
+reasonably sized clusters, and most of the space is infeasible.
+Among the feasible actions, each algorithm has its own quality
+metric.
 
 ### Consolidation
 
