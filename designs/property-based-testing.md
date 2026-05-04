@@ -78,28 +78,6 @@ better move," that means the oracle's move dominates the
 production move — unambiguously better, not just different on the
 frontier.
 
-The harness also tracks two exploratory signals, useful for
-consolidation, provisioning, and likely other Karpenter
-subsystems:
-
-- **Compute time** — wall time of the production algorithm. At
-  current corpus sizes (3–8 candidates), compute time differences
-  are millisecond-level and dominated by noise. At larger input
-  sizes the production algorithm's search strategy would produce
-  meaningful time differences between approaches, and compute time
-  would become a real axis. With estimates of variance, it could
-  be promoted to the Pareto comparison using confidence intervals
-  rather than point estimates.
-- **Slack entropy** — Shannon entropy of the post-state's per-node
-  free resources, weighted across CPU and memory. Lower is better
-  (concentrated slack means at least one node is mostly empty and
-  removable next cycle). With the current generators, entropy is
-  near zero in 98 of 100 default corpus seeds — the scenarios
-  consolidate aggressively enough that remaining slack is trivial.
-  Generators that produce tighter-packed clusters with more
-  surviving nodes would exercise this axis and make entropy
-  differences meaningful.
-
 ### Provisioning
 
 A provisioning plan is feasible when the proposed node set admits
@@ -397,17 +375,13 @@ at least one of the two.
 ## From disagreements to bug names
 
 Disagreements tell you *that* something is wrong, not *why*.
-Naming the bug at a level specific enough to fix requires a
-separate step. We've had success feeding A/B comparisons (on this
-input, production returned X, oracle returned Y, Y is feasible
-and has higher savings) to a tenet-extraction pass over the
-production code. The A/B format closes the gap that pass/fail
-signals leave open — it produces descriptions specific enough to
-generate working fixes. The consolidation #1962 bug was first
-named this way: the model endorsed prefix-only search as a design
-choice rather than a limitation, which flagged the exact property
-the oracle later confirmed was violated. For this doc, assume
-you'll read disagreements by hand.
+Naming the bug at a level specific enough to fix requires reading
+the oracle's chosen subset, the production algorithm's chosen
+subset, and understanding why the oracle's is better — which
+constraint did production's search structure fail to navigate?
+The shape names in this doc (prefix-blindness, short-prefix,
+non-prefix-better, first-fit monolith) each came from that
+exercise.
 
 ## How to run it
 
