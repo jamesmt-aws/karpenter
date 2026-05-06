@@ -3,21 +3,21 @@
 Karpenter manages nodes for Kubernetes clusters. Provisioning
 watches for pending pods and adds nodes when the cluster needs
 capacity. Consolidation removes and replaces nodes to improve
-cluster efficiency — fewer nodes, lower cost, less waste. Both
-are optimization problems. The space of possible actions is giant:
-which nodes to add, which to remove, which pods to move where.
-Only a fraction of those actions are feasible given customer
-requirements (resource requests, affinities, topology constraints,
-disruption budgets). Within the feasible set, some actions are
-better than others by properties the operator cares about — cost,
-disruption count, resource utilization.
+cluster efficiency, meaning fewer nodes, lower cost, and less
+waste. Both are optimization problems. The space of possible
+actions is giant: which nodes to add, which to remove, which pods
+to move where. Only a fraction of those actions are feasible given
+customer requirements (resource requests, affinities, topology
+constraints, disruption budgets). Within the feasible set, some
+actions are better than others by the properties the operator
+cares about (cost, disruption count, resource utilization).
 
-Unit tests work well for feasibility checks — given this input,
-is the output feasible? Those are easy to write because the
-property is binary and the expected answer is clear. Unit tests
-are harder to write for search strategy, because the feasible
-input space and feasible output space are both giant, and in
-production the algorithm makes tradeoffs the test author cannot
+Unit tests work well for feasibility checks of the form "given
+this input, is the output feasible?" Those are easy to write
+because the property is binary and the expected answer is clear.
+Unit tests are harder to write for search strategy, because the
+feasible input space and feasible output space are both giant, and
+in production the algorithm makes tradeoffs the test author cannot
 enumerate. The author writes the obvious cases (delete this empty
 node, do not delete a PDB-blocked node, schedule this pod onto an
 existing node with free CPU) but cannot anticipate the cases where
@@ -30,8 +30,8 @@ satisfy ("the production algorithm finds a plan at least as good
 as any feasible alternative") and generate inputs at scale. A
 test harness runs the algorithm on each input, checks the
 property, and reports any input where the property fails. Bugs
-surface as bug shapes — classes of inputs the algorithm gets wrong
-for the same structural reason. A bug shape is not a single
+surface as bug shapes (classes of inputs the algorithm gets wrong
+for the same structural reason). A bug shape is not a single
 failing test case; it is a named structural limitation that
 explains why a whole family of inputs produces suboptimal output.
 A single fix can address every input that exhibits the shape.
@@ -65,9 +65,9 @@ quality comparison.
 
 Among feasible moves, the harness scores on two primary axes:
 
-- **Total savings** — the deleted nodes' price minus any
+- **Total savings**, the deleted nodes' price minus any
   replacement node's price.
-- **Disruption count** — the number of nodes the move removes.
+- **Disruption count**, the number of nodes the move removes.
 
 Operators weigh these differently, so the harness uses Pareto
 comparisons rather than a single score. Move A dominates move B
@@ -75,8 +75,8 @@ when A is at least as good on every axis and strictly better on at
 least one. Non-dominated moves are incomparable without an
 operator weighting. When the findings say "the oracle found a
 better move," that means the oracle's move dominates the
-production move — unambiguously better, not just different on the
-frontier.
+production move (unambiguously better, not just different on the
+frontier).
 
 ### Provisioning
 
@@ -104,7 +104,7 @@ axes above. The snapshot is the input (existing nodes, bound pods,
 pending pods, constraints). The reaction is the algorithm's
 proposed plan (which nodes to add, remove, or replace). The grade
 is how that plan scores on savings, disruption count, and cost.
-The oracle provides the reference grade — the best feasible
+The oracle provides the reference grade, the best feasible
 reaction to the same snapshot. Any algorithm can be plugged into
 this model and compared against the oracle or against other
 algorithms on the same corpus of snapshots.
@@ -114,7 +114,7 @@ algorithms on the same corpus of snapshots.
 The oracle is a brute-force reference algorithm that enumerates
 every feasible alternative the production algorithm could have
 chosen. Any disagreement between the oracle and production
-reflects a real difference, not a shared bug — the oracle is
+reflects a real difference, not a shared bug, because the oracle is
 intentionally distinct from the production code. It does not sort,
 does not search prefixes, does not maintain an accept-or-skip
 walk.
@@ -146,7 +146,7 @@ scaling roughly as:
 | 32 | 4.3 billion | ~1 year |
 
 The production binary search takes tens of milliseconds regardless
-of N. This is intended — the oracle's job is to be correct on
+of N. This is intended, since the oracle's job is to be correct on
 small input sizes, not necessarily fast. At small N the oracle
 finds the shapes; production clusters with hundreds of candidates
 per cycle would need a sampling or heuristic oracle.
@@ -166,8 +166,8 @@ what the binary search misses and why.
 
 The binary search exits with no plan even though a feasible joint
 deletion exists. Every prefix the binary search tries contains a
-"blocker" candidate — a candidate whose pod cannot reschedule
-anywhere. The simulator rejects every such prefix. A non-prefix
+"blocker" candidate (a candidate whose pod cannot reschedule
+anywhere). The simulator rejects every such prefix. A non-prefix
 subset that excludes the blocker is feasible, but the binary
 search's prefix structure cannot reach it. This is the original
 karpenter#1962 bug shape. 14 of 100 corpus seeds fire it.
@@ -257,8 +257,9 @@ The NodeClaim ends up with `InstanceTypeOptions` filtered to types
 that fit the cumulative pod set, and the cheapest of those is
 launched. That cheapest single-fit type is sometimes more expensive
 than two smaller instances summing to less total capacity. The
-shape parallels Shape C on the consolidation side — the search
-structure (greedy commit) cannot reach the alternative (split).
+shape parallels Shape C on the consolidation side, where the
+search structure (greedy commit) cannot reach the alternative
+(split).
 
 In linear-pricing instance families (c7i, m7i, r7i are linear by
 size) the savings come from picking less total capacity, not from
@@ -271,8 +272,8 @@ with partial slack, 3–6 pending pods) at lower frequency: 5 of
 100 seeds disagree, all the same first-fit shape. Existing slack
 absorbs pods that would otherwise drive the monolith. A daemon-
 overhead corpus (one DaemonSet at 100m CPU, 128MiB memory)
-confirms the accounting is correct — no new shape, same 23/100
-disagreement rate as greenfield. The daemon's value is as a rigor
+confirms the accounting is correct, with no new shape and the
+same 23/100 disagreement rate as greenfield. The daemon's value is as a rigor
 check: a divergent overhead bug would surface as `cost_ratio`
 movement relative to the no-daemon baseline.
 
@@ -301,8 +302,8 @@ cheapest single instance for the pods that landed there, but the
 way pods landed across zones is not the way that would let both
 zones run on cheaper instances together.
 
-Same root cause as the unconstrained shape — greedy commits a pod
-to a zone-and-NodeClaim pair as soon as the pod fits, and never
+Same root cause as the unconstrained shape, where greedy commits a
+pod to a zone-and-NodeClaim pair as soon as the pod fits and never
 reconsiders whether a different zone-assignment would yield a
 cheaper plan. But the failure surface is different: fixing first-
 fit selection in the unconstrained case would not automatically
@@ -377,7 +378,7 @@ at least one of the two.
 Disagreements tell you *that* something is wrong, not *why*.
 Naming the bug at a level specific enough to fix requires reading
 the oracle's chosen subset, the production algorithm's chosen
-subset, and understanding why the oracle's is better — which
+subset, and understanding why the oracle's is better. Which
 constraint did production's search structure fail to navigate?
 The shape names in this doc (prefix-blindness, short-prefix,
 non-prefix-better, first-fit monolith) each came from that
@@ -452,9 +453,11 @@ report any seeds where it fails.
 
 Three properties the harness already checks:
 
-- `branch.disruption_count == oracle.disruption_count` — maximality.
-- `branch's chosen subset is simulator-feasible` — correctness.
-- `len(branch.cmds) <= 1` — shape.
+- `branch.disruption_count == oracle.disruption_count`, the
+  maximality check.
+- `branch's chosen subset is simulator-feasible`, the correctness
+  check.
+- `len(branch.cmds) <= 1`, the shape check.
 
 Three properties that would be useful but are not yet checked:
 
@@ -492,7 +495,7 @@ Three properties that would be useful but are not yet checked:
 - **Capacity-type variation.** Spot vs on-demand interactions are
   not exercised. All scenarios use on-demand.
 
-### Not yet covered — one generator away
+### Not yet covered, one generator away
 
 - **Multiple NodePools.** All scenarios create one pool. Cross-pool
   budget interactions, Replace decisions across pools, and cross-
@@ -509,7 +512,7 @@ Three properties that would be useful but are not yet checked:
   fact.
 - **Score gate at multiple k values.** Only k=2 is evaluated.
 
-### Not yet covered — structurally harder
+### Not yet covered, structurally harder
 
 - **PDB-blocked candidates.** `NewCandidate` filters PDB-blocked
   nodes out via `ValidatePodsDisruptable` before they reach the
@@ -531,29 +534,29 @@ across its [-10, 10] clamp. With uniform default `EvictionCost`,
 
 ## Where things live
 
-- `pkg/test/scenarios/` — snapshot grammar, seeded generator,
-  metrics module, adversarial and marginal generators. The
-  `Constraint` interface is shared across bound pods and pending
-  pods.
-- `pkg/controllers/disruption/corpus_test.go` — main A/B/C/D
+- `pkg/test/scenarios/` holds the snapshot grammar, the seeded
+  generator, the metrics module, and the adversarial and marginal
+  generators. The `Constraint` interface is shared across bound
+  pods and pending pods.
+- `pkg/controllers/disruption/corpus_test.go` is the main A/B/C/D
   corpus runner (build tag `corpus`).
-- `pkg/controllers/disruption/corpus_adversarial_test.go` —
+- `pkg/controllers/disruption/corpus_adversarial_test.go` is the
   adversarial corpus runner.
-- `pkg/controllers/disruption/corpus_marginal_test.go` — marginal
-  corpus runner.
-- `pkg/controllers/disruption/multinode_1962_test.go` — hand-
-  crafted Shape A reproducer.
-- `pkg/controllers/disruption/scenario_1962_test.go` — same Shape
-  A reproducer expressed through the grammar.
+- `pkg/controllers/disruption/corpus_marginal_test.go` is the
+  marginal corpus runner.
+- `pkg/controllers/disruption/multinode_1962_test.go` is a
+  hand-crafted Shape A reproducer.
+- `pkg/controllers/disruption/scenario_1962_test.go` is the same
+  Shape A reproducer expressed through the grammar.
 - `pkg/controllers/disruption/scenario_pairwise_incomplete_test.go`
-  — hand-crafted Shape C reproducer.
-- `pkg/controllers/disruption/testdata/` — committed baselines and
-  Python analyzers.
-- `pkg/controllers/provisioning/corpus_test.go` — provisioning
+  is a hand-crafted Shape C reproducer.
+- `pkg/controllers/disruption/testdata/` holds the committed
+  baselines and Python analyzers.
+- `pkg/controllers/provisioning/corpus_test.go` is the provisioning
   corpus runner (greenfield, fleet, daemon, topology).
-- `pkg/controllers/provisioning/corpus_oracle_test.go` — brute-
-  force placement oracle.
-- `pkg/controllers/provisioning/corpus_aws_types_test.go` — AWS-
-  realistic instance type fixture.
-- `pkg/controllers/provisioning/testdata/` — committed baseline
-  JSONs and `analyze_overpay.py`.
+- `pkg/controllers/provisioning/corpus_oracle_test.go` is the
+  brute-force placement oracle.
+- `pkg/controllers/provisioning/corpus_aws_types_test.go` is the
+  AWS-realistic instance type fixture.
+- `pkg/controllers/provisioning/testdata/` holds the committed
+  baseline JSONs and `analyze_overpay.py`.
