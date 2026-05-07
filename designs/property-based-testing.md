@@ -31,9 +31,8 @@ as any feasible alternative") and generate inputs at scale. A
 test harness runs the algorithm on each input, checks the
 property, and reports any input where the property fails. Bugs
 surface as bug shapes (classes of inputs the algorithm gets wrong
-for the same structural reason). A bug shape is not a single
-failing test case; it is a named structural limitation that
-explains why a whole family of inputs produces suboptimal output.
+for the same structural reason). A bug shape names a structural
+limitation broad enough that a whole family of inputs trips it.
 A single fix can address every input that exhibits the shape.
 
 We can use property-based testing in Karpenter. A brute-force
@@ -70,13 +69,13 @@ Among feasible moves, the harness scores on two primary axes:
 - **Disruption count**, the number of nodes the move removes.
 
 Operators weigh these differently, so the harness uses Pareto
-comparisons rather than a single score. Move A dominates move B
-when A is at least as good on every axis and strictly better on at
-least one. Non-dominated moves are incomparable without an
-operator weighting. When the findings say "the oracle found a
-better move," that means the oracle's move dominates the
-production move (unambiguously better, not just different on the
-frontier).
+comparisons. The harness does not collapse the axes into a single
+score. Move A dominates move B when A is at least as good on every
+axis and strictly better on at least one. Non-dominated moves are
+incomparable without an operator weighting. When the findings say
+"the oracle found a better move," that means the oracle's move
+dominates the production move (better on at least one axis without
+being worse on any).
 
 ### Provisioning
 
@@ -84,17 +83,13 @@ A provisioning plan is feasible when the proposed node set admits
 a valid placement for every pending pod (same scheduling
 constraints as above).
 
-Among feasible plans, we prefer cheaper nodes. This can get quite
-complex when we consider different financial features of AWS
-(Spot, ODCRs, etc), capacity availability is stochastic, Spot
-instances are both cheaper and less available in a hard-to-define
-way, and if pod lifetimes are uncorrelated then utilization at
-provisioning time starts out happy and gets worse as pods leave.
-However, under reasonable assumptions we'll take the cheapest
-options available, including relevant vCPU/memory overhead from
-daemonsets and dataplane on each provisioned node. When the
-findings say "the oracle found a cheaper plan," that means
-strictly lower total node cost for the same set of pending pods.
+Among feasible plans, the harness prefers cheaper nodes. The
+framework uses on-demand pricing and accounts for daemonset and
+dataplane overhead per provisioned node. When the findings say
+"the oracle found a cheaper plan," that means strictly lower total
+node cost for the same set of pending pods. The framework does
+not yet model Spot or ODCR pricing, capacity stochasticity, or
+utilization decay as pods leave nodes mid-lifetime.
 
 ### The snapshot-and-react model
 
@@ -146,10 +141,10 @@ scaling roughly as:
 | 32 | 4.3 billion | ~1 year |
 
 The production binary search takes tens of milliseconds regardless
-of N. This is intended, since the oracle's job is to be correct on
-small input sizes, not necessarily fast. At small N the oracle
-finds the shapes; production clusters with hundreds of candidates
-per cycle would need a sampling or heuristic oracle.
+of N. This is intentional. The oracle's job is to be correct on
+small input sizes. At small N the oracle finds shapes. Production
+clusters with hundreds of candidates per cycle would need a
+sampling or heuristic oracle.
 
 ## What the oracle has already found
 
@@ -157,10 +152,10 @@ per cycle would need a sampling or heuristic oracle.
 
 As of early May 2026, the mainline multi-node consolidation
 algorithm sorts candidates and binary-searches over prefixes of
-that sorted list. All four shapes below are instances of the same
-problem: the binary search can only walk prefixes, so it misses
-feasible subsets that require skipping a candidate. They differ in
-what the binary search misses and why.
+that sorted list. The four shapes below are instances of one
+underlying problem. The binary search walks prefixes only, so any
+feasible subset that requires skipping a candidate is unreachable.
+The shapes differ in what the binary search misses and why.
 
 #### Prefix-blindness (Shape A)
 
@@ -250,7 +245,7 @@ smaller instances that provisions strictly less total capacity at
 lower total price. 23 of 100 greenfield corpus seeds manifest
 this. The disagreement rate scales monotonically with pod count
 (3 pods at 4%, 4 at 17%, 5 at 36%, 6 at 40%). Worst-case overpay
-is 1.6x; most disagreements cluster at 1.333x. All splits
+is 1.6x. Most disagreements cluster at 1.333x. All splits
 surfaced are two-way.
 
 The NodeClaim ends up with `InstanceTypeOptions` filtered to types
@@ -264,17 +259,17 @@ search structure (greedy commit) cannot reach the alternative
 In linear-pricing instance families (c7i, m7i, r7i are linear by
 size) the savings come from picking less total capacity, not from
 arbitrage across families. In families with sub-linear pricing the
-shape would be muted; in super-linear pricing it would be
+shape would be muted, and in super-linear pricing it would be
 amplified.
 
 The same shape appears in fleet provisioning (1–3 existing nodes
-with partial slack, 3–6 pending pods) at lower frequency: 5 of
-100 seeds disagree, all the same first-fit shape. Existing slack
-absorbs pods that would otherwise drive the monolith. A daemon-
-overhead corpus (one DaemonSet at 100m CPU, 128MiB memory)
-confirms the accounting is correct, with no new shape and the
-same 23/100 disagreement rate as greenfield. The daemon's value is as a rigor
-check: a divergent overhead bug would surface as `cost_ratio`
+with partial slack, 3–6 pending pods) at lower frequency, with 5
+of 100 seeds disagreeing on the same first-fit shape. Existing
+slack absorbs pods that would otherwise drive the monolith. A
+daemon-overhead corpus (one DaemonSet at 100m CPU, 128MiB memory)
+confirms the accounting is correct, with no new shape and the same
+23/100 disagreement rate as greenfield. The daemon's value is as a
+rigor check. A divergent overhead bug would surface as `cost_ratio`
 movement relative to the no-daemon baseline.
 
 An immediate fix is out of scope. A fix would need either a
@@ -286,7 +281,7 @@ a bounded brute-force placement at the bin-packing step.
 When every pod carries a hard `topologySpreadConstraints` on
 `topology.kubernetes.io/zone` with `MaxSkew=1`, the scheduler
 distributes pods across zones. The single-node monolith is
-unreachable. The bias re-emerges per zone: each zone independently
+unreachable. The bias re-emerges per zone. Each zone independently
 sizes to fit its share, and the resulting two-node plan is more
 expensive than a plan with non-uniform per-zone instance choices.
 37 of 100 topology-corpus seeds manifest. The disagreement rate
@@ -296,18 +291,17 @@ ratio mean is 1.081, max 1.372.
 36 of 37 disagreements are 2 nodes versus 2 nodes. 1 is 2 versus
 3, where the oracle splits within a zone for further savings.
 Production sizing is asymmetric in 26 of 37 cases and symmetric
-in 11. The shape is not that production always picks the same
-instance for both zones. The shape is that each zone gets the
-cheapest single instance for the pods that landed there, but the
-way pods landed across zones is not the way that would let both
-zones run on cheaper instances together.
+in 11. The shape sits at the zone-assignment level. Each zone gets
+the cheapest single instance for the pods that landed there, but
+the way pods landed across zones leaves both zones running on more
+expensive instances than a different assignment would have needed.
 
 Same root cause as the unconstrained shape, where greedy commits a
 pod to a zone-and-NodeClaim pair as soon as the pod fits and never
 reconsiders whether a different zone-assignment would yield a
-cheaper plan. But the failure surface is different: fixing first-
-fit selection in the unconstrained case would not automatically
-fix the zone-assignment problem. They would need to be addressed
+cheaper plan. The failure surface is different. Fixing first-fit
+selection in the unconstrained case leaves the zone-assignment
+problem unaddressed. Both fixes would need to be done
 independently.
 
 ## How it works
@@ -338,8 +332,6 @@ feasibility-and-pricing interaction. Provisioning generators vary
 pending-pod constraints, instance type lists, fleet starting
 states, and topology constraints.
 
-Oracles are described in "The oracle" above.
-
 ## Oracle gotchas
 
 Three lessons that will save time if you modify the oracle or add
@@ -350,7 +342,7 @@ no-op.** `pickCorpusInstances` deduplicates by `(cpu, mem)` shape
 so the eight-instance pool spans real prices. Without price
 variation the savings-ratio sort and the score gate are both inert.
 An earlier version of this framework misattributed the gate's
-silence to the gate itself; the silence was a property of the
+silence to the gate itself. The silence was a property of the
 input distribution.
 
 **The oracle's feasibility predicate must match the production
@@ -358,7 +350,7 @@ algorithm's predicate exactly.** `bruteForceSearch` mirrors the
 algorithm's `validDecision` check, rejecting `ReplaceDecision`
 results where `filterOutSameInstanceType` leaves an empty option
 list. Before that fix, 15 adversarial seeds were classified as
-larger-set Shape C disagreements; with the strict oracle they
+larger-set Shape C disagreements. With the strict oracle they
 re-classified as the same-size variant. On the provisioning side,
 `pickAWSInstances` must populate `InstanceMeta` with
 `Allocatable()` values rather than `Capacity`, or existing nodes
@@ -416,11 +408,11 @@ order. If a candidate that blocks joint deletion (its pod cannot
 reschedule anywhere) sorts in the middle of the candidate list,
 every prefix that includes it fails the simulator. The binary
 search exits empty, even when a non-prefix subset that excludes
-the blocker would consolidate cleanly.
+the blocker would consolidate without stranding any pod.
 
 A hypothesis is not yet a bug shape. A bug shape requires
-demonstrating that the structural property actually causes the
-symptom on at least one input.
+demonstrating that the structural property causes the symptom on
+at least one input.
 
 ### The reproducer
 
@@ -448,7 +440,7 @@ Without the corpus, prefix-blindness might have looked like one
 customer's unusual configuration. With the corpus, it is a class
 of clusters that hits the bug at a known rate.
 
-This is the leverage of property-based testing for this kind of
+This is what property-based testing buys you on this kind of
 algorithm. The reproducer proves existence. The corpus measures
 prevalence.
 
@@ -464,9 +456,10 @@ label only that node carries). The structural pattern is the
 binary search's prefix walk failing to reach a non-prefix subset.
 
 The shape name is prefix-blindness. The name encodes the
-structural limitation of the search rather than the surface
-symptom. A name at this level is what makes the fix obvious in
-the next step.
+structural limitation of the search. The surface symptom (no plan
+returned) is downstream of the structural cause and would not have
+suggested the fix on its own. A name at this level makes the fix
+obvious in the next step.
 
 ### The fix
 
@@ -499,9 +492,9 @@ A regression appears as a diff against that baseline.
 ### What the engineer gets
 
 A reproducible bug, a generalized form (the corpus generator), a
-name for the shape, a fix that addresses the shape rather than
-the symptom, and a regression test that catches the shape in any
-future change. The same workflow produced shapes B and C on the
+name for the shape, a fix that addresses the shape at the
+structural level, and a regression test that catches the shape
+in any future change. The same workflow produced shapes B and C on the
 consolidation side, and first-fit monolith and per-zone monolith
 on the provisioning side.
 
@@ -733,8 +726,8 @@ baseline, and a doc update if the shape landscape changed.
 ### Practice tickets
 
 The two tickets below are fictional, not real karpenter issues.
-They are written in the style of customer reports and map cleanly
-to documented shapes. Use them to exercise the ticket-to-test
+They are written in the style of customer reports and map to
+documented shapes without ambiguity. Use them to exercise the ticket-to-test
 prompt without having seen the answer.
 
 For each ticket, run the prompt against the ticket text, then
