@@ -384,6 +384,127 @@ The shape names in this doc (prefix-blindness, short-prefix,
 non-prefix-better, first-fit monolith) each came from that
 exercise.
 
+## A worked example (karpenter#1962)
+
+The four consolidation shapes above each came out of this
+workflow. Walking the original karpenter#1962 case end to end
+shows what the workflow looks like in practice, from a customer
+report to a merged fix.
+
+### The report
+
+A customer reported that consolidation was not running on a
+cluster that should have been consolidatable. Several mostly-empty
+nodes had been sitting unchanged for hours, and the customer had
+verified by hand that the workload would fit on a smaller subset.
+Multi-node consolidation kept logging "Can't replace with a
+cheaper node" and returning NoOp.
+
+The customer's report described a symptom (consolidation not
+happening when it should) without a structural cause. Customers
+generally do not, and should not have to, hand the engineering
+team a structural diagnosis.
+
+### From symptom to hypothesis
+
+Engineering's job at this point is to form a hypothesis about
+what structural property of the customer's cluster the production
+algorithm fails to navigate. For karpenter#1962, the hypothesis
+was prefix-blindness. The multi-node consolidation algorithm
+sorts candidates and binary-searches over prefixes of that sorted
+order. If a candidate that blocks joint deletion (its pod cannot
+reschedule anywhere) sorts in the middle of the candidate list,
+every prefix that includes it fails the simulator. The binary
+search exits empty, even when a non-prefix subset that excludes
+the blocker would consolidate cleanly.
+
+A hypothesis is not yet a bug shape. A bug shape requires
+demonstrating that the structural property actually causes the
+symptom on at least one input.
+
+### The reproducer
+
+The smallest input that exhibits prefix-blindness has three
+candidates sorted [good_0, bad, good_2] by `PodDeletionCost`. The
+bad candidate's pod has a NodeSelector that no other node and no
+replacement node can satisfy. The good candidates' pods are
+unrestricted and fit anywhere in the remaining capacity.
+
+`pkg/controllers/disruption/scenario_1962_test.go` expresses the
+reproducer through the scenario grammar. The hand-crafted version
+in `multinode_1962_test.go` predates the grammar and is
+functionally equivalent. Both fail on the unfixed binary search
+and pass on the fixed code.
+
+The reproducer is not the deliverable. It proves the bug exists
+on one input. The next step is generalization.
+
+### Generalization through the corpus
+
+The default corpus generator injects a NodeSelector-blocked
+candidate at a middle sort position with 30 percent probability
+per scenario. 14 of 100 corpus seeds fire prefix-blindness.
+Without the corpus, prefix-blindness might have looked like one
+customer's unusual configuration. With the corpus, it is a class
+of clusters that hits the bug at a known rate.
+
+This is the leverage of property-based testing for this kind of
+algorithm. The reproducer proves existence. The corpus measures
+prevalence.
+
+### Naming the shape
+
+With the corpus showing 14 disagreeing seeds, the question is
+what those 14 disagreements have in common structurally. Reading
+the disagreements, production returns NoOp on each, and the
+oracle returns some non-empty subset of candidates. Inspecting
+the chosen subsets, the oracle's subset always excludes one
+specific candidate in each seed (the one whose pod has a unique
+label only that node carries). The structural pattern is the
+binary search's prefix walk failing to reach a non-prefix subset.
+
+The shape name is prefix-blindness. The name encodes the
+structural limitation of the search rather than the surface
+symptom. A name at this level is what makes the fix obvious in
+the next step.
+
+### The fix
+
+The shape name suggests the fix. If the binary search cannot
+reach non-prefix subsets, walk a different structure when it
+returns NoOp. The fix is a pairwise non-prefix walk from an empty
+accepted set. The walk visits each candidate in order and accepts
+it if the running set composes feasibly, skipping otherwise.
+Skipping does not narrow the search, so non-prefix subsets become
+reachable.
+
+The fix lives in
+`pkg/controllers/disruption/multinodeconsolidation.go` and shipped
+upstream as kubernetes-sigs/karpenter#2995.
+
+### Verification
+
+After the fix lands, the same corpus runs as a regression test.
+Shape A drops from 14 disagreements to zero. The other 86 corpus
+seeds, where binary search succeeded without help, are unchanged.
+Both reproducers (hand-crafted and grammar-expressed) pass.
+
+Any future change to the multi-node consolidation algorithm runs
+the same corpus. If a future change reintroduces prefix-blindness
+or introduces a new shape, the corpus catches it as a regression.
+The corpus baseline at `pkg/controllers/disruption/testdata/`
+records disruption counts, savings, and slack entropy per seed.
+A regression appears as a diff against that baseline.
+
+### What the engineer gets
+
+A reproducible bug, a generalized form (the corpus generator), a
+name for the shape, a fix that addresses the shape rather than
+the symptom, and a regression test that catches the shape in any
+future change. The same workflow produced shapes B and C on the
+consolidation side, and first-fit monolith and per-zone monolith
+on the provisioning side.
+
 ## How to run it
 
 All corpus tests use the same pattern:
