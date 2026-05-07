@@ -542,19 +542,43 @@ constraints (NodeSelectors, affinities, topology spreads,
 resource requests), cluster size and the relevant subset, and
 capacity types in play.
 
-If the ticket is missing structural details, list what is missing
-and either ask the customer or make a load-bearing assumption you
-can verify later.
+If the ticket is missing structural details, list each missing
+detail explicitly. For each, decide whether to ask the customer
+or make a load-bearing assumption you carry forward. Keep an
+explicit list of the assumptions, since step 4's reproducer is
+how you verify them. The smallest input that still exhibits the
+hypothesized structure is the input that depends only on the
+assumptions you wrote down.
+
+If the customer offered a structural hypothesis (citing code
+paths, naming a mechanism, pointing at a file), state the
+load-bearing claim in their hypothesis and verify it against the
+code before treating it as your own. The customer's analysis is
+evidence, not a conclusion.
 
 #### Hypothesis (step 3)
 
-Map the symptom to a known shape if possible. The shapes
-documented above are prefix-blindness, short-prefix,
-non-prefix-better, score gate rejection, first-fit monolith, and
-per-zone monolith. If the symptom maps to a known shape, the
-hypothesis is that shape. If not, propose a new structural
-pattern that the production algorithm's search structure cannot
-navigate, in the style of the existing shape names.
+Map the symptom to a documented shape family if possible. The
+four consolidation shapes (prefix-blindness, short-prefix,
+non-prefix-better, score gate rejection) all sit in the
+search-reachability family. The two provisioning shapes
+(first-fit monolith, per-zone monolith) sit in the greedy-commit
+family. If your bug fits one of these families, name the specific
+shape inside it.
+
+Shape A versus Shape B is a common ambiguity inside the
+search-reachability family. The disambiguator is what the
+algorithm returns. Shape A is multi-node returning NoOp (no plan
+at all). Shape B is multi-node returning a feasible prefix that
+is smaller than the largest feasible subset.
+
+If the bug does not fit either documented family, the bug may
+live in a family the doc has not yet documented. Plausible new
+families include sort-and-pick (an algorithm choosing the wrong
+candidate because its sort key incorporates the wrong factor) and
+filter (an algorithm rejecting a candidate that should have
+passed candidacy). Name the new family and the structural
+property the algorithm is failing to navigate.
 
 A hypothesis is not yet a bug shape. The next step verifies it.
 
@@ -564,28 +588,59 @@ Use the scenario grammar at `pkg/test/scenarios/` to express the
 smallest cluster snapshot that exhibits the hypothesized
 structure. Three to five nodes is usually enough. The reproducer
 should fail on the unfixed code path and pass on a hypothetical
-fix that addresses the structural cause. Follow the pattern of
-`scenario_1962_test.go`.
+fix that addresses the structural cause.
 
-If you cannot write a reproducer that fails, the hypothesis needs
-revision. Go back to the hypothesis step.
+For consolidation tickets, follow the pattern of
+`pkg/controllers/disruption/scenario_1962_test.go`. For
+provisioning tickets, the analogous file lives under
+`pkg/controllers/provisioning/`. Both packages use the same
+grammar, with slightly different test harness setup.
+
+Before writing a new reproducer, check whether an existing one
+already exhibits the same structural pattern. If a documented
+shape's existing reproducer already exercises the bug in your
+hypothesis, the customer's ticket is a flavored variant of an
+existing test. Cite the existing reproducer as the answer.
+
+If you cannot write a reproducer that fails, the failure has one
+of three causes. The hypothesis may be wrong, in which case
+revise it and try again. The grammar may lack the axis your
+hypothesis needs (existing-fleet daemonsets, ExpireAfter on the
+NodePool, per-Node creation timestamp, capacity-type variation),
+in which case extend the grammar first. The bug may require
+runtime conditions the test harness cannot provide (clock skew,
+async timing, real cluster state), in which case document the gap
+and consider a different verification path.
 
 #### Generator decision (step 5)
 
 The reproducer proves the bug exists on one input. The corpus
-measures how often it shows up across inputs. Look at the
-existing generators (`Generate`, `GenerateAdversarial`,
-`GenerateMarginal`, `GenerateProvisioning`,
-`GenerateProvisioningFleet`, `GenerateProvisioningDaemon`,
-`GenerateProvisioningTopology`).
+measures how often it shows up across inputs. Two questions to
+answer in order.
 
-If any existing generator produces inputs that exhibit your
-hypothesized pattern at non-trivial frequency, run that corpus
-and check the disagreement rate. If not, extend an existing
-generator or write a new one. The new generator's job is to vary
-inputs along the axis the production algorithm is failing to
-navigate. "Oracle gotchas" describes how to keep the generator
-honest.
+The first question is whether an existing generator already
+produces inputs that exhibit your hypothesized pattern. Look at
+the existing generators (`Generate`, `GenerateAdversarial`,
+`GenerateMarginal` in `pkg/test/scenarios/`,
+`GenerateProvisioning`, `GenerateProvisioningFleet`,
+`GenerateProvisioningDaemon`, `GenerateProvisioningTopology` in
+the same package). Inspect what each one varies and what each
+one keeps fixed. If your hypothesized pattern is one the generator
+could produce, the answer is yes.
+
+The second question is at what frequency the existing generator
+surfaces the pattern. If the first answer is yes, run the
+relevant corpus and check the disagreement rate against the
+documented baselines. If the rate is non-trivial (5 percent or
+more) the corpus already measures this shape and no new generator
+work is needed. If the rate is near zero, the generator nominally
+produces the pattern but rarely enough that the corpus is
+uninformative. Extend the generator to bias toward the pattern,
+or write a new one targeted at the axis the production algorithm
+is failing to navigate.
+
+If the answer to the first question is no, write a new generator.
+"Oracle gotchas" describes how to keep the generator honest.
 
 #### Output
 
