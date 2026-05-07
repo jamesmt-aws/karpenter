@@ -675,6 +675,123 @@ and the coverage section.
 A code change, a unit test reproducer, an updated corpus
 baseline, and a doc update if the shape landscape changed.
 
+### Practice tickets
+
+The two tickets below are fictional, not real karpenter issues.
+They are written in the style of customer reports and map cleanly
+to documented shapes. Use them to exercise the ticket-to-test
+prompt without having seen the answer.
+
+For each ticket, run the prompt against the ticket text, then
+compare your output to the answer key at the end of this section.
+If your output diverges, revisit which step led you astray.
+
+#### Practice ticket A (consolidation)
+
+> **Title**: Karpenter doesn't consolidate when one of our nodes
+> runs a GPU workload
+>
+> **Observed Behavior**: We run a mix of GPU and CPU workloads.
+> Most of our pods are CPU-only and can run on any of our worker
+> nodes. We have one GPU pod that uses
+> `nodeSelector: accelerator=nvidia-t4` because only a couple of
+> instance types in our NodePool carry that label.
+>
+> We have six nodes running, all from the same NodePool, all
+> marked Consolidatable. After our nightly batch jobs finish, the
+> cluster is mostly empty. We expect Karpenter to remove some of
+> these nodes. Multi-node consolidation never produces a plan.
+> Single-node consolidation runs and removes one node at a time,
+> but draining the cluster down takes hours.
+>
+> The disruption budget allows 100% nodes. ExpireAfter is 7 days
+> on the NodePool.
+>
+> **Versions**: Karpenter 1.0.x, Kubernetes 1.30.
+
+#### Practice ticket B (provisioning)
+
+> **Title**: Karpenter is provisioning a single c7i.4xlarge when
+> it could split into two cheaper nodes
+>
+> **Observed Behavior**: We had a deployment scale up by 5 pods,
+> each requesting 2 CPU and 4Gi memory. Karpenter provisioned a
+> single c7i.4xlarge (16 CPU, 32 GB) for them, at about $0.68 per
+> hour.
+>
+> We checked the alternatives. A c7i.2xlarge (8 CPU, 16 GB,
+> $0.34/hr) plus a c7i.xlarge (4 CPU, 8 GB, $0.17/hr) would have
+> fit the same 5 pods (10 CPU and 20 GB total) at $0.51 per hour,
+> about 25 percent cheaper. Both instance types are in the
+> NodePool's supported list. We have no topology spread or
+> affinity constraints on these pods.
+>
+> **Versions**: Karpenter 1.5.x, Kubernetes 1.31.
+
+#### Answer key
+
+**Practice ticket A** is Shape A (prefix-blindness).
+
+The symptom is that multi-node consolidation produces no plan
+when one of six candidates carries an unschedulable pod.
+Single-node still works because it evaluates each candidate
+independently, but it is slow because it removes one node per
+cycle.
+
+The cluster shape is six candidates from one NodePool, one of
+which (the GPU node) hosts a pod whose `nodeSelector` no other
+node satisfies. The five remaining candidates host freely
+schedulable pods. The reader should flag that the prompt's "extract
+the cluster shape" step works on a customer description that does
+not name disruption costs or sort orders, and that the "form a
+hypothesis" step needs to recognize the GPU node as a blocker.
+
+The hypothesis is Shape A. Multi-node consolidation sorts the six
+candidates and binary-searches over prefixes. Any prefix that
+includes the GPU node fails because the GPU pod cannot reschedule
+onto another node. The binary search exits empty and multi-node
+returns NoOp.
+
+The reproducer follows `scenario_1962_test.go`. Six candidates,
+five with movable pods and one with a `nodeSelector`-blocked pod
+sorted to the middle by `PodDeletionCost`. The default consolidation
+generator already injects a NodeSelector-blocked candidate at a
+middle sort position with 30 percent probability per scenario, so
+the existing corpus exercises this shape on 14 of 100 seeds. No
+new generator work is needed.
+
+The fix path is the pairwise non-prefix fallback already
+implemented and shipped as kubernetes-sigs/karpenter#2995. This
+ticket would be resolved by a Karpenter version bump.
+
+**Practice ticket B** is the first-fit monolith bias documented
+in the provisioning shapes.
+
+The symptom is that the scheduler launches one c7i.4xlarge for
+five pods that fit cumulatively in that allocatable, when a
+two-instance split into c7i.2xlarge plus c7i.xlarge fits the same
+pods at lower total cost.
+
+The cluster shape is greenfield provisioning, single NodePool with
+the c7i family in its instance-type list, five pending pods at 2
+CPU and 4Gi memory each, no other pod constraints.
+
+The hypothesis is first-fit monolith. `Scheduler.Solve` adds pods
+to a NodeClaim greedily and only triggers a new NodeClaim when a
+pod does not fit the running one. Five pods at 2 CPU each fit
+cumulatively under c7i.4xlarge's 16 CPU allocatable, so no second
+NodeClaim is triggered. The cheaper two-instance split is
+structurally unreachable from greedy commit.
+
+The reproducer is greenfield with five pending pods, modeled on
+the existing `GenerateProvisioning` shape. The existing corpus
+exercises this shape on 23 of 100 seeds. No new generator work is
+needed.
+
+No fix exists yet. A fix would need either a two-pass "consider
+splitting before launch" search at small N or a bounded brute-
+force placement at the bin-packing step.
+
 ## How to run it
 
 All corpus tests use the same pattern:
