@@ -365,23 +365,10 @@ disagree with the algorithm, and the corpus is testing nothing.
 When adding a generator, check that the input distribution varies
 at least one of the two.
 
-## From disagreements to bug names
-
-Disagreements tell you *that* something is wrong, not *why*.
-Naming the bug at a level specific enough to fix requires reading
-the oracle's chosen subset, the production algorithm's chosen
-subset, and understanding why the oracle's is better. Which
-constraint did production's search structure fail to navigate?
-The shape names in this doc (prefix-blindness, short-prefix,
-non-prefix-better, first-fit monolith) each came from that
-exercise.
-
 ## A worked example (karpenter#1962)
 
-The four consolidation shapes above each came out of this
-workflow. Walking the original karpenter#1962 case end to end
-shows what the workflow looks like in practice, from a customer
-report to a merged fix.
+The original karpenter#1962 case shows what the framework looks
+like end to end, from a customer report to a merged fix.
 
 ### The report
 
@@ -409,10 +396,6 @@ reschedule anywhere) sorts in the middle of the candidate list,
 every prefix that includes it fails the simulator. The binary
 search exits empty, even when a non-prefix subset that excludes
 the blocker would consolidate without stranding any pod.
-
-A hypothesis is not yet a bug shape. A bug shape requires
-demonstrating that the structural property causes the symptom on
-at least one input.
 
 ### The reproducer
 
@@ -454,12 +437,7 @@ the chosen subsets, the oracle's subset always excludes one
 specific candidate in each seed (the one whose pod has a unique
 label only that node carries). The structural pattern is the
 binary search's prefix walk failing to reach a non-prefix subset.
-
-The shape name is prefix-blindness. The name encodes the
-structural limitation of the search. The surface symptom (no plan
-returned) is downstream of the structural cause and would not have
-suggested the fix on its own. A name at this level makes the fix
-obvious in the next step.
+Call it prefix-blindness.
 
 ### The fix
 
@@ -489,28 +467,18 @@ The corpus baseline at `pkg/controllers/disruption/testdata/`
 records disruption counts, savings, and slack entropy per seed.
 A regression appears as a diff against that baseline.
 
-### What the engineer gets
-
-A reproducible bug, a generalized form (the corpus generator), a
-name for the shape, a fix that addresses the shape at the
-structural level, and a regression test that catches the shape
-in any future change. The same workflow produced shapes B and C on the
-consolidation side, and first-fit monolith and per-zone monolith
-on the provisioning side.
+The same workflow produced shapes B and C on the consolidation
+side, and first-fit monolith and per-zone monolith on the
+provisioning side.
 
 ## Workflows
 
-These two prompts take real engineering tasks and produce
-concrete deliverables. The first turns a customer ticket into a
-property-based test. The second turns a corpus disagreement into
-a fix. The worked example above is what the output of the first
-prompt looks like after running through karpenter#1962.
-
-The prompts are written for an engineer or an AI agent with
-access to the codebase and to this doc. Each step has a question
-to answer and notes on how to answer it. The shapes section,
-"Oracle gotchas," and the worked example are the references the
-steps point back to.
+The two prompts below are written for an engineer or an AI agent
+with access to the codebase and to this doc. The first turns a
+customer ticket into a property-based test. The second turns a
+corpus disagreement into a fix. The shapes section, "Oracle
+gotchas," and the worked example are the references the steps
+point back to.
 
 ### Ticket to test
 
@@ -572,8 +540,6 @@ candidate because its sort key incorporates the wrong factor) and
 filter (an algorithm rejecting a candidate that should have
 passed candidacy). Name the new family and the structural
 property the algorithm is failing to navigate.
-
-A hypothesis is not yet a bug shape. The next step verifies it.
 
 #### Reproducer (step 4)
 
@@ -671,11 +637,9 @@ members at equivalent size.
 #### Shape name (step 3)
 
 State the structural pattern as a property of the input or the
-search. The existing shape names follow that rule (prefix-
-blindness, first-fit monolith, etc.). If the disagreement does
-not match an existing shape, name a new one. The name should
-encode the structural limitation. Use the symptom only as
-confirmation of the structure.
+search. Existing shape names follow that rule (prefix-blindness,
+first-fit monolith, etc.). If the disagreement does not match an
+existing shape, name a new one along the same lines.
 
 #### Fix direction (step 4)
 
