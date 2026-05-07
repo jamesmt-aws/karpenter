@@ -141,10 +141,10 @@ scaling roughly as:
 | 32 | 4.3 billion | ~1 year |
 
 The production binary search takes tens of milliseconds regardless
-of N. This is intentional. The oracle's job is to be correct on
-small input sizes. At small N the oracle finds shapes. Production
-clusters with hundreds of candidates per cycle would need a
-sampling or heuristic oracle.
+of N. The oracle's slowness is intentional, since its job is to be
+correct on the small N where shapes show up. Production clusters
+with hundreds of candidates per cycle would need a sampling or
+heuristic oracle.
 
 ## What the oracle has already found
 
@@ -243,10 +243,10 @@ some single instance type's allocatable, the scheduler launches
 one node of that type. The oracle finds a two-way split into
 smaller instances that provisions strictly less total capacity at
 lower total price. 23 of 100 greenfield corpus seeds manifest
-this. The disagreement rate scales monotonically with pod count
-(3 pods at 4%, 4 at 17%, 5 at 36%, 6 at 40%). Worst-case overpay
-is 1.6x. Most disagreements cluster at 1.333x. All splits
-surfaced are two-way.
+this, with the disagreement rate scaling monotonically with pod
+count (3 pods at 4%, 4 at 17%, 5 at 36%, 6 at 40%). Worst-case
+overpay is 1.6x, most disagreements cluster at 1.333x, and all
+splits surfaced are two-way.
 
 The NodeClaim ends up with `InstanceTypeOptions` filtered to types
 that fit the cumulative pod set, and the cheapest of those is
@@ -280,13 +280,13 @@ a bounded brute-force placement at the bin-packing step.
 
 When every pod carries a hard `topologySpreadConstraints` on
 `topology.kubernetes.io/zone` with `MaxSkew=1`, the scheduler
-distributes pods across zones. The single-node monolith is
-unreachable. The bias re-emerges per zone. Each zone independently
-sizes to fit its share, and the resulting two-node plan is more
-expensive than a plan with non-uniform per-zone instance choices.
-37 of 100 topology-corpus seeds manifest. The disagreement rate
-scales with pod count (4 pods at 21%, 5 at 52%, 6 at 47%). Cost
-ratio mean is 1.081, max 1.372.
+distributes pods across zones, putting the single-node monolith
+out of reach. The bias re-emerges per zone, where each zone
+independently sizes to fit its share, and the resulting two-node
+plan is more expensive than a plan with non-uniform per-zone
+instance choices. 37 of 100 topology-corpus seeds manifest, with
+the disagreement rate scaling with pod count (4 pods at 21%, 5 at
+52%, 6 at 47%) and cost ratio mean of 1.081 (max 1.372).
 
 36 of 37 disagreements are 2 nodes versus 2 nodes. 1 is 2 versus
 3, where the oracle splits within a zone for further savings.
@@ -423,9 +423,9 @@ Without the corpus, prefix-blindness might have looked like one
 customer's unusual configuration. With the corpus, it is a class
 of clusters that hits the bug at a known rate.
 
-This is what property-based testing buys you on this kind of
-algorithm. The reproducer proves existence. The corpus measures
-prevalence.
+Property-based testing buys you both kinds of evidence on this
+kind of algorithm. The reproducer proves the bug exists, and the
+corpus measures how often it shows up.
 
 ### Naming the shape
 
@@ -456,9 +456,9 @@ upstream as kubernetes-sigs/karpenter#2995.
 ### Verification
 
 After the fix lands, the same corpus runs as a regression test.
-Shape A drops from 14 disagreements to zero. The other 86 corpus
-seeds, where binary search succeeded without help, are unchanged.
-Both reproducers (hand-crafted and grammar-expressed) pass.
+Shape A drops from 14 disagreements to zero, the other 86 seeds
+where binary search succeeded without help are unchanged, and both
+reproducers (hand-crafted and grammar-expressed) pass.
 
 Any future change to the multi-node consolidation algorithm runs
 the same corpus. If a future change reintroduces prefix-blindness
@@ -796,13 +796,13 @@ NodeClaim is triggered. The cheaper two-instance split is
 structurally unreachable from greedy commit.
 
 The reproducer is greenfield with five pending pods, modeled on
-the existing `GenerateProvisioning` shape. The existing corpus
-exercises this shape on 23 of 100 seeds. No new generator work is
-needed.
+the existing `GenerateProvisioning` shape, and the existing corpus
+already exercises the shape on 23 of 100 seeds, so no new
+generator work is needed.
 
-No fix exists yet. A fix would need either a two-pass "consider
-splitting before launch" search at small N or a bounded brute-
-force placement at the bin-packing step.
+No fix has landed yet. A fix would need either a two-pass
+"consider splitting before launch" search at small N, or a
+bounded brute-force placement at the bin-packing step.
 
 ## How to run it
 
