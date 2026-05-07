@@ -505,6 +505,176 @@ future change. The same workflow produced shapes B and C on the
 consolidation side, and first-fit monolith and per-zone monolith
 on the provisioning side.
 
+## Workflows
+
+These two prompts take real engineering tasks and produce
+concrete deliverables. The first turns a customer ticket into a
+property-based test. The second turns a corpus disagreement into
+a fix. The worked example above is what the output of the first
+prompt looks like after running through karpenter#1962.
+
+The prompts are written for an engineer or an AI agent with
+access to the codebase and to this doc. Each step has a question
+to answer and notes on how to answer it. The shapes section,
+"Oracle gotchas," and the worked example are the references the
+steps point back to.
+
+### Ticket to test
+
+The input is a customer ticket describing a symptom. The output
+is a reproducer scenario, optionally a corpus generator
+extension, and a hypothesized shape name.
+
+#### Symptom (step 1)
+
+Read the ticket. Describe what the customer observes
+(consolidation not happening, wrong instance type chosen) in the
+language of the ticket. The structural cause comes later. The
+goal of this step is to make sure you can re-state the bug
+without reaching for algorithm internals you have not yet
+verified are at fault.
+
+#### Cluster shape (step 2)
+
+From the ticket, extract NodePool configurations (instance type
+lists, requirements, taints, consolidation policy), pod
+constraints (NodeSelectors, affinities, topology spreads,
+resource requests), cluster size and the relevant subset, and
+capacity types in play.
+
+If the ticket is missing structural details, list what is missing
+and either ask the customer or make a load-bearing assumption you
+can verify later.
+
+#### Hypothesis (step 3)
+
+Map the symptom to a known shape if possible. The shapes
+documented above are prefix-blindness, short-prefix,
+non-prefix-better, score gate rejection, first-fit monolith, and
+per-zone monolith. If the symptom maps to a known shape, the
+hypothesis is that shape. If not, propose a new structural
+pattern that the production algorithm's search structure cannot
+navigate, in the style of the existing shape names.
+
+A hypothesis is not yet a bug shape. The next step verifies it.
+
+#### Reproducer (step 4)
+
+Use the scenario grammar at `pkg/test/scenarios/` to express the
+smallest cluster snapshot that exhibits the hypothesized
+structure. Three to five nodes is usually enough. The reproducer
+should fail on the unfixed code path and pass on a hypothetical
+fix that addresses the structural cause. Follow the pattern of
+`scenario_1962_test.go`.
+
+If you cannot write a reproducer that fails, the hypothesis needs
+revision. Go back to the hypothesis step.
+
+#### Generator decision (step 5)
+
+The reproducer proves the bug exists on one input. The corpus
+measures how often it shows up across inputs. Look at the
+existing generators (`Generate`, `GenerateAdversarial`,
+`GenerateMarginal`, `GenerateProvisioning`,
+`GenerateProvisioningFleet`, `GenerateProvisioningDaemon`,
+`GenerateProvisioningTopology`).
+
+If any existing generator produces inputs that exhibit your
+hypothesized pattern at non-trivial frequency, run that corpus
+and check the disagreement rate. If not, extend an existing
+generator or write a new one. The new generator's job is to vary
+inputs along the axis the production algorithm is failing to
+navigate. "Oracle gotchas" describes how to keep the generator
+honest.
+
+#### Output
+
+A reproducer test file under `pkg/controllers/disruption/` or
+`pkg/controllers/provisioning/`. Optionally a generator extension
+or a new corpus runner. A short note saying which shape the bug
+maps to, or a proposed name if it does not map to a known one.
+
+### Disagreement to fix
+
+The input is one or more corpus seeds where production and oracle
+disagree. The output is a code change, a unit test, and an
+updated corpus baseline.
+
+#### Plans (step 1)
+
+For each disagreeing seed, capture the production plan (chosen
+subset, post-state) and the oracle plan, plus the per-axis
+difference on savings, disruption count, and slack entropy. The
+data is in `corpus_results.json` or its variant. The corpus
+runner already prints these for disagreeing seeds.
+
+#### Structural difference (step 2)
+
+Look at which candidates each plan includes and excludes, and at
+the order the production algorithm walks them. The disagreement
+typically matches one of three patterns. The production plan
+includes a candidate the oracle would reject, meaning production
+accepted something it should have filtered. The production plan
+excludes a candidate the oracle includes, meaning production's
+search structure could not reach it. The plans are the same size
+but with different members, meaning production picked the wrong
+members at equivalent size.
+
+#### Shape name (step 3)
+
+State the structural pattern as a property of the input or the
+search. The existing shape names follow that rule (prefix-
+blindness, first-fit monolith, etc.). If the disagreement does
+not match an existing shape, name a new one. The name should
+encode the structural limitation. Use the symptom only as
+confirmation of the structure.
+
+#### Fix direction (step 4)
+
+The shape name suggests the fix. Reachability shapes (Shape A, B,
+C) imply changing the search structure. Gate-rejection shapes
+imply changing the score gate. Filter shapes imply changing
+which inputs reach the search. Decide which class the shape
+falls into and what change addresses it.
+
+Where existing shapes already document a fix direction, that
+direction is the starting point. Where existing shapes are
+out-of-scope (Shape C, first-fit monolith), the fix needs deeper
+restructuring than has been undertaken so far. Plan accordingly.
+
+#### Implementation (step 5)
+
+Implement the fix in the relevant consolidation file
+(`multinodeconsolidation.go`, `singlenodeconsolidation.go`, or
+`consolidation.go`), or for provisioning in
+`scheduling/scheduler.go`. Write a unit test that exercises a
+small reproducer through the scenario grammar and fails on the
+unfixed code.
+
+#### Corpus run (step 6)
+
+Run the corpus that surfaced the shape. The disagreements that
+exhibited the shape should resolve, no new disagreements should
+appear in previously-agreeing seeds, and the committed baseline
+should be updated to reflect the new agreement counts.
+
+If new disagreements appear, the fix introduced a new shape.
+Decide whether to extend the fix (the new shape is in scope),
+accept it as a documented limitation, or revert (the new shape
+is a regression).
+
+#### Doc update (step 7)
+
+If the fix changes the shape landscape, meaning a shape's
+frequency changes, a shape moves from "no fix" to "fixed," or a
+new shape emerges, update "What the oracle has already found"
+and the coverage section.
+
+#### Output
+
+A code change, a unit test reproducer, an updated corpus
+baseline, and a doc update if the shape landscape changed.
+
 ## How to run it
 
 All corpus tests use the same pattern:
