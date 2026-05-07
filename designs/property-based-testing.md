@@ -4,9 +4,9 @@ Karpenter manages nodes for Kubernetes clusters. Provisioning
 watches for pending pods and adds nodes when the cluster needs
 capacity. Consolidation removes and replaces nodes to improve
 cluster efficiency, meaning fewer nodes, lower cost, and less
-waste. Both are optimization problems. The space of possible
-actions is giant: which nodes to add, which to remove, which pods
-to move where. Only a fraction of those actions are feasible given
+waste. Both are optimization problems over a giant action space
+of which nodes to add, which to remove, and which pods to move
+where. Only a fraction of those actions are feasible given
 customer requirements (resource requests, affinities, topology
 constraints, disruption budgets). Within the feasible set, some
 actions are better than others by the properties the operator
@@ -58,9 +58,8 @@ A consolidation move is feasible when, after removing the
 proposed nodes, every surviving pod still schedules somewhere
 that respects its requirements (resource requests, affinities,
 topology constraints, tolerations). The harness only considers
-feasible moves. If the production algorithm returns an infeasible
-move, the harness treats it as a correctness failure, not a
-quality comparison.
+feasible moves, and treats an infeasible production move as a
+correctness failure rather than a quality comparison.
 
 Among feasible moves, the harness scores on two primary axes:
 
@@ -162,9 +161,9 @@ The shapes differ in what the binary search misses and why.
 The binary search exits with no plan even though a feasible joint
 deletion exists. Every prefix the binary search tries contains a
 "blocker" candidate (a candidate whose pod cannot reschedule
-anywhere). The simulator rejects every such prefix. A non-prefix
-subset that excludes the blocker is feasible, but the binary
-search's prefix structure cannot reach it. This is the original
+anywhere), so the simulator rejects every such prefix. A
+non-prefix subset that excludes the blocker is feasible, but the
+binary search's prefix structure cannot reach it. This is the original
 karpenter#1962 bug shape. 14 of 100 corpus seeds fire it.
 
 The fix is a pairwise non-prefix fallback that runs from an empty
@@ -218,14 +217,14 @@ The algorithm's chosen plan is feasible per the simulator but
 fails the score gate because `savings_fraction` is far below
 `disruption_fraction`. The marginal corpus generator engineers a
 high-price non-removable candidate alongside cheap removable
-candidates. The algorithm picks predominantly the cheap candidates,
-and 33 of 50 marginal seeds produce plans the gate rejects at
-k=2.
+candidates. The algorithm picks predominantly the cheap candidates, and 33
+of 50 marginal seeds produce plans the gate rejects at the
+default consolidation threshold (k=2 means "reject any plan with
+score below 1/k").
 
-This is not a bug shape. The gate is declining marginal
-consolidations, which is what it was designed to do. The corpus
-result confirms the gate's design intent and is the regime worth
-probing when reasoning about Balanced policy behavior.
+The gate is doing its job here, declining marginal
+consolidations, and the marginal corpus is where to look when
+studying Balanced policy behavior.
 
 ### Provisioning
 
@@ -288,13 +287,15 @@ instance choices. 37 of 100 topology-corpus seeds manifest, with
 the disagreement rate scaling with pod count (4 pods at 21%, 5 at
 52%, 6 at 47%) and cost ratio mean of 1.081 (max 1.372).
 
-36 of 37 disagreements are 2 nodes versus 2 nodes. 1 is 2 versus
-3, where the oracle splits within a zone for further savings.
-Production sizing is asymmetric in 26 of 37 cases and symmetric
-in 11. The shape sits at the zone-assignment level. Each zone gets
-the cheapest single instance for the pods that landed there, but
-the way pods landed across zones leaves both zones running on more
-expensive instances than a different assignment would have needed.
+In 36 of 37 disagreements, both production and oracle propose
+two-node plans, but production picks more expensive per-zone
+instances. In the remaining one, the oracle splits within a zone
+to add a cheaper third node. Production already varies its instance
+picks across zones, with 26 of 37 disagreements showing different
+sizes per zone and 11 showing the same, so the bug lives at the
+zone-assignment level. Production sizes each zone for the pods
+that landed there, missing the cheaper plan that a different
+zone-assignment of the same pods would unlock.
 
 Same root cause as the unconstrained shape, where greedy commits a
 pod to a zone-and-NodeClaim pair as soon as the pod fits and never
@@ -411,9 +412,6 @@ in `multinode_1962_test.go` predates the grammar and is
 functionally equivalent. Both fail on the unfixed binary search
 and pass on the fixed code.
 
-The reproducer is not the deliverable. It proves the bug exists
-on one input. The next step is generalization.
-
 ### Generalization through the corpus
 
 The default corpus generator injects a NodeSelector-blocked
@@ -436,8 +434,8 @@ oracle returns some non-empty subset of candidates. Inspecting
 the chosen subsets, the oracle's subset always excludes one
 specific candidate in each seed (the one whose pod has a unique
 label only that node carries). The structural pattern is the
-binary search's prefix walk failing to reach a non-prefix subset.
-Call it prefix-blindness.
+binary search's prefix walk failing to reach a non-prefix subset,
+which is the prefix-blindness shape.
 
 ### The fix
 
@@ -488,12 +486,10 @@ extension, and a hypothesized shape name.
 
 #### Symptom (step 1)
 
-Read the ticket. Describe what the customer observes
+Read the ticket and describe what the customer observes
 (consolidation not happening, wrong instance type chosen) in the
-language of the ticket. The structural cause comes later. The
-goal of this step is to make sure you can re-state the bug
-without reaching for algorithm internals you have not yet
-verified are at fault.
+language of the ticket, before reaching for algorithm internals
+you have not yet verified are at fault.
 
 #### Cluster shape (step 2)
 
@@ -573,12 +569,12 @@ and consider a different verification path.
 
 #### Generator decision (step 5)
 
-The reproducer proves the bug exists on one input. The corpus
-measures how often it shows up across inputs. Two questions to
-answer in order.
+The reproducer proves the bug exists on one input, and the
+corpus measures how often it shows up across inputs. Two
+questions in order.
 
-The first question is whether an existing generator already
-produces inputs that exhibit your hypothesized pattern. Look at
+First, does an existing generator already produce inputs that
+exhibit your hypothesized pattern? Look at
 the existing generators (`Generate`, `GenerateAdversarial`,
 `GenerateMarginal` in `pkg/test/scenarios/`,
 `GenerateProvisioning`, `GenerateProvisioningFleet`,
@@ -587,10 +583,10 @@ the same package). Inspect what each one varies and what each
 one keeps fixed. If your hypothesized pattern is one the generator
 could produce, the answer is yes.
 
-The second question is at what frequency the existing generator
-surfaces the pattern. If the first answer is yes, run the
-relevant corpus and check the disagreement rate against the
-documented baselines. If the rate is non-trivial (5 percent or
+Second, at what frequency does the existing generator surface
+the pattern? If the first answer is yes, run the relevant corpus
+and check the disagreement rate against the documented
+baselines. If the rate is non-trivial (5 percent or
 more) the corpus already measures this shape and no new generator
 work is needed. If the rate is near zero, the generator nominally
 produces the pattern but rarely enough that the corpus is
@@ -652,7 +648,8 @@ falls into and what change addresses it.
 Where existing shapes already document a fix direction, that
 direction is the starting point. Where existing shapes are
 out-of-scope (Shape C, first-fit monolith), the fix needs deeper
-restructuring than has been undertaken so far. Plan accordingly.
+restructuring than has been undertaken so far, and the work
+should be planned at that scale rather than a single-PR fix.
 
 #### Implementation (step 5)
 
