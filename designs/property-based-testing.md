@@ -42,8 +42,7 @@ algorithm on each, run a brute-force oracle that enumerates
 every feasible deletion subset on each, and look at where they
 disagree. The seeds where production returns NoOp while the
 oracle finds a feasible non-empty subset are the karpenter#1962
-class. This doc is about what we built and what we found
-running it.
+class.
 
 ## A framework for finding the class
 
@@ -91,9 +90,9 @@ results to a JSON file. Disagreements between production and
 oracle are bug shapes.
 
 A bug shape is a structural limitation broad enough that a whole
-family of inputs trips it. Naming the shape (rather than the input
-that surfaced it) is what makes a fix worth applying. A single
-fix can address every input that exhibits the shape.
+family of inputs trips it. Naming the shape, rather than the
+input that surfaced it, lets one fix address every input in the
+family.
 
 The framework grades each consolidation move on two primary axes:
 total savings (deleted nodes' price minus any replacement node's
@@ -121,17 +120,16 @@ its job. Two are greedy-commit shapes on the provisioning side.
 
 ### Search-reachability (consolidation)
 
-All four of the consolidation search-reachability shapes share
-one underlying problem. The mainline multi-node consolidation
-algorithm walks prefixes of a sorted candidate list, so any
-feasible subset that requires skipping a candidate is unreachable.
-The shapes differ in which non-prefix subset the search misses
-and why.
+The mainline multi-node consolidation algorithm walks prefixes of
+a sorted candidate list, so any feasible subset that requires
+skipping a candidate is unreachable. The three shapes in this
+family differ in which non-prefix subset the search misses and
+why.
 
-**Prefix-blindness (Shape A).** The karpenter#1962 case. A
-blocker candidate (its pod cannot reschedule) sorts in the
-middle. Every prefix containing it is infeasible, so the binary
-search exits empty. The oracle finds the non-prefix subset that
+**Prefix-blindness (Shape A).** The karpenter#1962 case has a
+blocker candidate (its pod cannot reschedule) sorting in the
+middle, so every prefix containing it is infeasible and the
+binary search exits empty. The oracle finds the non-prefix subset that
 excludes the blocker. 14 of 100 corpus seeds fire this on the
 unfixed code. The fix is a pairwise non-prefix fallback that
 runs from an empty accepted set when the binary search returns
@@ -143,14 +141,16 @@ subsets become reachable.
 prefix `[0:k]` but a larger non-prefix superset extends past `k`.
 The Shape A fallback only runs when the binary search returns
 NoOp, so when the search succeeds neither path probes the larger
-superset. 17 of 100 seeds where mainline equals branch (binary
-search succeeded, fallback never ran) but the oracle finds more.
-The fix extends the pairwise walk past the prefix's tail with the
-binary search's prefix as the initial accepted set.
+superset. 17 of 100 seeds fire this shape, with mainline equaling
+branch (the binary search succeeded so the fallback never ran)
+while the oracle finds a strictly larger feasible subset. The fix
+extends the pairwise walk past the prefix's tail with the binary
+search's prefix as the initial accepted set.
 
-**Non-prefix-better (Shape C).** Surfaces in two variants. The
-first is a hand-crafted existence proof, where a remaining node
-with capacity that exactly fits one candidate's pod and nothing
+**Non-prefix-better (Shape C).** Shape C surfaces in two
+variants. The first is a hand-crafted existence proof, where a
+remaining node with capacity that exactly fits one candidate's
+pod and nothing
 more blocks every joint removal that includes that candidate,
 while a non-prefix subset that excludes the candidate is feasible
 and strictly larger than the prefix. The second is a frequency
@@ -160,9 +160,8 @@ skipping the cheapest candidate at position 0 in favor of a
 higher-priced one further down the sort, observed on 15 of 50
 adversarial seeds. The pairwise extension cannot eject
 candidates it has already accepted, so it cannot reach either
-variant. A fix would need
-bounded brute-force at small N or a swap-walk that ejects
-accepted candidates.
+variant. A fix would need bounded brute-force at small N or a
+swap-walk that ejects accepted candidates.
 
 ### Score gate (gate working as designed)
 
@@ -172,8 +171,7 @@ picks the cheap candidates predominantly, and 33 of 50 marginal
 seeds produce plans the Balanced score gate rejects at the default
 threshold (k=2 means "reject any plan with score below 1/k"). The
 gate is doing what it was designed to do, declining marginal
-consolidations. The marginal corpus is where to look when studying
-Balanced policy behavior.
+consolidations, which is what the marginal corpus exercises.
 
 Naming the score gate's marginal-rejection behavior matters
 because the gate's response depends on input distribution. An
@@ -196,9 +194,10 @@ allocatable, the scheduler launches one node of that type. The
 oracle finds a two-way split into smaller instances at lower total
 price. 23 of 100 greenfield corpus seeds manifest this, with the
 rate scaling monotonically with pod count (4% at 3 pods, 17% at
-4, 36% at 5, 40% at 6) and worst-case overpay reaching 1.6x
-against a 1.333x mode, every surfaced split being two-way. A
-fix would need a two-pass "consider splitting before launch"
+4, 36% at 5, 40% at 6). Overpay magnitudes range from a 1.333x
+mode up to a 1.6x worst case, and every surfaced split is
+two-way. A fix would need a two-pass "consider splitting before
+launch"
 search at small N or a bounded brute-force placement at the
 bin-packing step.
 
@@ -250,12 +249,14 @@ load-bearing claim in their hypothesis and verify it against the
 code before adopting it as your own.
 
 **Hypothesis (step 3).** Map the symptom to a documented shape
-family if possible. The four consolidation shapes
-(prefix-blindness, short-prefix, non-prefix-better, score gate
-rejection) sit in the search-reachability family. The two
-provisioning shapes (first-fit monolith, per-zone monolith) sit
-in the greedy-commit family. If the bug fits one of these
-families, name the specific shape inside it.
+family if possible. Three of the four consolidation results
+(prefix-blindness, short-prefix, non-prefix-better) sit in the
+search-reachability family, while the fourth (score gate
+marginal-rejection) is a gate-working-as-designed result rather
+than a search bug. The two provisioning shapes (first-fit
+monolith, per-zone monolith) sit in the greedy-commit family. If
+the bug fits one of these families, name the specific shape
+inside it.
 
 Inside the search-reachability family, Shape A and Shape B are
 commonly confused, with the disambiguator being what multi-node
@@ -331,8 +332,8 @@ corpus baseline.
 **Plans (step 1).** For each disagreeing seed, capture the
 production plan (chosen subset, post-state) and the oracle plan,
 plus the per-axis difference on savings, disruption count, and
-slack entropy. The data is in `corpus_results.json` or its
-variant.
+slack entropy. The data is in the corpus's `_results.json` file (e.g.
+`corpus_results.json`, `corpus_adversarial_results.json`).
 
 **Structural difference (step 2).** Look at which candidates each
 plan includes and excludes, and at the order the production
