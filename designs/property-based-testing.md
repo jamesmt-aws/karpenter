@@ -23,24 +23,24 @@ Engineering eventually diagnosed the bug and shipped a fix as
 kubernetes-sigs/karpenter#2995. The diagnosis took several rounds
 of customer back-and-forth.
 
-The lesson generalizes past this one ticket. The customer's bug
-looked like a specific configuration issue when filed. It was
-actually an instance of a class. Any cluster with a candidate
-whose pod cannot reschedule, sorted before the tail of the
-candidate list, hits the same structural blind spot. Unit tests
-are good at pinning behavior on inputs the test author thinks of.
-They miss bug classes whose triggering inputs the author cannot
-anticipate, especially in optimization algorithms where the search
-structure is the bug.
+The bug looked like a configuration issue when filed but was an
+instance of a class. Any cluster with a candidate whose pod
+cannot reschedule, sorted before the tail of the candidate list,
+hits the same structural blind spot. Unit tests pin behavior on
+inputs the test author thinks of, missing bug classes whose
+triggering inputs the author cannot anticipate, especially in
+optimization algorithms where the search structure itself is
+the bug.
 
-A brute-force comparison would have caught this in minutes.
-Generate a thousand cluster snapshots, run the production
-multi-node algorithm on each, run a brute-force oracle that
-enumerates every feasible deletion subset on each, look at where
-they disagree. The seeds where production returned NoOp but the
-oracle found a feasible non-empty subset are the karpenter#1962
-class. We didn't have that comparison until we built it. This
-doc is about what we built and what we found running it.
+A brute-force comparison surfaces the karpenter#1962 class
+without needing the customer's specific cluster. Generate a
+thousand cluster snapshots, run the production multi-node
+algorithm on each, run a brute-force oracle that enumerates
+every feasible deletion subset on each, and look at where they
+disagree. The seeds where production returns NoOp while the
+oracle finds a feasible non-empty subset are the karpenter#1962
+class. This doc is about what we built and what we found
+running it.
 
 ## A framework for finding the class
 
@@ -71,11 +71,10 @@ The **brute-force oracle** enumerates every feasible alternative
 the production algorithm could have chosen and returns the best
 one by the metric that matters: largest savings for consolidation,
 lowest total node price for provisioning. The oracle is too
-expensive for production. At N=8 candidates it takes about two
-seconds. At N=16 it takes seven minutes. At N=32 it would take a
-year. Production binary search runs in milliseconds. The oracle's
-slowness is intentional, since its job is to be correct on the
-small N where shapes show up.
+expensive for production, with cost scaling as 2^N over candidate
+count, while production binary search runs in milliseconds. The
+oracle's slowness is intentional, since its job is to be correct
+on the small N where shapes show up.
 
 | Candidates | Subsets | Oracle time |
 |-----------|---------|-------------|
@@ -146,18 +145,19 @@ search succeeded, fallback never ran) but the oracle finds more.
 The fix extends the pairwise walk past the prefix's tail with the
 binary search's prefix as the initial accepted set.
 
-**Non-prefix-better (Shape C).** Two variants. The first is a
-hand-crafted existence proof. A remaining node with capacity that
-exactly fits one candidate's pod and nothing more blocks every
-joint removal that includes that candidate, while a non-prefix
-subset that excludes the candidate is feasible and strictly larger
-than the prefix. The second is a frequency result from the
-adversarial corpus. A non-prefix subset of the same size as the
-prefix carries higher savings, often by skipping the cheapest
-candidate at position 0 in favor of a higher-priced one further
-down the sort. 15 of 50 adversarial seeds manifest this. The
-pairwise extension cannot eject candidates it has already
-accepted, so it cannot reach either variant. A fix would need
+**Non-prefix-better (Shape C).** Surfaces in two variants. The
+first is a hand-crafted existence proof, where a remaining node
+with capacity that exactly fits one candidate's pod and nothing
+more blocks every joint removal that includes that candidate,
+while a non-prefix subset that excludes the candidate is feasible
+and strictly larger than the prefix. The second is a frequency
+result from the adversarial corpus, where a non-prefix subset of
+the same size as the prefix carries higher savings, often by
+skipping the cheapest candidate at position 0 in favor of a
+higher-priced one further down the sort, observed on 15 of 50
+adversarial seeds. The pairwise extension cannot eject
+candidates it has already accepted, so it cannot reach either
+variant. A fix would need
 bounded brute-force at small N or a swap-walk that ejects
 accepted candidates.
 
@@ -172,10 +172,10 @@ gate is doing what it was designed to do, declining marginal
 consolidations. The marginal corpus is where to look when studying
 Balanced policy behavior.
 
-This isn't a bug shape. Naming it as a corpus result matters
-because the gate's behavior depends on input distribution. An
+Naming the score gate's marginal-rejection behavior matters
+because the gate's response depends on input distribution. An
 earlier version of this framework (without per-Node price
-variation) made the gate look silent. The marginal corpus
+variation) made the gate look silent, while the marginal corpus
 established that the gate fires on the regime it was designed
 for.
 
@@ -218,13 +218,6 @@ even though the underlying root cause is shared.
 
 ## Using the framework
 
-Two workflow prompts for engineers (or AI agents) working with
-the framework. The first turns a customer ticket into a
-property-based test. The second turns a corpus disagreement into
-a fix. Each step has a question to answer and notes on how to
-answer it. The shapes section above and the practice tickets in
-the appendix are the references the steps point back to.
-
 ### Ticket to test
 
 Input: a customer ticket describing a symptom. Output: a
@@ -261,11 +254,10 @@ provisioning shapes (first-fit monolith, per-zone monolith) sit
 in the greedy-commit family. If the bug fits one of these
 families, name the specific shape inside it.
 
-Shape A versus Shape B is a common ambiguity inside the
-search-reachability family. The disambiguator is what the
-algorithm returns. Shape A is multi-node returning NoOp (no plan
-at all). Shape B is multi-node returning a feasible prefix
-smaller than the largest feasible subset.
+Inside the search-reachability family, Shape A and Shape B are
+commonly confused, with the disambiguator being what multi-node
+returns: Shape A returns NoOp, while Shape B returns a feasible
+prefix smaller than the largest feasible subset.
 
 If the bug does not fit either documented family, it may live in
 a family the doc has not yet documented. Plausible new families
@@ -304,7 +296,7 @@ different verification path.
 
 **Generator decision (step 5).** The reproducer proves the bug
 exists on one input, and the corpus measures how often it shows
-up across inputs. Two questions in order.
+up across inputs.
 
 First, does an existing scenario generator already produce
 inputs that exhibit your hypothesized pattern? Look at the
@@ -325,8 +317,7 @@ or write a new one targeted at the axis the production algorithm
 is failing to navigate.
 
 If the answer to the first question is no, write a new
-generator. The "Three lessons" subsection below describes what
-to watch for.
+generator.
 
 ### Disagreement to fix
 
@@ -388,9 +379,6 @@ documented limitation, or revert.
 the coverage gaps section.
 
 ### Three lessons for extending the framework
-
-If you build a new generator or modify an oracle, these lessons
-will save you time.
 
 **Input distributions that collapse a metric make that metric a
 no-op.** `pickCorpusInstances` deduplicates by `(cpu, mem)` shape
