@@ -19,22 +19,18 @@ prefix was infeasible. A non-prefix subset that excluded the
 impossible candidate would have consolidated, but the binary
 search's prefix structure could not reach it.
 
-Whether to call that behavior a bug is a judgment call. The
-algorithm did what it was specified to do, and changing the
-specification to allow non-prefix subsets would impose its own
-costs. The diagnostic situation is more clear-cut, since the
-Karpenter test suite did not surface this class of input at all,
-and no test had engineered an impossible candidate at a sort
-position the binary search could not skip. Optimization
-algorithms where the search structure itself drives the outcome
+Whether to call that behavior a bug is a judgment call. Karpenter
+cannot enumerate every possible consolidation plan, and finding
+edge cases like the customer's may simply cost more computation
+than a consolidation cycle can afford. The diagnostic situation
+is more clear-cut, since the Karpenter test suite did not surface
+this class of input at all, and no test had engineered an
+impossible candidate at a sort position the binary search could
+not skip. Optimization algorithms where the search structure
+itself drives the outcome
 are especially hard to write tests for, since you would need to
 know which input the search cannot reach before designing a test
 that surfaces it.
-
-karpenter#2995 was proposed as a structural change to multi-node
-consolidation. It has not landed, partly because verifying it
-would require the same class-level testing approach that would
-have surfaced the original behavior.
 
 A brute-force comparison surfaces the karpenter#1962 class
 without needing the customer's specific cluster. Generate a
