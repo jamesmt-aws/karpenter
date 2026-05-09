@@ -2,35 +2,38 @@
 
 ## The bug we missed
 
-karpenter#1962 was reported in early 2025. The customer described
-several mostly-empty nodes that had been sitting unchanged for
-hours. They had verified by hand that the workload would fit on a
-smaller subset, and Karpenter agreed that each node was
-Consolidatable. Multi-node consolidation kept logging "Can't
-replace with a cheaper node" and returning NoOp.
+karpenter#1962 was reported in early 2025. The customer had
+several mostly-empty nodes that Karpenter agreed were
+Consolidatable, with a workload that fit by hand on a smaller
+subset. Karpenter would not consolidate them, with multi-node
+consolidation logging "Can't replace with a cheaper node" and
+returning NoOp.
 
 The unit test suite passed. The bug existed because the multi-node
 consolidation algorithm sorts candidates and binary-searches over
 prefixes of the sorted list. The customer's cluster had one
-candidate (call it the bad one) whose pod could not reschedule
-anywhere. The bad candidate sorted in the middle. Every prefix
-the binary search tried contained the bad candidate, so the
-simulator rejected every prefix. A non-prefix subset that excluded
-the bad candidate would have consolidated cleanly, but the binary
-search's prefix structure could not reach it.
+impossible candidate, whose pod could not reschedule anywhere.
+The impossible candidate sorted in the middle of the list, so
+every prefix the binary search tried contained it and every
+prefix was infeasible. A non-prefix subset that excluded the
+impossible candidate would have consolidated cleanly, but the
+binary search's prefix structure could not reach it.
 
 Engineering eventually diagnosed the bug and shipped a fix as
 kubernetes-sigs/karpenter#2995. The diagnosis took several rounds
 of customer back-and-forth.
 
-The bug looked like a configuration issue when filed but was an
-instance of a class. Any cluster with a candidate whose pod
-cannot reschedule, sorted before the tail of the candidate list,
-hits the same structural blind spot. Unit tests pin behavior on
-inputs the test author thinks of, missing bug classes whose
-triggering inputs the author cannot anticipate, especially in
-optimization algorithms where the search structure itself is
-the bug.
+The diagnostic loop was long because what looked like a
+configuration issue at filing time was an instance of a class.
+Any cluster with a candidate whose pod cannot reschedule, sorted
+before the tail of the candidate list, hits the same structural
+blind spot. Unit tests pass on the inputs their authors think to
+write, and no one had written a test that engineered an impossible
+candidate at a sort position the binary search could not skip.
+Optimization algorithms where the search structure itself is the
+bug are especially hard to write tests for, since you would need
+to know which input the search cannot reach before designing a
+test that surfaces it.
 
 A brute-force comparison surfaces the karpenter#1962 class
 without needing the customer's specific cluster. Generate a
