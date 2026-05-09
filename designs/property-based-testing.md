@@ -656,9 +656,9 @@ Single-node still works because it evaluates each candidate
 independently. The reproducer follows
 `scenario_1962_test.go` with six candidates instead of three. The
 default consolidation generator already exercises this shape on
-14 of 100 seeds. The fix is the pairwise non-prefix fallback in
-kubernetes-sigs/karpenter#2995, so this ticket would be resolved
-by a Karpenter version bump.
+14 of 100 seeds. No fix has landed yet. A fix would need a
+non-prefix search structure, with the pairwise fallback described
+in the search-reachability section as one approach.
 
 **Practice ticket B** is the first-fit monolith bias.
 `Scheduler.Solve` adds pods to a NodeClaim greedily and only
