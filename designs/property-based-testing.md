@@ -183,9 +183,9 @@ for.
 
 The production scheduler `Scheduler.Solve` adds pods to a
 NodeClaim greedily and only triggers a new NodeClaim when a pod
-does not fit the running one. The trigger condition is "doesn't
-fit." Splitting earlier because the split would be cheaper is
-not a trigger.
+does not fit the running one. The trigger condition ignores
+cost, so cheaper splits the running NodeClaim could absorb
+without overflow never get considered.
 
 **First-fit monolith bias.** When the cumulative resource requests
 of N pending pods fit inside some single instance type's
@@ -193,9 +193,9 @@ allocatable, the scheduler launches one node of that type. The
 oracle finds a two-way split into smaller instances at lower total
 price. 23 of 100 greenfield corpus seeds manifest this, with the
 rate scaling monotonically with pod count (4% at 3 pods, 17% at
-4, 36% at 5, 40% at 6). Worst-case overpay 1.6x, most
-disagreements cluster at 1.333x, all splits surfaced are two-way.
-A fix would need a two-pass "consider splitting before launch"
+4, 36% at 5, 40% at 6) and worst-case overpay reaching 1.6x
+against a 1.333x mode, every surfaced split being two-way. A
+fix would need a two-pass "consider splitting before launch"
 search at small N or a bounded brute-force placement at the
 bin-packing step.
 
@@ -204,16 +204,17 @@ carries a hard `topologySpreadConstraints` on zone with
 `MaxSkew=1`, the scheduler spreads pods across zones, putting
 the single-node monolith out of reach. The bias re-emerges per
 zone, where each zone independently sizes to fit its share. 37
-of 100 topology-corpus seeds manifest. Cost ratio mean 1.081, max
-1.372. Production already varies its picks across zones (26 of
-37 disagreements have different sizes per zone, 11 have the
-same), so the bug lives at the zone-assignment level. Production
-sizes each zone for the pods that landed there, missing the
-cheaper plan a different zone-assignment of the same pods would
-unlock. Same root cause as the unconstrained shape, but the
-failure surface is different. Fixing first-fit selection in the
-unconstrained case leaves the zone-assignment problem
-unaddressed.
+of 100 topology-corpus seeds manifest, with cost ratio averaging
+1.081 and topping out at 1.372. Production already varies its
+picks across zones (26 of 37 disagreements have different sizes
+per zone, 11 have the same), so the bug lives at the
+zone-assignment level rather than at within-zone bin-packing.
+Production sizes each zone for the pods that landed there,
+missing the cheaper plan a different zone-assignment of the same
+pods would unlock. Fixing first-fit selection in the
+unconstrained case would leave this zone-assignment failure
+surface untouched, so the per-zone shape needs a separate fix
+even though the underlying root cause is shared.
 
 ## Using the framework
 
@@ -250,8 +251,7 @@ them.
 If the customer offered a structural hypothesis (citing code
 paths, naming a mechanism, pointing at a file), state the
 load-bearing claim in their hypothesis and verify it against the
-code before treating it as your own. The customer's analysis is
-evidence, not a conclusion.
+code before adopting it as your own.
 
 **Hypothesis (step 3).** Map the symptom to a documented shape
 family if possible. The four consolidation shapes
