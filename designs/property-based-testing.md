@@ -1,6 +1,6 @@
 # Property-Based Testing for Karpenter Consolidation and Provisioning
 
-## The bug we missed
+## Why we built this
 
 karpenter#1962 was reported in early 2025. The customer had
 several mostly-empty nodes that Karpenter agreed were
@@ -9,31 +9,32 @@ subset. Karpenter would not consolidate them, with multi-node
 consolidation logging "Can't replace with a cheaper node" and
 returning NoOp.
 
-The unit test suite passed. The bug existed because the multi-node
-consolidation algorithm sorts candidates and binary-searches over
-prefixes of the sorted list. The customer's cluster had one
+The behavior comes from the algorithm's design. The multi-node
+consolidation algorithm sorts candidates and binary-searches
+over prefixes of the sorted list. The customer's cluster had one
 impossible candidate, whose pod could not reschedule anywhere.
 The impossible candidate sorted in the middle of the list, so
 every prefix the binary search tried contained it and every
 prefix was infeasible. A non-prefix subset that excluded the
-impossible candidate would have consolidated cleanly, but the
-binary search's prefix structure could not reach it.
+impossible candidate would have consolidated, but the binary
+search's prefix structure could not reach it.
 
-Engineering eventually diagnosed the bug and shipped a fix as
-kubernetes-sigs/karpenter#2995. The diagnosis took several rounds
-of customer back-and-forth.
+Whether to call that behavior a bug is a judgment call. The
+algorithm did what it was specified to do, and changing the
+specification to allow non-prefix subsets would impose its own
+costs. The diagnostic situation is more clear-cut, since the
+Karpenter test suite did not surface this class of input at all,
+and no test had engineered an impossible candidate at a sort
+position the binary search could not skip. Optimization
+algorithms where the search structure itself drives the outcome
+are especially hard to write tests for, since you would need to
+know which input the search cannot reach before designing a test
+that surfaces it.
 
-The diagnostic loop was long because what looked like a
-configuration issue at filing time was an instance of a class.
-Any cluster with a candidate whose pod cannot reschedule, sorted
-before the tail of the candidate list, hits the same structural
-blind spot. Unit tests pass on the inputs their authors think to
-write, and no one had written a test that engineered an impossible
-candidate at a sort position the binary search could not skip.
-Optimization algorithms where the search structure itself is the
-bug are especially hard to write tests for, since you would need
-to know which input the search cannot reach before designing a
-test that surfaces it.
+karpenter#2995 was proposed as a structural change to multi-node
+consolidation. It has not landed, partly because verifying it
+would require the same class-level testing approach that would
+have surfaced the original behavior.
 
 A brute-force comparison surfaces the karpenter#1962 class
 without needing the customer's specific cluster. Generate a
@@ -86,13 +87,13 @@ on the small N where shapes show up.
 
 The **harness** runs the scenario generator and the production
 algorithm, runs the oracle on the same input, and writes per-seed
-results to a JSON file. Disagreements between production and
-oracle are bug shapes.
+results to a JSON file. Patterns that recur across many seeds
+are shapes.
 
-A bug shape is a structural limitation broad enough that a whole
-family of inputs trips it. Naming the shape, rather than the
-input that surfaced it, lets one fix address every input in the
-family.
+A shape is a structural property broad enough that a whole family
+of inputs exhibits it. Naming the shape, rather than the input
+that surfaced it, lets one decision (fix, accept as designed,
+study further) cover the whole family.
 
 The framework grades each consolidation move on two primary axes:
 total savings (deleted nodes' price minus any replacement node's
@@ -209,7 +210,7 @@ zone, where each zone independently sizes to fit its share. 37
 of 100 topology-corpus seeds manifest, with cost ratio averaging
 1.081 and topping out at 1.372. Production already varies its
 picks across zones (26 of 37 disagreements have different sizes
-per zone, 11 have the same), so the bug lives at the
+per zone, 11 have the same), so the disagreement lives at the
 zone-assignment level rather than at within-zone bin-packing.
 Production sizes each zone for the pods that landed there,
 missing the cheaper plan a different zone-assignment of the same
@@ -253,18 +254,18 @@ family if possible. Three of the four consolidation results
 (prefix-blindness, short-prefix, non-prefix-better) sit in the
 search-reachability family, while the fourth (score gate
 marginal-rejection) is a gate-working-as-designed result rather
-than a search bug. The two provisioning shapes (first-fit
-monolith, per-zone monolith) sit in the greedy-commit family. If
-the bug fits one of these families, name the specific shape
-inside it.
+than a search-reachability shape. The two provisioning shapes
+(first-fit monolith, per-zone monolith) sit in the greedy-commit
+family. If the symptom fits one of these families, name the
+specific shape inside it.
 
 Inside the search-reachability family, Shape A and Shape B are
 commonly confused, with the disambiguator being what multi-node
 returns: Shape A returns NoOp, while Shape B returns a feasible
 prefix smaller than the largest feasible subset.
 
-If the bug does not fit either documented family, it may live in
-a family the doc has not yet documented. Plausible new families
+If the symptom does not fit either documented family, it may
+live in a family the doc has not yet documented. Plausible new families
 include sort-and-pick (an algorithm choosing the wrong candidate
 because its sort key incorporates the wrong factor) and filter
 (an algorithm rejecting a candidate that should have passed
@@ -284,7 +285,7 @@ provisioning tickets, the analogous file lives under
 
 Before writing a new reproducer, check whether an existing one
 already exhibits the same structural pattern. If a documented
-shape's existing reproducer already exercises the bug, the
+shape's existing reproducer already exercises the case, the
 customer's ticket is a flavored variant of an existing test.
 Cite the existing reproducer as the answer.
 
@@ -293,14 +294,14 @@ of three causes. The hypothesis may be wrong, in which case
 revise it. The grammar may lack the axis your hypothesis needs
 (existing-fleet daemonsets, ExpireAfter on the NodePool, per-Node
 creation timestamp, capacity-type variation), in which case
-extend the grammar first. The bug may require runtime conditions
-the test harness cannot provide (clock skew, async timing, real
-cluster state), in which case document the gap and consider a
-different verification path.
+extend the grammar first. The behavior may require runtime
+conditions the test harness cannot provide (clock skew, async
+timing, real cluster state), in which case document the gap and
+consider a different verification path.
 
-**Generator decision (step 5).** The reproducer proves the bug
-exists on one input, and the corpus measures how often it shows
-up across inputs.
+**Generator decision (step 5).** The reproducer reproduces the
+behavior on one input, and the corpus measures how often the
+behavior shows up across inputs.
 
 First, does an existing scenario generator already produce
 inputs that exhibit your hypothesized pattern? Look at the
@@ -474,7 +475,7 @@ distribution varies at least one of the two.
   multi-node search. Eventual-class disruption would route them
   differently, but the generator does not produce that shape.
 - **Affinity relaxation pathways.** karpenter#2123 is a stale
-  topology state bug that fires when pod affinity is relaxed.
+  topology state issue that fires when pod affinity is relaxed.
   Reproducing it would need grammar support for multi-term
   required nodeAffinity, oracle modeling of the relaxation pass,
   and a new generator. About two days.
