@@ -46,17 +46,20 @@ The **scenario grammar** at `pkg/test/scenarios/` is a Go DSL for
 building one cluster snapshot at a time. A snapshot is a
 point-in-time representation of a cluster (which NodePools exist,
 which nodes are running, which pods are bound where, which pods
-are pending, which PDBs are in force) that the framework reasons
-over without spinning up the live cluster. Each snapshot has a
-static side (NodePools with requirements and taints, existing
-Nodes with bound Pods, PDBs) and an optional pending workload
-(PendingPods, DaemonSets). Consolidation tests populate the
+are pending, which Pod Disruption Budgets (PDBs) are in force)
+that the framework reasons over without spinning up the live
+cluster. Each snapshot has a static side (NodePools with
+requirements and taints, existing Nodes with bound Pods, PDBs)
+and an optional pending workload (PendingPods, DaemonSets). Consolidation tests populate the
 static side, while provisioning tests populate the pending
 workload and may leave Nodes empty (greenfield) or include a
 small fleet to exercise existing-node placement.
 
 The **scenario generator** turns a seed and a few parameters into
-a snapshot ready for envtest. Each generator targets a structural
+a snapshot ready for envtest (a Kubernetes controller-runtime test
+harness that runs a local kube-apiserver and etcd in-process so
+controllers can be exercised against the real API without a real
+cluster). Each generator targets a structural
 property worth varying. The default consolidation generator
 injects a NodeSelector-blocked candidate at a random middle sort
 position, which produces inputs that exercise the karpenter#1962
@@ -208,7 +211,10 @@ for.
 
 The production scheduler `Scheduler.Solve` adds pods to a
 NodeClaim greedily and only triggers a new NodeClaim when a pod
-does not fit the running one. The trigger condition ignores
+does not fit the running one. (A NodeClaim is Karpenter's request
+to a cloud provider for a new node; the scheduler bundles pending
+pods into NodeClaims, and each NodeClaim becomes one node once
+the cloud provider fulfills it.) The trigger condition ignores
 cost. As long as the next pod fits in the running NodeClaim, the
 scheduler does not ask whether splitting into two NodeClaims
 would be cheaper.
