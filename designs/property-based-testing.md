@@ -11,7 +11,7 @@ Karpenter agreed were Consolidatable, and the workloads fit by
 hand on a smaller subset. Karpenter's multi-node consolidation
 concluded each cycle that no consolidation was possible, logging
 "Can't replace with a cheaper node." A valid consolidation
-existed. Karpenter's search did not find it.
+existed, but Karpenter's search did not find it.
 
 Karpenter sorts the candidate nodes by an internal disruption-cost
 metric and then searches for a feasible group to remove together.
@@ -46,12 +46,12 @@ where Karpenter decides no consolidation is possible but the
 exhaustive search finds a valid consolidation. Those are the
 cases worth studying.
 
-One such scenario is enough to prove the bug exists. The
-comparison at scale is what reveals the bug in the first place.
-We do not know in advance which configurations will trip
-Karpenter, so we generate a variety of them and let the
-disagreements between Karpenter and the exhaustive search point
-us at the cases that matter.
+One such scenario shows Karpenter can miss a valid consolidation.
+The comparison at scale is what reveals these misses in the
+first place. We do not know in advance which configurations
+cause Karpenter to miss a valid consolidation, so we generate a
+variety of them and let the disagreements between Karpenter and
+the exhaustive search point us at the cases that matter.
 
 ## A framework for finding the class
 
@@ -241,7 +241,7 @@ for.
 The production scheduler `Scheduler.Solve` adds pods to a
 NodeClaim greedily and only triggers a new NodeClaim when a pod
 does not fit the running one. (A NodeClaim is Karpenter's request
-to a cloud provider for a new node; the scheduler bundles pending
+to a cloud provider for a new node. The scheduler bundles pending
 pods into NodeClaims, and each NodeClaim becomes one node once
 the cloud provider fulfills it.) The trigger condition ignores
 cost. As long as the next pod fits in the running NodeClaim, the
