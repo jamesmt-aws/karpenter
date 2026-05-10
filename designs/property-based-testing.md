@@ -32,14 +32,12 @@ are especially hard to write tests for, since you would need to
 know which input the search cannot reach before designing a test
 that surfaces it.
 
-A brute-force comparison surfaces the karpenter#1962 class
-without needing the customer's specific cluster. Generate a
-thousand cluster snapshots, run the production multi-node
-algorithm on each, run a brute-force oracle that enumerates
-every feasible deletion subset on each, and look at where they
-disagree. The seeds where production returns NoOp while the
-oracle finds a feasible non-empty subset are the karpenter#1962
-class.
+A brute-force comparison surfaces the karpenter#1962 class.
+Generate a thousand cluster snapshots, run the production
+multi-node algorithm on each, enumerate every feasible deletion
+subset on each, and look at where they disagree. The seeds where
+production returns NoOp while the enumeration finds a feasible
+non-empty subset are the karpenter#1962 class.
 
 ## A framework for finding the class
 
@@ -66,25 +64,42 @@ non-removable candidate alongside cheap ones. The provisioning
 generators target greenfield placement, fleet starting state,
 daemon overhead, and topology spread.
 
-The **brute-force oracle** enumerates every feasible alternative
-the production algorithm could have chosen and returns the best
-one by the metric that matters: largest savings for consolidation,
-lowest total node price for provisioning. The oracle is too
-expensive for production, with cost scaling as 2^N over candidate
-count, while production binary search runs in milliseconds. The
-oracle's slowness is intentional, since its job is to be correct
-on the small N where shapes show up.
+The third piece is **offline enumerative sampling**. For each
+scenario, enumerate every feasible alternative the production
+algorithm could have chosen, then compare what production picked
+against what the enumeration finds. The enumeration's cost
+scales as 2^N over candidate count: ~2 seconds at N=8, ~7
+minutes at N=16, ~1 year at N=32. Production binary search runs
+in milliseconds. The cost asymmetry is intentional, since
+production needs to be fast and good while the enumeration needs
+to be correct on the small N where shapes show up.
 
-| Candidates | Subsets | Oracle time |
+| Candidates | Subsets | Enumeration time |
 |-----------|---------|-------------|
 | 8 | 256 | ~2 seconds |
 | 16 | 65,536 | ~7 minutes |
 | 32 | 4.3 billion | ~1 year |
 
+When the enumeration is exhaustive at the relevant N and the
+comparison metric admits a unique best (largest savings for a
+Delete decision, lowest total node price for provisioning), the
+enumeration's answer is an **oracle**: ground truth that
+production is measured against strictly. When N is too large to
+enumerate or the metric is multi-axis (savings + disruption
+count), the enumeration produces a sample under a partial order
+rather than a strict oracle. The framework still has value in
+that regime, since any case where the enumeration finds a better
+answer than production identifies a scenario where production is
+leaving value on the table, even if "best" is not globally
+well-defined. The current corpora all run in regimes where the
+enumeration is exhaustive (consolidation up to N=8 candidates,
+provisioning up to 6 pending pods), so the six shapes in the
+next section are oracle-grounded.
+
 The **harness** runs the scenario generator and the production
-algorithm, runs the oracle on the same input, and writes per-seed
-results to a JSON file. Patterns that recur across many seeds
-are shapes.
+algorithm, runs the enumeration on the same input, and writes
+per-seed results to a JSON file. Patterns that recur across many
+seeds are shapes.
 
 A shape is a structural property broad enough that a whole family
 of inputs exhibits it. Naming the shape, rather than the input
@@ -97,15 +112,22 @@ price) and disruption count (number of nodes the move removes).
 Operators weigh these differently, so the harness uses Pareto
 comparisons. Move A dominates move B when A is at least as good
 on every axis and strictly better on at least one. When the
-findings say "the oracle found a better move," that means the
-oracle's move dominates the production move. For provisioning,
-the harness uses total node price for the same set of pending
-pods.
+findings say "the enumeration found a better move," that means
+the enumeration's move dominates the production move on at least
+one axis without being worse on any. For provisioning, the
+metric collapses to single-axis (total node price for the same
+set of pending pods), so "better" is strict and the
+enumeration's answer is a strict oracle.
 
 The framework uses on-demand pricing and accounts for daemonset
 and dataplane overhead per provisioned node. It does not yet
 model Spot or ODCR pricing, capacity stochasticity, or
 utilization decay as pods leave nodes mid-lifetime.
+
+The comparison approach is algorithm-agnostic, so future Karpenter
+changes (new consolidation policies, new provisioning logic) do
+not invalidate the framework, only the specific shapes the
+current algorithm exhibits.
 
 ## What we found
 
@@ -134,15 +156,18 @@ NoOp, walking candidates in order and accepting any that compose
 feasibly. Skipping does not narrow the search, so non-prefix
 subsets become reachable.
 
-**Short-prefix (Shape B).** The binary search returns a feasible
-prefix `[0:k]` but a larger non-prefix superset extends past `k`.
-The Shape A fallback only runs when the binary search returns
-NoOp, so when the search succeeds neither path probes the larger
-superset. 17 of 100 seeds fire this shape, with mainline equaling
-branch (the binary search succeeded so the fallback never ran)
-while the oracle finds a strictly larger feasible subset. The fix
-extends the pairwise walk past the prefix's tail with the binary
-search's prefix as the initial accepted set.
+**Short-prefix (Shape B): the human fix is itself incomplete.**
+karpenter#2995 added a pairwise non-prefix fallback that runs
+after the binary search returns NoOp. The fallback closes Shape
+A (the karpenter#1962 class) but does not close every case where
+a larger feasible subset exists. When the binary search returns a
+feasible prefix `[0:k]`, the fallback never runs, even when a
+non-prefix superset extending past `k` is also feasible. 17 of
+100 corpus seeds show this: mainline equals branch (the binary
+search succeeded), but the enumeration finds a strictly larger
+feasible subset. A fix would extend the pairwise walk past the
+prefix's tail with the binary search's prefix as the initial
+accepted set.
 
 **Non-prefix-better (Shape C).** Shape C surfaces in two
 variants. The first is a hand-crafted existence proof, where a
@@ -185,16 +210,24 @@ does not fit the running one. The trigger condition ignores
 cost, so cheaper splits the running NodeClaim could absorb
 without overflow never get considered.
 
-**First-fit monolith bias.** When the cumulative resource requests
-of N pending pods fit inside some single instance type's
-allocatable, the scheduler launches one node of that type. The
-oracle finds a two-way split into smaller instances at lower total
-price. 23 of 100 greenfield corpus seeds manifest this, with the
-rate scaling monotonically with pod count (4% at 3 pods, 17% at
-4, 36% at 5, 40% at 6). Overpay magnitudes range from a 1.333x
-mode up to a 1.6x worst case, and every surfaced split is
-two-way. A fix would need a two-pass "consider splitting before
-launch"
+**First-fit monolith bias.** Karpenter packs pending pods into a
+single NodeClaim greedily until a pod doesn't fit. Whether a
+different packing would be cheaper isn't part of the trigger
+condition.
+
+Worked example: five pods at 2 CPU each (10 CPU total). The
+cheapest single instance type that holds 10 CPU is c7i.4xlarge at
+$0.68/hr. Karpenter packs all five pods into one c7i.4xlarge.
+The enumeration finds that a c7i.2xlarge ($0.34/hr) plus a
+c7i.xlarge ($0.17/hr) holds the same 10 CPU at $0.51/hr, 25%
+cheaper, with no overflow. Karpenter never tries this because no
+individual pod failed to fit.
+
+23 of 100 greenfield corpus seeds manifest this, with the rate
+scaling monotonically with pod count (4% at 3 pods, 17% at 4,
+36% at 5, 40% at 6). Overpay magnitudes range from a 1.333x mode
+up to a 1.6x worst case, and every surfaced split is two-way. A
+fix would need a two-pass "consider splitting before launch"
 search at small N or a bounded brute-force placement at the
 bin-packing step.
 
@@ -216,6 +249,11 @@ surface untouched, so the per-zone shape needs a separate fix
 even though the underlying root cause is shared.
 
 ## Using the framework
+
+The two prompts below have been validated end-to-end on the
+practice tickets in the appendix (a fresh agent applies the
+prompt and lands on the correct shape and reproducer). Whether
+they hold up across real customer reports is open.
 
 ### Ticket to test
 
