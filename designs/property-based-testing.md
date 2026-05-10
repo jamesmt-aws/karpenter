@@ -5,9 +5,9 @@
 karpenter#1962 was reported in early 2025. The customer had
 several mostly-empty nodes that Karpenter agreed were
 Consolidatable, with a workload that fit by hand on a smaller
-subset. Karpenter would not consolidate them, with multi-node
-consolidation logging "Can't replace with a cheaper node" and
-returning NoOp.
+subset. Karpenter would not consolidate them. Multi-node
+consolidation kept logging "Can't replace with a cheaper node"
+without ever producing a plan.
 
 The behavior comes from the algorithm's design. The multi-node
 consolidation algorithm sorts candidates and binary-searches
@@ -19,37 +19,41 @@ prefix was infeasible. A non-prefix subset that excluded the
 impossible candidate would have consolidated, but the binary
 search's prefix structure could not reach it.
 
-Whether to call that behavior a bug is a judgment call. Karpenter
-cannot enumerate every possible consolidation plan, and finding
-edge cases like the customer's may simply cost more computation
-than a consolidation cycle can afford. The diagnostic situation
-is more clear-cut, since the Karpenter test suite did not surface
-this class of input, and no test had engineered an impossible
-candidate at a sort position the binary search could not skip.
-Optimization algorithms where the search structure itself drives
-the outcome are especially hard to write tests for, since you
-would need to know which input the search cannot reach before
-designing a test that surfaces it.
+The customer reasonably expects Karpenter to manage cluster
+utilization, and this is a simple case where Karpenter
+under-consolidates. Karpenter cannot enumerate every possible
+consolidation plan in production, so it uses heuristic searches
+that occasionally miss feasible alternatives like the customer's.
+The Karpenter test suite did not surface this class of input
+either, because no test had engineered an impossible candidate at
+a sort position the binary search could not skip. Optimization
+algorithms where the search structure drives the outcome are hard
+to write tests for, since you would need to know which input the
+search cannot reach before designing a test that surfaces it.
 
 A brute-force comparison surfaces the karpenter#1962 class.
 Generate a thousand cluster snapshots, run the production
 multi-node algorithm on each, enumerate every feasible deletion
 subset on each, and look at where they disagree. The seeds where
-production returns NoOp while the enumeration finds a feasible
+production produces no plan while the enumeration finds a feasible
 non-empty subset are the karpenter#1962 class.
 
 ## A framework for finding the class
 
 The framework has four pieces.
 
-The **scenario grammar** at `pkg/test/scenarios/` describes a
-cluster snapshot in code. A snapshot has a static side (NodePools
-with requirements and taints, existing Nodes with bound Pods,
-PDBs) and an optional pending workload (PendingPods, DaemonSets).
-Consolidation tests populate the static side, while provisioning
-tests populate the pending workload and may leave Nodes empty
-(greenfield) or include a small fleet to exercise existing-node
-placement.
+The **scenario grammar** at `pkg/test/scenarios/` is a Go DSL for
+building one cluster snapshot at a time. A snapshot is a
+point-in-time representation of a cluster (which NodePools exist,
+which nodes are running, which pods are bound where, which pods
+are pending, which PDBs are in force) that the framework reasons
+over without spinning up the live cluster. Each snapshot has a
+static side (NodePools with requirements and taints, existing
+Nodes with bound Pods, PDBs) and an optional pending workload
+(PendingPods, DaemonSets). Consolidation tests populate the
+static side, while provisioning tests populate the pending
+workload and may leave Nodes empty (greenfield) or include a
+small fleet to exercise existing-node placement.
 
 The **scenario generator** turns a seed and a few parameters into
 a snapshot ready for envtest. Each generator targets a structural
