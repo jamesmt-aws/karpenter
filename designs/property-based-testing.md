@@ -80,7 +80,7 @@ small fleet to exercise existing-node placement.
 
 The **scenario generator** turns a seed and a few parameters into
 a snapshot ready for envtest (controller-runtime's local
-Kubernetes API harness; see glossary). Each generator targets a
+Kubernetes API harness, see glossary). Each generator targets a
 structural property worth varying, mixing seeded randomness with
 engineered structure: the same seed produces the same scenario,
 and the random choices are biased toward whatever property the
@@ -166,7 +166,7 @@ The corpus is a sparse sample of a much larger space. The space
 of possible cluster configurations (3 to 8 nodes with arbitrary
 instance types from the pool, varying deletion costs, varying
 pod constraints) is combinatorially large. 100 corpus seeds is
-what runs in a few minutes; the framework's value depends on the
+what runs in a few minutes. The framework's value depends on the
 generator biasing the sample toward structural properties worth
 varying. Without the bias, the Shape A rate (a NodeSelector-
 blocked candidate at a middle position) would be near zero
@@ -688,45 +688,45 @@ Three properties that would be useful but are not yet checked.
 
 ## Glossary
 
-- **corpus** — A body of generated scenarios run together to
+- **corpus**: a body of generated scenarios run together to
   surface shape frequency. The default consolidation corpus is
-  100 seeds; the adversarial corpus is 50; etc.
-- **enumeration** / **offline enumerative sampling** — The
+  100 seeds, the adversarial corpus is 50, and so on.
+- **enumeration** / **offline enumerative sampling**: the
   framework's name for running through every feasible alternative
   the production algorithm could have chosen, on the same cluster
   snapshot.
-- **envtest** — A Kubernetes controller-runtime test harness that
+- **envtest**: a Kubernetes controller-runtime test harness that
   runs a local kube-apiserver and etcd in-process, so controllers
   can be exercised against the real API without a real cluster.
-- **NodeClaim** — Karpenter's request to a cloud provider for a
+- **NodeClaim**: Karpenter's request to a cloud provider for a
   new node. The scheduler bundles pending pods into NodeClaims,
   and each NodeClaim becomes one node once the cloud provider
   fulfills it.
-- **NodePool** — A Karpenter resource describing a class of nodes
+- **NodePool**: a Karpenter resource describing a class of nodes
   (which instance types, requirements, taints, consolidation
   policy).
-- **oracle** — Strict-sense ground truth produced by an exhaustive
+- **oracle**: strict-sense ground truth produced by an exhaustive
   enumeration with a unique-best comparison metric. The framework
-  produces an oracle at small N with a single-axis metric; for
+  produces an oracle at small N with a single-axis metric. For
   larger N or multi-axis metrics, the enumeration produces a
   partial-order sample rather than a strict oracle.
-- **Pareto dominance** — A partial-order relation between moves.
+- **Pareto dominance**: a partial-order relation between moves.
   Move A dominates move B when A is at least as good as B on
   every axis and strictly better on at least one.
-- **PDB** / **Pod Disruption Budget** — A Kubernetes object that
+- **PDB** / **Pod Disruption Budget**: a Kubernetes object that
   limits how many pods of a workload can be voluntarily evicted
   at once.
-- **scenario** — One cluster snapshot expressed via the grammar,
+- **scenario**: one cluster snapshot expressed via the grammar,
   possibly produced by a generator or hand-crafted.
-- **score gate** — Karpenter's Balanced consolidation policy
+- **score gate**: Karpenter's Balanced consolidation policy
   threshold check, rejecting plans where
   `savings_fraction / disruption_fraction < 1/k` for a configured
   `k` (default `k=2`).
-- **shape** — A structural property broad enough that a whole
+- **shape**: a structural property broad enough that a whole
   family of inputs exhibits it. The framework's findings are
   named shapes (Shape A, Shape B, Shape C, score gate
   marginal-rejection, first-fit monolith, per-zone monolith).
-- **snapshot** — A point-in-time representation of a cluster
+- **snapshot**: a point-in-time representation of a cluster
   (which NodePools exist, which nodes are running, which pods
   are bound where, which pods are pending, which PDBs are in
   force).
