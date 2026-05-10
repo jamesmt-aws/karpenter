@@ -53,18 +53,17 @@ cause Karpenter to miss a valid consolidation, so we generate a
 variety of them and let the disagreements between Karpenter and
 the exhaustive search point us at the cases that matter.
 
-## A framework for finding the class
+## What we built
 
-The framework's job is to surface input shapes that production
-handles poorly without anyone needing to anticipate which inputs
-those are. Hand-crafted reproducers prove a specific shape exists
-once you know what it is. The framework runs at scale, sampling
-many scenarios and comparing production against a reference, so
-that shapes you did not already know to look for can be found
-and the frequency of each shape on representative inputs can be
-measured.
-
-The framework has four pieces.
+The framework has four pieces. The scenario grammar lets you
+write one cluster snapshot in code. The simplest use is a
+hand-crafted reproducer like `multinode_1962_test.go`: write one
+snapshot with every field picked by hand, run Karpenter against
+it, observe what Karpenter does. The other three pieces (a
+scenario generator, an offline enumeration, and a harness) run
+the framework at scale, generating many snapshots and comparing
+Karpenter's output against the enumeration to find cases no one
+has thought of yet.
 
 The **scenario grammar** at `pkg/test/scenarios/` is a Go DSL for
 building one cluster snapshot at a time. A snapshot is a
@@ -80,19 +79,15 @@ workload and may leave Nodes empty (greenfield) or include a
 small fleet to exercise existing-node placement.
 
 The **scenario generator** turns a seed and a few parameters into
-a snapshot ready for envtest (a Kubernetes controller-runtime test
-harness that runs a local kube-apiserver and etcd in-process so
-controllers can be exercised against the real API without a real
-cluster). Each generator targets a structural property worth
-varying, mixing seeded randomness with engineered structure: the
-same seed produces the same scenario, and the random choices are
-biased toward whatever property the generator is built to
-surface. The grammar can also be used directly, without a
-generator, for hand-crafted reproducers like
-`multinode_1962_test.go`. The default consolidation generator
-injects a NodeSelector-blocked candidate at a random middle sort
-position, which produces inputs that exercise the karpenter#1962
-class. The adversarial generator gives candidates per-Node price
+a snapshot ready for envtest (controller-runtime's local
+Kubernetes API harness; see glossary). Each generator targets a
+structural property worth varying, mixing seeded randomness with
+engineered structure: the same seed produces the same scenario,
+and the random choices are biased toward whatever property the
+generator is built to surface. The default consolidation
+generator injects a NodeSelector-blocked candidate at a random
+middle sort position, which produces inputs that exercise the
+karpenter#1962 class. The adversarial generator gives candidates per-Node price
 variation so the savings-ratio sort and the score gate become
 non-trivial. The marginal generator engineers a high-price
 non-removable candidate alongside cheap ones. The provisioning
@@ -102,12 +97,15 @@ daemon overhead, and topology spread.
 The third piece is **offline enumerative sampling**. For each
 scenario, enumerate every feasible alternative the production
 algorithm could have chosen, then compare what production picked
-against what the enumeration finds. The enumeration's cost
-scales as 2^N over candidate count: ~2 seconds at N=8, ~7
-minutes at N=16, ~1 year at N=32. Production binary search runs
-in milliseconds. The cost asymmetry is intentional, since
-production needs to be fast and good while the enumeration needs
-to be correct on the small N where shapes show up.
+against what the enumeration finds. Multi-node consolidation
+removes a subset of candidate nodes, so the enumeration walks
+the 2^N subsets of N candidates (each candidate is in or out of
+the deletion subset). At N=8 the enumeration takes about 2
+seconds, at N=16 about 7 minutes, at N=32 about a year.
+Production binary search runs in milliseconds. The cost
+asymmetry is intentional, since production needs to be fast and
+good while the enumeration needs to be correct on the small N
+where shapes show up.
 
 | Candidates | Subsets | Enumeration time |
 |-----------|---------|-------------|
@@ -129,7 +127,7 @@ leaving value on the table, even if "best" is not globally
 well-defined. The current corpora all run in regimes where the
 enumeration is exhaustive (consolidation up to N=8 candidates,
 provisioning up to 6 pending pods), so the six shapes in the
-next section are oracle-grounded.
+next section are all measured against a strict oracle.
 
 The **harness** runs the scenario generator and the production
 algorithm, runs the enumeration on the same input, and writes
@@ -148,8 +146,8 @@ Operators weigh these differently, so the harness uses Pareto
 comparisons. Move A dominates move B when A is at least as good
 on every axis and strictly better on at least one. When the
 findings say "the enumeration found a better move," that means
-the enumeration's move dominates the production move on at least
-one axis without being worse on any. For provisioning, the
+the enumeration's move is strictly better than the production
+move on at least one axis and no worse on any. For provisioning, the
 metric collapses to single-axis (total node price for the same
 set of pending pods), so "better" is strict and the
 enumeration's answer is a strict oracle.
@@ -164,13 +162,25 @@ changes (new consolidation policies, new provisioning logic) do
 not invalidate the framework, only the specific shapes the
 current algorithm exhibits.
 
+The corpus is a sparse sample of a much larger space. The space
+of possible cluster configurations (3 to 8 nodes with arbitrary
+instance types from the pool, varying deletion costs, varying
+pod constraints) is combinatorially large. 100 corpus seeds is
+what runs in a few minutes; the framework's value depends on the
+generator biasing the sample toward structural properties worth
+varying. Without the bias, the Shape A rate (a NodeSelector-
+blocked candidate at a middle position) would be near zero
+rather than 14 of 100. Each generator's bias is documented in
+the next section alongside the shapes it surfaces.
+
 ## What we found
 
 Six shapes have come out of running the framework against the
-production code. Four are search-structure limitations on the
+production code. Three are search-structure limitations on the
 consolidation side, where the algorithm cannot reach a feasible
-subset the oracle finds. One is the Balanced policy gate doing
-its job. Two are greedy-commit shapes on the provisioning side.
+subset the enumeration finds. One is the Balanced policy gate
+doing its job. Two are greedy-commit shapes on the provisioning
+side.
 
 ### Search-reachability (consolidation)
 
@@ -191,18 +201,16 @@ NoOp, walking candidates in order and accepting any that compose
 feasibly. Skipping does not narrow the search, so non-prefix
 subsets become reachable.
 
-**Short-prefix (Shape B): the human fix is itself incomplete.**
-karpenter#2995 added a pairwise non-prefix fallback that runs
-after the binary search returns NoOp. The fallback closes Shape
-A (the karpenter#1962 class) but does not close every case where
-a larger feasible subset exists. When the binary search returns a
-feasible prefix `[0:k]`, the fallback never runs, even when a
-non-prefix superset extending past `k` is also feasible. 17 of
-100 corpus seeds show this: mainline equals branch (the binary
-search succeeded), but the enumeration finds a strictly larger
-feasible subset. A fix would extend the pairwise walk past the
-prefix's tail with the binary search's prefix as the initial
-accepted set.
+**Short-prefix (Shape B).** Closing Shape A is only part of the
+fix. The Shape A fallback runs only when the binary search
+returns NoOp. When the binary search returns a feasible prefix
+`[0:k]` instead, the fallback never runs, even when a non-prefix
+superset extending past `k` is also feasible. 17 of 100 corpus
+seeds show this: the binary search succeeds, the Shape A
+fallback never gets to run, and the enumeration finds a strictly
+larger feasible subset that production does not reach. A fix for
+Shape B would extend the pairwise walk past the prefix's tail
+with the binary search's prefix as the initial accepted set.
 
 **Non-prefix-better (Shape C).** Shape C surfaces in two
 variants. The first is a hand-crafted existence proof. A
@@ -282,9 +290,9 @@ zone-assignment level rather than at within-zone bin-packing.
 Production sizes each zone for the pods that landed there,
 missing the cheaper plan a different zone-assignment of the same
 pods would unlock. Fixing first-fit selection in the
-unconstrained case would leave this zone-assignment failure
-surface untouched, so the per-zone shape needs a separate fix
-even though the underlying root cause is shared.
+unconstrained case would not address the zone-assignment-level
+problem, so the per-zone shape needs a separate fix even though
+it shares a root cause with the unconstrained case.
 
 ## Using the framework
 
@@ -495,8 +503,8 @@ distribution varies at least one of the two.
   NodeSelector-blocked candidate at a middle sort position with
   30% probability. 14 of 100 seeds fire.
 - **Short-prefix (Shape B).** 17 of 100 seeds fire this shape,
-  with mainline equaling branch (binary search succeeded so the
-  fallback never ran) while the enumeration finds a strictly
+  with the binary search succeeding so the Shape A fallback
+  never gets to run while the enumeration finds a strictly
   larger feasible subset.
 - **Sort-key divergence.** Adversarial generator gives candidates
   per-node pricing with engineered blocker placement. 14 of 50
@@ -677,6 +685,51 @@ Three properties that would be useful but are not yet checked.
   AWS-realistic instance type fixture.
 - `pkg/controllers/provisioning/testdata/` holds the committed
   baseline JSONs and `analyze_overpay.py`.
+
+## Glossary
+
+- **corpus** — A body of generated scenarios run together to
+  surface shape frequency. The default consolidation corpus is
+  100 seeds; the adversarial corpus is 50; etc.
+- **enumeration** / **offline enumerative sampling** — The
+  framework's name for running through every feasible alternative
+  the production algorithm could have chosen, on the same cluster
+  snapshot.
+- **envtest** — A Kubernetes controller-runtime test harness that
+  runs a local kube-apiserver and etcd in-process, so controllers
+  can be exercised against the real API without a real cluster.
+- **NodeClaim** — Karpenter's request to a cloud provider for a
+  new node. The scheduler bundles pending pods into NodeClaims,
+  and each NodeClaim becomes one node once the cloud provider
+  fulfills it.
+- **NodePool** — A Karpenter resource describing a class of nodes
+  (which instance types, requirements, taints, consolidation
+  policy).
+- **oracle** — Strict-sense ground truth produced by an exhaustive
+  enumeration with a unique-best comparison metric. The framework
+  produces an oracle at small N with a single-axis metric; for
+  larger N or multi-axis metrics, the enumeration produces a
+  partial-order sample rather than a strict oracle.
+- **Pareto dominance** — A partial-order relation between moves.
+  Move A dominates move B when A is at least as good as B on
+  every axis and strictly better on at least one.
+- **PDB** / **Pod Disruption Budget** — A Kubernetes object that
+  limits how many pods of a workload can be voluntarily evicted
+  at once.
+- **scenario** — One cluster snapshot expressed via the grammar,
+  possibly produced by a generator or hand-crafted.
+- **score gate** — Karpenter's Balanced consolidation policy
+  threshold check, rejecting plans where
+  `savings_fraction / disruption_fraction < 1/k` for a configured
+  `k` (default `k=2`).
+- **shape** — A structural property broad enough that a whole
+  family of inputs exhibits it. The framework's findings are
+  named shapes (Shape A, Shape B, Shape C, score gate
+  marginal-rejection, first-fit monolith, per-zone monolith).
+- **snapshot** — A point-in-time representation of a cluster
+  (which NodePools exist, which nodes are running, which pods
+  are bound where, which pods are pending, which PDBs are in
+  force).
 
 ## Appendix: practice tickets
 
