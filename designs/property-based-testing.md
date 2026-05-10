@@ -251,9 +251,12 @@ even though the underlying root cause is shared.
 ## Using the framework
 
 The two prompts below have been validated end-to-end on the
-practice tickets in the appendix (a fresh agent applies the
-prompt and lands on the correct shape and reproducer). Whether
-they hold up across real customer reports is open.
+practice tickets in the appendix. A fresh Claude Code agent given
+each prompt and a test input lands on the correct shape and
+reproducer in 2-3 minutes of agent time. The verbatim transcripts
+are in "Appendix: prompt validation transcripts" at the end of
+this doc. Whether the prompts hold up across real customer
+reports is open.
 
 ### Ticket to test
 
@@ -708,3 +711,352 @@ existing provisioning corpus exercises this on 23 of 100 seeds.
 No fix has landed yet. A fix would need either a two-pass
 "consider splitting before launch" search at small N, or a
 bounded brute-force placement at the bin-packing step.
+
+## Appendix: prompt validation transcripts
+
+The two prompts in "Using the framework" were validated by passing
+each one to a fresh Claude Code agent (no prior context on this
+doc) along with a test input. Both runs were executed via ralphit
+(see `~/src/ralphit`), which spins up an isolated sandbox, runs
+the agent, and runs validation grep checks against the agent's
+output. Both runs PASS.
+
+The transcripts below are the agent's `analysis.md` files
+verbatim. They are included so a reader can see what the prompts
+produce on a fresh run before deciding to use them on a real
+ticket. The agent in both cases was given only the prompt text,
+the test input, and read-only access to the Karpenter codebase;
+it had no exposure to the rest of this design doc beyond what the
+prompt text itself references.
+
+### A.1: Ticket-to-test on Practice Ticket A
+
+Run hash `409c140d5eaf`, wall-clock 2m 7s, validation PASS. The
+fresh agent received the section 4 ticket-to-test prompt and the
+text of Practice Ticket A (see "Appendix: practice tickets"
+above). The expected landing point: Shape A (prefix-blindness),
+search-reachability family, citing `scenario_1962_test.go` as the
+existing reproducer.
+
+#### Step 1: Symptom
+
+The customer reports that multi-node consolidation "never produces
+a plan" against a fleet of six Consolidatable nodes from a single
+NodePool, even after the nightly batch jobs finish and the cluster
+is mostly empty. The customer expects Karpenter to remove some of
+the now-empty nodes and observes that it does not.
+
+Single-node consolidation does run in the same cluster, removing
+one node at a time. Because each removal goes through its own
+disruption cycle, draining the cluster down to a smaller footprint
+takes hours. The customer has confirmed that the disruption budget
+is not throttling the move (100 percent allowed) and that
+ExpireAfter on the NodePool is well outside the relevant window
+(7 days). The disagreement between the two consolidation modes,
+multi-node returning empty while single-node makes progress, is
+the central observation.
+
+The one workload-shaped detail in the ticket is a single GPU pod
+with `nodeSelector: accelerator=nvidia-t4`. Only a couple of the
+NodePool's instance types carry that label. The rest of the
+workload is CPU-only and unconstrained. I will carry that
+observation forward into the cluster-shape extraction, but at this
+step I am only describing what the customer sees, not yet
+attributing it to an algorithm.
+
+#### Step 2: Cluster shape
+
+**Static side, extracted from the ticket.**
+- One NodePool. Multiple instance types in the requirements list,
+  with a small subset (a couple) carrying `accelerator=nvidia-t4`.
+- Six nodes, all from this NodePool, all Consolidatable.
+- Disruption budget: 100 percent nodes allowed.
+- ExpireAfter: 7 days (not relevant on this timescale).
+- One GPU pod with `nodeSelector: accelerator=nvidia-t4`. Five
+  other (CPU-only) pod populations, unconstrained on instance
+  type.
+- Capacity type: not stated, on-demand assumed.
+- Karpenter 1.0.x, Kubernetes 1.30.
+
+**Missing structural details.**
+- Per-node allocatable, per-pod resource requests, and how the GPU
+  pod is currently bound. Load-bearing assumption: the GPU pod is
+  bound to one of the (1-2) t4-labeled nodes, and that node is one
+  of the six Consolidatable nodes. Without this, Shape A would not
+  apply because the impossible candidate would not be in the
+  candidate set.
+- The other five nodes' instance types. Load-bearing assumption:
+  the other five are non-t4 instance types. The non-t4 nodes
+  cannot host the GPU pod.
+- Whether replacement t4 capacity is available in the NodePool's
+  offerings. Load-bearing assumption: yes in principle (the
+  NodePool lists those types) but the simulator's per-cycle
+  replacement search will not satisfy the GPU pod's NodeSelector
+  during the `firstNConsolidationOption` probe because Karpenter's
+  multi-node simulator does not freely re-launch arbitrary types
+  to host displaced pods, it tries to fit them on remaining
+  candidates. With one GPU pod, no other remaining node carries
+  the t4 label, so the pod has nowhere to go.
+- Sort order of the candidates by `disruptionCost`. Load-bearing
+  assumption: the GPU-bearing candidate sorts somewhere in the
+  middle (positions 1..N-2), which is exactly the structural
+  property the karpenter#1962 case surfaces. This is the
+  assumption the reproducer in step 4 verifies.
+- PodDisruptionBudgets, DoNotDisrupt annotations. Assumed absent.
+
+The customer did not offer a structural hypothesis citing code
+paths, so there is no claim from them to verify against the
+source.
+
+#### Step 3: Hypothesis
+
+The symptom maps to the **search-reachability** family. Multi-node
+consolidation walks prefixes of a `disruptionCost`-sorted candidate
+list and binary-searches for the largest feasible prefix; any
+feasible subset that requires *skipping* a candidate is structurally
+unreachable. The customer's six-node fleet contains exactly one
+candidate whose pod cannot reschedule (the GPU pod, because no
+other node in the simulator's view carries
+`accelerator=nvidia-t4`). If that candidate sorts somewhere in the
+middle of the list, every prefix the binary search probes contains
+it, every probed prefix is infeasible, and the search exits empty.
+
+Inside the family, the disambiguator is what multi-node returns.
+The customer reports it "never produces a plan", that is NoOp, not
+a feasible-but-too-short prefix. Shape A returns NoOp; Shape B
+returns a feasible prefix smaller than the largest feasible
+subset. The ticket's wording matches Shape A. Concretely: this is
+**Shape A, prefix-blindness**, identical in shape to
+karpenter#1962 with a NodeSelector blocker rather than a PDB
+blocker.
+
+The corroborating observation is that single-node consolidation
+still works. Single-node consolidation evaluates each candidate
+independently rather than over prefixes of a sorted list, so the
+GPU candidate is rejected as infeasible (its pod cannot
+reschedule) but does not poison every probe of every other
+candidate. That is exactly the asymmetry Shape A predicts.
+
+#### Step 4: Reproducer
+
+An existing reproducer already exhibits this exact structural
+pattern. `karpenter/pkg/controllers/disruption/scenario_1962_test.go`
+constructs three candidates sorted by `PodDeletionCost` as
+`[good_0, bad, good_2]`, where `bad`'s pod requires a label only
+present on its own node so the simulator cannot reschedule it. The
+binary search probes `[good_0, bad]`, the simulator returns
+infeasible, and on the unfixed code path multi-node returns no
+command. With the pairwise non-prefix fallback that is the proposed
+fix for Shape A, multi-node finds the non-prefix subset
+`{good_0, good_2}` and removes those two. The companion
+`karpenter/pkg/controllers/disruption/multinode_1962_test.go`
+exercises the same shape using direct envtest setup rather than
+the scenario grammar.
+
+The customer's ticket is a flavored variant of
+`scenario_1962_test.go`: the blocker label is
+`accelerator=nvidia-t4` instead of `bad-only=true`, and there are
+six candidates instead of three. The structural property, one
+impossible-to-reschedule candidate sorting somewhere in the middle
+of a `disruptionCost`-sorted list, is identical.
+
+#### Step 5: Generator decision
+
+The default consolidation generator (`Generate` in
+`karpenter/pkg/test/scenarios/generator.go`) already produces this
+pattern. `Generate` creates 3..8 nodes, picks one of them to be a
+"bad" NodeSelector-blocked candidate with 30 percent probability,
+and places the bad candidate at a middle sort position (never at
+position 0 or last). The bad node carries a unique
+`bad-only=true` label and its pod selects on that label. That is
+the customer's structure with a generic label substituted for
+`accelerator=nvidia-t4`; the algorithm does not care which label.
+
+The frequency at which the existing generator surfaces Shape A is
+14 of 100 seeds (14 percent), well above the 5 percent threshold
+the prompt sets as the bar for "the corpus already measures this
+shape". No new generator work is needed for this ticket. The
+remaining work is on the fix side, not the test side: per the
+framework, no Shape A fix has landed yet.
+
+### A.2: Disagreement-to-fix on corpus seed 0
+
+Run hash `6fbec838bda9`, wall-clock 2m 36s, validation PASS. The
+fresh agent received the section 4 disagreement-to-fix prompt and
+the production / branch / oracle outputs for corpus seed 0 from
+`pkg/controllers/disruption/testdata/corpus_results.json`. The
+expected landing point: Shape A (prefix-blindness), proposing the
+non-prefix pairwise fallback as the fix direction in
+`multinodeconsolidation.go`.
+
+#### Step 1: Plans
+
+The seed has 3 candidates sorted in this walk order:
+
+1. `scalecitrine-3096-j7m3fbf12r` (position 0)
+2. `doomsplash-3101-jt6eyoy9ch` (position 1, middle)
+3. `centaurtorch-3106-yyghvpa4on` (position 2)
+
+**Production (mainline) plan.** NoOp. No candidates removed;
+cluster post-state identical to pre-state. `total_savings = 0`,
+`total_disruption = 0`, `candidates = null`. Mainline ran in
+7.046 ms.
+
+**Oracle plan.** Delete `{scalecitrine, centaurtorch}`. Two nodes
+removed; the middle candidate `doomsplash` is retained.
+`total_savings = 3.2256`, `total_disruption = 2`,
+`candidates = [scalecitrine, centaurtorch]`. The branch column
+(binary search plus the pairwise non-prefix fallback) lands on the
+same plan as the oracle on every axis, so the oracle is reachable
+from a non-prefix search.
+
+The oracle plan strictly Pareto-dominates production on both
+primary axes (savings and disruption count), with no axis on which
+production is better. By the framework's Pareto rule this is an
+unambiguous oracle win, not a multi-axis trade-off.
+
+#### Step 2: Structural difference
+
+Membership comparison: production includes nothing; oracle includes
+`scalecitrine` (pos 0) and `centaurtorch` (pos 2); oracle excludes
+`doomsplash` (pos 1, middle). This is pattern (b) from step 2 of
+the prompt: production excludes candidates the oracle includes,
+because production's search structure cannot reach them.
+
+Walk order matters. The multi-node binary search probes prefixes
+`[0:k]` of the sorted list:
+
+- `[0:3] = {scalecitrine, doomsplash, centaurtorch}`, contains
+  `doomsplash`, infeasible.
+- `[0:2] = {scalecitrine, doomsplash}`, contains `doomsplash`,
+  infeasible.
+- `[0:1] = {scalecitrine}`, single-node territory; multi-node
+  rejects sub-2 plans.
+
+The feasible subset `{scalecitrine, centaurtorch}` is non-prefix:
+it requires skipping position 1 in the sorted walk. The binary
+search has no operator that produces a non-contiguous index set,
+so this subset is unreachable from prefixes alone. The "blocker"
+is `doomsplash`, sitting in the middle position and intersecting
+every prefix that would otherwise be large enough to consolidate.
+
+#### Step 3: Shape name
+
+**Shape A (prefix-blindness).** The structural property is: the
+production search walks prefixes of a sorted candidate list, and
+the only feasible removal of size >= 2 in this seed requires
+skipping a middle index. Every prefix that is large enough to be a
+multi-node move contains the blocker, every prefix without the
+blocker is too small, and the search has no path to the non-prefix
+subset.
+
+The disambiguator from step 3 of the ticket-to-test prompt also
+applies: Shape A returns NoOp from multi-node, while Shape B
+returns a feasible-but-short prefix. Mainline here returns NoOp
+(`candidates: null`, `total_savings: 0`), which is the Shape A
+signature, not Shape B. This seed sits in the documented "14 of
+100 default corpus seeds fire Shape A" bucket.
+
+#### Step 4: Fix direction
+
+Shape A is a search-reachability shape, and the doc's fix direction
+for the search-reachability family is to change the search
+structure. The specific fix the doc names for Shape A is a
+**non-prefix pairwise fallback** that runs from an empty accepted
+set when the binary search returns NoOp.
+
+That direction is the right starting point for this seed for two
+reasons. First, the corpus's `branch` column was generated by
+exactly this fallback and lands on the oracle plan with no axis
+difference, so we have empirical evidence the fallback resolves
+this seed. Second, the fix is in-scope for a single PR (Shape A is
+documented as fixable, unlike Shape C which the doc flags as
+needing deeper restructuring).
+
+#### Step 5: Implementation
+
+**File:** `pkg/controllers/disruption/multinodeconsolidation.go`.
+
+The fallback should run when the binary search returns NoOp
+(no feasible prefix found), immediately before the function
+returns NoOp. Add a method `pairwiseNonPrefixSearch(ctx, candidates)`
+on the multi-node consolidator type with this shape:
+
+1. Start with `accepted := []*Candidate{}` and
+   `simState := initialClusterState`.
+2. Iterate `candidate` over `candidates` in the existing sorted
+   order.
+3. For each `candidate`, compose the trial set
+   `accepted ++ {candidate}` and run the existing feasibility
+   predicate the binary search uses (`simulateScheduling` plus the
+   multi-node-specific checks: pods reschedule, replacement node
+   price strictly cheaper if applicable, `validDecision`).
+4. If feasible, set `accepted = trial` and update `simState`. If
+   not, drop `candidate` and continue.
+5. After the loop, if `len(accepted) >= 2` (multi-node threshold),
+   construct the `Command` and return it; otherwise return NoOp.
+
+Reuse the existing `simulateScheduling` / `validDecision` helpers
+from `consolidation.go` rather than re-implementing the
+feasibility check inline. The doc's lenient-oracle warning ("every
+fit predicate the production code enforces must mirror in the
+oracle's view") cuts both ways: a stricter or laxer fallback
+predicate would create a phantom Shape that isn't really there.
+
+The existing score-gate check should still run on the fallback's
+output. The fallback is a search-structure change, not a gate
+change.
+
+#### Step 6: Corpus run expectation
+
+After landing the fix, rerun the default consolidation corpus and
+diff `testdata/corpus_results.json` against the committed baseline.
+
+**What should resolve.** Seed 0 specifically: the mainline column
+should now match the branch and oracle columns. All 14 of 100
+default-corpus seeds that fire Shape A should resolve in the same
+way: their mainline columns should converge to the branch (and
+oracle) columns. The Shape A disagreement count drops from 14 to
+~0 in the default corpus.
+
+**What new disagreements would indicate.** A new Shape B-like
+disagreement appearing on a previously-agreeing seed would mean
+the fallback did not run (binary search returned a feasible
+non-empty prefix), yet the oracle still found a strictly larger
+non-prefix superset. Shape B is documented as separately fixable;
+if it shows up here, the fallback's gate (only-on-NoOp) is the
+cause and the fix is a follow-up, not a regression.
+
+A score-gate rejection on the fallback's output where the binary
+search's empty result previously passed silently would be the gate
+doing its job on a marginal multi-node move; expected and not a
+regression.
+
+A simulator-feasibility-rejected fallback plan that the oracle
+accepts would mean the fallback's predicate is laxer or stricter
+than `validDecision`, surfacing a predicate-mismatch ghost shape.
+Investigate predicate parity before declaring a new shape.
+
+#### Step 7: Doc update
+
+`designs/property-based-testing.md` would need three edits.
+
+The Shape A entry in the Search-reachability subsection should
+move "14 of 100 corpus seeds fire this on the unfixed code" into
+the past tense and quote the new corpus disagreement count
+(expected ~0).
+
+The Strong coverage bullet on Shape A should reflect the post-fix
+state: the default generator still injects blockers at middle sort
+positions with 30% probability, but mainline now reaches them, so
+the relevant number is "0 of 100 seeds disagree" rather than "14
+of 100 seeds fire."
+
+The Search-reachability family text should clarify the new
+fix-status landscape: A is fixed in mainline, B is fixable by
+extending the same fallback past the binary search's prefix tail,
+C remains out-of-scope for a single-PR fix and needs swap-walk or
+bounded brute-force. Practice ticket A's answer key should also
+update from "no fix has landed yet" to "fixed by the pairwise
+non-prefix fallback in `multinodeconsolidation.go` as of
+<release/PR>" so the appendix stays in sync with the body.
