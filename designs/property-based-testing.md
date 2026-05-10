@@ -24,13 +24,12 @@ cannot enumerate every possible consolidation plan, and finding
 edge cases like the customer's may simply cost more computation
 than a consolidation cycle can afford. The diagnostic situation
 is more clear-cut, since the Karpenter test suite did not surface
-this class of input at all, and no test had engineered an
-impossible candidate at a sort position the binary search could
-not skip. Optimization algorithms where the search structure
-itself drives the outcome
-are especially hard to write tests for, since you would need to
-know which input the search cannot reach before designing a test
-that surfaces it.
+this class of input, and no test had engineered an impossible
+candidate at a sort position the binary search could not skip.
+Optimization algorithms where the search structure itself drives
+the outcome are especially hard to write tests for, since you
+would need to know which input the search cannot reach before
+designing a test that surfaces it.
 
 A brute-force comparison surfaces the karpenter#1962 class.
 Generate a thousand cluster snapshots, run the production
@@ -47,8 +46,8 @@ The **scenario grammar** at `pkg/test/scenarios/` describes a
 cluster snapshot in code. A snapshot has a static side (NodePools
 with requirements and taints, existing Nodes with bound Pods,
 PDBs) and an optional pending workload (PendingPods, DaemonSets).
-Consolidation tests populate the static side. Provisioning tests
-populate the pending workload, and may leave Nodes empty
+Consolidation tests populate the static side, while provisioning
+tests populate the pending workload and may leave Nodes empty
 (greenfield) or include a small fleet to exercise existing-node
 placement.
 
@@ -170,20 +169,19 @@ prefix's tail with the binary search's prefix as the initial
 accepted set.
 
 **Non-prefix-better (Shape C).** Shape C surfaces in two
-variants. The first is a hand-crafted existence proof, where a
-remaining node with capacity that exactly fits one candidate's
-pod and nothing
-more blocks every joint removal that includes that candidate,
-while a non-prefix subset that excludes the candidate is feasible
-and strictly larger than the prefix. The second is a frequency
-result from the adversarial corpus, where a non-prefix subset of
-the same size as the prefix carries higher savings, often by
-skipping the cheapest candidate at position 0 in favor of a
-higher-priced one further down the sort, observed on 15 of 50
-adversarial seeds. The pairwise extension cannot eject
-candidates it has already accepted, so it cannot reach either
-variant. A fix would need bounded brute-force at small N or a
-swap-walk that ejects accepted candidates.
+variants. The first is a hand-crafted existence proof. A
+remaining node has capacity that exactly fits one candidate's pod
+and nothing more, blocking every joint removal that would include
+that candidate, while a non-prefix subset that excludes the
+candidate is feasible and strictly larger than the prefix. The
+second is a frequency result from the adversarial corpus: a
+non-prefix subset of the same size as the prefix carries higher
+savings, often by skipping the cheapest candidate at position 0
+in favor of a higher-priced one further down the sort. 15 of 50
+adversarial seeds manifest this. The pairwise extension cannot
+eject candidates it has already accepted, so it cannot reach
+either variant. A fix would need bounded brute-force at small N
+or a swap-walk that ejects accepted candidates.
 
 ### Score gate (gate working as designed)
 
@@ -207,8 +205,9 @@ for.
 The production scheduler `Scheduler.Solve` adds pods to a
 NodeClaim greedily and only triggers a new NodeClaim when a pod
 does not fit the running one. The trigger condition ignores
-cost, so cheaper splits the running NodeClaim could absorb
-without overflow never get considered.
+cost. As long as the next pod fits in the running NodeClaim, the
+scheduler does not ask whether splitting into two NodeClaims
+would be cheaper.
 
 **First-fit monolith bias.** Karpenter packs pending pods into a
 single NodeClaim greedily until a pod doesn't fit. Whether a
@@ -456,16 +455,18 @@ distribution varies at least one of the two.
 - **Prefix-blindness (Shape A).** Default generator injects a
   NodeSelector-blocked candidate at a middle sort position with
   30% probability. 14 of 100 seeds fire.
-- **Short-prefix (Shape B).** 17 of 100 seeds where mainline
-  equals branch but the oracle finds more.
+- **Short-prefix (Shape B).** 17 of 100 seeds fire this shape,
+  with mainline equaling branch (binary search succeeded so the
+  fallback never ran) while the enumeration finds a strictly
+  larger feasible subset.
 - **Sort-key divergence.** Adversarial generator gives candidates
   per-node pricing with engineered blocker placement. 14 of 50
   seeds produce different orderings between the disruption-cost
   sort and the savings-ratio sort.
 - **Score gate marginal-rejection.** 33 of 50 marginal seeds
   produce plans the score gate would reject at k=2.
-- **First-fit monolith bias.** 23 of 100 greenfield seeds, 37 of
-  100 topology seeds.
+- **First-fit monolith bias.** Manifests on 23 of 100 greenfield
+  seeds and 37 of 100 topology-corpus seeds (per-zone variant).
 
 ### Thin coverage
 
@@ -516,15 +517,14 @@ distribution varies at least one of the two.
   Reproducing it would need grammar support for multi-term
   required nodeAffinity, oracle modeling of the relaxation pass,
   and a new generator. About two days.
-- **N greater than 8.** The brute-force oracle's powerset cap is
-  the practical ceiling. Production clusters with hundreds of
+- **N greater than 8.** The enumeration's powerset cap is the
+  practical ceiling. Production clusters with hundreds of
   candidates per cycle would need a sampling or heuristic oracle.
-
-To exercise the score gate via `PodDeletionCost`, the generator
-needs values in the 10^7 to 10^9 range that move `EvictionCost`
-across its [-10, 10] clamp. With uniform default `EvictionCost`,
-`savings_fraction / disruption_fraction` collapses to roughly
-1.0.
+- **Score gate via `PodDeletionCost`.** Exercising this path
+  needs generator values in the 10^7 to 10^9 range that move
+  `EvictionCost` across its [-10, 10] clamp. With uniform default
+  `EvictionCost`, `savings_fraction / disruption_fraction`
+  collapses to roughly 1.0 and the gate is inert.
 
 ## Reference
 
@@ -725,9 +725,9 @@ The transcripts below are the agent's `analysis.md` files
 verbatim. They are included so a reader can see what the prompts
 produce on a fresh run before deciding to use them on a real
 ticket. The agent in both cases was given only the prompt text,
-the test input, and read-only access to the Karpenter codebase;
-it had no exposure to the rest of this design doc beyond what the
-prompt text itself references.
+the test input, and read-only access to the Karpenter codebase.
+It had no exposure to the rest of this design doc beyond what
+the prompt text itself references.
 
 ### A.1: Ticket-to-test on Practice Ticket A
 
