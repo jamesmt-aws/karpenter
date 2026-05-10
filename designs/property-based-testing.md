@@ -5,9 +5,10 @@
 karpenter#1962 was reported in early 2025. The customer had
 several mostly-empty nodes that Karpenter agreed were
 Consolidatable, with a workload that fit by hand on a smaller
-subset. Karpenter would not consolidate them. Multi-node
-consolidation kept logging "Can't replace with a cheaper node"
-without ever producing a plan.
+subset. Karpenter's multi-node consolidation concluded each cycle that
+no consolidation was possible, logging "Can't replace with a
+cheaper node." A valid consolidation did exist; Karpenter just
+did not find it.
 
 The behavior comes from the algorithm's design. The multi-node
 consolidation algorithm sorts candidates and binary-searches
@@ -35,8 +36,9 @@ A brute-force comparison surfaces the karpenter#1962 class.
 Generate a thousand cluster snapshots, run the production
 multi-node algorithm on each, enumerate every feasible deletion
 subset on each, and look at where they disagree. The seeds where
-production produces no plan while the enumeration finds a feasible
-non-empty subset are the karpenter#1962 class. A single such
+production's plan is "no consolidation possible" while the
+enumeration finds a feasible non-empty subset are the
+karpenter#1962 class. A single such
 seed is an existence proof: it shows the bug is reproducible. A
 thousand are how you find the shape without already knowing what
 to look for, and how you measure how often it bites real
