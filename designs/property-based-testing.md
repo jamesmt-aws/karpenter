@@ -36,9 +36,22 @@ Generate a thousand cluster snapshots, run the production
 multi-node algorithm on each, enumerate every feasible deletion
 subset on each, and look at where they disagree. The seeds where
 production produces no plan while the enumeration finds a feasible
-non-empty subset are the karpenter#1962 class.
+non-empty subset are the karpenter#1962 class. A single such
+seed is an existence proof: it shows the bug is reproducible. A
+thousand are how you find the shape without already knowing what
+to look for, and how you measure how often it bites real
+clusters.
 
 ## A framework for finding the class
+
+The framework's job is to surface input shapes that production
+handles poorly without anyone needing to anticipate which inputs
+those are. Hand-crafted reproducers prove a specific shape exists
+once you know what it is. The framework runs at scale, sampling
+many scenarios and comparing production against a reference, so
+that shapes you did not already know to look for can be found
+and the frequency of each shape on representative inputs can be
+measured.
 
 The framework has four pieces.
 
@@ -59,8 +72,13 @@ The **scenario generator** turns a seed and a few parameters into
 a snapshot ready for envtest (a Kubernetes controller-runtime test
 harness that runs a local kube-apiserver and etcd in-process so
 controllers can be exercised against the real API without a real
-cluster). Each generator targets a structural
-property worth varying. The default consolidation generator
+cluster). Each generator targets a structural property worth
+varying, mixing seeded randomness with engineered structure: the
+same seed produces the same scenario, and the random choices are
+biased toward whatever property the generator is built to
+surface. The grammar can also be used directly, without a
+generator, for hand-crafted reproducers like
+`multinode_1962_test.go`. The default consolidation generator
 injects a NodeSelector-blocked candidate at a random middle sort
 position, which produces inputs that exercise the karpenter#1962
 class. The adversarial generator gives candidates per-Node price
