@@ -2,47 +2,56 @@
 
 ## Why we built this
 
-karpenter#1962 was reported in early 2025. The customer had
-several mostly-empty nodes that Karpenter agreed were
-Consolidatable, with a workload that fit by hand on a smaller
-subset. Karpenter's multi-node consolidation concluded each cycle that
-no consolidation was possible, logging "Can't replace with a
-cheaper node." A valid consolidation did exist; Karpenter just
-did not find it.
+Karpenter is a Kubernetes node autoscaler. One of its jobs is
+consolidation: removing nodes when their workloads can fit on a
+smaller subset of the fleet. Issue #1962 (filed early 2025) is a
+customer ticket where consolidation should have happened but
+didn't. The customer had several mostly-empty nodes that
+Karpenter agreed were Consolidatable, and the workloads fit by
+hand on a smaller subset. Karpenter's multi-node consolidation
+concluded each cycle that no consolidation was possible, logging
+"Can't replace with a cheaper node." A valid consolidation
+existed. Karpenter's search did not find it.
 
-The behavior comes from the algorithm's design. The multi-node
-consolidation algorithm sorts candidates and binary-searches
-over prefixes of the sorted list. The customer's cluster had one
-impossible candidate, whose pod could not reschedule anywhere.
-The impossible candidate sorted in the middle of the list, so
-every prefix the binary search tried contained it and every
-prefix was infeasible. A non-prefix subset that excluded the
-impossible candidate would have consolidated, but the binary
-search's prefix structure could not reach it.
+Karpenter sorts the candidate nodes by an internal disruption-cost
+metric and then searches for a feasible group to remove together.
+The search only checks contiguous groups from the front of the
+sort. The customer's cluster had one node whose pod had nowhere
+else to fit in the remaining cluster. Karpenter's disruption sort
+placed that node between two nodes that would have been a fine
+pair to remove together. Every contiguous group the search tried
+contained the unmovable node, so every group looked infeasible.
+The pair that actually worked required skipping the middle node,
+and the search could not try that.
 
-The customer reasonably expects Karpenter to manage cluster
-utilization, and this is a simple case where Karpenter
-under-consolidates. Karpenter cannot enumerate every possible
-consolidation plan in production, so it uses heuristic searches
-that occasionally miss feasible alternatives like the customer's.
-The Karpenter test suite did not surface this class of input
-either, because no test had engineered an impossible candidate at
-a sort position the binary search could not skip. Optimization
-algorithms where the search structure drives the outcome are hard
-to write tests for, since you would need to know which input the
-search cannot reach before designing a test that surfaces it.
+Karpenter is reasonably expected to manage cluster utilization,
+and this is a case where it falls short. Karpenter cannot try
+every possible consolidation plan in production, since the
+number of plans is exponential in the candidate count. Even
+outside production, exhaustive search is only feasible on small
+clusters (around 8 candidate nodes). So Karpenter uses a
+heuristic search that is fast and usually right but occasionally
+misses cases like the customer's. The Karpenter test suite did
+not catch this either. No existing test had imagined this
+combination of structures, and there is no general way to find
+such cases with unit tests since we cannot enumerate every
+possible cluster.
 
-A brute-force comparison surfaces the karpenter#1962 class.
-Generate a thousand cluster snapshots, run the production
-multi-node algorithm on each, enumerate every feasible deletion
-subset on each, and look at where they disagree. The seeds where
-production's plan is "no consolidation possible" while the
-enumeration finds a feasible non-empty subset are the
-karpenter#1962 class. A single such
-seed is an existence proof: it shows the bug is reproducible. A
-thousand are how you find the shape without already knowing what
-to look for, and how you measure how often it bites real
-clusters.
+A brute-force comparison can find this kind of case automatically.
+Generate a few hundred cluster snapshots with varying structure.
+Run Karpenter's consolidation on each, and on the same scenarios
+run a much slower exhaustive search. We can afford the slow
+search here because each scenario is small. Look for scenarios
+where Karpenter decides no consolidation is possible but the
+exhaustive search finds a valid consolidation. Those are the
+cases worth studying.
+
+One such scenario is enough to prove the bug exists. The
+comparison at scale is what reveals the bug in the first place.
+We do not know in advance which configurations will trip
+Karpenter, so we generate a variety of them and let the
+disagreements between Karpenter and the exhaustive search point
+us at the cases that matter.
 
 ## A framework for finding the class
 
