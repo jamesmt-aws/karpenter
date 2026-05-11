@@ -156,9 +156,9 @@ on every axis and strictly better on at least one. When the
 findings say "the enumeration found a better move," that means
 the enumeration's move is strictly better than the production
 move on at least one axis and no worse on any. For provisioning, the
-metric collapses to single-axis (total node price for the same
-set of pending pods), so "better" is strict and the
-enumeration's answer is a strict oracle.
+metric is single-axis (total node price for the same set of
+pending pods), so "better" is strict and the enumeration's
+answer is a strict oracle.
 
 The framework uses on-demand pricing and accounts for daemonset
 and dataplane overhead per provisioned node. It does not yet
@@ -193,20 +193,20 @@ side.
 
 The mainline multi-node consolidation algorithm walks prefixes of
 a sorted candidate list, so any feasible subset that requires
-skipping a candidate is unreachable. The three shapes in this
-family differ in which non-prefix subset the search misses and
-why.
+skipping a candidate (a non-prefix subset) is unreachable. The
+three shapes in this family differ in which non-prefix subset the
+search misses and why.
 
 **Prefix-blindness (Shape A).** The karpenter#1962 case has a
-blocker candidate (its pod cannot reschedule) sorting in the
-middle, so every prefix containing it is infeasible and the
-binary search exits empty. The oracle finds the non-prefix subset that
-excludes the blocker. 14 of 100 corpus seeds fire this on the
-unfixed code. The fix is a pairwise non-prefix fallback that
+blocker candidate (its pod has nowhere else to fit) sorting in
+the middle, so every prefix containing it is infeasible and the
+binary search exits empty. The oracle finds the non-prefix subset
+that excludes the blocker. 14 of 100 corpus seeds fire this on
+the unfixed code. The fix is a pairwise non-prefix fallback that
 runs from an empty accepted set when the binary search returns
-NoOp, walking candidates in order and accepting any that compose
-feasibly. Skipping does not narrow the search, so non-prefix
-subsets become reachable.
+NoOp, walking candidates in order and keeping any that the
+simulator still considers feasible. Skipping does not narrow the
+search, so non-prefix subsets become reachable.
 
 **Short-prefix (Shape B).** Closing Shape A is only part of the
 fix. The Shape A fallback runs only when the binary search
