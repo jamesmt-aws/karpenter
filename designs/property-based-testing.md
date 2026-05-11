@@ -26,17 +26,13 @@ and the search could not try that.
 
 Customers use Karpenter to manage cluster utilization over time.
 Any time Karpenter fails to meet reasonable customer expectations
-around utilization, that is a failure. Karpenter cannot try every
-possible consolidation plan in production, since the number of
-plans is exponential in the candidate count. Even
-outside production, exhaustive search is only feasible on small
-clusters (around 8 candidate nodes). So Karpenter uses a
-heuristic search that is fast and usually right but occasionally
-misses cases like the customer's. The Karpenter test suite did
-not catch this either. No existing test had imagined this
-combination of structures, and there is no general way to find
-such cases with unit tests since we cannot enumerate every
-possible cluster.
+around utilization, that is a failure. Production optimization
+algorithms are heuristic approximations, fast enough to run
+online but cutting corners that matter on some inputs. Knowing
+which inputs matter, and how often the corner-cutting hurts,
+requires a reference answer computed at scale and compared
+against production's answer. Karpenter has not had that
+capability until now.
 
 A brute-force comparison can find this kind of case automatically.
 Generate a few hundred cluster snapshots with varying structure.
