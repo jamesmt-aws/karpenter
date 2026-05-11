@@ -57,8 +57,8 @@ the exhaustive search point us at the cases that matter.
 ## What we built
 
 The framework has four pieces. The scenario grammar lets you
-write one cluster snapshot in code. The simplest use is a
-hand-crafted reproducer like `multinode_1962_test.go`: write one
+describe a cluster snapshot in Go code. The simplest use is a
+hand-crafted reproducer like `multinode_1962_test.go`: write a
 snapshot with every field picked by hand, run Karpenter against
 it, observe what Karpenter does. The other three pieces (a
 scenario generator, an offline enumeration, and a harness) run
@@ -66,13 +66,15 @@ the framework at scale, generating many snapshots and comparing
 Karpenter's output against the enumeration to find cases no one
 has thought of yet.
 
-The **scenario grammar** at `pkg/test/scenarios/` is a Go DSL for
-building one cluster snapshot at a time. A snapshot is a
-point-in-time representation of a cluster (which NodePools exist,
-which nodes are running, which pods are bound where, which pods
-are pending, which Pod Disruption Budgets (PDBs) are in force)
-that the framework reasons over without spinning up the live
-cluster. Each snapshot has a static side (NodePools with
+The **scenario grammar** at `pkg/test/scenarios/` is the Go type
+system and builder API for cluster snapshots. You construct a
+Scenario value (one snapshot's description) by chaining builder
+calls, then call `Build()` to materialize it as envtest-ready
+Kubernetes objects. A snapshot is a point-in-time representation
+of a cluster (which NodePools exist, which nodes are running,
+which pods are bound where, which pods are pending, which Pod
+Disruption Budgets (PDBs) are in force) that the framework
+reasons over without spinning up the live cluster. Each snapshot has a static side (NodePools with
 requirements and taints, existing Nodes with bound Pods, PDBs)
 and an optional pending workload (PendingPods, DaemonSets). Consolidation tests populate the
 static side, while provisioning tests populate the pending
