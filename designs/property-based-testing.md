@@ -42,9 +42,7 @@ runs Karpenter and a more thorough search than production allows
 itself, then compares the two answers. We do not need to know in
 advance which inputs will trigger a flaw, since the disagreements
 with the search reveal them. A few hundred snapshots is enough to
-see flaws that recur, and we can run them all in minutes. In our
-framework, the search is currently an exhaustive enumeration of
-feasible alternatives, tractable because each scenario is small.
+see flaws that recur, and we can run them all in minutes.
 
 ## What we built
 
@@ -104,47 +102,17 @@ Documented generators:
 
 ### Search
 
-For each scenario, the **search** walks every feasible
-alternative the production algorithm could have chosen. In our
-framework, the search is currently implemented as offline
-enumerative sampling: an exhaustive enumeration of feasible
-alternatives, tractable because each scenario is small.
-Multi-node consolidation removes a subset of candidate nodes, so
-the search walks the 2^N subsets of N candidates (each candidate
-is in or out of the deletion subset). At N=8 the search takes
-about 2 seconds, at N=16 about 7 minutes, at N=32 about a year.
-Production binary search runs in milliseconds. The cost
-asymmetry is intentional, since production needs to be fast and
-good while the search needs to be correct on the small N where
-shapes show up.
-
-| Candidates | Subsets | Search time |
-|-----------|---------|-------------|
-| 8 | 256 | ~2 seconds |
-| 16 | 65,536 | ~7 minutes |
-| 32 | 4.3 billion | ~1 year |
-
-When the search is exhaustive at the relevant N and the
-comparison metric admits a unique best (largest savings for a
-Delete decision, lowest total node price for provisioning), the
-search's answer is an **oracle**: ground truth that production
-is measured against strictly. When N is too large to enumerate
-or the metric is multi-axis (savings + disruption count), the
-search produces a sample under a partial order rather than a
-strict oracle. The framework still has value in that regime,
-since any case where the search finds a better answer than
-production identifies a scenario worth investigating, even if
-"best" is not globally well-defined. We currently sample in
-regimes where the search is exhaustive (consolidation up to N=8
-candidates, provisioning up to 6 pending pods), so the six
-shapes in the next section are all measured against a strict
-oracle.
-
-The search is exhaustive because we can afford it. The
-framework's structure would survive replacing the exhaustive
-search with a non-exhaustive but more thorough one (e.g., a
-longer time budget with the same heuristic), as long as the
-search keeps finding cases where production underperforms.
+For each snapshot, a search runs a more thorough algorithm than
+production. Our simplest experiments use exhaustive enumeration
+of feasible alternatives, tractable at small N because the cost
+scales as 2^N over candidates (~2 sec at 8, ~7 min at 16). The
+framework supports other search strategies too: longer time
+budgets with the same heuristic, randomized search,
+problem-specific approximations, anything likely to find better
+answers than production. We mix random and targeted sampling
+until production losing to the search becomes a recurring
+pattern across many snapshots. Once we see that pattern, we
+decide whether changing production's algorithm is worth the cost.
 
 ### Analysis
 
@@ -168,8 +136,7 @@ When the findings say "the search found a better move," that
 means the search's move is strictly better than the production
 move on at least one axis and no worse on any. For provisioning,
 the metric is single-axis (total node price for the same set of
-pending pods), so "better" is strict and the search's answer is
-a strict oracle.
+pending pods), so "better" is strict.
 
 The framework uses on-demand pricing and accounts for daemonset
 and dataplane overhead per provisioned node. It does not yet
@@ -196,8 +163,8 @@ search misses and why.
 **Prefix-blindness (Shape A).** The karpenter#1962 case has a
 blocker candidate (its pod has nowhere else to fit) sorting in
 the middle, so every prefix containing it is infeasible and the
-binary search exits empty. The oracle finds the non-prefix subset
-that excludes the blocker. 14 of 100 seeds fire this on the
+binary search exits empty. The search finds the non-prefix
+subset that excludes the blocker. 14 of 100 seeds fire this on the
 unfixed code. The fix is a pairwise non-prefix fallback that
 runs from an empty accepted set when the binary search returns
 NoOp, walking candidates in order and keeping any that the
@@ -468,21 +435,21 @@ inert. An earlier version of this framework misattributed the
 gate's silence to the gate itself. The silence was a property of
 the input distribution.
 
-**The oracle's feasibility predicate must match the production
+**The search's feasibility predicate must match the production
 algorithm's predicate exactly.** `bruteForceSearch` mirrors the
 algorithm's `validDecision` check, rejecting `ReplaceDecision`
 results where `filterOutSameInstanceType` leaves an empty option
 list. Before that fix, 15 adversarial seeds were classified as
-larger-set Shape C disagreements. With the strict oracle they
+larger-set Shape C disagreements. With the strict search they
 re-classified as the same-size variant. On the provisioning side,
 `pickAWSInstances` populates `InstanceMeta` with `Allocatable()`
 values rather than `Capacity`, so existing nodes materialize with
 the same kube-reserved overhead the production scheduler accounts
 for. Every fit predicate the production code enforces must mirror
-in the oracle's view. Lenient oracles produce ghost shapes.
+in the search's view. Lenient searches produce ghost shapes.
 
 **If every scenario shares a price and a constraint shape,
-neither feasibility nor cost is exercised.** The oracle will
+neither feasibility nor cost is exercised.** The search will
 rarely disagree with the algorithm, and the samples are testing
 nothing. When adding a generator, check that the input
 distribution varies at least one of the two.
@@ -526,7 +493,7 @@ distribution varies at least one of the two.
   and cross-pool sort considerations are not tested. karpenter#2227
   (topology-domain over-aggregation across NodePools) and
   karpenter#2434 (multi-NodePool consolidation candidate sort)
-  both sit here. An afternoon of oracle work would cover #2227.
+  both sit here. An afternoon of search work would cover #2227.
   About a day for #2434.
 - **Pod priority variation.** All pods have the same priority.
   Non-uniform priorities would create per-pod disruption-cost
@@ -542,7 +509,7 @@ distribution varies at least one of the two.
 - **Single-node consolidation.** All four documented consolidation
   shapes are multi-node. Single-node consolidation has its own
   shapes (karpenter#2084 about empty-node deprioritization under
-  ExpireAfter is one) but the framework has no single-node oracle
+  ExpireAfter is one) but the framework has no single-node search
   yet. About half a day to build one.
 
 ### Not yet covered, structurally harder
@@ -554,11 +521,11 @@ distribution varies at least one of the two.
 - **Affinity relaxation pathways.** karpenter#2123 is a stale
   topology state issue that fires when pod affinity is relaxed.
   Reproducing it would need grammar support for multi-term
-  required nodeAffinity, oracle modeling of the relaxation pass,
+  required nodeAffinity, search modeling of the relaxation pass,
   and a new generator. About two days.
 - **N greater than 8.** The enumeration's powerset cap is the
   practical ceiling. Production clusters with hundreds of
-  candidates per cycle would need a sampling or heuristic oracle.
+  candidates per cycle would need a sampling or heuristic search.
 - **Score gate via `PodDeletionCost`.** Exercising this path
   needs generator values in the 10^7 to 10^9 range that move
   `EvictionCost` across its [-10, 10] clamp. With uniform default
@@ -690,11 +657,11 @@ Three more properties to add.
 - **NodePool**: a Karpenter resource describing a class of nodes
   (which instance types, requirements, taints, consolidation
   policy).
-- **oracle**: strict-sense ground truth produced by an exhaustive
-  enumeration with a unique-best comparison metric. The framework
-  produces an oracle at small N with a single-axis metric. For
-  larger N or multi-axis metrics, the enumeration produces a
-  partial-order sample rather than a strict oracle.
+- **oracle**: an older name for the search's answer, retained in
+  corpus JSON column names and code paths like `corpus_oracle_test.go`.
+  Specifically refers to the case where the search is exhaustive
+  at small N with a single-axis metric, making it strict ground
+  truth.
 - **Pareto dominance**: a partial-order relation between moves.
   Move A dominates move B when A is at least as good as B on
   every axis and strictly better on at least one.
