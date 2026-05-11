@@ -499,10 +499,14 @@ distribution varies at least one of the two.
 - **Pod priority variation.** All pods have the same priority.
   Non-uniform priorities would create per-pod disruption-cost
   variance the score gate could respond to.
-- **DoNotDisrupt annotations** and other `ShouldDisrupt` filters.
-- **TopologySpread on the consolidation side**, hostport
-  contention, and affinity-driven multi-blocker patterns beyond
-  the simple NodeSelector approach.
+- **DoNotDisrupt annotations and other `ShouldDisrupt` filters.**
+  Karpenter filters these out of the candidate set before any
+  search runs. No generator produces such pods, so the filter
+  path isn't exercised.
+- **Richer blocker patterns.** The default generator's blocker
+  is a single NodeSelector requirement. Consolidation-side
+  TopologySpread, hostport contention, and affinity-driven
+  multi-blocker patterns aren't exercised.
 - **Different consolidation policies during search.** All
   scenarios use `WhenEmptyOrUnderutilized`. Balanced is evaluated
   after the fact.
@@ -771,10 +775,9 @@ bounded brute-force placement at the bin-packing step.
 
 The two prompts in "Using the framework" were validated by passing
 each one to a fresh Claude Code agent (no prior context on this
-doc) along with a test input. Both runs were executed via ralphit
-(see `~/src/ralphit`), which spins up an isolated sandbox, runs
-the agent, and runs validation grep checks against the agent's
-output. Both runs PASS.
+doc) along with a test input. Both runs were executed via ralphit,
+which spins up an isolated sandbox, runs the agent, and runs
+validation grep checks against the agent's output. Both runs PASS.
 
 The transcripts below are the agent's `analysis.md` files
 verbatim. They are included so a reader can see what the prompts
