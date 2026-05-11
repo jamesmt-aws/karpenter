@@ -17,13 +17,13 @@ existed, but Karpenter's search did not find it.
 Karpenter sorts the candidate nodes by an internal disruption-cost
 metric and then searches for a feasible group to remove together.
 The search only checks contiguous groups from the front of the
-sort. The customer's cluster had one node whose pod had nowhere
-else to fit in the remaining cluster. Karpenter's disruption sort
-placed that node between two nodes that would have been a fine
-pair to remove together. Every contiguous group the search tried
-contained the unmovable node, so every group looked infeasible.
-The pair that actually worked required skipping the middle node,
-and the search could not try that.
+sort. The customer's cluster had one node whose pod couldn't be
+disrupted (launching a replacement would defeat the cost-savings
+purpose). Karpenter's disruption sort placed that node between
+two nodes that would have been a fine pair to remove together. Every contiguous group the search
+tried contained the unmovable node, so every group looked
+infeasible. The pair that actually worked required skipping the
+middle node, and the search could not try that.
 
 Customers use Karpenter to manage cluster utilization over time.
 Any time Karpenter fails to meet reasonable customer expectations
@@ -45,25 +45,23 @@ thorough search than production allows itself, then compares the
 two answers. We do not need to know in advance which inputs will
 produce underperformance, since the disagreements with the search
 reveal them. A few hundred snapshots is enough to see patterns
-that recur, and we can run them all in minutes.
+that recur, and we can run them all in minutes. What to do about
+a pattern is a judgment call about cost, risk, and intent. The
+framework gives the data and leaves the verdict to humans.
 
 ## What we built
 
-The simplest experiment is a manual reproducer of the
-karpenter#1962 case described above. The scenario grammar (a Go
-DSL for cluster snapshots) lets you encode the three-node
-configuration in Go, run Karpenter's consolidation against it,
-and observe the missing plan. `scenario_1962_test.go` is this
-reproducer: one hand-crafted snapshot, every field picked by
-you, run once. That is an existence proof for one bug on one
-input.
+The framework's simplest use is to reproduce karpenter#1962 by
+hand. Write the three-node configuration in Go using the scenario
+grammar (a DSL for cluster snapshots), run Karpenter's
+consolidation, and observe the missing plan. `scenario_1962_test.go`
+does exactly this.
 
-To find recurring patterns instead of single instances, the
-framework scales up via three pieces. Scenario generation
-produces many snapshots from seeds. Search runs a more thorough
-algorithm than production on each snapshot. Analysis compares
-the two across the sample. Recurring disagreements between
-production and the search are shapes.
+To find recurring patterns, the framework scales up. Scenario
+generation produces many snapshots from seeds. Search runs a more
+thorough algorithm than production on each snapshot. Analysis
+compares the two across the sample. Recurring disagreements
+between production and the search are shapes.
 
 ### Scenario generation
 
