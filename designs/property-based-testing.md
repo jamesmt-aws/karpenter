@@ -81,13 +81,12 @@ static side, while provisioning tests populate the pending
 workload and may leave Nodes empty (greenfield) or include a
 small fleet to exercise existing-node placement.
 
-The **scenario generator** turns a seed and a few parameters into
-a snapshot ready for envtest (controller-runtime's local
-Kubernetes API harness, see glossary). Each generator targets a
-structural property worth varying, mixing seeded randomness with
-engineered structure: the same seed produces the same scenario,
-and the random choices are biased toward whatever property the
-generator is built to surface.
+A **scenario generator** is a Go function in `pkg/test/scenarios/`
+that takes a seed and a few parameters and returns a Scenario
+value. Each generator targets a structural property worth varying,
+mixing seeded randomness with engineered structure: the same seed
+produces the same Scenario, and the random choices are biased
+toward whatever property the generator is built to surface.
 
 Documented generators:
 
@@ -106,9 +105,9 @@ Documented generators:
     - **topology:** pending pods with hard topologySpreadConstraints.
 
 The third piece is **offline enumerative sampling**. For each
-scenario, enumerate every feasible alternative the production
-algorithm could have chosen, then compare what production picked
-against what the enumeration finds. Multi-node consolidation
+scenario, the enumeration walks every feasible alternative the
+production algorithm could have chosen. The framework compares
+production's pick against what the enumeration finds. Multi-node consolidation
 removes a subset of candidate nodes, so the enumeration walks
 the 2^N subsets of N candidates (each candidate is in or out of
 the deletion subset). At N=8 the enumeration takes about 2
@@ -139,10 +138,11 @@ enumeration is exhaustive (consolidation up to N=8 candidates,
 provisioning up to 6 pending pods), so the six shapes in the
 next section are all measured against a strict oracle.
 
-The **harness** runs the scenario generator and the production
-algorithm, runs the enumeration on the same input, and writes
-per-seed results to a JSON file. Patterns that recur across many
-seeds are shapes.
+The **harness** is the test code in each corpus's
+`corpus_test.go` file. For each seed, it runs the scenario
+generator, runs the production algorithm, runs the enumeration
+on the same input, and appends the result to the corpus's JSON
+output. Patterns that recur across many seeds are shapes.
 
 A shape is a structural property broad enough that a whole family
 of inputs exhibits it. Naming the shape, rather than the input
