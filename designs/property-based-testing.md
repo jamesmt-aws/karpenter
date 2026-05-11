@@ -292,22 +292,21 @@ load-bearing claim in their hypothesis and verify it against the
 code before adopting it as your own.
 
 **Hypothesis (step 3).** Map the symptom to a documented shape
-family if possible. Three of the four consolidation results
-(prefix-blindness, short-prefix, non-prefix-better) sit in the
-search-reachability family, while the fourth (score gate
-marginal-rejection) is a gate-working-as-designed result rather
-than a search-reachability shape. The two provisioning shapes
-(first-fit monolith, per-zone monolith) sit in the greedy-commit
-family. If the symptom fits one of these families, name the
-specific shape inside it.
+family if possible. For consolidation, three shapes sit in the
+search-reachability family (prefix-blindness, short-prefix,
+non-prefix-better), and one is the policy gate working as
+designed (score gate marginal-rejection). For provisioning, two
+shapes sit in the greedy-commit family (first-fit monolith,
+per-zone monolith). If the symptom fits one of these families,
+name the specific shape inside it.
 
 Inside the search-reachability family, Shape A and Shape B are
 commonly confused. The disambiguator is what multi-node returns:
 Shape A returns NoOp, while Shape B returns a feasible prefix
 smaller than the largest feasible subset.
 
-If the symptom does not fit either documented family, it may
-live in a family the doc has not yet documented. Plausible new families
+If the symptom does not fit one of these families, it may live
+in a family the doc has not yet documented. Plausible new families
 include sort-and-pick (an algorithm choosing the wrong candidate
 because its sort key incorporates the wrong factor) and filter
 (an algorithm rejecting a candidate that should have passed
@@ -1135,7 +1134,7 @@ A working summary of the doc's takeaways. Removable once the doc settles.
 - **First-fit monolith bias** — 23/100 greenfield
 - **Per-zone monolith bias** — 37/100 topology
 
-**F.** Shape B is the strongest evidence the framework finds what humans miss. The pairwise non-prefix fallback (the proposed Shape A fix) closes Shape A but leaves 17/100 cases unaddressed.
+**F.** Shape B is the strongest evidence the framework finds what humans miss. Adding the pairwise non-prefix fallback (the proposed Shape A fix) still leaves 17/100 cases where production loses to the search.
 
 **G.** Two workflow prompts (ticket-to-test, disagreement-to-fix) pass on practice tickets in 2-3 minutes via fresh agents in ralphit sandboxes. Real-customer validation open.
 
