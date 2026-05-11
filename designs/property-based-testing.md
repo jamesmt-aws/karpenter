@@ -39,18 +39,13 @@ Karpenter's consolidation: cases where Karpenter's answer is
 worse than achievable, and where the same flaw shows up across
 many inputs. On each generated cluster snapshot, the harness runs
 Karpenter and a reference algorithm that gets more time than
-production does, then compares the two answers. A few hundred
+production does, then compares the two answers. We do not need
+to know in advance which inputs will trigger a flaw, since the
+disagreements with the reference reveal them. A few hundred
 snapshots is enough to see flaws that recur, and the corpus runs
 in minutes. In our framework, the reference is an exhaustive
 enumeration of feasible alternatives, tractable because each
 scenario is small.
-
-One such scenario shows Karpenter can miss a valid consolidation.
-The comparison at scale is what reveals these misses in the
-first place. We do not know in advance which configurations
-cause Karpenter to miss a valid consolidation, so we generate a
-variety of them and let the disagreements between Karpenter and
-the exhaustive search point us at the cases that matter.
 
 ## What we built
 
