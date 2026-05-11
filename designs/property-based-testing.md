@@ -37,27 +37,26 @@ capability until now.
 The framework's job is to identify systematic flaws in
 Karpenter's consolidation: cases where Karpenter's answer is
 worse than achievable, and where the same flaw shows up across
-many inputs. On each generated cluster snapshot, the harness runs
-Karpenter and a reference algorithm that gets more time than
-production does, then compares the two answers. We do not need
-to know in advance which inputs will trigger a flaw, since the
-disagreements with the reference reveal them. A few hundred
-snapshots is enough to see flaws that recur, and the corpus runs
-in minutes. In our framework, the reference is an exhaustive
-enumeration of feasible alternatives, tractable because each
-scenario is small.
+many inputs. On each generated cluster snapshot, the framework
+runs Karpenter and a more thorough search than production allows
+itself, then compares the two answers. We do not need to know in
+advance which inputs will trigger a flaw, since the disagreements
+with the search reveal them. A few hundred snapshots is enough to
+see flaws that recur, and the corpus runs in minutes. In our
+framework, the search is currently an exhaustive enumeration of
+feasible alternatives, tractable because each scenario is small.
 
 ## What we built
 
-The framework has four pieces. The scenario grammar lets you
-describe a cluster snapshot in Go code. The simplest use is a
-hand-crafted reproducer like `multinode_1962_test.go`: write a
-snapshot with every field picked by hand, run Karpenter against
-it, observe what Karpenter does. The other three pieces (a
-scenario generator, an offline enumeration, and a harness) run
-the framework at scale, generating many snapshots and comparing
-Karpenter's output against the enumeration to find cases no one
-has thought of yet.
+The framework has three pieces: scenario generation, search, and
+analysis. Scenario generation produces cluster snapshots, either
+one at a time for hand-crafted reproducers or many at a time for
+corpus runs. Search runs a more thorough algorithm than
+production on each snapshot. Analysis compares production's
+answer against the search's answer across many snapshots and
+surfaces patterns.
+
+### Scenario generation
 
 The **scenario grammar** at `pkg/test/scenarios/` is the Go type
 system and builder API for cluster snapshots. You construct a
@@ -67,19 +66,26 @@ Kubernetes objects. A snapshot is a point-in-time representation
 of a cluster (which NodePools exist, which nodes are running,
 which pods are bound where, which pods are pending, which Pod
 Disruption Budgets (PDBs) are in force) that the framework
-reasons over without spinning up the live cluster. Each snapshot has a static side (NodePools with
-requirements and taints, existing Nodes with bound Pods, PDBs)
-and an optional pending workload (PendingPods, DaemonSets). Consolidation tests populate the
-static side, while provisioning tests populate the pending
+reasons over without spinning up the live cluster. Each snapshot
+has a static side (NodePools with requirements and taints,
+existing Nodes with bound Pods, PDBs) and an optional pending
+workload (PendingPods, DaemonSets). Consolidation tests populate
+the static side, while provisioning tests populate the pending
 workload and may leave Nodes empty (greenfield) or include a
 small fleet to exercise existing-node placement.
 
-A **scenario generator** is a Go function in `pkg/test/scenarios/`
-that takes a seed and a few parameters and returns a Scenario
-value. Each generator targets a structural property worth varying,
-mixing seeded randomness with engineered structure: the same seed
-produces the same Scenario, and the random choices are biased
-toward whatever property the generator is built to surface.
+The simplest use of the grammar is a hand-crafted reproducer
+like `multinode_1962_test.go`: write a snapshot with every field
+picked by hand, run Karpenter against it, observe what Karpenter
+does.
+
+For corpus runs, a **scenario generator** is a Go function in
+`pkg/test/scenarios/` that takes a seed and a few parameters and
+returns a Scenario value. Each generator targets a structural
+property worth varying, mixing seeded randomness with engineered
+structure: the same seed produces the same Scenario, and the
+random choices are biased toward whatever property the generator
+is built to surface.
 
 Documented generators:
 
@@ -97,90 +103,104 @@ Documented generators:
       accounting.
     - **topology:** pending pods with hard topologySpreadConstraints.
 
-The third piece is **offline enumerative sampling**. For each
-scenario, the enumeration walks every feasible alternative the
-production algorithm could have chosen. The framework compares
-production's pick against what the enumeration finds. Multi-node consolidation
-removes a subset of candidate nodes, so the enumeration walks
-the 2^N subsets of N candidates (each candidate is in or out of
-the deletion subset). At N=8 the enumeration takes about 2
-seconds, at N=16 about 7 minutes, at N=32 about a year.
+### Search
+
+For each scenario, the **search** walks every feasible
+alternative the production algorithm could have chosen. In our
+framework, the search is currently implemented as offline
+enumerative sampling: an exhaustive enumeration of feasible
+alternatives, tractable because each scenario is small.
+Multi-node consolidation removes a subset of candidate nodes, so
+the search walks the 2^N subsets of N candidates (each candidate
+is in or out of the deletion subset). At N=8 the search takes
+about 2 seconds, at N=16 about 7 minutes, at N=32 about a year.
 Production binary search runs in milliseconds. The cost
 asymmetry is intentional, since production needs to be fast and
-good while the enumeration needs to be correct on the small N
-where shapes show up.
+good while the search needs to be correct on the small N where
+shapes show up.
 
-| Candidates | Subsets | Enumeration time |
+| Candidates | Subsets | Search time |
 |-----------|---------|-------------|
 | 8 | 256 | ~2 seconds |
 | 16 | 65,536 | ~7 minutes |
 | 32 | 4.3 billion | ~1 year |
 
-When the enumeration is exhaustive at the relevant N and the
+When the search is exhaustive at the relevant N and the
 comparison metric admits a unique best (largest savings for a
 Delete decision, lowest total node price for provisioning), the
-enumeration's answer is an **oracle**: ground truth that
-production is measured against strictly. When N is too large to
-enumerate or the metric is multi-axis (savings + disruption
-count), the enumeration produces a sample under a partial order
-rather than a strict oracle. The framework still has value in
-that regime, since any case where the enumeration finds a better
-answer than production identifies a scenario worth investigating,
-even if "best" is not globally well-defined. The current corpora all run in regimes where the
-enumeration is exhaustive (consolidation up to N=8 candidates,
-provisioning up to 6 pending pods), so the six shapes in the
-next section are all measured against a strict oracle.
+search's answer is an **oracle**: ground truth that production
+is measured against strictly. When N is too large to enumerate
+or the metric is multi-axis (savings + disruption count), the
+search produces a sample under a partial order rather than a
+strict oracle. The framework still has value in that regime,
+since any case where the search finds a better answer than
+production identifies a scenario worth investigating, even if
+"best" is not globally well-defined. The current corpora all run
+in regimes where the search is exhaustive (consolidation up to
+N=8 candidates, provisioning up to 6 pending pods), so the six
+shapes in the next section are all measured against a strict
+oracle.
 
-The **harness** is the test code in each corpus's
-`corpus_test.go` file. For each seed, it runs the scenario
-generator, runs the production algorithm, runs the enumeration
-on the same input, and appends the result to the corpus's JSON
-output. Patterns that recur across many seeds are shapes.
+The search is exhaustive because we can afford it. The
+framework's structure would survive replacing the exhaustive
+search with a non-exhaustive but more thorough one (e.g., a
+longer time budget with the same heuristic), as long as the
+search answers are still better than production's on the
+corpus's input distribution.
+
+### Analysis
+
+The **harness** in each corpus's `corpus_test.go` file
+orchestrates the comparison. For each seed it runs scenario
+generation, runs the production algorithm, runs the search on
+the same input, and appends the result to the corpus's JSON
+output. Patterns that recur across many seeds are **shapes**.
 
 A shape is a structural property broad enough that a whole family
 of inputs exhibits it. Naming the shape, rather than the input
 that surfaced it, lets one decision (fix, accept as designed,
 study further) cover the whole family.
 
-The framework grades each consolidation move on two primary axes:
-total savings (deleted nodes' price minus any replacement node's
-price) and disruption count (number of nodes the move removes).
-Operators weigh these differently, so the harness uses Pareto
-comparisons. Move A dominates move B when A is at least as good
-on every axis and strictly better on at least one. When the
-findings say "the enumeration found a better move," that means
-the enumeration's move is strictly better than the production
-move on at least one axis and no worse on any. For provisioning, the
-metric is single-axis (total node price for the same set of
-pending pods), so "better" is strict and the enumeration's
-answer is a strict oracle.
+The framework grades each consolidation move on two primary
+axes: total savings (deleted nodes' price minus any replacement
+node's price) and disruption count (number of nodes the move
+removes). Operators weigh these differently, so the analysis
+uses Pareto comparisons. Move A dominates move B when A is at
+least as good on every axis and strictly better on at least one.
+When the findings say "the search found a better move," that
+means the search's move is strictly better than the production
+move on at least one axis and no worse on any. For provisioning,
+the metric is single-axis (total node price for the same set of
+pending pods), so "better" is strict and the search's answer is
+a strict oracle.
 
 The framework uses on-demand pricing and accounts for daemonset
 and dataplane overhead per provisioned node. It does not yet
 model Spot or ODCR pricing, capacity stochasticity, or
 utilization decay as pods leave nodes mid-lifetime.
 
-The comparison approach is algorithm-agnostic, so future Karpenter
-changes (new consolidation policies, new provisioning logic) do
-not invalidate the framework, only the specific shapes the
-current algorithm exhibits.
+The comparison approach is algorithm-agnostic, so future
+Karpenter changes (new consolidation policies, new provisioning
+logic) do not invalidate the framework, only the specific shapes
+the current algorithm exhibits.
 
 The corpus is a sparse sample of a much larger space. The space
 of possible cluster configurations (3 to 8 nodes with arbitrary
 instance types from the pool, varying deletion costs, varying
-pod constraints) is combinatorially large. We run 100 seeds because that takes a few minutes. The
-framework's value depends on the generator biasing the sample
-toward structural properties worth varying. Without the bias, the Shape A rate (a NodeSelector-
-blocked candidate at a middle position) would be near zero
-rather than 14 of 100. Each generator's bias is documented in
-the next section alongside the shapes it surfaces.
+pod constraints) is combinatorially large. We run 100 seeds
+because that takes a few minutes. The framework's value depends
+on the generator biasing the sample toward structural properties
+worth varying. Without the bias, the Shape A rate (a
+NodeSelector-blocked candidate at a middle position) would be
+near zero rather than 14 of 100. Each generator's bias is
+documented in the next section alongside the shapes it surfaces.
 
 ## What we found
 
 Six shapes have come out of running the framework against the
 production code. Three are search-structure limitations on the
 consolidation side, where the algorithm cannot reach a feasible
-subset the enumeration finds. One is the Balanced policy gate
+subset the search finds. One is the Balanced policy gate
 doing its job. Two are greedy-commit shapes on the provisioning
 side.
 
@@ -209,7 +229,7 @@ returns NoOp. When the binary search returns a feasible prefix
 `[0:k]` instead, the fallback never runs, even when a non-prefix
 superset extending past `k` is also feasible. 17 of 100 corpus
 seeds show this: the binary search succeeds, the Shape A
-fallback never gets to run, and the enumeration finds a strictly
+fallback never gets to run, and the search finds a strictly
 larger feasible subset that production does not reach. A fix for
 Shape B would extend the pairwise walk past the prefix's tail
 with the binary search's prefix as the initial accepted set.
@@ -256,7 +276,7 @@ condition.
 Worked example: five pods at 2 CPU each (10 CPU total). The
 cheapest single instance type that holds 10 CPU is c7i.4xlarge at
 $0.68/hr. Karpenter packs all five pods into one c7i.4xlarge.
-The enumeration finds that a c7i.2xlarge ($0.34/hr) plus a
+The search finds that a c7i.2xlarge ($0.34/hr) plus a
 c7i.xlarge ($0.17/hr) holds the same 10 CPU at $0.51/hr, 25%
 cheaper, with no overflow. Karpenter never tries this because no
 individual pod failed to fit.
@@ -496,7 +516,7 @@ distribution varies at least one of the two.
   30% probability. 14 of 100 seeds fire.
 - **Short-prefix (Shape B).** 17 of 100 seeds fire this shape,
   with the binary search succeeding so the Shape A fallback
-  never gets to run while the enumeration finds a strictly
+  never gets to run while the search finds a strictly
   larger feasible subset.
 - **Sort-key divergence.** Adversarial generator gives candidates
   per-node pricing with engineered blocker placement. 14 of 50
@@ -683,10 +703,6 @@ Three more properties to add.
 - **corpus**: a body of generated scenarios run together to
   surface shape frequency. The default consolidation corpus is
   100 seeds, the adversarial corpus is 50, and so on.
-- **enumeration** / **offline enumerative sampling**: the
-  framework's name for running through every feasible alternative
-  the production algorithm could have chosen, on the same cluster
-  snapshot.
 - **envtest**: a Kubernetes controller-runtime test harness that
   runs a local kube-apiserver and etcd in-process, so controllers
   can be exercised against the real API without a real cluster.
@@ -710,6 +726,12 @@ Three more properties to add.
   at once.
 - **scenario**: one cluster snapshot expressed via the grammar,
   possibly produced by a generator or hand-crafted.
+- **search**: the framework's more-thorough-than-production
+  algorithm that runs on each cluster snapshot as a comparison
+  reference. Currently implemented as **offline enumerative
+  sampling** (also called **enumeration**): exhaustive
+  enumeration of feasible alternatives, tractable because each
+  scenario is small.
 - **score gate**: Karpenter's Balanced consolidation policy
   threshold check, rejecting plans where
   `savings_fraction / disruption_fraction < 1/k` for a configured
