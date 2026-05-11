@@ -543,8 +543,8 @@ KUBEBUILDER_ASSETS=$(setup-envtest use -p path 1.35.x) \
   -run TestAPIs --ginkgo.focus '<focus string>'
 ```
 
-| Corpus | Package | Focus string | Output file | Exercises |
-|--------|---------|-------------|-------------|-----------|
+| Sample set | Package | Focus string | Output file | Exercises |
+|------------|---------|-------------|-------------|-----------|
 | Consolidation default | `disruption` | `Consolidation A/B Corpus` | `testdata/corpus_results.json` | Shapes A, B, C at fixed pricing |
 | Consolidation adversarial | `disruption` | `Consolidation Adversarial Corpus` | `testdata/corpus_adversarial_results.json` | Per-node pricing, sort-key divergence |
 | Consolidation marginal | `disruption` | `Consolidation Marginal Corpus` | `testdata/corpus_marginal_results.json` | Score gate rejection regime |
@@ -674,10 +674,9 @@ Three more properties to add.
   possibly produced by a generator or hand-crafted.
 - **search**: the framework's more-thorough-than-production
   algorithm that runs on each cluster snapshot as a comparison
-  reference. Currently implemented as **offline enumerative
-  sampling** (also called **enumeration**): exhaustive
-  enumeration of feasible alternatives, tractable because each
-  scenario is small.
+  reference. Our simplest experiments use exhaustive enumeration
+  of feasible alternatives, tractable at small N. The framework
+  supports other search strategies too.
 - **score gate**: Karpenter's Balanced consolidation policy
   threshold check, rejecting plans where
   `savings_fraction / disruption_fraction < 1/k` for a configured
@@ -744,7 +743,8 @@ answer. After your output, compare to the answer key.
 
 **Practice ticket A** is Shape A (prefix-blindness). The
 multi-node binary search exits empty because every prefix
-contains the GPU-pod-bearing node, whose pod cannot reschedule.
+contains the GPU-pod-bearing node, whose pod has nowhere else to
+fit in the remaining cluster.
 Single-node still works because it evaluates each candidate
 independently. The reproducer follows
 `scenario_1962_test.go` with six candidates instead of three. The
@@ -759,7 +759,7 @@ triggers a new NodeClaim when a pod doesn't fit. Five pods at 2
 CPU each fit cumulatively under c7i.4xlarge's 16 CPU allocatable,
 so no second NodeClaim is triggered. The cheaper two-instance
 split is structurally unreachable from greedy commit. The
-existing provisioning corpus exercises this on 23 of 100 seeds.
+existing provisioning samples exercise this on 23 of 100 seeds.
 No fix has landed yet. A fix would need either a two-pass
 "consider splitting before launch" search at small N, or a
 bounded brute-force placement at the bin-packing step.
