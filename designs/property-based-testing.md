@@ -42,7 +42,7 @@ runs Karpenter and a more thorough search than production allows
 itself, then compares the two answers. We do not need to know in
 advance which inputs will trigger a flaw, since the disagreements
 with the search reveal them. A few hundred snapshots is enough to
-see flaws that recur, and the corpus runs in minutes. In our
+see flaws that recur, and we can run them all in minutes. In our
 framework, the search is currently an exhaustive enumeration of
 feasible alternatives, tractable because each scenario is small.
 
@@ -134,9 +134,9 @@ search produces a sample under a partial order rather than a
 strict oracle. The framework still has value in that regime,
 since any case where the search finds a better answer than
 production identifies a scenario worth investigating, even if
-"best" is not globally well-defined. The current corpora all run
-in regimes where the search is exhaustive (consolidation up to
-N=8 candidates, provisioning up to 6 pending pods), so the six
+"best" is not globally well-defined. We currently sample in
+regimes where the search is exhaustive (consolidation up to N=8
+candidates, provisioning up to 6 pending pods), so the six
 shapes in the next section are all measured against a strict
 oracle.
 
@@ -144,16 +144,14 @@ The search is exhaustive because we can afford it. The
 framework's structure would survive replacing the exhaustive
 search with a non-exhaustive but more thorough one (e.g., a
 longer time budget with the same heuristic), as long as the
-search answers are still better than production's on the
-corpus's input distribution.
+search keeps finding cases where production underperforms.
 
 ### Analysis
 
-The **harness** in each corpus's `corpus_test.go` file
-orchestrates the comparison. For each seed it runs scenario
-generation, runs the production algorithm, runs the search on
-the same input, and appends the result to the corpus's JSON
-output. Patterns that recur across many seeds are **shapes**.
+The **harness** in each `corpus_test.go` file orchestrates the
+comparison. For each seed it runs scenario generation, runs the
+production algorithm, runs the search on the same input, and
+appends the result to the JSON output. Patterns that recur across many seeds are **shapes**.
 
 A shape is a structural property broad enough that a whole family
 of inputs exhibits it. Naming the shape, rather than the input
@@ -199,8 +197,8 @@ search misses and why.
 blocker candidate (its pod has nowhere else to fit) sorting in
 the middle, so every prefix containing it is infeasible and the
 binary search exits empty. The oracle finds the non-prefix subset
-that excludes the blocker. 14 of 100 corpus seeds fire this on
-the unfixed code. The fix is a pairwise non-prefix fallback that
+that excludes the blocker. 14 of 100 seeds fire this on the
+unfixed code. The fix is a pairwise non-prefix fallback that
 runs from an empty accepted set when the binary search returns
 NoOp, walking candidates in order and keeping any that the
 simulator still considers feasible. Skipping does not narrow the
@@ -210,8 +208,8 @@ search, so non-prefix subsets become reachable.
 fix. The Shape A fallback runs only when the binary search
 returns NoOp. When the binary search returns a feasible prefix
 `[0:k]` instead, the fallback never runs, even when a non-prefix
-superset extending past `k` is also feasible. 17 of 100 corpus
-seeds show this: the binary search succeeds, the Shape A
+superset extending past `k` is also feasible. 17 of 100 seeds
+show this: the binary search succeeds, the Shape A
 fallback never gets to run, and the search finds a strictly
 larger feasible subset that production does not reach. A fix for
 Shape B would extend the pairwise walk past the prefix's tail
@@ -223,7 +221,7 @@ remaining node has capacity that exactly fits one candidate's pod
 and nothing more, blocking every joint removal that would include
 that candidate, while a non-prefix subset that excludes the
 candidate is feasible and strictly larger than the prefix. The
-second is a frequency result from the adversarial corpus: a
+second is a frequency result from the adversarial samples: a
 non-prefix subset of the same size as the prefix carries higher
 savings, often by skipping the cheapest candidate at position 0
 in favor of a higher-priced one further down the sort. 15 of 50
@@ -234,13 +232,13 @@ or a swap-walk that ejects accepted candidates.
 
 ### Score gate (gate working as designed)
 
-The marginal corpus generator engineers a high-price non-removable
+The marginal generator engineers a high-price non-removable
 candidate alongside cheap removable candidates. The algorithm
 picks the cheap candidates predominantly, and 33 of 50 marginal
 seeds produce plans the Balanced score gate rejects at its
 default threshold (k=2). The
 gate is doing what it was designed to do, declining marginal
-consolidations, which is what the marginal corpus exercises.
+consolidations, which is what the marginal samples exercise.
 
 ### Greedy-commit (provisioning)
 
@@ -264,7 +262,7 @@ c7i.xlarge ($0.17/hr) holds the same 10 CPU at $0.51/hr, 25%
 cheaper, with no overflow. Karpenter never tries this because no
 individual pod failed to fit.
 
-23 of 100 greenfield corpus seeds manifest this, with the rate
+23 of 100 greenfield seeds manifest this, with the rate
 scaling monotonically with pod count (4% at 3 pods, 17% at 4,
 36% at 5, 40% at 6). Overpay magnitudes range from a 1.333x mode
 up to a 1.6x worst case, and every surfaced split is two-way. A
@@ -277,7 +275,7 @@ carries a hard `topologySpreadConstraints` on zone with
 `MaxSkew=1`, the scheduler spreads pods across zones, putting
 the single-node monolith out of reach. The bias re-emerges per
 zone, where each zone independently sizes to fit its share. 37
-of 100 topology-corpus seeds manifest, with cost ratio averaging
+of 100 topology seeds manifest, with cost ratio averaging
 1.081 and topping out at 1.372. Production already varies its
 picks across zones (26 of 37 disagreements have different sizes
 per zone, 11 have the same), so the disagreement lives at the
@@ -378,8 +376,8 @@ timing, real cluster state), in which case document the gap and
 consider a different verification path.
 
 **Generator decision (step 5).** The reproducer demonstrates the
-behavior on one input, and the corpus measures how often the
-behavior shows up across inputs.
+behavior on one input. Sampling measures how often the behavior
+shows up across inputs.
 
 First, does an existing scenario generator already produce
 inputs that exhibit your hypothesized pattern? Look at the
@@ -392,9 +390,9 @@ keeps fixed.
 
 Second, at what frequency does the existing generator surface
 the pattern? If the rate is non-trivial (5 percent or more), the
-corpus already measures this shape and no new generator work is
+samples already measure this shape and no new generator work is
 needed. If the rate is near zero, the generator nominally
-produces the pattern but rarely enough that the corpus is
+produces the pattern but rarely enough that the sample is
 uninformative. Extend the generator to bias toward the pattern,
 or write a new one targeted at the axis the production algorithm
 is failing to navigate.
@@ -404,15 +402,14 @@ generator.
 
 ### Disagreement to fix
 
-Input: one or more corpus seeds where production and oracle
-disagree. Output: a code change, a unit test, and an updated
-corpus baseline.
+Input: one or more seeds where production and oracle disagree.
+Output: a code change, a unit test, and an updated baseline.
 
 **Plans (step 1).** For each disagreeing seed, capture the
 production plan (chosen subset, post-state) and the oracle plan,
 plus the per-axis difference on savings, disruption count, and
-slack entropy. The data is in the corpus's `_results.json` file (e.g.
-`corpus_results.json`, `corpus_adversarial_results.json`).
+slack entropy. The data is in the run's `_results.json` file
+(e.g. `corpus_results.json`, `corpus_adversarial_results.json`).
 
 **Structural difference (step 2).** Look at which candidates each
 plan includes and excludes, and at the order the production
@@ -448,10 +445,10 @@ provisioning in `scheduling/scheduler.go`. Write a unit test that
 exercises a small reproducer through the scenario grammar and
 fails on the unfixed code.
 
-**Corpus run (step 6).** Run the corpus that surfaced the shape.
-The disagreements that exhibited the shape should resolve, no new
-disagreements should appear in previously-agreeing seeds, and
-the committed baseline should be updated to reflect the new
+**Sample run (step 6).** Rerun the samples that surfaced the
+shape. The disagreements that exhibited the shape should resolve,
+no new disagreements should appear in previously-agreeing seeds,
+and the committed baseline should be updated to reflect the new
 agreement counts. If new disagreements appear, the fix introduced
 a new shape. Decide whether to extend the fix, accept it as a
 documented limitation, or revert.
@@ -486,7 +483,7 @@ in the oracle's view. Lenient oracles produce ghost shapes.
 
 **If every scenario shares a price and a constraint shape,
 neither feasibility nor cost is exercised.** The oracle will
-rarely disagree with the algorithm, and the corpus is testing
+rarely disagree with the algorithm, and the samples are testing
 nothing. When adding a generator, check that the input
 distribution varies at least one of the two.
 
@@ -508,7 +505,7 @@ distribution varies at least one of the two.
 - **Score gate marginal-rejection.** 33 of 50 marginal seeds
   produce plans the score gate would reject at k=2.
 - **First-fit monolith bias.** Manifests on 23 of 100 greenfield
-  seeds and 37 of 100 topology-corpus seeds (per-zone variant).
+  seeds and 37 of 100 topology seeds (per-zone variant).
 
 ### Thin coverage
 
@@ -570,9 +567,9 @@ distribution varies at least one of the two.
 
 ## Reference
 
-### How to run a corpus
+### How to run the samples
 
-All corpus tests use the same pattern.
+All sample runs use the same pattern.
 
 ```
 KUBEBUILDER_ASSETS=$(setup-envtest use -p path 1.35.x) \
@@ -591,13 +588,13 @@ KUBEBUILDER_ASSETS=$(setup-envtest use -p path 1.35.x) \
 | Provisioning daemon | `provisioning` | `Provisioning Daemon Corpus` | `testdata/corpus_daemon_results.json` | Overhead accounting rigor check |
 | Provisioning topology | `provisioning` | `Provisioning Topology Corpus` | `testdata/corpus_topology_results.json` | Per-zone monolith, hard TopologySpread |
 
-The default consolidation corpus runs in about four minutes on a
-developer laptop. Provisioning corpora run in under twenty
+The default consolidation sample runs in about four minutes on a
+developer laptop. Provisioning samples run in under twenty
 minutes each.
 
 ### Diffing against a baseline
 
-Committed baselines live alongside the corpus results. After any
+Committed baselines live alongside the sample results. After any
 behavior-preserving change, rerun and compare the JSONs. The
 deterministic fields that should match exactly are disruption
 counts, savings, slack entropy, and sorted-position structure.
@@ -612,7 +609,7 @@ monolith-vs-split breakdown.
 
 ### Adding a scenario
 
-Manual scenarios live alongside the auto-generated corpus. The
+Manual scenarios live alongside the auto-generated samples. The
 canonical examples are `multinode_1962_test.go` (hand-crafted
 Shape A reproducer) and `scenario_pairwise_incomplete_test.go`
 (hand-crafted Shape C reproducer). Both use the scenarios
@@ -635,8 +632,8 @@ Then run `ComputeCommands` and assert.
 ### Adding a property
 
 Write a function that takes a scenario and an algorithm output
-and returns whether the property holds. Run it across the corpus
-and report any seeds where it fails.
+and returns whether the property holds. Run it across the
+samples and report any seeds where it fails.
 
 Three properties the harness already checks.
 
@@ -658,11 +655,11 @@ Three more properties to add.
   generators, and the metrics module. The `Constraint` interface
   is shared across bound pods and pending pods.
 - `pkg/controllers/disruption/corpus_test.go` is the main A/B/C/D
-  corpus runner (build tag `corpus`).
+  sample runner (build tag `corpus`).
 - `pkg/controllers/disruption/corpus_adversarial_test.go` is the
-  adversarial corpus runner.
+  adversarial sample runner.
 - `pkg/controllers/disruption/corpus_marginal_test.go` is the
-  marginal corpus runner.
+  marginal sample runner.
 - `pkg/controllers/disruption/multinode_1962_test.go` is the
   hand-crafted Shape A reproducer.
 - `pkg/controllers/disruption/scenario_1962_test.go` is the same
@@ -672,7 +669,7 @@ Three more properties to add.
 - `pkg/controllers/disruption/testdata/` holds the committed
   baselines and Python analyzers.
 - `pkg/controllers/provisioning/corpus_test.go` is the
-  provisioning corpus runner (greenfield, fleet, daemon,
+  provisioning sample runner (greenfield, fleet, daemon,
   topology).
 - `pkg/controllers/provisioning/corpus_oracle_test.go` is the
   brute-force placement oracle.
@@ -683,9 +680,6 @@ Three more properties to add.
 
 ## Glossary
 
-- **corpus**: a body of generated scenarios run together to
-  surface shape frequency. The default consolidation corpus is
-  100 seeds, the adversarial corpus is 50, and so on.
 - **envtest**: a Kubernetes controller-runtime test harness that
   runs a local kube-apiserver and etcd in-process, so controllers
   can be exercised against the real API without a real cluster.
@@ -707,6 +701,10 @@ Three more properties to add.
 - **PDB** / **Pod Disruption Budget**: a Kubernetes object that
   limits how many pods of a workload can be voluntarily evicted
   at once.
+- **sample set** (`corpus_*` in code paths): a body of generated
+  scenarios run together to surface shape frequency. The default
+  consolidation sample set is 100 seeds, the adversarial is 50,
+  and so on.
 - **scenario**: one cluster snapshot expressed via the grammar,
   possibly produced by a generator or hand-crafted.
 - **search**: the framework's more-thorough-than-production
