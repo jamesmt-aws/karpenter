@@ -24,10 +24,11 @@ contained the unmovable node, so every group looked infeasible.
 The pair that actually worked required skipping the middle node,
 and the search could not try that.
 
-Karpenter is reasonably expected to manage cluster utilization,
-and this is a case where it falls short. Karpenter cannot try
-every possible consolidation plan in production, since the
-number of plans is exponential in the candidate count. Even
+Customers use Karpenter to manage cluster utilization over time.
+Any time Karpenter fails to meet reasonable customer expectations
+around utilization, that is a failure. Karpenter cannot try every
+possible consolidation plan in production, since the number of
+plans is exponential in the candidate count. Even
 outside production, exhaustive search is only feasible on small
 clusters (around 8 candidate nodes). So Karpenter uses a
 heuristic search that is fast and usually right but occasionally
@@ -84,15 +85,23 @@ Kubernetes API harness, see glossary). Each generator targets a
 structural property worth varying, mixing seeded randomness with
 engineered structure: the same seed produces the same scenario,
 and the random choices are biased toward whatever property the
-generator is built to surface. The default consolidation
-generator injects a NodeSelector-blocked candidate at a random
-middle sort position, which produces inputs that exercise the
-karpenter#1962 class. The adversarial generator gives candidates per-Node price
-variation so the savings-ratio sort and the score gate become
-non-trivial. The marginal generator engineers a high-price
-non-removable candidate alongside cheap ones. The provisioning
-generators target greenfield placement, fleet starting state,
-daemon overhead, and topology spread.
+generator is built to surface.
+
+Documented generators:
+
+- **Default consolidation:** injects a NodeSelector-blocked
+  candidate at a random middle sort position, producing inputs
+  that exercise the karpenter#1962 class.
+- **Adversarial:** gives candidates per-Node price variation so
+  the savings-ratio sort and the score gate become non-trivial.
+- **Marginal:** engineers a high-price non-removable candidate
+  alongside cheap ones.
+- **Provisioning**, four variants:
+    - **greenfield:** pending pods with no existing nodes.
+    - **fleet:** pending pods with 1-3 existing nodes.
+    - **daemon:** pending pods plus DaemonSets, to verify overhead
+      accounting.
+    - **topology:** pending pods with hard topologySpreadConstraints.
 
 The third piece is **offline enumerative sampling**. For each
 scenario, enumerate every feasible alternative the production
