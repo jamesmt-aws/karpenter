@@ -50,11 +50,10 @@ feasible alternatives, tractable because each scenario is small.
 
 The framework has three pieces: scenario generation, search, and
 analysis. Scenario generation produces cluster snapshots, either
-one at a time for hand-crafted reproducers or many at a time for
-corpus runs. Search runs a more thorough algorithm than
-production on each snapshot. Analysis compares production's
-answer against the search's answer across many snapshots and
-surfaces patterns.
+hand-crafted one at a time or sampled in batches by a seeded
+generator. Search runs a more thorough algorithm than production
+on each snapshot. Analysis compares production's answer against
+the search's answer across many snapshots and surfaces patterns.
 
 ### Scenario generation
 
@@ -79,7 +78,7 @@ like `multinode_1962_test.go`: write a snapshot with every field
 picked by hand, run Karpenter against it, observe what Karpenter
 does.
 
-For corpus runs, a **scenario generator** is a Go function in
+For sampling, a **scenario generator** is a Go function in
 `pkg/test/scenarios/` that takes a seed and a few parameters and
 returns a Scenario value. Each generator targets a structural
 property worth varying, mixing seeded randomness with engineered
@@ -178,22 +177,6 @@ The framework uses on-demand pricing and accounts for daemonset
 and dataplane overhead per provisioned node. It does not yet
 model Spot or ODCR pricing, capacity stochasticity, or
 utilization decay as pods leave nodes mid-lifetime.
-
-The comparison approach is algorithm-agnostic, so future
-Karpenter changes (new consolidation policies, new provisioning
-logic) do not invalidate the framework, only the specific shapes
-the current algorithm exhibits.
-
-The corpus is a sparse sample of a much larger space. The space
-of possible cluster configurations (3 to 8 nodes with arbitrary
-instance types from the pool, varying deletion costs, varying
-pod constraints) is combinatorially large. We run 100 seeds
-because that takes a few minutes. The framework's value depends
-on the generator biasing the sample toward structural properties
-worth varying. Without the bias, the Shape A rate (a
-NodeSelector-blocked candidate at a middle position) would be
-near zero rather than 14 of 100. Each generator's bias is
-documented in the next section alongside the shapes it surfaces.
 
 ## What we found
 
