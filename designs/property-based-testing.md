@@ -165,7 +165,7 @@ blocker candidate (its pod has nowhere else to fit) sorting in
 the middle, so every prefix containing it is infeasible and the
 binary search exits empty. The search finds the non-prefix
 subset that excludes the blocker. 14 of 100 seeds fire this on the
-unfixed code. The fix is a pairwise non-prefix fallback that
+unfixed code. A fix would be a pairwise non-prefix fallback that
 runs from an empty accepted set when the binary search returns
 NoOp, walking candidates in order and keeping any that the
 simulator still considers feasible. Skipping does not narrow the
@@ -203,9 +203,8 @@ The marginal generator engineers a high-price non-removable
 candidate alongside cheap removable candidates. The algorithm
 picks the cheap candidates predominantly, and 33 of 50 marginal
 seeds produce plans the Balanced score gate rejects at its
-default threshold (k=2). The
-gate is doing what it was designed to do, declining marginal
-consolidations, which is what the marginal samples exercise.
+default threshold (k=2). The gate is doing what it was designed
+to do, declining marginal consolidations.
 
 ### Greedy-commit (provisioning)
 
