@@ -122,9 +122,8 @@ enumerate or the metric is multi-axis (savings + disruption
 count), the enumeration produces a sample under a partial order
 rather than a strict oracle. The framework still has value in
 that regime, since any case where the enumeration finds a better
-answer than production identifies a scenario where production is
-leaving value on the table, even if "best" is not globally
-well-defined. The current corpora all run in regimes where the
+answer than production identifies a scenario worth investigating,
+even if "best" is not globally well-defined. The current corpora all run in regimes where the
 enumeration is exhaustive (consolidation up to N=8 candidates,
 provisioning up to 6 pending pods), so the six shapes in the
 next section are all measured against a strict oracle.
@@ -165,10 +164,9 @@ current algorithm exhibits.
 The corpus is a sparse sample of a much larger space. The space
 of possible cluster configurations (3 to 8 nodes with arbitrary
 instance types from the pool, varying deletion costs, varying
-pod constraints) is combinatorially large. 100 corpus seeds is
-what runs in a few minutes. The framework's value depends on the
-generator biasing the sample toward structural properties worth
-varying. Without the bias, the Shape A rate (a NodeSelector-
+pod constraints) is combinatorially large. We run 100 seeds because that takes a few minutes. The
+framework's value depends on the generator biasing the sample
+toward structural properties worth varying. Without the bias, the Shape A rate (a NodeSelector-
 blocked candidate at a middle position) would be near zero
 rather than 14 of 100. Each generator's bias is documented in
 the next section alongside the shapes it surfaces.
@@ -232,26 +230,16 @@ or a swap-walk that ejects accepted candidates.
 The marginal corpus generator engineers a high-price non-removable
 candidate alongside cheap removable candidates. The algorithm
 picks the cheap candidates predominantly, and 33 of 50 marginal
-seeds produce plans the Balanced score gate rejects at the default
-threshold (k=2 means "reject any plan with score below 1/k"). The
+seeds produce plans the Balanced score gate rejects at its
+default threshold (k=2). The
 gate is doing what it was designed to do, declining marginal
 consolidations, which is what the marginal corpus exercises.
-
-Naming the score gate's marginal-rejection behavior matters
-because the gate's response depends on input distribution. An
-earlier version of this framework (without per-Node price
-variation) made the gate look silent, while the marginal corpus
-established that the gate fires on the regime it was designed
-for.
 
 ### Greedy-commit (provisioning)
 
 The production scheduler `Scheduler.Solve` adds pods to a
 NodeClaim greedily and only triggers a new NodeClaim when a pod
-does not fit the running one. (A NodeClaim is Karpenter's request
-to a cloud provider for a new node. The scheduler bundles pending
-pods into NodeClaims, and each NodeClaim becomes one node once
-the cloud provider fulfills it.) The trigger condition ignores
+does not fit the running one. The trigger condition ignores
 cost. As long as the next pod fits in the running NodeClaim, the
 scheduler does not ask whether splitting into two NodeClaims
 would be cheaper.
@@ -343,9 +331,9 @@ family. If the symptom fits one of these families, name the
 specific shape inside it.
 
 Inside the search-reachability family, Shape A and Shape B are
-commonly confused, with the disambiguator being what multi-node
-returns: Shape A returns NoOp, while Shape B returns a feasible
-prefix smaller than the largest feasible subset.
+commonly confused. The disambiguator is what multi-node returns:
+Shape A returns NoOp, while Shape B returns a feasible prefix
+smaller than the largest feasible subset.
 
 If the symptom does not fit either documented family, it may
 live in a family the doc has not yet documented. Plausible new families
@@ -363,7 +351,7 @@ usually enough. The reproducer should fail on the unfixed code
 path and pass on a hypothetical fix that addresses the
 structural cause. For consolidation tickets, follow the pattern
 of `pkg/controllers/disruption/scenario_1962_test.go`. For
-provisioning tickets, the analogous file lives under
+provisioning tickets, follow the same pattern in
 `pkg/controllers/provisioning/`.
 
 Before writing a new reproducer, check whether an existing one
@@ -382,7 +370,7 @@ conditions the test harness cannot provide (clock skew, async
 timing, real cluster state), in which case document the gap and
 consider a different verification path.
 
-**Generator decision (step 5).** The reproducer reproduces the
+**Generator decision (step 5).** The reproducer demonstrates the
 behavior on one input, and the corpus measures how often the
 behavior shows up across inputs.
 
@@ -609,7 +597,7 @@ counts, savings, slack entropy, and sorted-position structure.
 Candidate names and compute times vary across runs.
 
 `testdata/analyze_incomplete.py` filters to seeds where one
-algorithm under-consolidated relative to another and reports the
+algorithm produces a smaller plan than another and reports the
 sort positions where the missed candidates appeared.
 `analyze_overpay.py` (provisioning side) reports cost-ratio
 distribution, disagreement rate by pod count, and
@@ -651,7 +639,7 @@ Three properties the harness already checks.
   check.
 - `len(branch.cmds) <= 1`, the shape check.
 
-Three properties that would be useful but are not yet checked.
+Three more properties to add.
 
 - Disruption budgets are respected, counted per NodePool.
 - Empty-node candidates do not appear in multi-node commands.
