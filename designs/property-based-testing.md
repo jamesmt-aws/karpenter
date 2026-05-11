@@ -3,8 +3,9 @@
 ## Why we built this
 
 Karpenter is a Kubernetes node autoscaler. One of its jobs is
-consolidation: removing nodes when their workloads can fit on a
-smaller subset of the fleet. Issue #1962 (filed early 2025) is a
+consolidation: reducing cluster cost when workloads can run on
+cheaper infrastructure, either by removing redundant nodes or by
+replacing nodes with cheaper instance types. Issue #1962 (filed early 2025) is a
 customer ticket where consolidation should have happened but
 didn't. The customer had several mostly-empty nodes that
 Karpenter agreed were Consolidatable, and the workloads fit by
@@ -26,23 +27,25 @@ and the search could not try that.
 
 Customers use Karpenter to manage cluster utilization over time.
 Any time Karpenter fails to meet reasonable customer expectations
-around utilization, that is a failure. Production optimization
-algorithms are heuristic approximations, fast enough to run
-online but cutting corners that matter on some inputs. Knowing
-which inputs matter, and how often the corner-cutting hurts,
-requires a reference answer computed at scale and compared
-against production's answer. Karpenter has not had that
-capability until now.
+around utilization, that is a failure. Karpenter's consolidation
+algorithm makes deliberate tradeoffs: fast enough to run online,
+simple enough to reason about, accurate enough most of the time.
+Some inputs sit at the edge of those tradeoffs, where production's
+answer is noticeably worse than a more thorough search would
+find. Knowing which inputs sit there, and how often, requires
+running both the algorithm and a more thorough search and
+comparing. We built a framework to do that.
 
-The framework's job is to identify systematic flaws in
-Karpenter's consolidation: cases where Karpenter's answer is
-worse than achievable, and where the same flaw shows up across
-many inputs. On each generated cluster snapshot, the framework
-runs Karpenter and a more thorough search than production allows
-itself, then compares the two answers. We do not need to know in
-advance which inputs will trigger a flaw, since the disagreements
-with the search reveal them. A few hundred snapshots is enough to
-see flaws that recur, and we can run them all in minutes.
+The framework's job is to find recurring cases where Karpenter's
+consolidation underperforms: where Karpenter's answer is worse
+than a more thorough search would find, and where the same kind
+of input shows up many times across the sample. On each generated
+cluster snapshot, the framework runs Karpenter and a more
+thorough search than production allows itself, then compares the
+two answers. We do not need to know in advance which inputs will
+produce underperformance, since the disagreements with the search
+reveal them. A few hundred snapshots is enough to see patterns
+that recur, and we can run them all in minutes.
 
 ## What we built
 
@@ -1123,7 +1126,7 @@ non-prefix fallback in `multinodeconsolidation.go` as of
 
 A working summary of the doc's takeaways. Removable once the doc settles.
 
-**A.** Production optimization algorithms cut corners. Karpenter hasn't had a way to know when its approximation is poor.
+**A.** Production optimization algorithms make pragmatic tradeoffs. Karpenter hasn't had a way to know when those tradeoffs hurt enough to fix.
 
 **B.** Sample cluster snapshots, run production and a more thorough search on each, compare. Disagreements where production loses are cases worth studying.
 
@@ -1147,3 +1150,5 @@ A working summary of the doc's takeaways. Removable once the doc settles.
 **H.** Coverage is honest about gaps. Named Karpenter tickets within reach with effort estimates: #2227 (afternoon), #2434 (a day), #2084 (half-day), #2123 (two days). N>8 needs a sampling or heuristic search.
 
 **I.** Generators target specific issue shapes. New issues become new generators. The default consolidation generator is biased toward Shape A via a 30% blocker-injection probability. Other generators target sort-key divergence, score-gate margins, first-fit packing, and topology-spread placement. The ticket-to-test workflow makes adding a new target explicit: hypothesize the structural property, write or extend a generator to bias toward it, run and measure.
+
+**J. Respect what came before.** Karpenter's consolidation algorithm is a set of deliberate tradeoffs by engineers who weighed speed against thoroughness. The framework's job is to find specific inputs where those tradeoffs hurt, and to leave broader judgments about the algorithm's design to the engineers. A single hit is an existence proof. A recurring pattern is the reason to consider changing production.
