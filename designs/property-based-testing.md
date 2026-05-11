@@ -66,28 +66,23 @@ between production and the search are shapes.
 ### Scenario generation
 
 The **scenario grammar** at `pkg/test/scenarios/` is the Go type
-system and builder API for cluster snapshots. You construct a
-Scenario value (one snapshot's description) by chaining builder
-calls, then call `Build()` to materialize it as envtest-ready
-Kubernetes objects. A snapshot is a point-in-time representation
-of a cluster (which NodePools exist, which nodes are running,
-which pods are bound where, which pods are pending, which Pod
-Disruption Budgets (PDBs) are in force) that the framework
-reasons over without spinning up the live cluster. Each snapshot
-has a static side (NodePools with requirements and taints,
-existing Nodes with bound Pods, PDBs) and an optional pending
-workload (PendingPods, DaemonSets). Consolidation tests populate
-the static side, while provisioning tests populate the pending
-workload and may leave Nodes empty (greenfield) or include a
-small fleet to exercise existing-node placement.
+system and builder API for cluster snapshots. You chain builder
+calls to construct a Scenario value (one snapshot), then call
+`Build()` to materialize it as envtest-ready Kubernetes objects.
+A snapshot is a point-in-time view of a cluster: NodePools,
+nodes, bound pods, pending pods, PDBs. Each snapshot has a static
+side (NodePools with requirements and taints, existing Nodes with
+bound Pods, PDBs) and an optional pending workload (PendingPods,
+DaemonSets). Consolidation tests populate the static side.
+Provisioning tests populate the pending workload, optionally
+leaving Nodes empty (greenfield) or starting with a small fleet.
 
 For sampling, a **scenario generator** is a Go function in
 `pkg/test/scenarios/` that takes a seed and a few parameters and
 returns a Scenario value. Each generator targets a structural
-property worth varying, mixing seeded randomness with engineered
-structure: the same seed produces the same Scenario, and the
-random choices are biased toward whatever property the generator
-is built to surface.
+property worth varying. The same seed produces the same Scenario,
+and random choices are biased toward whatever property the
+generator surfaces.
 
 Documented generators:
 
@@ -121,26 +116,24 @@ decide whether changing production's algorithm is worth the cost.
 ### Analysis
 
 The **harness** in each `corpus_test.go` file orchestrates the
-comparison. For each seed it runs scenario generation, runs the
-production algorithm, runs the search on the same input, and
-appends the result to the JSON output. Patterns that recur across many seeds are **shapes**.
+comparison. For each seed it runs scenario generation, the
+production algorithm, and the search on the same input, then
+appends the result to the JSON output. Patterns that recur across
+many seeds are **shapes**.
 
 A shape is a structural property broad enough that a whole family
 of inputs exhibits it. Naming the shape, rather than the input
 that surfaced it, lets one decision (fix, accept as designed,
 study further) cover the whole family.
 
-The framework grades each consolidation move on two primary
-axes: total savings (deleted nodes' price minus any replacement
-node's price) and disruption count (number of nodes the move
-removes). Operators weigh these differently, so the analysis
-uses Pareto comparisons. Move A dominates move B when A is at
-least as good on every axis and strictly better on at least one.
-When the findings say "the search found a better move," that
-means the search's move is strictly better than the production
-move on at least one axis and no worse on any. For provisioning,
-the metric is single-axis (total node price for the same set of
-pending pods), so "better" means lower total price.
+The framework grades each consolidation move on two axes: total
+savings (deleted nodes' price minus any replacement node's price)
+and disruption count (number of nodes the move removes).
+Operators weigh these differently, so the analysis uses Pareto
+comparisons. Move A dominates move B (the framework's "better")
+when A is at least as good as B on every axis and strictly better
+on at least one. For provisioning, the metric is single-axis
+(total node price), so "better" just means lower total price.
 
 The framework uses on-demand pricing and accounts for daemonset
 and dataplane overhead per provisioned node. It does not yet
