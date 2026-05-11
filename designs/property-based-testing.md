@@ -1114,3 +1114,32 @@ bounded brute-force. Practice ticket A's answer key should also
 update from "no fix has landed yet" to "fixed by the pairwise
 non-prefix fallback in `multinodeconsolidation.go` as of
 <release/PR>" so the appendix stays in sync with the body.
+
+## Appendix: compressed takeaways
+
+A working summary of the doc's takeaways. Removable once the doc settles.
+
+**A.** Production optimization algorithms cut corners. Karpenter hasn't had a way to know when its approximation is poor.
+
+**B.** Sample cluster snapshots, run production and a more thorough search on each, compare. Disagreements where production loses are cases worth studying.
+
+**C.** Three pieces: scenario generation (grammar + generators, supports hand-crafted reproducers and sampled snapshots), search (more thorough than production, currently exhaustive enumeration but the framework supports other strategies), analysis (compares across snapshots, names recurring patterns as shapes).
+
+**D.** Mix random and targeted sampling until production losing to the search becomes a recurring pattern, then decide whether changing production's algorithm is worth the cost.
+
+**E.** Six shapes found running the framework against current production code:
+
+- **Prefix-blindness (Shape A)** — 14/100, karpenter#1962 class
+- **Short-prefix (Shape B)** — 17/100, the proposed Shape A fix is incomplete
+- **Non-prefix-better (Shape C)** — 15/50 adversarial seeds
+- **Score gate marginal-rejection** — 33/50, gate working as designed
+- **First-fit monolith bias** — 23/100 greenfield
+- **Per-zone monolith bias** — 37/100 topology
+
+**F.** Shape B is the strongest evidence the framework finds what humans miss. The pairwise non-prefix fallback (the proposed Shape A fix) closes Shape A but leaves 17/100 cases unaddressed.
+
+**G.** Two workflow prompts (ticket-to-test, disagreement-to-fix) pass on practice tickets in 2-3 minutes via fresh agents in ralphit sandboxes. Real-customer validation open.
+
+**H.** Coverage is honest about gaps. Named Karpenter tickets within reach with effort estimates: #2227 (afternoon), #2434 (a day), #2084 (half-day), #2123 (two days). N>8 needs a sampling or heuristic search.
+
+**I.** Generators target specific issue shapes; new issues become new generators. The default consolidation generator is biased toward Shape A via a 30% blocker-injection probability. Other generators target sort-key divergence, score-gate margins, first-fit packing, and topology-spread placement. The ticket-to-test workflow makes adding a new target explicit: hypothesize the structural property, write or extend a generator to bias toward it, run and measure.
