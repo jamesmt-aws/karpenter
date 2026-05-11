@@ -46,12 +46,21 @@ see flaws that recur, and we can run them all in minutes.
 
 ## What we built
 
-The framework has three pieces: scenario generation, search, and
-analysis. Scenario generation produces cluster snapshots, either
-hand-crafted one at a time or sampled in batches by a seeded
-generator. Search runs a more thorough algorithm than production
-on each snapshot. Analysis compares production's answer against
-the search's answer across many snapshots and surfaces patterns.
+The simplest experiment is a manual reproducer of the
+karpenter#1962 case described above. The scenario grammar (a Go
+DSL for cluster snapshots) lets you encode the three-node
+configuration in Go, run Karpenter's consolidation against it,
+and observe the missing plan. `scenario_1962_test.go` is this
+reproducer: one hand-crafted snapshot, every field picked by
+you, run once. That is an existence proof for one bug on one
+input.
+
+To find recurring patterns instead of single instances, the
+framework scales up via three pieces. Scenario generation
+produces many snapshots from seeds. Search runs a more thorough
+algorithm than production on each snapshot. Analysis compares
+the two across the sample. Recurring disagreements between
+production and the search are shapes.
 
 ### Scenario generation
 
@@ -70,11 +79,6 @@ workload (PendingPods, DaemonSets). Consolidation tests populate
 the static side, while provisioning tests populate the pending
 workload and may leave Nodes empty (greenfield) or include a
 small fleet to exercise existing-node placement.
-
-The simplest use of the grammar is a hand-crafted reproducer
-like `multinode_1962_test.go`: write a snapshot with every field
-picked by hand, run Karpenter against it, observe what Karpenter
-does.
 
 For sampling, a **scenario generator** is a Go function in
 `pkg/test/scenarios/` that takes a seed and a few parameters and
@@ -786,9 +790,9 @@ the prompt text itself references.
 Run hash `409c140d5eaf`, wall-clock 2m 7s, validation PASS. The
 fresh agent received the section 4 ticket-to-test prompt and the
 text of Practice Ticket A (see "Appendix: practice tickets"
-above). The expected landing point: Shape A (prefix-blindness),
-search-reachability family, citing `scenario_1962_test.go` as the
-existing reproducer.
+above). The agent should identify Shape A (prefix-blindness) in
+the search-reachability family and cite `scenario_1962_test.go`
+as the existing reproducer.
 
 #### Step 1: Symptom
 
@@ -937,7 +941,7 @@ Run hash `6fbec838bda9`, wall-clock 2m 36s, validation PASS. The
 fresh agent received the section 4 disagreement-to-fix prompt and
 the production / branch / oracle outputs for corpus seed 0 from
 `pkg/controllers/disruption/testdata/corpus_results.json`. The
-expected landing point: Shape A (prefix-blindness), proposing the
+agent should identify Shape A (prefix-blindness) and propose the
 non-prefix pairwise fallback as the fix direction in
 `multinodeconsolidation.go`.
 
@@ -1127,12 +1131,12 @@ A working summary of the doc's takeaways. Removable once the doc settles.
 
 **E.** Six shapes found running the framework against current production code:
 
-- **Prefix-blindness (Shape A)** — 14/100, karpenter#1962 class
-- **Short-prefix (Shape B)** — 17/100, the proposed Shape A fix is incomplete
-- **Non-prefix-better (Shape C)** — 15/50 adversarial seeds
-- **Score gate marginal-rejection** — 33/50, gate working as designed
-- **First-fit monolith bias** — 23/100 greenfield
-- **Per-zone monolith bias** — 37/100 topology
+- **Prefix-blindness (Shape A)**: 14/100, karpenter#1962 class
+- **Short-prefix (Shape B)**: 17/100, the proposed Shape A fix is incomplete
+- **Non-prefix-better (Shape C)**: 15/50 adversarial seeds
+- **Score gate marginal-rejection**: 33/50, gate working as designed
+- **First-fit monolith bias**: 23/100 greenfield
+- **Per-zone monolith bias**: 37/100 topology
 
 **F.** Shape B is the strongest evidence the framework finds what humans miss. Adding the pairwise non-prefix fallback (the proposed Shape A fix) still leaves 17/100 cases where production loses to the search.
 
