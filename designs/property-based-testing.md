@@ -34,14 +34,16 @@ requires a reference answer computed at scale and compared
 against production's answer. Karpenter has not had that
 capability until now.
 
-A brute-force comparison can find this kind of case automatically.
-Generate a few hundred cluster snapshots with varying structure.
-Run Karpenter's consolidation on each, and on the same scenarios
-run a much slower exhaustive search. We can afford the slow
-search here because each scenario is small. Look for scenarios
-where Karpenter decides no consolidation is possible but the
-exhaustive search finds a valid consolidation. Those are the
-cases worth studying.
+The framework's job is to identify systematic flaws in
+Karpenter's consolidation: cases where Karpenter's answer is
+worse than achievable, and where the same flaw shows up across
+many inputs. On each generated cluster snapshot, the harness runs
+Karpenter and a reference algorithm that gets more time than
+production does, then compares the two answers. A few hundred
+snapshots is enough to see flaws that recur, and the corpus runs
+in minutes. In our framework, the reference is an exhaustive
+enumeration of feasible alternatives, tractable because each
+scenario is small.
 
 One such scenario shows Karpenter can miss a valid consolidation.
 The comparison at scale is what reveals these misses in the
