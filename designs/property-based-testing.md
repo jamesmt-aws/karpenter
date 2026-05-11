@@ -109,11 +109,10 @@ Documented generators:
 For each snapshot, a search runs a more thorough algorithm than
 production. Our simplest experiments use exhaustive enumeration
 of feasible alternatives, tractable at small N because the cost
-scales as 2^N over candidates (~2 sec at 8, ~7 min at 16). The
-framework supports other search strategies too: longer time
-budgets with the same heuristic, randomized search,
-problem-specific approximations, anything likely to find better
-answers than production. We mix random and targeted sampling
+scales as 2^N over candidates (~2 sec at 8, ~7 min at 16). The framework supports other search strategies that are likely
+to find better answers than production: longer time budgets with
+the same heuristic, randomized search, problem-specific
+approximations. We mix random and targeted sampling
 until production losing to the search becomes a recurring
 pattern across many snapshots. Once we see that pattern, we
 decide whether changing production's algorithm is worth the cost.
@@ -140,7 +139,7 @@ When the findings say "the search found a better move," that
 means the search's move is strictly better than the production
 move on at least one axis and no worse on any. For provisioning,
 the metric is single-axis (total node price for the same set of
-pending pods), so "better" is strict.
+pending pods), so "better" means lower total price.
 
 The framework uses on-demand pricing and accounts for daemonset
 and dataplane overhead per provisioned node. It does not yet
