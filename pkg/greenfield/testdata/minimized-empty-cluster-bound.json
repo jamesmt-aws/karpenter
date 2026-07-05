@@ -1,0 +1,31 @@
+{
+  "_comment": "Hand-minimized from the counterexample found by TestPropertyEmptyClusterBound on 2026-07-04 (rapid reported the failure flaky, so automatic shrinking was unavailable; the auto-saved shrink attempts land in failing-empty-cluster-bound.json). Scenario class: a single required zone-affinity pod (self-selecting group) on an empty cluster with unequal zone prices. The bootstrap path of TopologyGroup.nextDomainAffinity (pkg/controllers/provisioning/scheduling/topologygroup.go, 'pick a domain at random') anchors the affinity group to an arbitrary zone via randomized Go map iteration, so the greenfield and full-simulation legs can anchor to DIFFERENT zones on the same run and the incumbent can exceed the full-sim cost (observed 3.0 vs 2.0 on this fixture). Reproduces on roughly 1 in 5 runs; the invariant .2 empty-cluster bound only holds per-run if domain tie-breaking is deterministic or price-aware.",
+  "kind": "empty-cluster-bound",
+  "nodePools": [
+    {
+      "name": "pool-0",
+      "weight": 1,
+      "shapes": [
+        {
+          "name": "it-p0-anchor",
+          "cpu": 16,
+          "memoryGi": 32,
+          "zonePrices": {
+            "test-zone-1": 1.0,
+            "test-zone-2": 2.0,
+            "test-zone-3": 3.0
+          }
+        }
+      ]
+    }
+  ],
+  "batch": [
+    {
+      "name": "pod-0",
+      "cpuMilli": 500,
+      "memoryMi": 256,
+      "constraint": "zone-affinity",
+      "group": "aff-0"
+    }
+  ]
+}

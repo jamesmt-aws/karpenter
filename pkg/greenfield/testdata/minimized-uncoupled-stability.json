@@ -1,0 +1,61 @@
+{
+  "_comment": "Hand-minimized from the counterexample found by TestPropertyUncoupledStability/preferred_probe on 2026-07-04 (the auto-saved rapid shrink lands in failing-uncoupled-stability.json). Scenario class: a pod whose ONLY constraint is a ScheduleAnyway zonal topology spread whose selector matches RUNNING pods. The classifier marks preferred-only pods Uncoupled (classify.go, ReasonPreferredOnly), but the reused scheduler honors ScheduleAnyway spread against the domain counts until preference relaxation: nextDomainTopologySpread narrows the claim to a SINGLE min-count zone, tie-broken by randomized Go map iteration. Occupancy A (no matching running pods) draws its zone from {zone-1, zone-2, zone-3}; occupancy B (two matching running pods on zone-1) can only draw from {zone-2, zone-3}, so the fingerprints differ unless the draws coincide (~2/3 of runs fail). Invariant .16 violation of the 'classifier under-marks coupled pods' kind, compounded by the same nondeterministic domain tie-break behind minimized-empty-cluster-bound.json.",
+  "kind": "uncoupled-stability",
+  "nodePools": [
+    {
+      "name": "pool-0",
+      "weight": 1,
+      "shapes": [
+        {
+          "name": "it-p0-anchor",
+          "cpu": 16,
+          "memoryGi": 32,
+          "zonePrices": {
+            "test-zone-1": 1.0,
+            "test-zone-2": 1.0,
+            "test-zone-3": 1.0
+          }
+        }
+      ]
+    }
+  ],
+  "batch": [
+    {
+      "name": "pod-0",
+      "cpuMilli": 100,
+      "memoryMi": 128,
+      "constraint": "preferred-spread",
+      "group": "run-0"
+    }
+  ],
+  "occupancyA": [
+    {
+      "name": "a-0",
+      "zone": "test-zone-1",
+      "cpuMilli": 8000,
+      "memoryMi": 16384
+    }
+  ],
+  "occupancyB": [
+    {
+      "name": "b-0",
+      "zone": "test-zone-1",
+      "cpuMilli": 8000,
+      "memoryMi": 16384,
+      "running": [
+        {
+          "name": "b-0-r0",
+          "cpuMilli": 100,
+          "memoryMi": 128,
+          "app": "run-0"
+        },
+        {
+          "name": "b-0-r1",
+          "cpuMilli": 100,
+          "memoryMi": 128,
+          "app": "run-0"
+        }
+      ]
+    }
+  ]
+}
