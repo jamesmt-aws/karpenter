@@ -28,8 +28,11 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	v1 "sigs.k8s.io/karpenter/pkg/apis/v1"
+	"sigs.k8s.io/karpenter/pkg/cloudprovider"
 	scheduler "sigs.k8s.io/karpenter/pkg/controllers/provisioning/scheduling"
+	"sigs.k8s.io/karpenter/pkg/scheduling"
 	nodepoolutils "sigs.k8s.io/karpenter/pkg/utils/nodepool"
+	podutils "sigs.k8s.io/karpenter/pkg/utils/pod"
 )
 
 // PriceOf is the cost of a single scheduling NodeClaim, greenfield or full-simulation. A
@@ -61,7 +64,10 @@ func PriceOf(claim *scheduler.NodeClaim) (float64, error) {
 
 // AcceptCandidate is the phase-two acceptance comparator (invariant .2, restated): the incumbent
 // is the acceptance threshold, and a candidate answer may replace the greenfield claims only if
-// it is STRICTLY cheaper than the incumbent. Equal cost is rejected: the incumbent read no shared
+// it is STRICTLY cheaper than the incumbent. The candidate's cost is its ATTRIBUTED cost
+// (AttributedCost): existing-capacity placements carry alone_cost * f bills, so a candidate that
+// parks the batch on wasteful existing nodes is priced accordingly rather than winning at a
+// conventional zero. Equal cost is rejected: the incumbent read no shared
 // cluster state and cannot go stale, so at equal price it is the safer answer and the RFC's
 // "any placement onto existing capacity must beat that cost" (line 17) keeps its literal meaning.
 // This is the by-construction half of invariant .2 - phase two discards any candidate for which
@@ -86,10 +92,14 @@ func IncumbentCost(result *BuildResult) (float64, error) {
 	return total, nil
 }
 
-// SimulationCost prices a full-simulation answer: the sum of PriceOf over its NEW NodeClaims
-// only. Placements onto existing capacity have zero marginal cost by convention - the node is
-// already paid for whether or not the pod lands on it.
-func SimulationCost(results scheduler.Results) (float64, error) {
+// NewClaimCost prices the NEW NodeClaims of a full-simulation answer: the sum of PriceOf over
+// results.NewNodeClaims, ignoring placements onto existing capacity. This is exactly what its
+// name says and nothing more. It is NOT the answer's attributed bill: the old zero-marginal-cost
+// convention ("the node is already paid for whether or not the pod lands on it") is dead,
+// replaced by the pricing model's attribution (pricing_paper.md) - see AttributedCost. The
+// new-claims-only number stays exported because it remains a useful reportable view: the cash
+// outlay for capacity the answer would launch.
+func NewClaimCost(results scheduler.Results) (float64, error) {
 	total := 0.0
 	for _, nc := range results.NewNodeClaims {
 		price, err := PriceOf(nc)
@@ -99,6 +109,105 @@ func SimulationCost(results scheduler.Results) (float64, error) {
 		total += price
 	}
 	return total, nil
+}
+
+// AttributedCost is the batch's attributed bill for a full-simulation answer, per the pricing
+// model (pricing_paper.md): bill(pod) = alone_cost(pod) * f, f = C / sum of alone_costs on the
+// instance. Existing capacity is NOT free - a batch pod placed onto an existing node is billed
+// alone_cost * f, not zero. Concretely:
+//
+//   - Each NEW NodeClaim contributes its full claim price: the batch pods are alone on it, so
+//     their bills sum to the instance price C by the paper's books-balance property, and PriceOf
+//     is that price.
+//   - Each batch pod placed on an existing node n contributes alone_cost(pod) * f_n, where
+//     f_n = price(n) / (sum of alone_costs of n's existing non-daemon pods + sum of alone_costs
+//     of the batch pods placed on n). f_n < 1 is a consolidation discount (the batch pod shares
+//     a well-packed node), f_n > 1 a wasteful-placement surcharge (the batch pod underwrites a
+//     mostly-empty node).
+//
+// price(n) resolves the node's instance type from its labels against the builder's catalog (the
+// fake provider, like real ones, stamps the standard instance-type label on launch) and takes
+// the cheapest available offering compatible with the node's labels; an unresolvable node is a
+// clear error, never a silent zero. DaemonSet-owned pods are excluded from every denominator:
+// daemon pods are not billed, their capacity is charged as overhead inside every alone_cost
+// (see AloneCoster). Terminal and terminating existing pods are excluded the same way the
+// simulation's capacity accounting excludes them.
+func (b *Builder) AttributedCost(ctx context.Context, results scheduler.Results) (float64, error) {
+	total, err := NewClaimCost(results)
+	if err != nil {
+		return 0, err
+	}
+	occupied := lo.Filter(results.ExistingNodes, func(en *scheduler.ExistingNode, _ int) bool { return len(en.Pods) > 0 })
+	if len(occupied) == 0 {
+		return total, nil
+	}
+	coster := NewAloneCoster(ctx, b.NodePools, b.InstanceTypes, b.DaemonSetPods)
+	catalog := map[string]*cloudprovider.InstanceType{}
+	for _, its := range b.InstanceTypes {
+		for _, it := range its {
+			catalog[it.Name] = it
+		}
+	}
+	for _, en := range occupied {
+		price, err := nodePrice(en, catalog)
+		if err != nil {
+			return 0, err
+		}
+		existing, err := en.StateNode.Pods(ctx, b.KubeClient)
+		if err != nil {
+			return 0, fmt.Errorf("listing pods bound to node %s, %w", en.Name(), err)
+		}
+		denominator := 0.0
+		batchAloneSum := 0.0
+		for _, p := range existing {
+			if podutils.IsOwnedByDaemonSet(p) || !podutils.IsActive(p) {
+				continue
+			}
+			alone, err := coster.AloneCost(p)
+			if err != nil {
+				return 0, fmt.Errorf("existing pod on node %s, %w", en.Name(), err)
+			}
+			denominator += alone
+		}
+		for _, p := range en.Pods {
+			if podutils.IsOwnedByDaemonSet(p) {
+				continue
+			}
+			alone, err := coster.AloneCost(p)
+			if err != nil {
+				return 0, fmt.Errorf("batch pod placed on node %s, %w", en.Name(), err)
+			}
+			denominator += alone
+			batchAloneSum += alone
+		}
+		if batchAloneSum == 0 {
+			continue
+		}
+		// sum over batch pods of alone_cost * f_n, factored: f_n * batchAloneSum.
+		total += price * batchAloneSum / denominator
+	}
+	return total, nil
+}
+
+// nodePrice resolves the hourly price of an existing node: the instance type named by the
+// node's standard instance-type label, looked up in the catalog, priced at its cheapest
+// available offering compatible with the node's labels (zone and capacity type pin the
+// offering when the node carries those labels).
+func nodePrice(en *scheduler.ExistingNode, catalog map[string]*cloudprovider.InstanceType) (float64, error) {
+	nodeLabels := en.Labels()
+	name := nodeLabels[corev1.LabelInstanceTypeStable]
+	if name == "" {
+		return 0, fmt.Errorf("node %s carries no %s label; its instance type cannot be resolved for attributed pricing", en.Name(), corev1.LabelInstanceTypeStable)
+	}
+	it, ok := catalog[name]
+	if !ok {
+		return 0, fmt.Errorf("node %s instance type %q is not in the catalog; its price cannot be resolved for attributed pricing", en.Name(), name)
+	}
+	offerings := it.Offerings.Available().Compatible(scheduling.NewLabelRequirements(nodeLabels))
+	if len(offerings) == 0 {
+		return 0, fmt.Errorf("instance type %q has no available offering compatible with the labels of node %s", name, en.Name())
+	}
+	return offerings.Cheapest().Price, nil
 }
 
 // ClaimDetail is the per-claim line item of a comparison, for the property and measurement
@@ -130,13 +239,18 @@ type Comparison struct {
 
 	// FullSim is the raw result of the full simulation WITH existing nodes.
 	FullSim scheduler.Results
-	// FullSimCost prices the full simulation's NEW NodeClaims only; pods placed on existing
-	// capacity cost zero by convention.
-	FullSimCost float64
+	// FullSimNewClaimCost prices the full simulation's NEW NodeClaims only (NewClaimCost): the
+	// cash outlay for capacity the answer would launch. It is a reportable view, not the
+	// answer's bill - existing-capacity placements are priced by FullSimAttributedCost.
+	FullSimNewClaimCost float64
+	// FullSimAttributedCost is the full simulation's attributed bill per the pricing model
+	// (AttributedCost): new claims at full price plus alone_cost * f for every batch pod placed
+	// on an existing node. This is the number the incumbent is compared against.
+	FullSimAttributedCost float64
 	// FullSimClaims is the per-claim detail of the full simulation's new NodeClaims.
 	FullSimClaims []ClaimDetail
 	// FullSimExistingNodePods counts the eligible pods the full simulation placed on existing
-	// capacity (the zero-cost placements).
+	// capacity. Each such placement is billed alone_cost * f inside FullSimAttributedCost.
 	FullSimExistingNodePods int
 	// FullSimDuration is the wall time of the full-simulation side: topology + scheduler
 	// construction (including ExistingNode wrapping) + Solve with the cluster's state nodes.
@@ -150,8 +264,11 @@ type Comparison struct {
 // fresh Topology, since Topology is mutated during Solve.
 //
 // On an empty cluster the two legs solve the identical problem, so IncumbentCost must not exceed
-// FullSimCost (the falsifiable half of invariant .2); with existing capacity the full simulation
-// may be cheaper, and the durations quantify what that improvement costs in wall time.
+// FullSimAttributedCost (the falsifiable half of invariant .2; with no existing nodes the
+// attributed bill degenerates to the new-claim sum). With existing capacity the full simulation
+// is priced by attribution: well-packed shared placements bill below the incumbent (discount,
+// f < 1), wasteful ones above it (surcharge, f > 1), and the durations quantify what computing
+// that answer costs in wall time.
 func (b *Builder) CompareWithFullSimulation(ctx context.Context, pods []*corev1.Pod) (*Comparison, error) {
 	build, err := b.Build(ctx, pods)
 	if err != nil {
@@ -181,8 +298,8 @@ func (b *Builder) CompareWithFullSimulation(ctx context.Context, pods []*corev1.
 			nodePools,
 			b.Cluster,
 			// Active() mirrors Provisioner.Schedule: nodes marked for deletion are not
-			// persistent capacity, and placing pods on them at zero cost would skew the
-			// comparison pro-full-sim.
+			// persistent capacity, so they must not absorb placements on either the
+			// simulation path or the attributed bill.
 			b.Cluster.DeepCopyNodes().Active(),
 			counts.Topology,
 			b.InstanceTypes,
@@ -201,9 +318,13 @@ func (b *Builder) CompareWithFullSimulation(ctx context.Context, pods []*corev1.
 	}
 	fullSimDuration := time.Since(fullSimStart)
 
-	fullSimCost, err := SimulationCost(fullSim)
+	newClaimCost, err := NewClaimCost(fullSim)
 	if err != nil {
-		return nil, fmt.Errorf("pricing full-simulation leg, %w", err)
+		return nil, fmt.Errorf("pricing full-simulation new claims, %w", err)
+	}
+	attributedCost, err := b.AttributedCost(ctx, fullSim)
+	if err != nil {
+		return nil, fmt.Errorf("attributing full-simulation cost, %w", err)
 	}
 	greenfieldClaims, err := claimDetails(lo.Map(build.Claims, func(c ClaimResult, _ int) *scheduler.NodeClaim { return c.NodeClaim }))
 	if err != nil {
@@ -223,7 +344,8 @@ func (b *Builder) CompareWithFullSimulation(ctx context.Context, pods []*corev1.
 		GreenfieldClaims:        greenfieldClaims,
 		GreenfieldDuration:      build.SolveDuration,
 		FullSim:                 fullSim,
-		FullSimCost:             fullSimCost,
+		FullSimNewClaimCost:     newClaimCost,
+		FullSimAttributedCost:   attributedCost,
 		FullSimClaims:           fullSimClaims,
 		FullSimExistingNodePods: existingNodePods,
 		FullSimDuration:         fullSimDuration,

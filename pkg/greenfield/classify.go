@@ -316,21 +316,13 @@ func resourceClaimName(p *corev1.Pod, pc *corev1.PodResourceClaim) (string, bool
 // the pod tolerates the template's taints, the template's requirements are compatible with the
 // pod's strict requirements, and at least one instance type survives the same filter the
 // simulation applies when opening a new NodeClaim (including the template's daemonset
-// footprint).
+// footprint). The per-template machinery is shared with AloneCost (hostableInstanceTypes in
+// alonecost.go): the classifier asks whether any instance type qualifies, the coster asks for
+// the cheapest one.
 func (c *classifier) fitsAnyTemplate(p *corev1.Pod, strictReqs scheduling.Requirements) bool {
 	podRequests := resources.RequestsForPods(p)
 	for _, nct := range c.templates {
-		if err := scheduling.Taints(nct.Spec.Taints).ToleratesPod(p); err != nil {
-			continue
-		}
-		if err := nct.Requirements.Compatible(strictReqs, scheduling.AllowUndefinedWellKnownLabels); err != nil {
-			continue
-		}
-		reqs := scheduling.NewRequirements(nct.Requirements.Values()...)
-		reqs.Add(strictReqs.Values()...)
-		daemonRequests := c.footprints[nct].Requests
-		remaining, _, _ := scheduler.FilterInstanceTypesByRequirements(nct.InstanceTypeOptions, reqs, podRequests, daemonRequests, resources.Merge(daemonRequests, podRequests), false)
-		if len(remaining) > 0 {
+		if fitting, _ := hostableInstanceTypes(nct, c.footprints[nct], p, strictReqs, podRequests); len(fitting) > 0 {
 			return true
 		}
 	}

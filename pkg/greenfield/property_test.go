@@ -27,9 +27,11 @@ limitations under the License.
 //     candidate only if strictly cheaper than the incumbent; equal cost is rejected
 //     (by-construction half of invariant .2).
 //   - MEASUREMENT (not an assertion), TestMeasureOccupiedGap: on generated OCCUPIED-cluster
-//     scenarios, the full-sim-vs-incumbent gap distribution is recorded and classified. Both
-//     gap<0 (greedy used existing capacity) and gap>0 (greedy packing anomaly) are EXPECTED
-//     outcomes, headline POC data rather than failures.
+//     scenarios, the gap distribution between the full simulation's ATTRIBUTED cost
+//     (pricing_paper.md: new claims at full price, existing-capacity placements billed
+//     alone_cost * f) and the incumbent is recorded and classified. Both gap<0 (discounted
+//     shared placements or better packing) and gap>0 (surcharged existing placements or greedy
+//     packing anomalies) are EXPECTED outcomes, headline POC data rather than failures.
 //
 // Reproducibility and shrinking mechanics:
 //
@@ -146,13 +148,17 @@ type propPod struct {
 	Group      string `json:"group,omitempty"`
 }
 
-// propNode is one existing node plus its running pods.
+// propNode is one existing node plus its running pods. InstanceType names the catalog shape
+// backing the node (one of the scenario's pool shapes): materialization stamps it as the
+// standard instance-type label so attributed pricing can resolve price(node). Empty in older
+// fixtures, whose kinds never price existing nodes.
 type propNode struct {
-	Name     string           `json:"name"`
-	Zone     string           `json:"zone"`
-	CPUMilli int              `json:"cpuMilli"`
-	MemoryMi int              `json:"memoryMi"`
-	Running  []propRunningPod `json:"running,omitempty"`
+	Name         string           `json:"name"`
+	Zone         string           `json:"zone"`
+	InstanceType string           `json:"instanceType,omitempty"`
+	CPUMilli     int              `json:"cpuMilli"`
+	MemoryMi     int              `json:"memoryMi"`
+	Running      []propRunningPod `json:"running,omitempty"`
 }
 
 // propRunningPod is a running pod on an existing node. When AntiAffinityApp is set the pod
@@ -241,22 +247,32 @@ func genPropBatch(t *rapid.T, minPods, maxPods int, flavors []string, groups map
 	return pods
 }
 
-// genPropOccupancy draws minNodes..maxNodes existing nodes: zone uniform, CPU uniform over
-// {4,8,16} cores, memory uniform over {8,16,32} Gi, 110 pods allocatable. Each node runs 0-3
-// pods (CPU uniform [100,1500] milli, memory uniform [128,1536] Mi, app label uniform over
-// run-0..run-2) so nodes keep spare capacity, and with probability 1/4 one additional small
-// guard pod carrying a required anti-affinity term (selector app=guard-0..guard-2, topology key
-// zone or hostname) that never matches batch pods.
-func genPropOccupancy(t *rapid.T, prefix string, minNodes, maxNodes int) []propNode {
+// genPropOccupancy draws minNodes..maxNodes existing nodes. Each node is backed by a uniformly
+// drawn shape from the scenario's pools (anchors included), so its instance type resolves in
+// the catalog for attributed pricing: capacity is the shape's, the zone is uniform over the
+// zones where the shape has an offering (a node in a zone its type is not offered in could not
+// be priced). Each node runs 0-3 pods (CPU uniform [100,1500] milli, memory uniform [128,1536]
+// Mi, app label uniform over run-0..run-2) so nodes keep spare capacity, and with probability
+// 1/4 one additional small guard pod carrying a required anti-affinity term (selector
+// app=guard-0..guard-2, topology key zone or hostname) that never matches batch pods.
+func genPropOccupancy(t *rapid.T, prefix string, minNodes, maxNodes int, pools []propNodePool) []propNode {
+	var shapes []propShape
+	for _, pool := range pools {
+		shapes = append(shapes, pool.Shapes...)
+	}
 	nodeCount := rapid.IntRange(minNodes, maxNodes).Draw(t, prefix+"-nodeCount")
 	nodes := make([]propNode, 0, nodeCount)
 	for i := range nodeCount {
 		label := fmt.Sprintf("%s-%d", prefix, i)
+		shape := rapid.SampledFrom(shapes).Draw(t, "shape-"+label)
+		zones := lo.Keys(shape.ZonePrices)
+		sort.Strings(zones)
 		node := propNode{
-			Name:     label,
-			Zone:     rapid.SampledFrom(propZones).Draw(t, "zone-"+label),
-			CPUMilli: rapid.SampledFrom([]int{4000, 8000, 16000}).Draw(t, "cpu-"+label),
-			MemoryMi: rapid.SampledFrom([]int{8192, 16384, 32768}).Draw(t, "mem-"+label),
+			Name:         label,
+			Zone:         rapid.SampledFrom(zones).Draw(t, "zone-"+label),
+			InstanceType: shape.Name,
+			CPUMilli:     shape.CPU * 1000,
+			MemoryMi:     shape.MemoryGi * 1024,
 		}
 		runningCount := rapid.IntRange(0, 3).Draw(t, "runningCount-"+label)
 		for j := range runningCount {
@@ -307,14 +323,15 @@ var emptyScenarioGen = rapid.Custom(func(t *rapid.T) propScenario {
 // occupancies of 1-4 nodes each (always distinct: disjoint node names, independently drawn
 // zones, running pods, and guard anti-affinity terms).
 var uncoupledCoreScenarioGen = rapid.Custom(func(t *rapid.T) propScenario {
+	nodePools := genPropNodePools(t)
 	return propScenario{
 		Kind:      kindUncoupledStability,
-		NodePools: genPropNodePools(t),
+		NodePools: nodePools,
 		Batch: genPropBatch(t, 1, 8,
 			[]string{"none", "none", "none", "zone-selector", "zone-selector", "preferred-zone-affinity"},
 			nil),
-		OccupancyA: genPropOccupancy(t, "a", 1, 4),
-		OccupancyB: genPropOccupancy(t, "b", 1, 4),
+		OccupancyA: genPropOccupancy(t, "a", 1, 4, nodePools),
+		OccupancyB: genPropOccupancy(t, "b", 1, 4, nodePools),
 	}
 })
 
@@ -326,16 +343,17 @@ var uncoupledCoreScenarioGen = rapid.Custom(func(t *rapid.T) propScenario {
 // if a claim nevertheless tracks cluster occupancy, the strip has regressed (a real finding to
 // record on bead .16, not a generator to tighten).
 var uncoupledProbeScenarioGen = rapid.Custom(func(t *rapid.T) propScenario {
+	nodePools := genPropNodePools(t)
 	return propScenario{
 		Kind:      kindUncoupledStability,
-		NodePools: genPropNodePools(t),
+		NodePools: nodePools,
 		Batch: genPropBatch(t, 1, 8,
 			[]string{"none", "none", "zone-selector", "preferred-spread", "preferred-spread"},
 			map[string][]string{
 				"preferred-spread": {"pref-0", "run-0"},
 			}),
-		OccupancyA: genPropOccupancy(t, "a", 1, 4),
-		OccupancyB: genPropOccupancy(t, "b", 1, 4),
+		OccupancyA: genPropOccupancy(t, "a", 1, 4, nodePools),
+		OccupancyB: genPropOccupancy(t, "b", 1, 4, nodePools),
 	}
 })
 
@@ -344,16 +362,17 @@ var uncoupledProbeScenarioGen = rapid.Custom(func(t *rapid.T) propScenario {
 // deliberately include run-0/run-1 so coupled constraints interact with the running pods'
 // domain counts (spread against an existing distribution, affinity anchored to occupied zones).
 var occupiedScenarioGen = rapid.Custom(func(t *rapid.T) propScenario {
+	nodePools := genPropNodePools(t)
 	return propScenario{
 		Kind:      kindOccupiedGap,
-		NodePools: genPropNodePools(t),
+		NodePools: nodePools,
 		Batch: genPropBatch(t, 2, 12,
 			[]string{"none", "none", "none", "zone-selector", "zone-selector", "zonal-spread", "zonal-spread", "zone-affinity"},
 			map[string][]string{
 				"zonal-spread":  {"spread-0", "run-0", "run-1"},
 				"zone-affinity": {"aff-0", "run-0"},
 			}),
-		OccupancyA: genPropOccupancy(t, "n", 2, 6),
+		OccupancyA: genPropOccupancy(t, "n", 2, 6, nodePools),
 	}
 })
 
@@ -388,13 +407,19 @@ func propInstanceType(shape propShape) *cloudprovider.InstanceType {
 }
 
 func propNodeObject(spec propNode) *corev1.Node {
+	nodeLabels := map[string]string{
+		corev1.LabelHostname:     spec.Name,
+		corev1.LabelTopologyZone: spec.Zone,
+	}
+	// The standard instance-type label is what attributed pricing resolves price(node) from.
+	// Older fixtures may omit it; their kinds never price existing nodes.
+	if spec.InstanceType != "" {
+		nodeLabels[corev1.LabelInstanceTypeStable] = spec.InstanceType
+	}
 	node := test.Node(test.NodeOptions{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: spec.Name,
-			Labels: map[string]string{
-				corev1.LabelHostname:     spec.Name,
-				corev1.LabelTopologyZone: spec.Zone,
-			},
+			Name:   spec.Name,
+			Labels: nodeLabels,
 		},
 		ProviderID: fmt.Sprintf("fake://%s", spec.Name),
 		Allocatable: corev1.ResourceList{
@@ -593,14 +618,19 @@ func checkEmptyClusterBound(sc *propScenario) (violations []string, logs []strin
 	if cmp.FullSimExistingNodePods != 0 {
 		violations = append(violations, fmt.Sprintf("empty cluster placed %d pods on existing capacity", cmp.FullSimExistingNodePods))
 	}
-	// The invariant under test (falsifiable half of .2): same problem, greenfield must not lose.
-	if cmp.IncumbentCost > cmp.FullSimCost+priceEpsilon {
+	// With no existing nodes the attributed bill must degenerate to the new-claim sum.
+	if math.Abs(cmp.FullSimAttributedCost-cmp.FullSimNewClaimCost) > priceEpsilon {
 		violations = append(violations, fmt.Sprintf(
-			"invariant .2 violated on an empty cluster: incumbent %.9f > full-sim %.9f\ngreenfield claims: %+v\nfull-sim claims: %+v",
-			cmp.IncumbentCost, cmp.FullSimCost, cmp.GreenfieldClaims, cmp.FullSimClaims))
+			"empty cluster: attributed cost %.9f differs from new-claim cost %.9f", cmp.FullSimAttributedCost, cmp.FullSimNewClaimCost))
+	}
+	// The invariant under test (falsifiable half of .2): same problem, greenfield must not lose.
+	if cmp.IncumbentCost > cmp.FullSimAttributedCost+priceEpsilon {
+		violations = append(violations, fmt.Sprintf(
+			"invariant .2 violated on an empty cluster: incumbent %.9f > full-sim attributed %.9f\ngreenfield claims: %+v\nfull-sim claims: %+v",
+			cmp.IncumbentCost, cmp.FullSimAttributedCost, cmp.GreenfieldClaims, cmp.FullSimClaims))
 	}
 	logs = append(logs, fmt.Sprintf("pods=%d pools=%d incumbent=%.6f full-sim=%.6f (classes: %s)",
-		len(pods), len(sc.NodePools), cmp.IncumbentCost, cmp.FullSimCost, cmp.Greenfield.Summary))
+		len(pods), len(sc.NodePools), cmp.IncumbentCost, cmp.FullSimAttributedCost, cmp.Greenfield.Summary))
 	return violations, logs, nil
 }
 
@@ -733,7 +763,7 @@ func TestReplayFixtures(t *testing.T) {
 				if merr != nil {
 					t.Fatalf("measuring fixture: %s", merr)
 				}
-				t.Logf("gap=%.6f (incumbent=%.6f full-sim=%.6f, %s)", m.gap, m.incumbent, m.fullSim, m.outcome)
+				t.Logf("gap=%.6f (incumbent=%.6f attributed=%.6f new-claim=%.6f, %s)", m.gap, m.incumbent, m.attributed, m.newClaim, m.outcome)
 				return
 			default:
 				t.Fatalf("unknown fixture kind %q", sc.Kind)
@@ -879,26 +909,31 @@ func TestPropertyAcceptCandidate(t *testing.T) {
 // ---------------------------------------------------------------------------------------------
 
 type gapMeasurement struct {
-	incumbent, fullSim, gap float64
-	fraction                float64 // gap / incumbent
-	outcome                 string
-	gfWall, fsWall          time.Duration
+	incumbent, attributed, newClaim, gap float64
+	fraction                             float64 // gap / incumbent
+	outcome                              string
+	gfWall, fsWall                       time.Duration
 }
 
 const (
 	outcomeParity           = "gap == 0 (parity)"
-	outcomeWonExisting      = "gap < 0: full-sim won via existing capacity"
+	outcomeWonExisting      = "gap < 0: full-sim won with existing placements (attributed)"
 	outcomeWonPacking       = "gap < 0: full-sim won on packing alone"
-	outcomeLostExisting     = "gap > 0: full-sim lost, existing placements perturbed packing"
+	outcomeLostSurcharge    = "gap > 0: existing placements lost on surcharge alone"
+	outcomeLostPerturbed    = "gap > 0: lost with existing placements, new claims already over"
 	outcomeLostPacking      = "gap > 0: full-sim lost on pure packing (greedy anomaly)"
 	outcomeSkippedInfeasibl = "skipped: pod errors / coverage mismatch"
 )
 
 // measureOccupiedScenario runs one occupied-cluster scenario through CompareWithFullSimulation
-// and classifies the gap heuristically: if the full simulation placed pods on existing nodes,
-// its win (or loss) is attributed to existing capacity (zero-cost placements there, packing
-// perturbation here); otherwise both sides solved a pure packing problem and the gap is a
-// packing difference. Both directions are EXPECTED per the restated invariant .2.
+// and classifies the gap, gap = FullSimAttributedCost - IncumbentCost: existing-capacity
+// placements carry alone_cost * f bills (pricing_paper.md), so existing capacity can win only
+// when its nodes are packed well enough to bill at a discount. Losses with existing placements
+// split on where the loss came from: when the new claims alone already cost more than the
+// incumbent, the existing placements perturbed the packing; when the new claims alone were
+// within the incumbent, the attributed bills of the existing placements pushed the answer over
+// (the surcharge case the ruling exists for). Both directions are EXPECTED per the restated
+// invariant .2.
 func measureOccupiedScenario(sc *propScenario) (*gapMeasurement, error) {
 	env, err := buildPropEnv(sc, sc.OccupancyA)
 	if err != nil {
@@ -913,11 +948,12 @@ func measureOccupiedScenario(sc *propScenario) (*gapMeasurement, error) {
 		return nil, fmt.Errorf("CompareWithFullSimulation, %w", err)
 	}
 	m := &gapMeasurement{
-		incumbent: cmp.IncumbentCost,
-		fullSim:   cmp.FullSimCost,
-		gap:       cmp.FullSimCost - cmp.IncumbentCost,
-		gfWall:    cmp.GreenfieldDuration,
-		fsWall:    cmp.FullSimDuration,
+		incumbent:  cmp.IncumbentCost,
+		attributed: cmp.FullSimAttributedCost,
+		newClaim:   cmp.FullSimNewClaimCost,
+		gap:        cmp.FullSimAttributedCost - cmp.IncumbentCost,
+		gfWall:     cmp.GreenfieldDuration,
+		fsWall:     cmp.FullSimDuration,
 	}
 	eligible := len(cmp.Greenfield.EligiblePods())
 	gfPods, fsPods := placedPodCount(cmp)
@@ -936,8 +972,10 @@ func measureOccupiedScenario(sc *propScenario) (*gapMeasurement, error) {
 		m.outcome = outcomeWonExisting
 	case m.gap < 0:
 		m.outcome = outcomeWonPacking
+	case cmp.FullSimExistingNodePods > 0 && m.newClaim <= m.incumbent+priceEpsilon:
+		m.outcome = outcomeLostSurcharge
 	case cmp.FullSimExistingNodePods > 0:
-		m.outcome = outcomeLostExisting
+		m.outcome = outcomeLostPerturbed
 	default:
 		m.outcome = outcomeLostPacking
 	}
@@ -958,11 +996,14 @@ func propQuantiles(fractions []float64) (minv, median, maxv float64) {
 	return sorted[0], median, sorted[n-1]
 }
 
-// TestMeasureOccupiedGap is the measurement half of bead .12: generated occupied-cluster
-// scenarios, gap = FullSimCost - IncumbentCost recorded and classified, distribution printed as
-// a summary table. Deterministic: scenario i is occupiedScenarioGen.Example(i), so the run is
-// reproducible without a seed flag (see the package comment). Scenario count defaults to 200;
-// override with GREENFIELD_MEASURE_SCENARIOS.
+// TestMeasureOccupiedGap is the measurement half of bead .12, repriced on attributed cost:
+// generated occupied-cluster scenarios, gap = FullSimAttributedCost - IncumbentCost recorded
+// and classified, distribution printed as a summary table. Existing-capacity placements are no
+// longer free, so the old "won via existing capacity at gap -100%" cells move to wherever the
+// alone_cost * f bills put them, including losses. Deterministic: scenario i is
+// occupiedScenarioGen.Example(i), so the run is reproducible without a seed flag (see the
+// package comment). Scenario count defaults to 200; override with
+// GREENFIELD_MEASURE_SCENARIOS.
 func TestMeasureOccupiedGap(t *testing.T) {
 	n := 200
 	if env := os.Getenv("GREENFIELD_MEASURE_SCENARIOS"); env != "" {
@@ -999,9 +1040,9 @@ func TestMeasureOccupiedGap(t *testing.T) {
 	}
 
 	var b strings.Builder
-	fmt.Fprintf(&b, "\noccupied-cluster gap measurement: %d scenarios (%d measured), gap = fullSimCost - incumbent\n", n, measured)
+	fmt.Fprintf(&b, "\noccupied-cluster gap measurement: %d scenarios (%d measured), gap = fullSimAttributedCost - incumbent\n", n, measured)
 	fmt.Fprintf(&b, "%-68s %6s %28s\n", "outcome", "count", "gap/incumbent min/med/max")
-	order := []string{outcomeParity, outcomeWonExisting, outcomeWonPacking, outcomeLostExisting, outcomeLostPacking, outcomeSkippedInfeasibl}
+	order := []string{outcomeParity, outcomeWonExisting, outcomeWonPacking, outcomeLostSurcharge, outcomeLostPerturbed, outcomeLostPacking, outcomeSkippedInfeasibl}
 	for _, outcome := range order {
 		quantiles := ""
 		if fr := fractionsByOutcome[outcome]; len(fr) > 0 {
