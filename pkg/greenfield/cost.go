@@ -157,7 +157,11 @@ func (b *Builder) CompareWithFullSimulation(ctx context.Context, pods []*corev1.
 	if err != nil {
 		return nil, fmt.Errorf("greenfield leg, %w", err)
 	}
-	eligible := build.EligiblePods()
+	// Same preference strip as Build: the greenfield leg solved pods with their pod-count-reading
+	// preferred terms removed, so this leg must too, or the two legs answer different questions
+	// (the same leg-asymmetry class as the weight sorting below; the empty-cluster property would
+	// catch it).
+	eligible := stripPreferredPodTopology(build.EligiblePods())
 
 	fullSimStart := time.Now()
 	var fullSim scheduler.Results

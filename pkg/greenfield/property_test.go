@@ -135,8 +135,8 @@ type propShape struct {
 //	zone-affinity           - required zonal pod affinity, selector app=Group (coupled)
 //	preferred-zone-affinity - preferred node affinity to Zone (uncoupled, preferred-only)
 //	preferred-spread        - zonal topology spread, ScheduleAnyway, selector app=Group
-//	                          (uncoupled per the classifier's preferred-only rule; the stability
-//	                          probe uses it to test exactly that classification)
+//	                          (uncoupled, preferred-only; the builder strips the term before
+//	                          solving, and the stability probe pins exactly that strip)
 type propPod struct {
 	Name       string `json:"name"`
 	CPUMilli   int    `json:"cpuMilli"`
@@ -320,10 +320,11 @@ var uncoupledCoreScenarioGen = rapid.Custom(func(t *rapid.T) propScenario {
 
 // uncoupledProbeScenarioGen: like the core generator but the batch may also carry
 // preferred-spread (ScheduleAnyway) constraints, whose selector groups intentionally include
-// run-0 - a label the occupancies' running pods use. The classifier marks preferred-only pods
-// Uncoupled, so these batches are uncoupled by the classifier's own definition; if their claims
-// nevertheless track cluster occupancy, the classifier under-marks coupled pods and invariant
-// .16 is violated (a real finding to record on bead .16, not a generator to tighten).
+// run-0 - a label the occupancies' running pods use. Probe pods classify Uncoupled
+// (preferred-only) and the builder strips the spread term before solving, so these batches are
+// uncoupled-only and their claims must be byte-identical across occupancies with no carve-out;
+// if a claim nevertheless tracks cluster occupancy, the strip has regressed (a real finding to
+// record on bead .16, not a generator to tighten).
 var uncoupledProbeScenarioGen = rapid.Custom(func(t *rapid.T) propScenario {
 	return propScenario{
 		Kind:      kindUncoupledStability,
@@ -606,50 +607,39 @@ func checkEmptyClusterBound(sc *propScenario) (violations []string, logs []strin
 // propFingerprints builds the batch against one occupancy and reduces every claim to the
 // claimFingerprint from builder_test.go (instance types, requirements, pod assignment, price) -
 // the properties invariant .16 says must not depend on cluster state.
-func propFingerprints(sc *propScenario, occupancy []propNode, pods []*corev1.Pod) ([]string, int, []string, error) {
+func propFingerprints(sc *propScenario, occupancy []propNode, pods []*corev1.Pod) ([]string, []string, error) {
 	env, err := buildPropEnv(sc, occupancy)
 	if err != nil {
-		return nil, 0, nil, err
+		return nil, nil, err
 	}
 	result, err := newBuilder(env).Build(env.ctx, pods)
 	if err != nil {
-		return nil, 0, nil, fmt.Errorf("Build, %w", err)
+		return nil, nil, fmt.Errorf("Build, %w", err)
 	}
 	var violations []string
-	// Premise check: the generator promises no required coupled constraints, and occupancy
-	// anti-affinity terms select only guard-* labels no batch pod carries. Pods with
-	// pod-count-dependent preferred terms (the probe's ScheduleAnyway spread) are EXPECTED to
-	// classify Coupled/preferred-pod-topology since the bead .18 fix; the stability property
-	// applies to the uncoupled remainder. Any other non-uncoupled classification is a premise
-	// violation to investigate, never silently tolerated.
-	coupledProbe := map[string]bool{}
+	// Premise check: both stability generators produce uncoupled-only batches (the probe's
+	// ScheduleAnyway spread and preferred pod terms classify Uncoupled/preferred-only; the
+	// builder strips them before solving), and occupancy anti-affinity terms select only guard-*
+	// labels no batch pod carries. Any non-uncoupled classification is a premise violation to
+	// investigate, never silently tolerated.
 	for _, cr := range result.Classifications {
-		switch {
-		case cr.Class == greenfield.ClassUncoupled:
-		case cr.Class == greenfield.ClassCoupled && cr.Reason == greenfield.ReasonPreferredPodTopology:
-			coupledProbe[cr.Pod.Name] = true
-		default:
+		if cr.Class != greenfield.ClassUncoupled {
 			violations = append(violations, fmt.Sprintf("premise violated: pod %s classified %s/%s", cr.Pod.Name, cr.Class, cr.Reason))
 		}
 	}
 	for pod, podErr := range result.PodErrors {
 		violations = append(violations, fmt.Sprintf("builder failed feasible pod %s: %s", pod.Name, podErr))
 	}
-	// Fingerprint only the claims the invariant covers: UncoupledOnly claims. A claim may
-	// legitimately be coupled when it carries a probe pod; a coupled claim with no probe pod
-	// means UncoupledOnly is broken.
+	// Every claim of an uncoupled-only batch must be UncoupledOnly; all claims are fingerprinted.
 	fps := make([]string, 0, len(result.Claims))
 	for _, c := range result.Claims {
 		if !c.UncoupledOnly {
-			if !lo.ContainsBy(c.Pods, func(p *corev1.Pod) bool { return coupledProbe[p.Name] }) {
-				violations = append(violations, fmt.Sprintf("claim with only uncoupled pods not marked UncoupledOnly: %s", claimFingerprint(c)))
-			}
-			continue
+			violations = append(violations, fmt.Sprintf("claim with only uncoupled pods not marked UncoupledOnly: %s", claimFingerprint(c)))
 		}
 		fps = append(fps, claimFingerprint(c))
 	}
 	sort.Strings(fps)
-	return fps, len(coupledProbe), violations, nil
+	return fps, violations, nil
 }
 
 func checkUncoupledStability(sc *propScenario) (violations []string, logs []string, err error) {
@@ -659,62 +649,19 @@ func checkUncoupledStability(sc *propScenario) (violations []string, logs []stri
 	if err != nil {
 		return nil, nil, err
 	}
-	fpsA, probeA, violationsA, err := propFingerprints(sc, sc.OccupancyA, pods)
+	fpsA, violationsA, err := propFingerprints(sc, sc.OccupancyA, pods)
 	if err != nil {
 		return nil, nil, fmt.Errorf("occupancy A, %w", err)
 	}
-	fpsB, probeB, violationsB, err := propFingerprints(sc, sc.OccupancyB, pods)
+	fpsB, violationsB, err := propFingerprints(sc, sc.OccupancyB, pods)
 	if err != nil {
 		return nil, nil, fmt.Errorf("occupancy B, %w", err)
 	}
 	violations = append(violations, violationsA...)
 	violations = append(violations, violationsB...)
-	// Mixed batches: a coupled (probe) pod can share a claim with uncoupled pods, entangling
-	// their assignments with occupancy through the packing itself, so whole-batch fingerprint
-	// identity is NOT the invariant there (see bead on mixed-batch entanglement; the RFC states
-	// per-pod claim validity, but claims are shared nodes). What we CAN assert for mixed
-	// batches, closing the gap the final review flagged: (a) classification itself is
-	// occupancy-independent, and (b) removing the probe pods restores full stability - i.e.
-	// occupancy reaches the uncoupled pods ONLY through claim-sharing with coupled pods. If the
-	// reduced batch is unstable too, the entanglement explanation is false and there is real
-	// hidden coupling.
-	if probeA > 0 || probeB > 0 {
-		if probeA != probeB {
-			violations = append(violations, fmt.Sprintf(
-				"classification tracks cluster occupancy: %d probe pods coupled under A, %d under B", probeA, probeB))
-		}
-		probeNames := map[string]bool{}
-		for _, p := range sc.Batch {
-			if p.Constraint == "preferred-spread" {
-				probeNames[p.Name] = true
-			}
-		}
-		reduced := lo.Filter(pods, func(p *corev1.Pod, _ int) bool { return !probeNames[p.Name] })
-		if len(reduced) > 0 {
-			rfpsA, rprobeA, rviolA, err := propFingerprints(sc, sc.OccupancyA, reduced)
-			if err != nil {
-				return nil, nil, fmt.Errorf("occupancy A reduced batch, %w", err)
-			}
-			rfpsB, rprobeB, rviolB, err := propFingerprints(sc, sc.OccupancyB, reduced)
-			if err != nil {
-				return nil, nil, fmt.Errorf("occupancy B reduced batch, %w", err)
-			}
-			violations = append(violations, rviolA...)
-			violations = append(violations, rviolB...)
-			if rprobeA != 0 || rprobeB != 0 {
-				violations = append(violations, fmt.Sprintf(
-					"reduced batch still has probe classifications: A=%d B=%d", rprobeA, rprobeB))
-			}
-			if strings.Join(rfpsA, "|") != strings.Join(rfpsB, "|") {
-				violations = append(violations, fmt.Sprintf(
-					"invariant .16 violated on the probe-free remainder - hidden coupling beyond claim-sharing:\nA:\n  %s\nB:\n  %s",
-					strings.Join(rfpsA, "\n  "), strings.Join(rfpsB, "\n  ")))
-			}
-		}
-		logs = append(logs, fmt.Sprintf(
-			"mixed batch (%d probe pods): whole-batch fingerprints skipped; reduced batch (%d pods) checked", probeA, len(reduced)))
-		return violations, logs, nil
-	}
+	// Full stability, no carve-out: the batch is uncoupled-only (probe pods included - the
+	// builder strips their pod-count-reading preferred terms), so the claim fingerprints must be
+	// byte-identical across the two occupancies.
 	if len(fpsA) != len(fpsB) {
 		violations = append(violations, fmt.Sprintf(
 			"invariant .16 violated: claim COUNT tracks cluster occupancy: A=%d B=%d\nA:\n  %s\nB:\n  %s",
@@ -846,10 +793,14 @@ func TestPropertyEmptyClusterBound(t *testing.T) {
 // preferred_probe: additionally ScheduleAnyway spread whose selector can match running pods.
 //
 //	Originally this probe FOUND the bead .18 bug: such pods classified
-//	Uncoupled while their claims tracked occupancy. Since the fix they must
-//	classify Coupled/preferred-pod-topology and are excluded from the
-//	fingerprint comparison; the probe now guards the fix (a regression makes
-//	the premise check fail) while stability is asserted over the remainder.
+//	Uncoupled while their claims tracked occupancy (the reused scheduler
+//	honored the spread against the domain counts). The interim fix classified
+//	them Coupled and carved them out of the comparison. The 2026-07-04 ruling
+//	reversed that: a stale preference never invalidates a claim, so the
+//	builder now strips pod-count-reading preferred terms before solving,
+//	probe pods classify Uncoupled, and the fingerprints must be byte-identical
+//	across occupancies with NO carve-out. The probe guards the strip: a
+//	regression brings back the occupancy-tracking claims and fails here.
 func TestPropertyUncoupledStability(t *testing.T) {
 	for name, gen := range map[string]*rapid.Generator[propScenario]{
 		"core":            uncoupledCoreScenarioGen,

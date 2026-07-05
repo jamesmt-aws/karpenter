@@ -249,8 +249,8 @@ func TestClassify(t *testing.T) {
 					},
 				}},
 			}),
-			class:  greenfield.ClassCoupled,
-			reason: greenfield.ReasonPreferredPodTopology,
+			class:  greenfield.ClassUncoupled,
+			reason: greenfield.ReasonPreferredOnly,
 		},
 		{
 			name: "schedule-anyway spread only",
@@ -263,8 +263,8 @@ func TestClassify(t *testing.T) {
 					LabelSelector:     &metav1.LabelSelector{MatchLabels: map[string]string{"app": "soft-spread"}},
 				}},
 			}),
-			class:  greenfield.ClassCoupled,
-			reason: greenfield.ReasonPreferredPodTopology,
+			class:  greenfield.ClassUncoupled,
+			reason: greenfield.ReasonPreferredOnly,
 		},
 		{
 			name: "unconstrained pod",

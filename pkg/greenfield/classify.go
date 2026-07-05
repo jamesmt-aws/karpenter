@@ -76,10 +76,6 @@ const (
 	ReasonPodAffinity         = "required-pod-affinity"
 	ReasonPodAntiAffinity     = "required-pod-anti-affinity"
 	ReasonInverseAntiAffinity = "matched-by-running-anti-affinity"
-	// ReasonPreferredPodTopology marks pods whose only pod-count-dependent terms are preferred
-	// (ScheduleAnyway spread, preferred pod (anti-)affinity). They are coupled: the scheduler
-	// honors these terms until preference relaxation, so the claim tracks the domain counts.
-	ReasonPreferredPodTopology = "preferred-pod-topology"
 	// Uncoupled reasons.
 	ReasonPreferredOnly = "preferred-only"
 	ReasonUnconstrained = "unconstrained"
@@ -141,18 +137,23 @@ func (s Summary) String() string {
 // the pod). A pod whose referenced ResourceClaim cannot be resolved is also no-claim: upstream
 // defers such pods to a later loop, so the POC leaves them on the current path.
 //
-// Coupled (claim depends on the domain counts): a topology spread constraint (DoNotSchedule OR
-// ScheduleAnyway - the scheduler honors ScheduleAnyway until preference relaxation, so the claim
-// tracks the counts either way; proven by the uncoupled-stability probe, bead gfp-goal-t8s.18),
-// required or preferred pod (anti-)affinity, or being matched by a running pod's required
-// anti-affinity term (the pod carries no constraint of its own, but its placement depends on the
-// counts identically, so the safe direction is coupled).
+// Coupled (claim depends on the domain counts): a DoNotSchedule topology spread constraint,
+// required pod (anti-)affinity, or being matched by a running pod's required anti-affinity term
+// (the pod carries no constraint of its own, but its placement depends on the counts
+// identically, so the safe direction is coupled).
 //
-// Uncoupled: everything else. Pods whose only preferred terms are node-affinity preferences stay
-// uncoupled (node labels, not domain counts) and report reason "preferred-only" so their
-// frequency is measurable. The original POC decision classified ALL preferred-only pods as
-// uncoupled; the stability probe falsified that for pod-count-dependent preferred terms, which
-// now classify coupled under reason "preferred-pod-topology".
+// Uncoupled: everything else. Pods whose only constraints are preferences - preferred node
+// affinity, preferred pod (anti-)affinity, ScheduleAnyway spread - classify uncoupled and report
+// reason "preferred-only" so their frequency is measurable. The preference semantics reversed
+// twice, so both prior states are recorded here. Original decision: preferred-only pods are
+// uncoupled and the builder honors their terms; falsified by the uncoupled-stability probe (bead
+// gfp-goal-t8s.18) - the reused scheduler honors pod-count-reading preferred terms until
+// preference relaxation, so the claims tracked cluster occupancy. Interim fix: such pods
+// classify coupled (reason "preferred-pod-topology"); reversed by ruling 2026-07-04 because a
+// stale preference never invalidates a claim, so preference-derived count-dependence is not
+// coupling. Current semantics: the BUILDER strips pod-count-reading preferred terms before
+// solving (see Build), claims are preference-blind by construction, and preferred-only pods are
+// uncoupled.
 //
 // ctx must carry operator options (operator/options.ToContext) for the daemonset footprint
 // computation. instanceTypes is keyed by NodePool name.
@@ -251,15 +252,10 @@ func (c *classifier) classify(ctx context.Context, p *corev1.Pod) (Result, error
 			return Result{Pod: p, Class: ClassCoupled, Reason: ReasonInverseAntiAffinity}, nil
 		}
 	}
-	// Preferred terms that read pod-count state are coupled too: the scheduler honors
-	// ScheduleAnyway spread and preferred pod (anti-)affinity until preference relaxation, so
-	// the claim tracks the domain counts exactly as a required term would (found by the
-	// uncoupled-stability probe, fixture testdata/minimized-uncoupled-stability.json).
-	if hasPreferredPodTopology(p) {
-		return Result{Pod: p, Class: ClassCoupled, Reason: ReasonPreferredPodTopology}, nil
-	}
-
 	// --- Uncoupled ---
+	// Pod-count-reading preferred terms (ScheduleAnyway spread, preferred pod (anti-)affinity)
+	// do NOT couple: the builder strips them before solving (see Build and
+	// stripPreferredPodTopology), so the claim never reads the domain counts through them.
 	if hasPreferredConstraints(p) {
 		return Result{Pod: p, Class: ClassUncoupled, Reason: ReasonPreferredOnly}, nil
 	}
@@ -400,9 +396,10 @@ func hasPreferredConstraints(p *corev1.Pod) bool {
 }
 
 // hasPreferredPodTopology reports whether the pod carries preferred terms that read pod-count
-// state: ScheduleAnyway topology spread or preferred pod (anti-)affinity. These classify as
-// Coupled. Preferred node affinity is excluded: it reads node labels, not domain counts, so a
-// greenfield claim built under it does not track cluster occupancy.
+// state: ScheduleAnyway topology spread or preferred pod (anti-)affinity. The builder strips
+// exactly these terms before solving (stripPreferredPodTopology), so this helper is the strip's
+// membership test. Preferred node affinity is excluded: it reads node labels, not domain counts,
+// so a greenfield claim built under it does not track cluster occupancy.
 func hasPreferredPodTopology(p *corev1.Pod) bool {
 	if lo.ContainsBy(p.Spec.TopologySpreadConstraints, func(tsc corev1.TopologySpreadConstraint) bool {
 		return tsc.WhenUnsatisfiable == corev1.ScheduleAnyway

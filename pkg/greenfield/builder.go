@@ -130,12 +130,17 @@ func (r *BuildResult) EligiblePods() []*corev1.Pod {
 
 // Build computes the greenfield NodeClaims for the batch:
 //
-//  1. Classify the pods; NoClaim pods are excluded and returned separately.
-//  2. Build a FRESH Topology from the real client/cluster state over the eligible pods only
+//  1. Classify the pods; NoClaim pods are excluded and returned separately. Classification sees
+//     the ORIGINAL pods, so reported reasons reflect what the pods actually carry.
+//  2. Strip pod-count-reading preferred terms from the eligible pods (stripPreferredPodTopology,
+//     on deep copies): claims are preference-blind by construction, so they are deterministic in
+//     cluster state. The launched capacity is shaped without preferences; the kube-scheduler
+//     applies preferences when binding onto whatever capacity exists.
+//  3. Build a FRESH Topology from the real client/cluster state over the eligible pods only
 //     (NewDomainCounts). Topology is mutated during Solve, so it is never shared or reused; the
 //     counts reflect reality at build time, which is what makes the claims for Coupled pods
 //     correct when they are built.
-//  3. Run the existing scheduler with stateNodes=nil over the eligible pods and price the
+//  4. Run the existing scheduler with stateNodes=nil over the eligible pods and price the
 //     resulting NodeClaims.
 //
 // The builder runs without a DRA allocator; pods referencing unallocated ResourceClaims pass
@@ -173,6 +178,9 @@ func (b *Builder) Build(ctx context.Context, pods []*corev1.Pod) (*BuildResult, 
 	if len(eligible) == 0 {
 		return result, nil
 	}
+	// Strip AFTER classification (classification must see the original pods) and BEFORE topology
+	// construction (the topology must not build groups for terms the solver will never read).
+	eligible = stripPreferredPodTopology(eligible)
 
 	start := time.Now()
 	counts, err := NewDomainCounts(ctx, b.KubeClient, b.Cluster, nodePools, b.InstanceTypes, eligible, b.Opts...)
@@ -221,6 +229,45 @@ func (b *Builder) Build(ctx context.Context, pods []*corev1.Pod) (*BuildResult, 
 		result.IncumbentPrice += price
 	}
 	return result, nil
+}
+
+// stripPreferredPodTopology returns the pods with every pod-count-reading preferred term
+// removed: ScheduleAnyway topology spread constraints and
+// PreferredDuringSchedulingIgnoredDuringExecution pod (anti-)affinity terms. Pods carrying such
+// terms are replaced by deep copies - caller pods are never mutated, following the daemonset-pod
+// pattern in Build - and pods without them pass through unchanged. Preferred NODE affinity is
+// NOT stripped: it reads node labels, not pod counts, so it cannot make a claim track cluster
+// occupancy, and the scheduler may still use it to shape capacity.
+//
+// Both solver legs must solve the SAME stripped pods: Build and the full-simulation leg of
+// CompareWithFullSimulation each call this on the eligible set, or the empty-cluster bound
+// property catches the asymmetry (the same class of leg-asymmetry bug as the NodePool weight
+// sorting, see CompareWithFullSimulation).
+func stripPreferredPodTopology(pods []*corev1.Pod) []*corev1.Pod {
+	return lo.Map(pods, func(p *corev1.Pod, _ int) *corev1.Pod {
+		if !hasPreferredPodTopology(p) {
+			return p
+		}
+		p = p.DeepCopy()
+		p.Spec.TopologySpreadConstraints = lo.Filter(p.Spec.TopologySpreadConstraints, func(tsc corev1.TopologySpreadConstraint, _ int) bool {
+			return tsc.WhenUnsatisfiable != corev1.ScheduleAnyway
+		})
+		if p.Spec.Affinity != nil {
+			if pa := p.Spec.Affinity.PodAffinity; pa != nil {
+				pa.PreferredDuringSchedulingIgnoredDuringExecution = nil
+				if len(pa.RequiredDuringSchedulingIgnoredDuringExecution) == 0 {
+					p.Spec.Affinity.PodAffinity = nil
+				}
+			}
+			if paa := p.Spec.Affinity.PodAntiAffinity; paa != nil {
+				paa.PreferredDuringSchedulingIgnoredDuringExecution = nil
+				if len(paa.RequiredDuringSchedulingIgnoredDuringExecution) == 0 {
+					p.Spec.Affinity.PodAntiAffinity = nil
+				}
+			}
+		}
+		return p
+	})
 }
 
 func (b *Builder) recorder() events.Recorder {
