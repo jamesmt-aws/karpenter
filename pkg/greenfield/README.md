@@ -43,4 +43,4 @@ Sweeps existing-node count x pending pods in both fit regimes
 (fits-existing and needs-new-capacity), interleaved iterations, warmups
 discarded, count derivation reported separately from claim construction.
 Full matrix takes roughly 25-40 minutes; results and interpretation live
-in perf-results.md at the repo root of the POC workspace.
+in designs/greenfield-provisioning/perf-results.md.
