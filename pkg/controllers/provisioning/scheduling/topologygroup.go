@@ -17,8 +17,11 @@ limitations under the License.
 package scheduling
 
 import (
+	"encoding/binary"
 	"fmt"
+	"hash/fnv"
 	"math"
+	"sort"
 
 	"github.com/awslabs/operatorpkg/option"
 	"github.com/mitchellh/hashstructure/v2"
@@ -70,6 +73,23 @@ type TopologyGroup struct {
 	owners       map[types.UID]struct{} // Pods that have this topology as a scheduling rule
 	domains      map[string]int32       // TODO(ellistarn) explore replacing with a minheap
 	emptyDomains sets.Set[string]       // domains for which we know that no pod exists
+
+	// rankSeed makes domain tie-breaking deterministic without being uniform across groups: it
+	// is derived from the group's logical identity (key, type, namespaces, selector), so two
+	// solves of the same constraint rank domains identically while distinct groups rank them
+	// differently. Plain map iteration made identical solves disagree; plain lexicographic
+	// order would concentrate every group's tie-break in the first-sorting domain fleet-wide.
+	rankSeed uint64
+}
+
+// domainRank orders domains for tie-breaking: lower rank wins. See rankSeed.
+func (t *TopologyGroup) domainRank(domain string) uint64 {
+	h := fnv.New64a()
+	var seed [8]byte
+	binary.LittleEndian.PutUint64(seed[:], t.rankSeed)
+	_, _ = h.Write(seed[:])
+	_, _ = h.Write([]byte(domain))
+	return h.Sum64()
 }
 
 func NewTopologyGroup(
@@ -122,6 +142,12 @@ func NewTopologyGroup(
 		emptyDomains: emptyDomains,
 		owners:       map[types.UID]struct{}{},
 		minDomains:   minDomains,
+		rankSeed: lo.Must(hashstructure.Hash(struct {
+			Type       TopologyType
+			Key        string
+			Namespaces sets.Set[string]
+			Selector   *metav1.LabelSelector
+		}{topologyType, topologyKey, namespaces, labelSelector}, hashstructure.FormatV2, &hashstructure.HashOptions{SlicesAsSets: true})),
 	}
 }
 
@@ -263,7 +289,11 @@ func (t *TopologyGroup) nextDomainTopologySpread(pod *corev1.Pod, podDomains, no
 				}
 				if count-min <= t.maxSkew {
 					validDomains.Insert(domain)
-					if count < minCount {
+					// tie-break equal counts by group-specific rank so the chosen domain
+					// depends on neither map iteration order (identical solves must pick
+					// identically) nor a fleet-wide constant order (which would concentrate
+					// every group's tie-break in the same domain)
+					if count < minCount || (count == minCount && t.domainRank(domain) < t.domainRank(minDomain)) {
 						minDomain = domain
 						minCount = count
 					}
@@ -282,7 +312,11 @@ func (t *TopologyGroup) nextDomainTopologySpread(pod *corev1.Pod, podDomains, no
 				}
 				if count-min <= t.maxSkew {
 					validDomains.Insert(domain)
-					if count < minCount {
+					// tie-break equal counts by group-specific rank so the chosen domain
+					// depends on neither map iteration order (identical solves must pick
+					// identically) nor a fleet-wide constant order (which would concentrate
+					// every group's tie-break in the same domain)
+					if count < minCount || (count == minCount && t.domainRank(domain) < t.domainRank(minDomain)) {
 						minDomain = domain
 						minCount = count
 					}
@@ -363,21 +397,30 @@ func (t *TopologyGroup) nextDomainAffinity(pod *corev1.Pod, podDomains *scheduli
 	}
 
 	// If pod is self-selecting and no pod has been scheduled yet OR the pods that have scheduled are
-	// incompatible with our podDomains, we can pick a domain at random to bootstrap scheduling.
+	// incompatible with our podDomains, we can pick any viable domain to bootstrap scheduling. The
+	// choice is made in group-specific rank order rather than map order so repeated solves of the
+	// same problem anchor the same domain: map-order iteration here made otherwise-identical
+	// scheduling runs nondeterministic (and their costs incomparable) whenever zone prices differ,
+	// while a fleet-wide constant order would anchor every group in the same domain.
 	if t.selects(pod) && (len(t.domains) == len(t.emptyDomains) || !t.anyCompatiblePodDomain(podDomains)) {
+		sortedDomains := lo.Keys(t.domains)
+		sort.Slice(sortedDomains, func(i, j int) bool {
+			return t.domainRank(sortedDomains[i]) < t.domainRank(sortedDomains[j])
+		})
+
 		// First try to find a domain that is within the intersection of pod/node domains. In the case of an in-flight node
 		// this causes us to pick the domain that the existing in-flight node is already in if possible instead of picking
-		// a random viable domain.
+		// an arbitrary viable domain.
 		intersected := podDomains.Intersection(nodeDomains)
-		for domain := range t.domains {
+		for _, domain := range sortedDomains {
 			if intersected.Has(domain) {
 				options.Insert(domain)
 				break
 			}
 		}
 
-		// and if there are no node domains, just return the first random domain that is viable
-		for domain := range t.domains {
+		// and if there are no node domains, just return the first viable domain in sorted order
+		for _, domain := range sortedDomains {
 			if podDomains.Has(domain) {
 				options.Insert(domain)
 				break
