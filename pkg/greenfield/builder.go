@@ -64,6 +64,12 @@ type Builder struct {
 	// Opts are scheduler options applied to every scheduler (and topology) this builder
 	// constructs, on both the greenfield and the full-simulation side.
 	Opts []scheduler.Options
+	// BalancedRateScale multiplies the Balanced policy's implied disruption price D_implied
+	// inside Savings (zero means 1: no perturbation). Production code leaves it alone. It exists
+	// for the measurement suite's sensitivity report: D_implied is a spot rate stretched over
+	// the consolidation horizon (see Savings), and rerunning the accept/reject decision at 0.5x
+	// and 2x reports how often the decision flips if that forecast is off by 2x either way.
+	BalancedRateScale float64
 }
 
 // ClaimResult is one greenfield NodeClaim with its pod assignments and incumbent price.

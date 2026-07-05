@@ -64,10 +64,14 @@ func PriceOf(claim *scheduler.NodeClaim) (float64, error) {
 
 // AcceptCandidate is the phase-two acceptance comparator (invariant .2, restated): the incumbent
 // is the acceptance threshold, and a candidate answer may replace the greenfield claims only if
-// it is STRICTLY cheaper than the incumbent. The candidate's cost is its ATTRIBUTED cost
-// (AttributedCost): existing-capacity placements carry alone_cost * f bills, so a candidate that
-// parks the batch on wasteful existing nodes is priced accordingly rather than winning at a
-// conventional zero. Equal cost is rejected: the incumbent read no shared
+// it is STRICTLY cheaper than the incumbent. The candidate's cost is its DECISION cost
+// (DecisionCost): new spend plus foreclosed net reclamation - the price of the capacity it
+// launches plus the net consolidation savings its existing-capacity placements take off the
+// table (LostSavings), per the James ruling 2026-07-04. A placement onto existing capacity
+// converts already-paid-for waste into utility at zero new spend, so it changes total cluster
+// cost only through what it launches and what it forecloses. The attributed bill (AttributedCost) remains the billing and
+// waste-visibility number and is carried alongside, but it prices waste as if permanent and so
+// rejects parkings that consolidation would erase. Equal cost is rejected: the incumbent read no shared
 // cluster state and cannot go stale, so at equal price it is the safer answer and the RFC's
 // "any placement onto existing capacity must beat that cost" (line 17) keeps its literal meaning.
 // This is the by-construction half of invariant .2 - phase two discards any candidate for which
@@ -98,7 +102,8 @@ func IncumbentCost(result *BuildResult) (float64, error) {
 // convention ("the node is already paid for whether or not the pod lands on it") is dead,
 // replaced by the pricing model's attribution (pricing_paper.md) - see AttributedCost. The
 // new-claims-only number stays exported because it remains a useful reportable view: the cash
-// outlay for capacity the answer would launch.
+// outlay for capacity the answer would launch, the marginal number of the three-number contract
+// (see Comparison) and the optimistic bound - exact only when consolidation is fast and free.
 func NewClaimCost(results scheduler.Results) (float64, error) {
 	total := 0.0
 	for _, nc := range results.NewNodeClaims {
@@ -194,18 +199,23 @@ func (b *Builder) AttributedCost(ctx context.Context, results scheduler.Results)
 // available offering compatible with the node's labels (zone and capacity type pin the
 // offering when the node carries those labels).
 func nodePrice(en *scheduler.ExistingNode, catalog map[string]*cloudprovider.InstanceType) (float64, error) {
-	nodeLabels := en.Labels()
+	return labeledNodePrice(en.Name(), en.Labels(), catalog)
+}
+
+// labeledNodePrice is nodePrice over a bare (name, labels) pair, shared with the savings pool
+// totals, which price state nodes that are not wrapped in scheduler.ExistingNode.
+func labeledNodePrice(nodeName string, nodeLabels map[string]string, catalog map[string]*cloudprovider.InstanceType) (float64, error) {
 	name := nodeLabels[corev1.LabelInstanceTypeStable]
 	if name == "" {
-		return 0, fmt.Errorf("node %s carries no %s label; its instance type cannot be resolved for attributed pricing", en.Name(), corev1.LabelInstanceTypeStable)
+		return 0, fmt.Errorf("node %s carries no %s label; its instance type cannot be resolved for pricing", nodeName, corev1.LabelInstanceTypeStable)
 	}
 	it, ok := catalog[name]
 	if !ok {
-		return 0, fmt.Errorf("node %s instance type %q is not in the catalog; its price cannot be resolved for attributed pricing", en.Name(), name)
+		return 0, fmt.Errorf("node %s instance type %q is not in the catalog; its price cannot be resolved for pricing", nodeName, name)
 	}
 	offerings := it.Offerings.Available().Compatible(scheduling.NewLabelRequirements(nodeLabels))
 	if len(offerings) == 0 {
-		return 0, fmt.Errorf("instance type %q has no available offering compatible with the labels of node %s", name, en.Name())
+		return 0, fmt.Errorf("instance type %q has no available offering compatible with the labels of node %s", name, nodeName)
 	}
 	return offerings.Cheapest().Price, nil
 }
@@ -225,6 +235,17 @@ type ClaimDetail struct {
 
 // Comparison is the result of running the same claim-eligible pod set through the greenfield
 // builder and the full simulation, both sides priced with the same price source.
+//
+// The full-simulation side carries THREE cost numbers, each answering a different question:
+//
+//   - FullSimNewClaimCost (marginal, new claims only) is the OPTIMISTIC BOUND: the cash outlay
+//     for launched capacity, exact only when consolidation is fast and free.
+//   - FullSimAttributedCost (alone_cost * f, pricing_paper.md) is BILLING AND WASTE VISIBILITY:
+//     what the batch pods are billed while the placement stands, surcharges included.
+//   - FullSimDecisionCost (new spend plus foreclosed net reclamation) is what ACCEPTANCE uses:
+//     the answer's change to total cluster cost, AcceptCandidate's candidate cost. Net means
+//     foreclosed savings count only if the node's own consolidation policy would have realized
+//     them (Savings: WhenEmpty, WhenEmptyOrUnderutilized, Balanced with its implied price).
 type Comparison struct {
 	// Greenfield is the builder's answer (phase one), including classifications and the purity
 	// split.
@@ -245,8 +266,13 @@ type Comparison struct {
 	FullSimNewClaimCost float64
 	// FullSimAttributedCost is the full simulation's attributed bill per the pricing model
 	// (AttributedCost): new claims at full price plus alone_cost * f for every batch pod placed
-	// on an existing node. This is the number the incumbent is compared against.
+	// on an existing node. Billing and waste visibility; acceptance uses FullSimDecisionCost.
 	FullSimAttributedCost float64
+	// FullSimDecisionCost is the full simulation's decision cost (DecisionCost): new claims at
+	// full price plus, for every existing node receiving batch pods, the net reclamation the
+	// placement forecloses (LostSavings, netted under the node's consolidation policy). This is
+	// the number the incumbent is compared against (AcceptCandidate).
+	FullSimDecisionCost float64
 	// FullSimClaims is the per-claim detail of the full simulation's new NodeClaims.
 	FullSimClaims []ClaimDetail
 	// FullSimExistingNodePods counts the eligible pods the full simulation placed on existing
@@ -264,11 +290,11 @@ type Comparison struct {
 // fresh Topology, since Topology is mutated during Solve.
 //
 // On an empty cluster the two legs solve the identical problem, so IncumbentCost must not exceed
-// FullSimAttributedCost (the falsifiable half of invariant .2; with no existing nodes the
-// attributed bill degenerates to the new-claim sum). With existing capacity the full simulation
-// is priced by attribution: well-packed shared placements bill below the incumbent (discount,
-// f < 1), wasteful ones above it (surcharge, f > 1), and the durations quantify what computing
-// that answer costs in wall time.
+// FullSimDecisionCost (the falsifiable half of invariant .2; with no existing nodes all three
+// full-sim numbers degenerate to the new-claim sum). With existing capacity the full simulation
+// carries the three-number contract (see Comparison): the marginal bound, the attributed bill
+// (discounts f < 1 and surcharges f > 1 both visible), and the decision cost acceptance runs on,
+// while the durations quantify what computing that answer costs in wall time.
 func (b *Builder) CompareWithFullSimulation(ctx context.Context, pods []*corev1.Pod) (*Comparison, error) {
 	build, err := b.Build(ctx, pods)
 	if err != nil {
@@ -326,6 +352,10 @@ func (b *Builder) CompareWithFullSimulation(ctx context.Context, pods []*corev1.
 	if err != nil {
 		return nil, fmt.Errorf("attributing full-simulation cost, %w", err)
 	}
+	decisionCost, err := b.DecisionCost(ctx, fullSim)
+	if err != nil {
+		return nil, fmt.Errorf("computing full-simulation decision cost, %w", err)
+	}
 	greenfieldClaims, err := claimDetails(lo.Map(build.Claims, func(c ClaimResult, _ int) *scheduler.NodeClaim { return c.NodeClaim }))
 	if err != nil {
 		return nil, err
@@ -346,6 +376,7 @@ func (b *Builder) CompareWithFullSimulation(ctx context.Context, pods []*corev1.
 		FullSim:                 fullSim,
 		FullSimNewClaimCost:     newClaimCost,
 		FullSimAttributedCost:   attributedCost,
+		FullSimDecisionCost:     decisionCost,
 		FullSimClaims:           fullSimClaims,
 		FullSimExistingNodePods: existingNodePods,
 		FullSimDuration:         fullSimDuration,

@@ -29,6 +29,7 @@ import (
 
 	v1 "sigs.k8s.io/karpenter/pkg/apis/v1"
 	"sigs.k8s.io/karpenter/pkg/cloudprovider"
+	scheduler "sigs.k8s.io/karpenter/pkg/controllers/provisioning/scheduling"
 	"sigs.k8s.io/karpenter/pkg/greenfield"
 	"sigs.k8s.io/karpenter/pkg/greenfield/harness"
 	"sigs.k8s.io/karpenter/pkg/test"
@@ -271,6 +272,12 @@ func TestAttributedCostFixtures(t *testing.T) {
 			t.Errorf("incumbent cost: want hand-computed %.9f, got %.9f", wantIncumbent, cmp.IncumbentCost)
 		}
 	}
+	assertDecision := func(t *testing.T, cmp *greenfield.Comparison, wantDecision float64) {
+		t.Helper()
+		if math.Abs(cmp.FullSimDecisionCost-wantDecision) > priceEpsilon {
+			t.Errorf("decision cost: want hand-computed %.9f, got %.9f", wantDecision, cmp.FullSimDecisionCost)
+		}
+	}
 
 	t.Run("right-sized shared placement, f below one is a discount", func(t *testing.T) {
 		// Existing node n1: small-2cpu at 1.00, running pod E 800m. Batch pod P 800m fits next
@@ -280,8 +287,13 @@ func TestAttributedCostFixtures(t *testing.T) {
 		//	f = price(n1) / (alone(E) + alone(P)) = 1.00 / 2.00 = 0.500
 		//	bill(P) = 1.00 * 0.500 = 0.50    (paper Example 2: shared smallest fit, 50% discount)
 		//
-		// attributed = 0.50 against the incumbent's fresh small-2cpu at 1.00: the placement
-		// wins, but by 0.50 rather than by the dead convention's full 1.00.
+		// attributed = 0.50 against the incumbent's fresh small-2cpu at 1.00. Decision cost:
+		//
+		//	savings(n1 without P) = max(0, 1.00 - 1.00) = 0    (E's cheapest fit IS small-2cpu)
+		//	savings(n1 with P)    = max(0, 1.00 - 1.00) = 0    (E+P = 1.6 <= 1.9 still fits it)
+		//	LostSavings = 0, new claims 0  =>  decision = 0
+		//
+		// A right-sized node had no consolidation savings to lose, so parking is free and wins.
 		node := attributedNode("n1", "small-2cpu", "1900m")
 		env := newEnv(t, node, boundPod("e", "n1", "800m"))
 		env.trackNode(t, node)
@@ -294,8 +306,9 @@ func TestAttributedCostFixtures(t *testing.T) {
 			t.Errorf("no new claims were opened, want new-claim cost 0, got %f", cmp.FullSimNewClaimCost)
 		}
 		assertCosts(t, cmp, 0.50, 1.00)
-		if !greenfield.AcceptCandidate(cmp.FullSimAttributedCost, cmp.IncumbentCost) {
-			t.Error("a discounted shared placement must beat the incumbent")
+		assertDecision(t, cmp, 0)
+		if !greenfield.AcceptCandidate(cmp.FullSimDecisionCost, cmp.IncumbentCost) {
+			t.Error("a placement that destroys no consolidation savings must beat the incumbent")
 		}
 	})
 
@@ -307,10 +320,16 @@ func TestAttributedCostFixtures(t *testing.T) {
 		//	f = 3.60 / 1.00 = 3.600
 		//	bill(P) = 1.00 * 3.600 = 3.60    (paper Example 4: a lone pod pays the instance price)
 		//
-		// attributed = 3.60 against an incumbent of 1.00, a 260% surcharge. This is the case
-		// that motivates the ruling: under the zero-marginal-cost convention this placement was
-		// free and always won; billed by attribution it LOSES and phase two keeps the
-		// greenfield claim.
+		// attributed = 3.60 against an incumbent of 1.00, a 260% surcharge: the billing number
+		// makes the wasteful placement visible. Decision cost:
+		//
+		//	savings(n1 without P) = max(0, 3.60 - 0)    = 3.60  (empty node: deletion, no replacement)
+		//	savings(n1 with P)    = max(0, 3.60 - 1.00) = 2.60  (P alone re-homes onto a small)
+		//	LostSavings = 1.00, new claims 0  =>  decision = 1.00
+		//
+		// decision equals the incumbent: end-of-day cost is the same either way (park then shrink
+		// n1 around P, or launch the small now), and the tie goes to the incumbent because equal
+		// cost is rejected (AcceptCandidate) - the greenfield claim read no shared state.
 		node := attributedNode("n1", "large-8cpu", "7900m")
 		env := newEnv(t, node)
 		env.trackNode(t, node)
@@ -320,8 +339,9 @@ func TestAttributedCostFixtures(t *testing.T) {
 				cmp.FullSimExistingNodePods, len(cmp.FullSim.NewNodeClaims))
 		}
 		assertCosts(t, cmp, 3.60, 1.00)
-		if greenfield.AcceptCandidate(cmp.FullSimAttributedCost, cmp.IncumbentCost) {
-			t.Error("a surcharged placement must not beat the incumbent")
+		assertDecision(t, cmp, 1.00)
+		if greenfield.AcceptCandidate(cmp.FullSimDecisionCost, cmp.IncumbentCost) {
+			t.Error("a placement whose lost savings match the incumbent's price must not beat it")
 		}
 	})
 
@@ -339,7 +359,11 @@ func TestAttributedCostFixtures(t *testing.T) {
 		// Same node as the surcharge fixture, but the neighbors' alone_costs absorb most of the
 		// instance price: P's bill drops from 3.60 to 0.64, a discount, because the node is well
 		// packed. Were the daemon agent wrongly counted (alone 1.00), the denominator would be
-		// 6.60 and the bill 0.545454... - the exact assertion pins the exclusion.
+		// 6.60 and the bill 0.545454... - the exact assertion pins the exclusion. Decision cost:
+		//
+		//	savings(n1 without P) = max(0, 3.60 - 3.60) = 0  (E1+E2 = 3.3 > 1.9 needs the large)
+		//	savings(n1 with P)    = max(0, 3.60 - 3.60) = 0  (4.1 still needs the large)
+		//	LostSavings = 0, new claims 0  =>  decision = 0
 		node := attributedNode("n1", "large-8cpu", "7900m")
 		env := newEnv(t, node,
 			boundPod("e1", "n1", "2500m"),
@@ -353,8 +377,246 @@ func TestAttributedCostFixtures(t *testing.T) {
 				cmp.FullSimExistingNodePods, len(cmp.FullSim.NewNodeClaims))
 		}
 		assertCosts(t, cmp, 3.60/5.60, 1.00)
-		if !greenfield.AcceptCandidate(cmp.FullSimAttributedCost, cmp.IncumbentCost) {
-			t.Error("a discounted shared placement must beat the incumbent")
+		assertDecision(t, cmp, 0)
+		if !greenfield.AcceptCandidate(cmp.FullSimDecisionCost, cmp.IncumbentCost) {
+			t.Error("a placement that destroys no consolidation savings must beat the incumbent")
+		}
+	})
+}
+
+// ---------------------------------------------------------------------------------------------
+// Decision-cost worked examples (bead gfp-mge): the two fixtures from the parking argument, in
+// the fixed-price catalog above. The bead states them with 1-cpu pods on an 8cpu/$3.60 node;
+// the fake overhead is KubeReserved {100m CPU}, so small-2cpu allocates 1.9 CPU and TWO 1-cpu
+// pods would not fit it (2.0 > 1.9). The pods are adjusted to 800m so the bead's "both fit the
+// small" holds against catalog realities; every dollar figure is unchanged.
+//
+// Net savings are policy-derived (Savings), so the fixtures pin the node to a deterministic
+// NodePool via the karpenter.sh/nodepool label and run each example under BOTH
+// WhenEmptyOrUnderutilized (net = gross, the bead's original arithmetic) and Balanced (net
+// charged at the policy's implied disruption price).
+// ---------------------------------------------------------------------------------------------
+
+const fixturePoolName = "fixture-pool"
+
+func TestDecisionCostWorkedExamples(t *testing.T) {
+	newEnv := func(t *testing.T, objs ...client.Object) *countsEnv {
+		t.Helper()
+		env := newCountsEnv(t, objs...)
+		// Deterministic pool name so fixture nodes can carry the NodePool label, and an
+		// explicit policy: net = gross under WhenEmptyOrUnderutilized.
+		env.nodePools[0].Name = fixturePoolName
+		env.nodePools[0].Spec.Disruption.ConsolidationPolicy = v1.ConsolidationPolicyWhenEmptyOrUnderutilized
+		env.instanceTypes = map[string][]*cloudprovider.InstanceType{fixturePoolName: attributedCostCatalog()}
+		return env
+	}
+	pooledNode := func(name, instanceType, allocatableCPU string) *corev1.Node {
+		node := attributedNode(name, instanceType, allocatableCPU)
+		node.Labels[v1.NodePoolLabelKey] = fixturePoolName
+		return node
+	}
+	balancedBuilder := func(env *countsEnv) *greenfield.Builder {
+		balanced := env.nodePools[0].DeepCopy()
+		balanced.Spec.Disruption.ConsolidationPolicy = v1.ConsolidationPolicyBalanced
+		b := newBuilder(env)
+		b.NodePools = []*v1.NodePool{balanced}
+		return b
+	}
+	findExistingNode := func(t *testing.T, cmp *greenfield.Comparison, name string) *scheduler.ExistingNode {
+		t.Helper()
+		for _, en := range cmp.FullSim.ExistingNodes {
+			if en.Name() == name {
+				return en
+			}
+		}
+		t.Fatalf("existing node %s not in the full-simulation results", name)
+		return nil
+	}
+	assertMoney := func(t *testing.T, what string, got, want float64) {
+		t.Helper()
+		if math.Abs(got-want) > priceEpsilon {
+			t.Errorf("%s: want hand-computed %.9f, got %.9f", what, want, got)
+		}
+	}
+
+	t.Run("shrinkable node: parking loses no savings and is accepted", func(t *testing.T) {
+		// Worked example 1 (the case attributed cost got wrong). Existing node n1: large-8cpu
+		// at 3.60 holding one 800m pod E. One 800m batch pod P parks there.
+		//
+		//	savings(n1 without P) = 3.60 - 1.00 = 2.60   (E alone fits small-2cpu: 0.8 <= 1.9)
+		//	savings(n1 with P)    = 3.60 - 1.00 = 2.60   (E+P both fit the small: 1.6 <= 1.9)
+		//	LostSavings(n1, {P})  = 2.60 - 2.60 = 0
+		//	DecisionCost = new claims 0 + LostSavings 0 = 0
+		//
+		// incumbent = 1.00 (a fresh small-2cpu for P), so parking is ACCEPTED: consolidation
+		// shrinks n1 onto one small either way, and end-of-day cost is lower by the incumbent's
+		// whole 1.00. Attributed said the opposite - bill(P) = alone(P) * f = 1.00 * (3.60 /
+		// 2.00) = 1.80 > 1.00 - because attribution prices the waste of the large node as if
+		// permanent. That is the right billing number and the wrong decision number.
+		node := pooledNode("n1", "large-8cpu", "7900m")
+		env := newEnv(t, node, boundPod("e", "n1", "800m"))
+		env.trackNode(t, node)
+		b := newBuilder(env)
+		cmp, err := b.CompareWithFullSimulation(env.ctx, []*corev1.Pod{cpuPod("800m")})
+		if err != nil {
+			t.Fatalf("CompareWithFullSimulation: %s", err)
+		}
+		if cmp.FullSimExistingNodePods != 1 || len(cmp.FullSim.NewNodeClaims) != 0 {
+			t.Fatalf("expected the batch pod parked on n1 with no new claims, got existing=%d new=%d",
+				cmp.FullSimExistingNodePods, len(cmp.FullSim.NewNodeClaims))
+		}
+		en := findExistingNode(t, cmp, "n1")
+
+		without, err := b.Savings(env.ctx, en, nil)
+		if err != nil {
+			t.Fatalf("Savings without placed: %s", err)
+		}
+		assertMoney(t, "savings without placed", without, 2.60)
+		with, err := b.Savings(env.ctx, en, en.Pods)
+		if err != nil {
+			t.Fatalf("Savings with placed: %s", err)
+		}
+		assertMoney(t, "savings with placed", with, 2.60)
+		lost, err := b.LostSavings(env.ctx, en, en.Pods)
+		if err != nil {
+			t.Fatalf("LostSavings: %s", err)
+		}
+		assertMoney(t, "lost savings", lost, 0)
+
+		assertMoney(t, "incumbent cost", cmp.IncumbentCost, 1.00)
+		assertMoney(t, "decision cost", cmp.FullSimDecisionCost, 0)
+		assertMoney(t, "attributed cost", cmp.FullSimAttributedCost, 1.80)
+		if !greenfield.AcceptCandidate(cmp.FullSimDecisionCost, cmp.IncumbentCost) {
+			t.Error("decision cost must accept the parking that consolidation makes optimal")
+		}
+		if greenfield.AcceptCandidate(cmp.FullSimAttributedCost, cmp.IncumbentCost) {
+			t.Error("attributed cost is expected to reject this parking - the divergence under test")
+		}
+
+		// Balanced-policy variant: net savings are charged at the policy's implied disruption
+		// price, read from the cluster's own consolidation policy (BalancedK=2), not assumed.
+		// Pool = {n1}, so from cluster state:
+		//
+		//	TotalCost       = 3.60
+		//	TotalDisruption = DisruptionCost(n1) = 1.0 base + EvictionCost(E) = 1.0 + 1.0 = 2.0
+		//	D_implied       = TotalCost / (k * TotalDisruption) = 3.60 / (2 * 2.0) = 0.90
+		//
+		// NOTE the bead sketch put TotalDisruption at 1.0 assuming an annotation-free pod costs
+		// 0; the code disagrees - disruptionutils.EvictionCost defaults to 1.0 per pod before
+		// annotations and priority - so TotalDisruption is 2.0 and D_implied 0.90, not 1.80.
+		// For this single-node pool the charge on the without side is the same either way,
+		// because disruption(n1) = TotalDisruption makes D_implied * disruption = TotalCost/k:
+		//
+		//	net(n1 without P) = 2.60 - 0.90 * 2.0 = 0.80   (move approved: score 0.72 >= 0.5)
+		//	net(n1 with P)    = max(0, 2.60 - 0.90 * 3.0) = 0
+		//	                    (P adds its base eviction cost: disruption 3.0, score 0.48 < 0.5,
+		//	                     the policy would no longer approve the shrink)
+		//	LostSavings = 0.80 - 0 = 0.80   (NOT 0 as sketched: parking prices in the eviction
+		//	                                 it adds to the foreclosed move)
+		//	DecisionCost = new claims 0 + 0.80 = 0.80 < 1.00   still ACCEPTED, margin 0.20
+		bBalanced := balancedBuilder(env)
+		withoutBalanced, err := bBalanced.Savings(env.ctx, en, nil)
+		if err != nil {
+			t.Fatalf("Balanced Savings without placed: %s", err)
+		}
+		assertMoney(t, "net savings without placed (Balanced)", withoutBalanced, 0.80)
+		withBalanced, err := bBalanced.Savings(env.ctx, en, en.Pods)
+		if err != nil {
+			t.Fatalf("Balanced Savings with placed: %s", err)
+		}
+		assertMoney(t, "net savings with placed (Balanced)", withBalanced, 0)
+		lostBalanced, err := bBalanced.LostSavings(env.ctx, en, en.Pods)
+		if err != nil {
+			t.Fatalf("Balanced LostSavings: %s", err)
+		}
+		assertMoney(t, "net lost savings (Balanced)", lostBalanced, 0.80)
+		decisionBalanced, err := bBalanced.DecisionCost(env.ctx, cmp.FullSim)
+		if err != nil {
+			t.Fatalf("Balanced DecisionCost: %s", err)
+		}
+		assertMoney(t, "decision cost (Balanced)", decisionBalanced, 0.80)
+		if !greenfield.AcceptCandidate(decisionBalanced, cmp.IncumbentCost) {
+			t.Error("the parking must stay accepted under the Balanced implied price")
+		}
+	})
+
+	t.Run("blocked node: savings zero both ways, parking accepted on spend", func(t *testing.T) {
+		// Worked example 2. Same node, but the running pod E carries karpenter.sh/do-not-disrupt,
+		// so n1 is not a disruption candidate and its savings are pinned at zero:
+		//
+		//	savings(n1 without P) = 0   (unevictable pod: the candidate filter blocks n1)
+		//	savings(n1 with P)    = 0   (still blocked)
+		//	LostSavings(n1, {P})  = 0
+		//	DecisionCost = new claims 0 + LostSavings 0 = 0
+		//
+		// incumbent = 1.00, so parking is ACCEPTED on spend: the cluster launches nothing and
+		// consolidation had no options here to lose. The term this model deliberately omits is
+		// churn/entrenchment risk - P now runs on a node that cannot be drained, so P itself
+		// becomes harder to move and n1's eventual reclamation waits on P too. Pricing that risk
+		// is explicitly OUT OF SCOPE for the POC (bead gfp-mge); the decision cost says only
+		// what this hour's placement does to spend and to consolidation's current options.
+		node := pooledNode("n1", "large-8cpu", "7900m")
+		blocked := boundPod("e", "n1", "800m")
+		blocked.Annotations = map[string]string{v1.DoNotDisruptAnnotationKey: "true"}
+		env := newEnv(t, node, blocked)
+		env.trackNode(t, node)
+		b := newBuilder(env)
+		cmp, err := b.CompareWithFullSimulation(env.ctx, []*corev1.Pod{cpuPod("800m")})
+		if err != nil {
+			t.Fatalf("CompareWithFullSimulation: %s", err)
+		}
+		if cmp.FullSimExistingNodePods != 1 || len(cmp.FullSim.NewNodeClaims) != 0 {
+			t.Fatalf("expected the batch pod parked on n1 with no new claims, got existing=%d new=%d",
+				cmp.FullSimExistingNodePods, len(cmp.FullSim.NewNodeClaims))
+		}
+		en := findExistingNode(t, cmp, "n1")
+
+		without, err := b.Savings(env.ctx, en, nil)
+		if err != nil {
+			t.Fatalf("Savings without placed: %s", err)
+		}
+		assertMoney(t, "savings without placed", without, 0)
+		with, err := b.Savings(env.ctx, en, en.Pods)
+		if err != nil {
+			t.Fatalf("Savings with placed: %s", err)
+		}
+		assertMoney(t, "savings with placed", with, 0)
+		lost, err := b.LostSavings(env.ctx, en, en.Pods)
+		if err != nil {
+			t.Fatalf("LostSavings: %s", err)
+		}
+		assertMoney(t, "lost savings", lost, 0)
+
+		assertMoney(t, "incumbent cost", cmp.IncumbentCost, 1.00)
+		assertMoney(t, "decision cost", cmp.FullSimDecisionCost, 0)
+		// Attribution still bills P for sharing the blocked large node: 1.00 * (3.60/2.00).
+		assertMoney(t, "attributed cost", cmp.FullSimAttributedCost, 1.80)
+		if !greenfield.AcceptCandidate(cmp.FullSimDecisionCost, cmp.IncumbentCost) {
+			t.Error("decision cost must accept parking onto a blocked node on spend")
+		}
+
+		// Balanced-policy variant: a blocked node has NO gross savings for the implied price to
+		// net against - the eligibility filter zeroes savings before any policy runs - so every
+		// number is unchanged: net savings 0 both ways, LostSavings 0, decision cost 0, still
+		// accepted on spend, under any policy.
+		bBalanced := balancedBuilder(env)
+		withoutBalanced, err := bBalanced.Savings(env.ctx, en, nil)
+		if err != nil {
+			t.Fatalf("Balanced Savings without placed: %s", err)
+		}
+		assertMoney(t, "net savings without placed (Balanced)", withoutBalanced, 0)
+		withBalanced, err := bBalanced.Savings(env.ctx, en, en.Pods)
+		if err != nil {
+			t.Fatalf("Balanced Savings with placed: %s", err)
+		}
+		assertMoney(t, "net savings with placed (Balanced)", withBalanced, 0)
+		decisionBalanced, err := bBalanced.DecisionCost(env.ctx, cmp.FullSim)
+		if err != nil {
+			t.Fatalf("Balanced DecisionCost: %s", err)
+		}
+		assertMoney(t, "decision cost (Balanced)", decisionBalanced, 0)
+		if !greenfield.AcceptCandidate(decisionBalanced, cmp.IncumbentCost) {
+			t.Error("a blocked node stays free to park on under any consolidation policy")
 		}
 	})
 }
