@@ -27,6 +27,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/util/sets"
 
+	v1 "sigs.k8s.io/karpenter/pkg/apis/v1"
 	"sigs.k8s.io/karpenter/pkg/cloudprovider"
 	"sigs.k8s.io/karpenter/pkg/scheduling"
 )
@@ -127,4 +128,43 @@ func copyInt32Ptr(v *int32) *int32 {
 	}
 	c := *v
 	return &c
+}
+
+// --- additions for the incremental domain-count prototype (pkg/greenfield/incremental.go) ---
+
+// GreenfieldBuildDomainGroups exposes buildDomainGroups: the universe of topology domains per
+// topology key derived from NodePools x instance types. The incremental prototype needs it to
+// construct inverse anti-affinity groups on the fly exactly as updateInverseAntiAffinity does.
+func GreenfieldBuildDomainGroups(nodePools []*v1.NodePool, instanceTypes map[string][]*cloudprovider.InstanceType) map[string]TopologyDomainGroup {
+	return buildDomainGroups(nodePools, instanceTypes)
+}
+
+// GreenfieldLiveTopologyGroups returns the live topology groups (direct and inverse) tracked by
+// this Topology, each slice sorted by group hash for determinism. Unlike
+// GreenfieldTopologyGroupSummaries, these are the mutable groups themselves; the incremental
+// prototype uses them read-only, as group DEFINITIONS (key, selector, namespaces, node filter)
+// while keeping its own counts.
+func (t *Topology) GreenfieldLiveTopologyGroups() (direct, inverse []*TopologyGroup) {
+	for _, tg := range t.topologyGroups {
+		direct = append(direct, tg)
+	}
+	for _, tg := range t.inverseTopologyGroups {
+		inverse = append(inverse, tg)
+	}
+	sort.Slice(direct, func(i, j int) bool { return direct[i].Hash() < direct[j].Hash() })
+	sort.Slice(inverse, func(i, j int) bool { return inverse[i].Hash() < inverse[j].Hash() })
+	return direct, inverse
+}
+
+// GreenfieldNodeMatches reports whether this group's node filter admits a node with the given
+// taints and labels - the same check countDomains applies both before registering a node's
+// domain and before counting a pod scheduled to that node.
+func (tg *TopologyGroup) GreenfieldNodeMatches(taints []corev1.Taint, labels map[string]string) bool {
+	return tg.nodeFilter.Matches(taints, scheduling.NewLabelRequirements(labels))
+}
+
+// GreenfieldSummary snapshots this single group (same shape as the entries of
+// GreenfieldTopologyGroupSummaries).
+func (tg *TopologyGroup) GreenfieldSummary(inverse bool) GreenfieldTopologyGroupSummary {
+	return summarizeTopologyGroup(tg, inverse)
 }

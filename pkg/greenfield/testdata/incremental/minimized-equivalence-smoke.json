@@ -1,0 +1,34 @@
+{
+  "_comment": "Hand-curated seed fixture for the incremental tracker equivalence property. Exercises every event type and the semantic corners the bead flags: all four constraint kinds including a node-filtered zonal spread; an inverse group created dynamically by a running pod whose anti-affinity term matches a constraint-declared zone-anti-affinity group (shared hash) and one that matches nothing declared (hostname scope, dropped again when its last owner is deleted); a pod in a non-default namespace that the default-namespace groups must not count; domain dedup on node delete while another node shares the zone (node-domain refcounting); and pods deleted before their node per the prototype's event ordering.",
+  "constraints": [
+    { "kind": "zonal-spread", "group": "app-0" },
+    { "kind": "zonal-spread", "group": "app-1", "nodeZones": ["test-zone-1", "test-zone-2"] },
+    { "kind": "hostname-spread", "group": "app-0" },
+    { "kind": "zone-affinity", "group": "app-2" },
+    { "kind": "zone-anti-affinity", "group": "app-3" }
+  ],
+  "initialNodes": [
+    { "name": "n-0", "zone": "test-zone-1" },
+    { "name": "n-1", "zone": "test-zone-1" },
+    { "name": "n-2", "zone": "test-zone-3" }
+  ],
+  "initialPods": [
+    { "name": "p-0", "node": "n-0", "namespace": "default", "app": "app-0" },
+    { "name": "p-1", "node": "n-0", "namespace": "default", "app": "app-1" },
+    { "name": "p-2", "node": "n-1", "namespace": "default", "app": "app-0", "antiApp": "app-3", "antiKey": "zone" },
+    { "name": "p-3", "node": "n-2", "namespace": "other", "app": "app-0" },
+    { "name": "p-4", "node": "n-2", "namespace": "default", "app": "app-2", "antiApp": "app-2", "antiKey": "hostname" }
+  ],
+  "events": [
+    { "op": "node-add", "node": { "name": "en-0", "zone": "test-zone-2" } },
+    { "op": "pod-add", "pod": { "name": "ep-1", "node": "en-0", "namespace": "default", "app": "app-1" } },
+    { "op": "pod-add", "pod": { "name": "ep-2", "node": "en-0", "namespace": "default", "app": "app-3", "antiApp": "app-3", "antiKey": "zone" } },
+    { "op": "pod-delete", "podName": "p-4" },
+    { "op": "pod-delete", "podName": "p-0" },
+    { "op": "node-delete", "nodeName": "n-1" },
+    { "op": "node-delete", "nodeName": "n-0" },
+    { "op": "pod-add", "pod": { "name": "ep-7", "node": "n-2", "namespace": "default", "app": "app-0" } },
+    { "op": "node-add", "node": { "name": "en-8", "zone": "test-zone-1" } },
+    { "op": "pod-delete", "podName": "ep-2" }
+  ]
+}
